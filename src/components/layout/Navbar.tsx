@@ -1,6 +1,17 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Dumbbell, Calendar, Flame, TrendingUp, User, Moon, Sun, PlayCircle, Menu, X } from 'lucide-react'
+import {
+  Dumbbell,
+  Calendar,
+  Flame,
+  TrendingUp,
+  User,
+  Moon,
+  Sun,
+  Play,
+  Menu,
+  X,
+} from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { toggleTheme } from '@/features/theme/model/themeSlice'
 import { formatDuration } from '@/utils/formatters'
@@ -13,46 +24,55 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navItems = [
-    { label: 'Головна', path: '/', icon: <Flame className="w-4 h-4" /> },
-    { label: 'Вправи', path: '/exercises', icon: <Dumbbell className="w-4 h-4" /> },
-    { label: 'Плани', path: '/plans', icon: <Calendar className="w-4 h-4" /> },
-    { label: 'Прогрес', path: '/progress', icon: <TrendingUp className="w-4 h-4" /> },
-    { label: 'Профіль', path: '/profile', icon: <User className="w-4 h-4" /> },
+    { label: 'Головна', path: '/', icon: Flame },
+    { label: 'Вправи', path: '/exercises', icon: Dumbbell },
+    { label: 'Програми', path: '/plans', icon: Calendar },
+    { label: 'Прогрес', path: '/progress', icon: TrendingUp },
+    { label: 'Профіль', path: '/profile', icon: User },
   ]
 
-  const isActive = (path: string) => location.pathname === path
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/'
+    return location.pathname.startsWith(path)
+  }
 
   return (
-    <header className="sticky top-0 z-40 w-full glass border-b border-border transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full glass-panel border-b border-slate-800/80 transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white shadow-lg shadow-purple-600/30 group-hover:scale-105 transition-transform">
-            <Dumbbell className="w-5 h-5 -rotate-45" />
+        <Link to="/" className="flex items-center gap-3 group shrink-0">
+          <div className="relative">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 group-hover:scale-105 group-hover:shadow-purple-600/50 transition-all">
+              <Dumbbell className="w-5 h-5 -rotate-45" />
+            </div>
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-950 animate-pulse" />
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-lg tracking-tight gradient-text">FitPulse</span>
-            <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase -mt-1">
-              Workout Tracker
+            <span className="font-extrabold text-xl tracking-tight gradient-text-brand">
+              FitPulse
+            </span>
+            <span className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase -mt-1">
+              Pro Fitness App
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1.5 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/60 shadow-inner">
           {navItems.map((item) => {
             const active = isActive(item.path)
+            const Icon = item.icon
             return (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
                   active
-                    ? 'bg-purple-600/15 text-purple-400 border border-purple-500/30'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-surface/60'
+                    ? 'bg-gradient-to-r from-purple-600/90 to-indigo-600/90 text-white shadow-md shadow-purple-600/30'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
                 }`}
               >
-                {item.icon}
+                <Icon className={`w-4 h-4 ${active ? 'text-white' : 'text-slate-400'}`} />
                 {item.label}
               </Link>
             )
@@ -61,21 +81,21 @@ export const Navbar: React.FC = () => {
 
         {/* Right side actions */}
         <div className="flex items-center gap-3">
-          {/* Active Workout indicator button */}
+          {/* Active Workout CTA */}
           {session.isActive ? (
             <Link
               to="/workout"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-600 text-white font-medium text-xs shadow-md shadow-purple-600/40 animate-pulse"
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs shadow-lg shadow-purple-600/40 hover:from-purple-500 hover:to-indigo-500 transition-all animate-pulse"
             >
-              <PlayCircle className="w-4 h-4" />
+              <span className="w-2 h-2 rounded-full bg-emerald-300 animate-ping" />
               <span>Тренування: {formatDuration(session.elapsedSeconds)}</span>
             </Link>
           ) : (
             <Link
               to="/workout"
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-600/20 text-purple-300 hover:bg-purple-600/30 border border-purple-500/30 font-medium text-xs transition-colors"
+              className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600/15 hover:bg-purple-600/25 text-purple-300 hover:text-purple-200 border border-purple-500/30 font-bold text-xs transition-all shadow-sm"
             >
-              <PlayCircle className="w-4 h-4 text-purple-400" />
+              <Play className="w-3.5 h-3.5 fill-purple-400 text-purple-400" />
               <span>Почати тренування</span>
             </Link>
           )}
@@ -83,17 +103,21 @@ export const Navbar: React.FC = () => {
           {/* Theme Switcher */}
           <button
             onClick={() => dispatch(toggleTheme())}
-            className="p-2 rounded-xl border border-border bg-surface/60 text-slate-400 hover:text-slate-100 hover:bg-surface transition-colors"
+            className="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-slate-100 transition-colors cursor-pointer"
             aria-label="Перемкнути тему"
-            title="Перемкнути тему"
+            title={themeMode === 'dark' ? 'Увімкнути світлу тему' : 'Увімкнути темну тему'}
           >
-            {themeMode === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-purple-600" />}
+            {themeMode === 'dark' ? (
+              <Sun className="w-4 h-4 text-amber-400" />
+            ) : (
+              <Moon className="w-4 h-4 text-purple-400" />
+            )}
           </button>
 
           {/* Mobile menu hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl border border-border bg-surface text-slate-400 hover:text-slate-100"
+            className="md:hidden p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:text-white"
             aria-label="Меню"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -103,21 +127,22 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-card/95 backdrop-blur-md px-4 pt-2 pb-4 space-y-1">
+        <div className="md:hidden border-t border-slate-800/80 bg-slate-950/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-1.5 animate-fade-in">
           {navItems.map((item) => {
             const active = isActive(item.path)
+            const Icon = item.icon
             return (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
                   active
-                    ? 'bg-purple-600/20 text-purple-400 font-bold'
-                    : 'text-slate-300 hover:bg-surface'
+                    ? 'bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30'
+                    : 'text-slate-300 hover:bg-slate-900'
                 }`}
               >
-                {item.icon}
+                <Icon className="w-4 h-4" />
                 {item.label}
               </Link>
             )
@@ -125,10 +150,10 @@ export const Navbar: React.FC = () => {
           <Link
             to="/workout"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-purple-400 bg-purple-500/10 mt-2"
+            className="flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 mt-3 shadow-lg shadow-purple-600/30"
           >
-            <PlayCircle className="w-4 h-4" />
-            {session.isActive ? `В активне тренування (${formatDuration(session.elapsedSeconds)})` : 'Почати тренування'}
+            <Play className="w-4 h-4 fill-white" />
+            {session.isActive ? `Продовжити тренування (${formatDuration(session.elapsedSeconds)})` : 'Почати тренування'}
           </Link>
         </div>
       )}

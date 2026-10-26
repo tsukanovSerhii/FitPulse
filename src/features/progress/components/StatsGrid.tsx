@@ -17,59 +17,76 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
   const prCount = Object.keys(personalRecords).length
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <Card className="border-border/80 relative overflow-hidden">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-400">Тренувань</span>
-          <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
+      {/* 1. Workouts */}
+      <Card hover className="border-slate-800/80 bg-slate-900/80 p-5 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            Всього тренувань
+          </span>
+          <div className="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center">
             <Calendar className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-2xl font-black text-slate-100">{totalWorkouts}</div>
-        <span className="text-[11px] text-purple-400 font-medium mt-1 block">
+        <div className="text-3xl sm:text-4xl font-black text-white font-mono">
+          {totalWorkouts}
+        </div>
+        <span className="text-xs text-purple-400 font-semibold mt-2 block">
           Завершених сесій
         </span>
       </Card>
 
-      <Card className="border-border/80 relative overflow-hidden">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-400">Піднята вага</span>
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+      {/* 2. Total Volume */}
+      <Card hover className="border-slate-800/80 bg-slate-900/80 p-5 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            Піднята вага
+          </span>
+          <div className="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center">
             <Dumbbell className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-2xl font-black text-slate-100">
-          {(totalVolumeKg / 1000).toFixed(1)} т
+        <div className="text-3xl sm:text-4xl font-black text-white font-mono">
+          {(totalVolumeKg / 1000).toFixed(1)}{' '}
+          <span className="text-lg font-bold text-slate-400">т</span>
         </div>
-        <span className="text-[11px] text-indigo-400 font-medium mt-1 block">
+        <span className="text-xs text-indigo-400 font-semibold mt-2 block">
           {totalVolumeKg.toLocaleString()} кг сумарно
         </span>
       </Card>
 
-      <Card className="border-border/80 relative overflow-hidden">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-400">Час у залі</span>
-          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
+      {/* 3. Time trained */}
+      <Card hover className="border-slate-800/80 bg-slate-900/80 p-5 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            Час у залі
+          </span>
+          <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
             <Clock className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-2xl font-black text-slate-100">
-          {Math.round(totalSeconds / 3600)} год {Math.round((totalSeconds % 3600) / 60)} хв
+        <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+          {Math.floor(totalSeconds / 3600)}г {Math.round((totalSeconds % 3600) / 60)}хв
         </div>
-        <span className="text-[11px] text-emerald-400 font-medium mt-1 block">
+        <span className="text-xs text-emerald-400 font-semibold mt-2 block">
           {formatDuration(totalSeconds)}
         </span>
       </Card>
 
-      <Card className="border-border/80 relative overflow-hidden">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-400">Рекорди (PRs)</span>
-          <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+      {/* 4. Personal Records */}
+      <Card hover className="border-slate-800/80 bg-slate-900/80 p-5 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            Рекорди (PR)
+          </span>
+          <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center">
             <Trophy className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-2xl font-black text-slate-100">{prCount}</div>
-        <span className="text-[11px] text-amber-400 font-medium mt-1 block">
+        <div className="text-3xl sm:text-4xl font-black text-white font-mono">
+          {prCount}
+        </div>
+        <span className="text-xs text-amber-400 font-semibold mt-2 block">
           ~{totalCalories.toLocaleString()} спалених ккал
         </span>
       </Card>

@@ -18,27 +18,27 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseClasses =
-    'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-98 disabled:opacity-50 disabled:pointer-events-none cursor-pointer'
+    'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer select-none'
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-xs gap-1.5',
-    md: 'px-4 py-2 text-sm gap-2',
-    lg: 'px-6 py-3 text-base gap-2.5 font-semibold',
+    sm: 'px-3 py-1.5 text-xs gap-1.5 font-medium',
+    md: 'px-4 py-2.5 text-xs sm:text-sm gap-2 font-semibold',
+    lg: 'px-6 py-3 text-sm sm:text-base gap-2.5 font-bold shadow-lg',
   }
 
   const variantClasses = {
     primary:
-      'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-600/25 focus:ring-purple-500',
+      'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-500 hover:via-purple-500 hover:to-indigo-500 text-white shadow-md shadow-purple-600/30 border border-purple-400/20 focus:ring-purple-500',
     secondary:
-      'bg-surface hover:bg-slate-800 text-slate-200 border border-border focus:ring-slate-500',
+      'bg-slate-800/90 hover:bg-slate-700 text-slate-100 border border-slate-700/70 hover:border-slate-600 shadow-sm focus:ring-slate-400',
     outline:
-      'border border-purple-500/50 text-purple-400 hover:bg-purple-500/10 focus:ring-purple-500',
+      'border border-purple-500/40 text-purple-300 hover:bg-purple-500/15 hover:border-purple-400 focus:ring-purple-500',
     danger:
-      'bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 focus:ring-red-500',
+      'bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 focus:ring-rose-500',
     ghost:
-      'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 focus:ring-slate-500',
+      'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 focus:ring-slate-400',
     success:
-      'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 focus:ring-emerald-500',
+      'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/30 border border-emerald-400/20 focus:ring-emerald-500',
   }
 
   return (

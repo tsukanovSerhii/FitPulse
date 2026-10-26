@@ -17,12 +17,12 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <Card className="border-border/80 transition-all">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <Card className="border-slate-800/80 bg-slate-900/80 p-5 shadow-lg transition-all">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Left info */}
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h4 className="text-base font-bold text-slate-100">{log.planName}</h4>
+          <div className="flex items-center gap-2.5 mb-1.5">
+            <h4 className="text-base font-bold text-white">{log.planName}</h4>
             {log.dayLabel && (
               <Badge variant="primary" size="sm">
                 {log.dayLabel}
@@ -30,12 +30,12 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
             )}
           </div>
           <div className="flex items-center gap-3 text-xs text-slate-400">
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5 font-medium">
               <Calendar className="w-3.5 h-3.5 text-purple-400" />
               {formatDate(log.date)}
             </span>
             <span>•</span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5 font-medium">
               <Clock className="w-3.5 h-3.5 text-indigo-400" />
               {formatDuration(log.durationSeconds)}
             </span>
@@ -43,32 +43,34 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
         </div>
 
         {/* Right metrics */}
-        <div className="flex items-center gap-3 self-end sm:self-center">
-          <div className="flex items-center gap-3 text-xs">
+        <div className="flex items-center gap-4 self-end sm:self-center">
+          <div className="flex items-center gap-4 text-xs">
             <div className="text-right">
-              <span className="block font-bold text-slate-200">
+              <span className="block font-black text-slate-100 text-sm font-mono">
                 {log.totalVolumeKg.toLocaleString()} кг
               </span>
-              <span className="text-[10px] text-slate-400">{log.totalSets} підходів</span>
+              <span className="text-[11px] text-slate-400">{log.totalSets} підходів</span>
             </div>
 
             <div className="text-right hidden sm:block">
-              <span className="block font-bold text-amber-400">~{log.caloriesBurned}</span>
-              <span className="text-[10px] text-slate-400">ккал</span>
+              <span className="block font-black text-amber-400 text-sm font-mono">
+                ~{log.caloriesBurned}
+              </span>
+              <span className="text-[11px] text-slate-400">ккал</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-surface transition-colors"
+              className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors cursor-pointer"
               title="Детальніше"
             >
               {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             <button
               onClick={() => onDelete(log.id)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+              className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 border border-transparent hover:border-rose-500/30 transition-colors cursor-pointer"
               title="Видалити запис"
             >
               <Trash2 className="w-4 h-4" />
@@ -77,24 +79,26 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
         </div>
       </div>
 
-      {/* Accordion content */}
+      {/* Accordion detail list */}
       {isOpen && (
-        <div className="mt-4 pt-3 border-t border-border/60 animate-fade-in">
-          <h5 className="text-xs font-bold text-slate-300 mb-2">Виконані вправи:</h5>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+        <div className="mt-4 pt-4 border-t border-slate-800/80 animate-fade-in">
+          <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+            Виконані вправи:
+          </h5>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
             {log.exercises.map((ex, idx) => (
               <div
                 key={idx}
-                className="p-2.5 rounded-xl bg-surface/50 border border-border/40 flex items-center justify-between"
+                className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 flex items-center justify-between"
               >
                 <div>
-                  <span className="font-semibold text-slate-200 block">{ex.exerciseName}</span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="font-bold text-slate-200 block">{ex.exerciseName}</span>
+                  <span className="text-[11px] text-slate-400 mt-0.5 block">
                     {ex.setsCompleted} підходів • {ex.totalReps} повт
                   </span>
                 </div>
                 {ex.maxWeightKg ? (
-                  <span className="text-xs font-bold text-purple-400">
+                  <span className="text-xs font-black text-purple-400 font-mono bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20">
                     макс. {ex.maxWeightKg} кг
                   </span>
                 ) : null}

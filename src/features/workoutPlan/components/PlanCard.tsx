@@ -1,5 +1,5 @@
 import React from 'react'
-import { Check, Edit, Trash2, Dumbbell, PlayCircle, Plus } from 'lucide-react'
+import { Check, Edit, Trash2, Dumbbell, Play, Plus } from 'lucide-react'
 import type { WorkoutPlan, DayOfWeek } from '../model/types'
 import { ALL_DAYS, DAY_SHORT_LABELS, DAY_LABELS } from '../model/types'
 import type { Exercise } from '@/features/exercises/model/types'
@@ -44,41 +44,44 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   ).length
 
   return (
-    <Card className="flex flex-col justify-between border-border/80">
+    <Card className="flex flex-col justify-between border-slate-800/80 bg-slate-900/80 p-6 shadow-xl">
       <div>
         {/* Top Header */}
-        <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-lg font-bold text-slate-100">{plan.name}</h3>
-              {isActive && (
-                <Badge variant="success" size="sm">
+            <div className="flex items-center gap-2.5 mb-1.5">
+              <h3 className="text-xl font-black text-white">{plan.name}</h3>
+              {isActive ? (
+                <Badge variant="success" dot size="sm">
                   Активна програма
+                </Badge>
+              ) : (
+                <Badge variant="neutral" size="sm">
+                  {activeDaysCount} дні на тиждень
                 </Badge>
               )}
             </div>
             {plan.description && (
-              <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
                 {plan.description}
               </p>
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
             {!isActive && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => onSetActive(plan.id)}
                 icon={<Check className="w-3.5 h-3.5" />}
-                title="Зробити активною"
               >
-                Активувати
+                Зробити активною
               </Button>
             )}
             <button
               onClick={() => onDelete(plan.id)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+              className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 border border-transparent hover:border-rose-500/30 transition-all cursor-pointer"
               title="Видалити план"
             >
               <Trash2 className="w-4 h-4" />
@@ -86,8 +89,8 @@ export const PlanCard: React.FC<PlanCardProps> = ({
           </div>
         </div>
 
-        {/* Days of Week Schedule */}
-        <div className="mt-4 space-y-2.5">
+        {/* Days of Week Schedule Grid */}
+        <div className="mt-5 space-y-2.5">
           {ALL_DAYS.map((day) => {
             const dayExercises = plan.schedule[day] || []
             const hasExercises = dayExercises.length > 0
@@ -95,49 +98,51 @@ export const PlanCard: React.FC<PlanCardProps> = ({
             return (
               <div
                 key={day}
-                className={`p-3 rounded-xl border transition-all ${
+                className={`p-3.5 rounded-2xl border transition-all ${
                   hasExercises
-                    ? 'bg-surface/70 border-border/80'
-                    : 'bg-surface/20 border-dashed border-border/40 opacity-75'
+                    ? 'bg-slate-950/60 border-slate-800/90 hover:border-slate-700'
+                    : 'bg-slate-950/20 border-dashed border-slate-800/50 opacity-60'
                 }`}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
                     <span
-                      className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 ${
+                      className={`w-8 h-8 rounded-xl text-xs font-black flex items-center justify-center shrink-0 ${
                         hasExercises
-                          ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30'
+                          ? 'bg-gradient-to-tr from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30'
                           : 'bg-slate-800 text-slate-500'
                       }`}
                     >
                       {DAY_SHORT_LABELS[day]}
                     </span>
-                    <span className="text-xs font-semibold text-slate-200">
-                      {DAY_LABELS[day]}
-                    </span>
-                    <span className="text-[11px] text-slate-400">
-                      ({dayExercises.length} вправ)
-                    </span>
+                    <div>
+                      <span className="text-sm font-bold text-slate-100 block sm:inline">
+                        {DAY_LABELS[day]}
+                      </span>
+                      <span className="text-xs text-slate-400 sm:ml-2">
+                        {hasExercises ? `(${dayExercises.length} вправ)` : '— Відпочинок'}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     {hasExercises && (
                       <Button
                         variant="success"
                         size="sm"
                         onClick={() => onStartDayWorkout(plan.id, day)}
-                        icon={<PlayCircle className="w-3.5 h-3.5" />}
-                        className="py-1 px-2.5 text-xs"
+                        icon={<Play className="w-3.5 h-3.5 fill-white" />}
+                        className="text-xs"
                       >
                         Старт
                       </Button>
                     )}
                     <Button
-                      variant="ghost"
+                      variant="secondary"
                       size="sm"
                       onClick={() => onEditDay(plan.id, day)}
                       icon={hasExercises ? <Edit className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                      className="py-1 px-2 text-xs"
+                      className="text-xs"
                     >
                       {hasExercises ? 'Змінити' : 'Додати'}
                     </Button>
@@ -146,17 +151,20 @@ export const PlanCard: React.FC<PlanCardProps> = ({
 
                 {/* Day Exercise preview chips */}
                 {hasExercises && (
-                  <div className="mt-2.5 flex flex-wrap gap-1.5 pl-9">
+                  <div className="mt-3 flex flex-wrap gap-2 pl-11">
                     {dayExercises.map((pEx) => {
                       const ex = exerciseMap.get(pEx.exerciseId)
                       return (
                         <span
                           key={pEx.id}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-purple-500/10 text-[11px] text-slate-300 border border-purple-500/20"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 shadow-sm"
                         >
-                          <Dumbbell className="w-2.5 h-2.5 text-purple-400" />
-                          {ex ? ex.name : 'Вправа'}: {pEx.sets}x{pEx.reps}
-                          {pEx.weight ? ` (${pEx.weight} кг)` : ''}
+                          <Dumbbell className="w-3 h-3 text-purple-400" />
+                          <strong className="text-slate-200">{ex ? ex.name : 'Вправа'}:</strong>
+                          <span>
+                            {pEx.sets}×{pEx.reps}
+                            {pEx.weight ? ` (${pEx.weight} кг)` : ''}
+                          </span>
                         </span>
                       )
                     })}
@@ -169,9 +177,9 @@ export const PlanCard: React.FC<PlanCardProps> = ({
       </div>
 
       {/* Summary Footer */}
-      <div className="mt-5 pt-3 border-t border-border/60 flex items-center justify-between text-xs text-slate-400">
-        <span>Тренувальних днів на тиждень: <strong>{activeDaysCount}</strong></span>
-        <span>Всього заплановано вправ: <strong>{totalExercises}</strong></span>
+      <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 font-medium">
+        <span>Тренувальних днів на тиждень: <strong className="text-slate-200">{activeDaysCount}</strong></span>
+        <span>Всього вправ у програмі: <strong className="text-slate-200">{totalExercises}</strong></span>
       </div>
     </Card>
   )
