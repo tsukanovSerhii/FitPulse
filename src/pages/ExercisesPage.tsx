@@ -57,16 +57,16 @@ export const ExercisesPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-12">
       {/* Page Title & Add Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center shrink-0">
-              <Dumbbell className="w-5 h-5" />
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-white flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] flex items-center justify-center shrink-0">
+              <Dumbbell className="w-5 h-5 -rotate-45" />
             </div>
             Каталог вправ
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Велика база силових та функціональних вправ з технікою виконання та порадами
+          <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
+            База силових та функціональних вправ з анатомією м'язів, фазами руху та порадами
           </p>
         </div>
 
@@ -83,10 +83,10 @@ export const ExercisesPage: React.FC = () => {
       <div className="flex items-center gap-2">
         <button
           onClick={() => setActiveTab('all')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'all'
-              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30 border border-purple-400/20'
-              : 'bg-slate-900/80 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
+              ? 'bg-[#d4ff00] text-black shadow-md shadow-[#d4ff00]/20'
+              : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/10'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
@@ -95,10 +95,10 @@ export const ExercisesPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('favorites')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'favorites'
-              ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md shadow-rose-600/30 border border-rose-400/20'
-              : 'bg-slate-900/80 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
+              ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
+              : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/10'
           }`}
         >
           <Heart className={`w-3.5 h-3.5 ${activeTab === 'favorites' ? 'fill-white' : ''}`} />
@@ -118,12 +118,12 @@ export const ExercisesPage: React.FC = () => {
       {/* Loading state */}
       {status === 'loading' && items.length === 0 ? (
         <div className="text-center py-16 text-slate-400 text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full mx-auto mb-3" />
+          <div className="animate-spin w-8 h-8 border-2 border-[#d4ff00] border-t-transparent rounded-full mx-auto mb-3" />
           Завантаження каталогу вправ...
         </div>
       ) : displayItems.length === 0 ? (
         <EmptyState
-          icon={<Dumbbell className="w-8 h-8" />}
+          icon={<Dumbbell className="w-8 h-8 text-[#d4ff00]" />}
           title={activeTab === 'favorites' ? 'У вас ще немає обраних вправ' : 'Вправ не знайдено'}
           description={
             activeTab === 'favorites'

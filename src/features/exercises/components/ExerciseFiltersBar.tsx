@@ -54,30 +54,30 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
     filters.equipment !== 'all'
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 mb-6 space-y-4 shadow-xl backdrop-blur-md">
+    <div className="bg-[#131720] border border-white/[0.08] rounded-3xl p-5 sm:p-6 mb-6 space-y-5 shadow-xl">
       {/* Search Input Row */}
       <div className="relative">
-        <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+        <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
         <input
           type="text"
           value={filters.searchQuery}
           onChange={(e) => onChange({ searchQuery: e.target.value })}
           placeholder="Пошук вправи за назвою або описом..."
-          className="w-full pl-10 pr-10 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
+          className="w-full pl-11 pr-11 py-3.5 bg-[#0b0e14] border border-white/10 rounded-2xl text-sm font-semibold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#d4ff00]/50 focus:border-[#d4ff00] transition-all"
         />
         {filters.searchQuery && (
           <button
             onClick={() => onChange({ searchQuery: '' })}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      {/* Quick Muscle Group Filter Pills */}
+      {/* Quick Muscle Group Filter Pills - Apollo Next Style */}
       <div>
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+        <span className="text-xs font-black uppercase tracking-wider text-slate-400 block mb-2.5">
           Група м'язів:
         </span>
         <div className="flex flex-wrap gap-2">
@@ -89,10 +89,10 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
                 key={m}
                 type="button"
                 onClick={() => onChange({ muscleGroup: m })}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
                   isSelected
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30 border border-purple-400/20'
-                    : 'bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/60'
+                    ? 'bg-[#d4ff00] text-black shadow-md shadow-[#d4ff00]/20'
+                    : 'bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10'
                 }`}
               >
                 {label}
@@ -105,16 +105,16 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
       {/* Select Filters Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
         <div>
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+          <label className="text-xs font-black uppercase tracking-wider text-slate-400 block mb-1.5">
             Рівень складності:
           </label>
           <select
             value={filters.difficulty}
             onChange={(e) => onChange({ difficulty: e.target.value as Difficulty | 'all' })}
-            className="w-full px-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+            className="w-full px-4 py-3 bg-[#0b0e14] border border-white/10 rounded-2xl text-xs font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#d4ff00]/50"
           >
             {difficulties.map((d) => (
-              <option key={d.value} value={d.value} className="bg-slate-900 text-slate-100">
+              <option key={d.value} value={d.value} className="bg-[#131720] text-white">
                 {d.label}
               </option>
             ))}
@@ -122,16 +122,16 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
         </div>
 
         <div>
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+          <label className="text-xs font-black uppercase tracking-wider text-slate-400 block mb-1.5">
             Тип обладнання:
           </label>
           <select
             value={filters.equipment}
             onChange={(e) => onChange({ equipment: e.target.value as Equipment | 'all' })}
-            className="w-full px-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+            className="w-full px-4 py-3 bg-[#0b0e14] border border-white/10 rounded-2xl text-xs font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#d4ff00]/50"
           >
             {equipments.map((eq) => (
-              <option key={eq.value} value={eq.value} className="bg-slate-900 text-slate-100">
+              <option key={eq.value} value={eq.value} className="bg-[#131720] text-white">
                 {eq.label}
               </option>
             ))}
@@ -140,9 +140,9 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
       </div>
 
       {/* Summary and Reset Button */}
-      <div className="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs text-slate-400">
-        <span className="flex items-center gap-1.5 font-medium">
-          <Filter className="w-3.5 h-3.5 text-purple-400" />
+      <div className="flex items-center justify-between pt-3 border-t border-white/5 text-xs text-slate-400">
+        <span className="flex items-center gap-1.5 font-bold">
+          <Filter className="w-3.5 h-3.5 text-[#d4ff00]" />
           Знайдено <strong className="text-white">{filteredCount}</strong> із {totalCount} вправ
         </span>
 
@@ -153,7 +153,7 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
             onClick={onReset}
             icon={<RotateCcw className="w-3.5 h-3.5" />}
           >
-            Скинути всі фільтри
+            Скинути фільтри
           </Button>
         )}
       </div>

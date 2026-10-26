@@ -15,6 +15,7 @@ import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { formatDate } from '@/utils/formatters'
 import { STORAGE_KEYS, removeFromStorage } from '@/services/storage/localStorage'
+import { updatePageSEO } from '@/utils/seo'
 
 export const ProfilePage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -22,6 +23,11 @@ export const ProfilePage: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   useEffect(() => {
+    updatePageSEO({
+      title: 'Особистий профіль: антропометрія, калькулятор ІМТ (BMI) та цілі | FitPulse',
+      description: 'Керування параметрами атлета: вага, зріст, фітнес-цілі, калькулятор індексу маси тіла та розрахунок добової норми калорій.',
+      keywords: ['калькулятор і володіння імт', 'норма калорій', 'профіль тренувань'],
+    })
     dispatch(fetchProfile())
   }, [dispatch])
 
@@ -44,16 +50,16 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-12">
       {/* Page Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center shrink-0">
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-white flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] flex items-center justify-center shrink-0">
               <User className="w-5 h-5" />
             </div>
             Особистий профіль
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Керування антропометричними даними, фітнес-цілями та розрахунком норм
+          <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
+            Антропометрія, цільова вага, рівень навантажень та норми калоражу
           </p>
         </div>
 
@@ -69,11 +75,11 @@ export const ProfilePage: React.FC = () => {
       </div>
 
       {/* Main Profile Info Card */}
-      <Card className="border-slate-800/80 bg-slate-900/80 p-6 sm:p-8 shadow-xl">
+      <Card className="p-6 sm:p-8">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           {/* Avatar */}
           <div className="relative">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-2 border-purple-500/40 shadow-2xl shadow-purple-600/30 bg-slate-950">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-2 border-[#d4ff00]/40 shadow-2xl shadow-[#d4ff00]/20 bg-[#0b0e14]">
               {profile.avatarUrl ? (
                 <img
                   src={profile.avatarUrl}
@@ -86,7 +92,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
               )}
             </div>
-            <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-emerald-500 border-2 border-slate-900 flex items-center justify-center text-xs text-white font-bold shadow-md">
+            <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#d4ff00] border-2 border-[#131720] flex items-center justify-center text-xs text-black font-black shadow-md">
               ✓
             </span>
           </div>
@@ -100,16 +106,16 @@ export const ProfilePage: React.FC = () => {
               </Badge>
             </div>
 
-            <p className="text-xs font-medium text-slate-400">{profile.email}</p>
+            <p className="text-xs font-semibold text-slate-400">{profile.email}</p>
 
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2 text-xs text-slate-300">
-              <span className="flex items-center gap-1.5 font-medium">
-                <Calendar className="w-3.5 h-3.5 text-purple-400" />
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2 text-xs text-slate-300 font-medium">
+              <span className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-[#d4ff00]" />
                 У додатку з: {formatDate(profile.joinedDate)}
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1.5 font-medium">
-                <Activity className="w-3.5 h-3.5 text-indigo-400" />
+              <span className="flex items-center gap-1.5">
+                <Activity className="w-3.5 h-3.5 text-sky-400" />
                 {ACTIVITY_LEVEL_LABELS[profile.activityLevel]}
               </span>
             </div>
@@ -117,30 +123,30 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         {/* Parameters Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-8 pt-6 border-t border-slate-800/80">
-          <div className="p-4 bg-slate-950/70 rounded-2xl border border-slate-800 text-center">
-            <span className="text-slate-400 text-xs font-semibold block mb-1">Вік</span>
-            <span className="text-xl font-black text-white font-mono">{profile.age} р.</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-8 pt-6 border-t border-white/[0.06]">
+          <div className="p-4 bg-[#0b0e14] rounded-2xl border border-white/5 text-center">
+            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Вік</span>
+            <span className="text-xl font-heading font-black text-white">{profile.age} р.</span>
           </div>
 
-          <div className="p-4 bg-slate-950/70 rounded-2xl border border-slate-800 text-center">
-            <span className="text-slate-400 text-xs font-semibold block mb-1">Зріст</span>
-            <span className="text-xl font-black text-white font-mono">{profile.heightCm} см</span>
+          <div className="p-4 bg-[#0b0e14] rounded-2xl border border-white/5 text-center">
+            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Зріст</span>
+            <span className="text-xl font-heading font-black text-white">{profile.heightCm} см</span>
           </div>
 
-          <div className="p-4 bg-slate-950/70 rounded-2xl border border-slate-800 text-center">
-            <span className="text-slate-400 text-xs font-semibold block mb-1">Поточна вага</span>
-            <span className="text-xl font-black text-purple-400 font-mono">
+          <div className="p-4 bg-[#0b0e14] rounded-2xl border border-white/5 text-center">
+            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Поточна вага</span>
+            <span className="text-xl font-heading font-black text-[#d4ff00]">
               {profile.weightKg} кг
             </span>
           </div>
 
-          <div className="p-4 bg-slate-950/70 rounded-2xl border border-slate-800 text-center">
-            <span className="text-slate-400 text-xs font-semibold block mb-1 flex items-center justify-center gap-1">
-              <Target className="w-3.5 h-3.5 text-indigo-400" />
-              Цільова вага
+          <div className="p-4 bg-[#0b0e14] rounded-2xl border border-white/5 text-center">
+            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1 flex items-center justify-center gap-1">
+              <Target className="w-3.5 h-3.5 text-sky-400" />
+              Цільова
             </span>
-            <span className="text-xl font-black text-indigo-300 font-mono">
+            <span className="text-xl font-heading font-black text-sky-300">
               {profile.targetWeightKg} кг
             </span>
           </div>
@@ -150,12 +156,12 @@ export const ProfilePage: React.FC = () => {
       {/* BMI and Nutrition Calculator */}
       <BMISummary profile={profile} />
 
-      {/* Dangerous / Reset zone */}
+      {/* Reset zone */}
       <Card className="border-rose-500/30 bg-rose-500/5 p-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h4 className="text-sm font-bold text-rose-300">Скинути всі дані трекера</h4>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 mt-1 font-medium">
               Повертає початкові вправи, стандартні плани тренувань та очищає історію занять.
             </p>
           </div>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Play, Pause, RotateCcw, Wind, Sparkles, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { Play, Pause, RotateCcw, Wind, Sparkles } from 'lucide-react'
 import type { Exercise, MovementPhase } from '@/features/exercises/model/types'
 import { Button } from './Button'
-import { Badge } from './Badge'
 
 export interface ExerciseMotionPlayerProps {
   exercise: Exercise
@@ -43,7 +42,6 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({ exer
 
   const [activePhaseIndex, setActivePhaseIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [tempoSeconds, setTempoSeconds] = useState(1)
 
   // Auto-play animation cycle
   useEffect(() => {
@@ -51,7 +49,6 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({ exer
     if (isPlaying) {
       timer = window.setInterval(() => {
         setActivePhaseIndex((prev) => (prev + 1) % phases.length)
-        setTempoSeconds((prev) => (prev % 3) + 1)
       }, 2000)
     }
     return () => {

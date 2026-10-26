@@ -20,6 +20,7 @@ import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorMod
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
 import { Button } from '@/components/common/Button'
 import { EmptyState } from '@/components/common/EmptyState'
+import { updatePageSEO } from '@/utils/seo'
 
 export const WorkoutPlansPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -43,6 +44,11 @@ export const WorkoutPlansPage: React.FC = () => {
   })
 
   useEffect(() => {
+    updatePageSEO({
+      title: 'Програми тренувань: тижневі плани та графік занять | FitPulse',
+      description: 'Створюйте та налаштовуйте тижневі спліти: Push/Pull/Legs, Full Body. Керування підходами, повтореннями, вагою та днями відпочинку.',
+      keywords: ['програма тренувань на тиждень', 'спліт тренувань', 'push pull legs розклад'],
+    })
     if (plans.length === 0) {
       dispatch(fetchPlans())
     }
@@ -106,7 +112,6 @@ export const WorkoutPlansPage: React.FC = () => {
     exercise: Omit<PlanExercise, 'id' | 'order'>,
   ) => {
     dispatch(addExerciseToDay({ planId, day, exercise }))
-    // Keep modal state updated with the refreshed plan
     setTimeout(() => {
       const updatedPlan = plans.find((p) => p.id === planId)
       if (updatedPlan) {
@@ -140,16 +145,18 @@ export const WorkoutPlansPage: React.FC = () => {
     : null
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 flex items-center gap-2.5">
-            <Calendar className="w-7 h-7 text-purple-400" />
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-white flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] flex items-center justify-center shrink-0">
+              <Calendar className="w-5 h-5" />
+            </div>
             Програми тренувань
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Плануйте тижневий графік, налаштовуйте підходи, повторення та цільову вагу
+          <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
+            Спліти та графіки: налаштовуйте підходи, повторення, цільову вагу та час відпочинку
           </p>
         </div>
 
@@ -165,12 +172,12 @@ export const WorkoutPlansPage: React.FC = () => {
       {/* Plans List */}
       {status === 'loading' && plans.length === 0 ? (
         <div className="text-center py-16 text-slate-400 text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full mx-auto mb-3" />
+          <div className="animate-spin w-8 h-8 border-2 border-[#d4ff00] border-t-transparent rounded-full mx-auto mb-3" />
           Завантаження програм тренувань...
         </div>
       ) : plans.length === 0 ? (
         <EmptyState
-          icon={<Calendar className="w-8 h-8" />}
+          icon={<Calendar className="w-8 h-8 text-[#d4ff00]" />}
           title="Немає створених програм"
           description="Створіть свій перший тижневий план тренувань, щоб систематизувати свої заняття."
           action={

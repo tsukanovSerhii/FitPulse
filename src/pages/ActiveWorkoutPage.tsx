@@ -35,6 +35,7 @@ import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { formatDuration } from '@/utils/formatters'
+import { updatePageSEO } from '@/utils/seo'
 
 export const ActiveWorkoutPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -50,6 +51,18 @@ export const ActiveWorkoutPage: React.FC = () => {
   // Quick start picker state (when no active workout)
   const [selectedPlanId, setSelectedPlanId] = useState<string>(plans[0]?.id || '')
   const [selectedDay, setSelectedDay] = useState<DayOfWeek>('monday')
+
+  // SEO setup
+  useEffect(() => {
+    updatePageSEO({
+      title: session.isActive
+        ? `Тренування: ${session.dayLabel || 'Активна сесія'} | FitPulse`
+        : 'Почати тренування: секундомір, підходи, вага та таймер | FitPulse',
+      description:
+        'Інтерактивний трекер тренування: фіксація ваги та повторень, таймер відпочинку, анатомія та фази виконання вправ.',
+      keywords: ['тренування онлайн', 'секундомір відпочинку', 'фіксація підходів у залі'],
+    })
+  }, [session.isActive, session.dayLabel])
 
   // Workout stopwatch timer effect
   useEffect(() => {
