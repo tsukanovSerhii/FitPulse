@@ -1,5 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { toggleTheme } from '@/features/theme/model/themeSlice'
+import { useAppSelector } from '@/app/hooks'
 import { formatDuration } from '@/utils/formatters'
 import {
 	Calendar,
@@ -17,7 +16,6 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 export const Navbar: React.FC = () => {
-	const dispatch = useAppDispatch()
 	const location = useLocation()
 	const themeMode = useAppSelector(state => state.theme.mode)
 	const session = useAppSelector(state => state.workoutSession)
@@ -122,11 +120,10 @@ export const Navbar: React.FC = () => {
 
 					{/* Theme Switcher */}
 					<button
-						onClick={() => dispatch(toggleTheme())}
-						className={`p-2.5 rounded-2xl border transition-colors cursor-pointer ${
+						className={`p-2.5 rounded-2xl border transition-colors cursor-not-allowed opacity-60 ${
 							themeMode === 'light'
-								? 'border-slate-300 bg-slate-200 hover:bg-slate-300 text-slate-600 hover:text-slate-900'
-								: 'border-white/10 bg-[#121622] hover:bg-white/10 text-slate-400 hover:text-white'
+								? 'border-slate-300 bg-slate-200 text-slate-600'
+								: 'border-white/10 bg-[#121622] text-slate-400'
 						}`}
 						aria-label="Перемкнути тему"
 						title="Перемкнути тему"
