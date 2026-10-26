@@ -29,6 +29,8 @@ import { ALL_DAYS, DAY_LABELS, type DayOfWeek, type PlanExercise } from '@/featu
 import { RestTimerWidget } from '@/features/workoutSession/components/RestTimerWidget'
 import { SetLoggerRow } from '@/features/workoutSession/components/SetLoggerRow'
 import { SessionSummaryModal } from '@/features/workoutSession/components/SessionSummaryModal'
+import { MuscleMap } from '@/components/common/MuscleMap'
+import { ExerciseMotionPlayer } from '@/components/common/ExerciseMotionPlayer'
 import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
@@ -426,13 +428,15 @@ export const ActiveWorkoutPage: React.FC = () => {
                 </div>
               </div>
 
-              <button
+              <Button
+                variant={showInstructions ? 'primary' : 'outline'}
+                size="sm"
                 onClick={() => setShowInstructions(!showInstructions)}
-                className="p-2 rounded-xl text-slate-400 hover:text-purple-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors shrink-0 cursor-pointer"
-                title="Показати техніку"
+                icon={<HelpCircle className="w-4 h-4" />}
+                className="text-xs shrink-0"
               >
-                <HelpCircle className="w-5 h-5" />
-              </button>
+                {showInstructions ? 'Сховати інструкцію' : 'Анатомія та техніка'}
+              </Button>
             </div>
 
             {currentPlanExercise.notes && (
@@ -441,15 +445,14 @@ export const ActiveWorkoutPage: React.FC = () => {
               </div>
             )}
 
-            {/* Collapsible technique */}
-            {showInstructions && currentExerciseData.instructions && (
-              <div className="mt-4 p-4 bg-slate-950/80 rounded-2xl border border-slate-800 text-xs text-slate-300 space-y-2 animate-fade-in">
-                <span className="font-bold text-white block text-sm">Техніка виконання:</span>
-                {currentExerciseData.instructions.map((step) => (
-                  <p key={step.step} className="leading-relaxed">
-                    <strong>{step.step}.</strong> {step.description}
-                  </p>
-                ))}
+            {/* Collapsible technique & anatomy */}
+            {showInstructions && currentExerciseData && (
+              <div className="mt-5 space-y-4 animate-fade-in">
+                <ExerciseMotionPlayer exercise={currentExerciseData} />
+                <MuscleMap
+                  primaryMuscle={currentExerciseData.primaryMuscle}
+                  muscleGroups={currentExerciseData.muscleGroups}
+                />
               </div>
             )}
           </div>

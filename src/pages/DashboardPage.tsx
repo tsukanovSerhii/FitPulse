@@ -26,6 +26,7 @@ import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { FITNESS_GOAL_LABELS } from '@/features/profile/model/types'
 import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
+import { updatePageSEO } from '@/utils/seo'
 
 function getCurrentDayOfWeek(): DayOfWeek {
   const dayIndex = new Date().getDay()
@@ -43,6 +44,11 @@ export const DashboardPage: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    updatePageSEO({
+      title: 'FitPulse — Трекер та планувальник тренувань у залі',
+      description: 'Головна панель тренувань FitPulse: щоденний розклад вправ, тоннаж, силові рекорди та персональні програми.',
+      keywords: ['тренування сьогодні', 'план на тиждень', 'фітнес трекер'],
+    })
     dispatch(fetchExercises())
     dispatch(fetchPlans())
     dispatch(fetchProgress())

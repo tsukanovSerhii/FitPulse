@@ -59,6 +59,24 @@ export interface InstructionStep {
   description: string
 }
 
+// Фази руху вправи
+export interface MovementPhase {
+  name: string
+  instruction: string
+  cue: string
+  breathing: 'inhale' | 'exhale' | 'hold'
+}
+
+// Детальний навчальний гайд
+export interface ExerciseGuide {
+  tempo?: string
+  breathingAdvice?: string
+  phases?: MovementPhase[]
+  commonMistakes?: string[]
+  beginnerTips?: string[]
+  proTips?: string[]
+}
+
 // Основна модель вправи
 export interface Exercise {
   id: string
@@ -76,6 +94,7 @@ export interface Exercise {
   imageUrl?: string
   videoUrl?: string
   calories?: number                  // ккал/хв
+  guide?: ExerciseGuide              // розширене керівництво з техніки
 }
 
 // Фільтри

@@ -17,6 +17,7 @@ import { ExerciseDetailModal } from '@/features/exercises/components/ExerciseDet
 import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
 import { Button } from '@/components/common/Button'
 import { EmptyState } from '@/components/common/EmptyState'
+import { updatePageSEO, injectExerciseSchema } from '@/utils/seo'
 
 export const ExercisesPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -28,6 +29,11 @@ export const ExercisesPage: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
   useEffect(() => {
+    updatePageSEO({
+      title: 'Каталог вправ з правильною технікою та анатомією м\'язів | FitPulse',
+      description: 'Повний довідник вправ для тренажерного залу та дому. Анатомічна карта м\'язів, фази руху, поради для новачків та тонкощі для профі.',
+      keywords: ['вправи в залі', 'техніка вправ', 'анатомія м\'язів', 'як правильно робити жим', 'присідання техніка'],
+    })
     if (items.length === 0) {
       dispatch(fetchExercises())
     }
@@ -145,7 +151,10 @@ export const ExercisesPage: React.FC = () => {
               exercise={exercise}
               isFavorite={favorites.includes(exercise.id)}
               onToggleFavorite={handleToggleFavorite}
-              onSelect={(ex) => dispatch(setSelectedExercise(ex))}
+              onSelect={(ex) => {
+                dispatch(setSelectedExercise(ex))
+                injectExerciseSchema(ex.name, ex.description, ex.muscleGroups)
+              }}
             />
           ))}
         </div>
