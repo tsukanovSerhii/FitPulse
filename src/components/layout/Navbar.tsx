@@ -41,7 +41,7 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Brand Logo - Minimalist clean typography */}
         <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-          <div className="w-10 h-10 rounded-2xl bg-white text-slate-950 flex items-center justify-center font-black shadow-lg shadow-white/10 group-hover:scale-105 transition-transform duration-300">
+          <div className="w-10 h-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center font-black shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-transform duration-300">
             <Dumbbell className="w-5 h-5 -rotate-45" />
           </div>
           <div className="flex flex-col">
@@ -68,11 +68,11 @@ export const Navbar: React.FC = () => {
                 to={item.path}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 ${
                   active
-                    ? 'bg-white text-slate-950 shadow-sm'
+                    ? 'bg-sky-600 text-white shadow-sm'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${active ? 'text-slate-950' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${active ? 'text-white' : 'text-slate-400'}`} />
                 {item.label}
               </Link>
             )
@@ -84,17 +84,17 @@ export const Navbar: React.FC = () => {
           {session.isActive ? (
             <Link
               to="/workout"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-sky-500 text-slate-950 font-extrabold text-xs shadow-lg shadow-sky-500/25 hover:bg-sky-400 transition-all animate-pulse"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-sky-500 text-white font-extrabold text-xs shadow-lg shadow-sky-500/25 hover:bg-sky-400 transition-all animate-pulse"
             >
-              <span className="w-2 h-2 rounded-full bg-slate-950 animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-white animate-ping" />
               <span>Тренування: {formatDuration(session.elapsedSeconds)}</span>
             </Link>
           ) : (
             <Link
               to="/workout"
-              className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-slate-200 text-slate-950 font-extrabold text-xs transition-all shadow-md shadow-white/10 active:scale-95"
+              className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-xs transition-all shadow-md shadow-sky-950/40 border border-sky-400/20 active:scale-95"
             >
-              <Play className="w-3.5 h-3.5 fill-slate-950 text-slate-950" />
+              <Play className="w-3.5 h-3.5 fill-white text-white" />
               <span>Почати тренування</span>
             </Link>
           )}
@@ -137,7 +137,7 @@ export const Navbar: React.FC = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-colors ${
                   active
-                    ? 'bg-white text-slate-950'
+                    ? 'bg-sky-600 text-white'
                     : 'text-slate-300 hover:bg-white/5'
                 }`}
               >
@@ -149,9 +149,9 @@ export const Navbar: React.FC = () => {
           <Link
             to="/workout"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-2xl text-sm font-black text-slate-950 bg-white mt-3 shadow-lg shadow-white/10"
+            className="flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-2xl text-sm font-black text-white bg-sky-600 hover:bg-sky-500 mt-3 shadow-lg shadow-sky-950/40 border border-sky-400/20"
           >
-            <Play className="w-4 h-4 fill-slate-950" />
+            <Play className="w-4 h-4 fill-white" />
             {session.isActive ? `Продовжити тренування (${formatDuration(session.elapsedSeconds)})` : 'Почати тренування'}
           </Link>
         </div>

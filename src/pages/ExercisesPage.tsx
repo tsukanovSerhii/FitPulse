@@ -85,7 +85,7 @@ export const ExercisesPage: React.FC = () => {
           onClick={() => setActiveTab('all')}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'all'
-              ? 'bg-white text-slate-950 shadow-md font-bold'
+              ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20 font-bold'
               : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/10'
           }`}
         >

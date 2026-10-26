@@ -93,6 +93,7 @@ export interface Exercise {
   defaultRestSeconds: number
   imageUrl?: string
   videoUrl?: string
+  animationFrames?: string[]         // реальні кадри руху атлета
   calories?: number                  // ккал/хв
   guide?: ExerciseGuide              // розширене керівництво з техніки
 }

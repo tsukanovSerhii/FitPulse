@@ -3,6 +3,10 @@ import type { Exercise } from '@/features/exercises/model/types'
 export const INITIAL_EXERCISES: Exercise[] = [
   {
     id: 'ex-bench-press',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press_-_Medium_Grip/1.jpg',
+    ],
     name: 'Жим штанги лежачи',
     muscleGroups: ['chest', 'triceps', 'shoulders'],
     primaryMuscle: 'chest',
@@ -68,6 +72,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-barbell-squat',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/1.jpg',
+    ],
     name: 'Присідання зі штангою на плечах',
     muscleGroups: ['legs', 'glutes', 'calves', 'abs'],
     primaryMuscle: 'legs',
@@ -133,6 +141,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-deadlift',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Deadlift/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Deadlift/1.jpg',
+    ],
     name: 'Станова тяга',
     muscleGroups: ['back', 'legs', 'glutes'],
     primaryMuscle: 'back',
@@ -198,6 +210,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-pull-ups',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullups/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullups/1.jpg',
+    ],
     name: 'Підтягування широким хватом',
     muscleGroups: ['back', 'biceps', 'shoulders'],
     primaryMuscle: 'back',
@@ -259,6 +275,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-incline-dumbbell-press',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Press/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Press/1.jpg',
+    ],
     name: 'Жим гантелей на похилій лаві',
     muscleGroups: ['chest', 'shoulders', 'triceps'],
     primaryMuscle: 'chest',
@@ -295,6 +315,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-overhead-press',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Military_Press/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Military_Press/1.jpg',
+    ],
     name: 'Армійський жим стоячи',
     muscleGroups: ['shoulders', 'triceps', 'abs'],
     primaryMuscle: 'shoulders',
@@ -330,6 +354,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-barbell-row',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Barbell_Row/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Barbell_Row/1.jpg',
+    ],
     name: 'Тяга штанги в нахилі',
     muscleGroups: ['back', 'biceps'],
     primaryMuscle: 'back',
@@ -350,6 +378,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-push-ups',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pushups/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pushups/1.jpg',
+    ],
     name: 'Відтискання від підлоги',
     muscleGroups: ['chest', 'triceps', 'abs'],
     primaryMuscle: 'chest',
@@ -369,6 +401,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-dumbbell-lunges',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Lunges/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Lunges/1.jpg',
+    ],
     name: 'Випади з гантелями',
     muscleGroups: ['legs', 'glutes', 'calves'],
     primaryMuscle: 'legs',
@@ -388,6 +424,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-lateral-raises',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/1.jpg',
+    ],
     name: 'Махи гантелями в сторони',
     muscleGroups: ['shoulders'],
     primaryMuscle: 'shoulders',
@@ -407,6 +447,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-dumbbell-curl',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg',
+    ],
     name: 'Підйом гантелей на біцепс стоячи',
     muscleGroups: ['biceps'],
     primaryMuscle: 'biceps',
@@ -426,6 +470,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-dips',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dips_-_Chest_Version/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dips_-_Chest_Version/1.jpg',
+    ],
     name: 'Відтискання на брусах',
     muscleGroups: ['triceps', 'chest', 'shoulders'],
     primaryMuscle: 'triceps',
@@ -445,6 +493,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-cable-pushdown',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/1.jpg',
+    ],
     name: 'Розгинання рук на блоці (трицепс)',
     muscleGroups: ['triceps'],
     primaryMuscle: 'triceps',
@@ -464,6 +516,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-plank',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg',
+    ],
     name: 'Класична планка',
     muscleGroups: ['abs'],
     primaryMuscle: 'abs',
@@ -483,6 +539,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-hanging-leg-raise',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/1.jpg',
+    ],
     name: 'Підйом ніг у висі на турніку',
     muscleGroups: ['abs'],
     primaryMuscle: 'abs',
@@ -502,6 +562,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-calf-raises',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/1.jpg',
+    ],
     name: 'Підйом на носки стоячи',
     muscleGroups: ['calves'],
     primaryMuscle: 'calves',
@@ -521,6 +585,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-hiit-treadmill',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Jogging_Treadmill/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Jogging_Treadmill/1.jpg',
+    ],
     name: 'Інтервальне кардіо / Біг',
     muscleGroups: ['cardio', 'legs'],
     primaryMuscle: 'cardio',
@@ -540,6 +608,10 @@ export const INITIAL_EXERCISES: Exercise[] = [
   },
   {
     id: 'ex-kettlebell-swing',
+    animationFrames: [
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Kettlebell_Swings/0.jpg',
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Kettlebell_Swings/1.jpg',
+    ],
     name: 'Махи гирею (Kettlebell Swing)',
     muscleGroups: ['glutes', 'back', 'legs', 'cardio'],
     primaryMuscle: 'glutes',

@@ -91,7 +91,7 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
                 onClick={() => onChange({ muscleGroup: m })}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
                   isSelected
-                    ? 'bg-white text-slate-950 shadow-md'
+                    ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
                     : 'bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]'
                 }`}
               >

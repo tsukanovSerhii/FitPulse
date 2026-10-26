@@ -43,27 +43,27 @@ export const RestTimerWidget: React.FC = () => {
       : 0
 
   return (
-    <div className="bg-gradient-to-r from-purple-950/70 via-slate-900/90 to-indigo-950/70 border border-purple-500/40 rounded-3xl p-5 shadow-2xl backdrop-blur-xl animate-fade-in mb-6">
+    <div className="bg-[#101522] border border-sky-500/30 rounded-3xl p-5 shadow-2xl backdrop-blur-xl animate-fade-in mb-6">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Timer icon + info */}
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-purple-600/40 animate-pulse">
-            <Timer className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center shadow-md shadow-sky-950/40">
+            <Timer className="w-6 h-6 animate-pulse" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h4 className="text-sm font-bold text-white">Відпочинок між підходами</h4>
-              <span className="flex items-center gap-1 text-[11px] font-semibold text-purple-300 bg-purple-500/15 px-2 py-0.5 rounded-full border border-purple-500/30">
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-sky-300 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-500/30">
                 <Volume2 className="w-3 h-3" /> Звуковий сигнал
               </span>
             </div>
-            <p className="text-xs text-slate-300 mt-0.5">Відновіть дихання перед наступним сетом</p>
+            <p className="text-xs text-slate-400 mt-0.5">Відновіть дихання та пульс перед наступним сетом</p>
           </div>
         </div>
 
-        {/* Countdown display */}
+        {/* Countdown display + actions */}
         <div className="flex items-center gap-4">
-          <div className="text-3xl sm:text-4xl font-black font-mono text-purple-300 tracking-wider">
+          <div className="text-3xl sm:text-4xl font-black font-mono text-sky-400 tracking-wider tabular-nums">
             {formatDuration(restTimer.remainingSeconds)}
           </div>
 
@@ -73,16 +73,16 @@ export const RestTimerWidget: React.FC = () => {
               size="sm"
               onClick={() => dispatch(addRestSeconds(30))}
               icon={<Plus className="w-3.5 h-3.5" />}
-              className="text-xs border-purple-400/40 text-purple-200"
+              className="text-xs border-sky-500/30 text-sky-200 hover:bg-sky-500/10"
             >
-              +30с
+              30с
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => dispatch(skipRestTimer())}
               icon={<SkipForward className="w-3.5 h-3.5" />}
-              className="text-xs text-slate-300"
+              className="text-xs text-slate-300 hover:text-white"
             >
               Пропустити
             </Button>
@@ -91,9 +91,9 @@ export const RestTimerWidget: React.FC = () => {
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-slate-950/80 h-2 rounded-full mt-4 overflow-hidden border border-slate-800">
+      <div className="w-full bg-slate-950/90 h-2 rounded-full mt-4 overflow-hidden border border-slate-800">
         <div
-          className="bg-gradient-to-r from-purple-500 via-indigo-500 to-teal-400 h-full transition-all duration-1000 ease-linear rounded-full shadow-md"
+          className="bg-gradient-to-r from-sky-500 to-cyan-400 h-full transition-all duration-1000 ease-linear rounded-full shadow-md"
           style={{ width: `${percent}%` }}
         />
       </div>

@@ -92,7 +92,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
               )}
             </div>
-            <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white border-2 border-[#121622] flex items-center justify-center text-xs text-slate-950 font-black shadow-md">
+            <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-sky-500 border-2 border-[#121622] flex items-center justify-center text-xs text-white font-black shadow-md shadow-sky-950/40">
               ✓
             </span>
           </div>

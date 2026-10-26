@@ -28,17 +28,17 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantClasses = {
     primary:
-      'bg-white text-slate-950 hover:bg-slate-200 active:bg-slate-300 font-extrabold shadow-md shadow-white/5 active:shadow-none',
+      'bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold shadow-md shadow-sky-950/40 border border-sky-400/20 active:shadow-none',
     secondary:
-      'bg-white/[0.06] hover:bg-white/[0.12] text-white border border-white/[0.1] hover:border-white/20 shadow-sm',
+      'bg-slate-800/90 hover:bg-slate-700 active:bg-slate-800 text-slate-100 border border-slate-700 shadow-sm',
     outline:
-      'border border-white/20 text-white hover:bg-white/10 hover:border-white/40',
+      'border border-slate-700 text-slate-200 hover:bg-slate-800/60 hover:border-slate-600',
     danger:
-      'bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25',
+      'bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 active:bg-rose-500/30',
     ghost:
       'text-slate-400 hover:text-white hover:bg-white/5',
     success:
-      'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-md shadow-emerald-500/20 font-black',
+      'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white border border-emerald-400/20 shadow-md shadow-emerald-950/30 font-bold',
   }
 
   return (
