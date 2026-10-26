@@ -14,7 +14,7 @@ const initialState: WorkoutSessionState = {
   restTimer: {
     isRunning: false,
     totalSeconds: 60,
-    remainingSeconds: 60,
+    remainingSeconds: 0,
   },
 }
 
@@ -41,7 +41,7 @@ export const workoutSessionSlice = createSlice({
       state.restTimer = {
         isRunning: false,
         totalSeconds: 60,
-        remainingSeconds: 60,
+        remainingSeconds: 0,
       }
     },
 
@@ -148,42 +148,61 @@ export const workoutSessionSlice = createSlice({
 
     setRestDuration: (state, action: PayloadAction<number>) => {
       const seconds = Math.max(60, action.payload)
-      state.restTimer = {
-        isRunning: true,
-        totalSeconds: seconds,
-        remainingSeconds: seconds,
+      state.restTimer.totalSeconds = seconds
+      state.restTimer.remainingSeconds = seconds
+      // Не запускаємо таймер автоматично при налаштуванні часу!
+    },
+
+    pauseRestTimer: (state) => {
+      state.restTimer.isRunning = false
+    },
+
+    resumeRestTimer: (state) => {
+      if (state.restTimer.remainingSeconds > 0) {
+        state.restTimer.isRunning = true
+      }
+    },
+
+    toggleRestTimer: (state) => {
+      if (state.restTimer.remainingSeconds > 0) {
+        state.restTimer.isRunning = !state.restTimer.isRunning
       }
     },
 
     addRestSeconds: (state, action: PayloadAction<number>) => {
       const delta = action.payload || 30
-      if (state.restTimer.isRunning && state.restTimer.remainingSeconds > 0) {
+      if (state.restTimer.remainingSeconds > 0) {
         state.restTimer.remainingSeconds += delta
-        state.restTimer.totalSeconds = Math.max(state.restTimer.totalSeconds, state.restTimer.remainingSeconds)
+        state.restTimer.totalSeconds = Math.max(
+          state.restTimer.totalSeconds,
+          state.restTimer.remainingSeconds,
+        )
       } else {
         // Завжди починаємо з цілих хвилин: мінімум 60 секунд (1 хвилина)
         const seconds = Math.max(60, delta)
-        state.restTimer = {
-          isRunning: true,
-          totalSeconds: seconds,
-          remainingSeconds: seconds,
-        }
+        state.restTimer.totalSeconds = seconds
+        state.restTimer.remainingSeconds = seconds
+        // При встановленні часу таймер НЕ запускається сам — користувач просто вказує час!
+        state.restTimer.isRunning = false
       }
     },
 
     subtractRestSeconds: (state, action: PayloadAction<number>) => {
-      if (state.restTimer.isRunning) {
-        const delta = action.payload || 30
-        // Якщо час більше хвилини — не даємо зменшити нижче 60с (1 хвилини),
-        // щоб завжди зберігався вимір у хвилинах. Для швидкого виходу є кнопка «Пропустити»
-        if (state.restTimer.remainingSeconds > 60) {
-          state.restTimer.remainingSeconds = Math.max(60, state.restTimer.remainingSeconds - delta)
-        } else if (state.restTimer.remainingSeconds > delta) {
-          state.restTimer.remainingSeconds -= delta
-        } else {
-          state.restTimer.remainingSeconds = Math.max(30, state.restTimer.remainingSeconds - delta)
-        }
+      const delta = action.payload || 30
+      // Якщо час більше хвилини — не даємо зменшити нижче 60с (1 хвилини),
+      // щоб завжди зберігався вимір у хвилинах. Для скидання є кнопка «Пропустити»
+      if (state.restTimer.remainingSeconds > 60) {
+        state.restTimer.remainingSeconds = Math.max(60, state.restTimer.remainingSeconds - delta)
+      } else if (state.restTimer.remainingSeconds > delta) {
+        state.restTimer.remainingSeconds -= delta
+      } else {
+        state.restTimer.remainingSeconds = Math.max(30, state.restTimer.remainingSeconds - delta)
       }
+      state.restTimer.totalSeconds = Math.max(
+        state.restTimer.totalSeconds,
+        state.restTimer.remainingSeconds,
+      )
+      // При зменшенні часу статус запуску не змінюється автоматично!
     },
 
     skipRestTimer: (state) => {
@@ -205,6 +224,9 @@ export const {
   tickWorkoutTimer,
   startRestTimer,
   setRestDuration,
+  pauseRestTimer,
+  resumeRestTimer,
+  toggleRestTimer,
   tickRestTimer,
   addRestSeconds,
   subtractRestSeconds,

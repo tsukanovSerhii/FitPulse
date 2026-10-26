@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Timer, Volume2, VolumeX, SkipForward, Plus, Minus } from 'lucide-react'
+import { Timer, Volume2, VolumeX, SkipForward, Plus, Minus, Play, Pause } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import {
   tickRestTimer,
   addRestSeconds,
   subtractRestSeconds,
   skipRestTimer,
+  toggleRestTimer,
 } from '../model/workoutSessionSlice'
 import { formatDuration } from '@/utils/formatters'
 import { playTimerBeep } from '@/utils/audio'
@@ -77,11 +78,17 @@ export const RestTimerWidget: React.FC = () => {
         {/* Left: Compact label + Sound icon toggle */}
         <div className="flex items-center gap-2 sm:gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center shrink-0">
-            <Timer className="w-4 h-4 animate-pulse" />
+            <Timer className={`w-4 h-4 ${restTimer.isRunning ? 'animate-pulse' : 'text-slate-400'}`} />
           </div>
 
           <div className="flex items-center gap-2">
             <span className="text-xs sm:text-sm font-bold text-white tracking-tight">Відпочинок</span>
+
+            {!restTimer.isRunning && (
+              <span className="text-[10px] text-amber-300 font-bold bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30">
+                Пауза
+              </span>
+            )}
 
             {/* Small sound toggle icon button */}
             <button
@@ -104,7 +111,7 @@ export const RestTimerWidget: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Quick adjustment stepper (-30s, countdown, +30s, +1хв) & skip */}
+        {/* Right: Quick adjustment stepper (-30s, countdown, +30s, +1хв), Play/Pause & skip */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Minus button */}
           <button
@@ -142,6 +149,30 @@ export const RestTimerWidget: React.FC = () => {
           >
             <Plus className="w-3 h-3" />
             <span>1 хв</span>
+          </button>
+
+          {/* Play / Pause toggle button */}
+          <button
+            type="button"
+            onClick={() => dispatch(toggleRestTimer())}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              restTimer.isRunning
+                ? 'bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300'
+                : 'bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300'
+            }`}
+            title={restTimer.isRunning ? 'Поставити на паузу' : 'Запустити відлік таймера'}
+          >
+            {restTimer.isRunning ? (
+              <>
+                <Pause className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Пауза</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span className="hidden sm:inline">Старт</span>
+              </>
+            )}
           </button>
 
           {/* Skip button */}
