@@ -4,12 +4,12 @@
   --font-heading: 'Unbounded', 'Manrope', sans-serif;
   --font-sans: 'Manrope', system-ui, sans-serif;
 
-  /* Apollo Next Color Palette */
-  --color-volt: #d4ff00;
-  --color-volt-dark: #b8e000;
-  --color-space-black: #0b0e14;
-  --color-space-surface: #131720;
-  --color-space-card: #161c28;
+  /* Minimalist Athletic Palette */
+  --color-accent: #38bdf8;
+  --color-accent-dark: #0284c7;
+  --color-space-black: #090d16;
+  --color-space-surface: #121622;
+  --color-space-card: #161b28;
   --color-space-border: rgba(255, 255, 255, 0.08);
 }
 
@@ -29,7 +29,7 @@ html.light {
 
 body {
   font-family: 'Manrope', system-ui, -apple-system, sans-serif;
-  background-color: #0b0e14;
+  background-color: #090d16;
   color: #f1f5f9;
   min-height: 100vh;
   margin: 0;
@@ -51,68 +51,54 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
+/* Selection */
+::selection {
+  background: #0284c7;
+  color: #ffffff;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0e14;
+  background: #090d16;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #d4ff00;
+  background: #38bdf8;
 }
 
-/* Apollo Minimalist Components */
-.apollo-card {
-  background: #131720;
+/* Minimalist Clean Components */
+.fitness-card {
+  background: #121622;
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 1.5rem;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.apollo-card:hover {
-  border-color: rgba(212, 255, 0, 0.35);
-  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px rgba(212, 255, 0, 0.08);
+.fitness-card:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px rgba(56, 189, 248, 0.05);
 }
 
-html.light .apollo-card {
+html.light .fitness-card {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
 }
 
-html.light .apollo-card:hover {
-  border-color: rgba(184, 224, 0, 0.6);
+html.light .fitness-card:hover {
+  border-color: rgba(2, 132, 199, 0.4);
   box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
 }
 
-/* Volt text gradient & glow */
-.text-volt {
-  color: #d4ff00;
-}
-
-.bg-volt {
-  background-color: #d4ff00;
-}
-
-.border-volt {
-  border-color: #d4ff00;
-}
-
-.volt-gradient-text {
-  background: linear-gradient(135deg, #d4ff00 0%, #a3e635 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 .glass-nav {
-  background: rgba(11, 14, 20, 0.85);
+  background: rgba(9, 13, 22, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);

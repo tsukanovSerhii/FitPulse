@@ -36,7 +36,7 @@ export const ProgressPage: React.FC = () => {
       {/* Page Title */}
       <div className="pb-4 border-b border-white/[0.06]">
         <h1 className="text-2xl sm:text-4xl font-heading font-black text-white flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
             <TrendingUp className="w-5 h-5" />
           </div>
           Прогрес та аналітика
@@ -86,7 +86,7 @@ export const ProgressPage: React.FC = () => {
           </div>
         ) : history.length === 0 ? (
           <EmptyState
-            icon={<Dumbbell className="w-8 h-8 text-[#d4ff00]" />}
+            icon={<Dumbbell className="w-8 h-8 text-sky-400" />}
             title="Журнал тренувань порожній"
             description="Ви ще не зафіксували жодного тренування. Перейдіть до розділу «Тренування» та завершіть першу сесію!"
           />

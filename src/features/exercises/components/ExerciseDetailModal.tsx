@@ -161,7 +161,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
         {activeTab === 'technique' && (
           <div className="space-y-5 animate-fade-in">
             {/* Motion Visualizer */}
-            <ExerciseMotionPlayer exercise={exercise} />
+            <ExerciseMotionPlayer exercise={exercise} showTabSwitcher={false} />
 
             {/* Step by step execution */}
             <div>

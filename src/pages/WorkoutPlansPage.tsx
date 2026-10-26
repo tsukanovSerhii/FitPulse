@@ -150,7 +150,7 @@ export const WorkoutPlansPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
         <div>
           <h1 className="text-2xl sm:text-4xl font-heading font-black text-white flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
               <Calendar className="w-5 h-5" />
             </div>
             Програми тренувань
@@ -172,12 +172,12 @@ export const WorkoutPlansPage: React.FC = () => {
       {/* Plans List */}
       {status === 'loading' && plans.length === 0 ? (
         <div className="text-center py-16 text-slate-400 text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-[#d4ff00] border-t-transparent rounded-full mx-auto mb-3" />
+          <div className="animate-spin w-8 h-8 border-2 border-sky-400 border-t-transparent rounded-full mx-auto mb-3" />
           Завантаження програм тренувань...
         </div>
       ) : plans.length === 0 ? (
         <EmptyState
-          icon={<Calendar className="w-8 h-8 text-[#d4ff00]" />}
+          icon={<Calendar className="w-8 h-8 text-sky-400" />}
           title="Немає створених програм"
           description="Створіть свій перший тижневий план тренувань, щоб систематизувати свої заняття."
           action={

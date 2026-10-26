@@ -5,10 +5,10 @@ import { Footer } from './Footer'
 
 export const MainLayout: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-[#0b0e14] text-slate-100 relative selection:bg-[#d4ff00] selection:text-black overflow-x-hidden">
-      {/* Background ambient lighting in Apollo Next cosmic style */}
-      <div className="fixed -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#d4ff00]/5 rounded-full blur-3xl pointer-events-none -z-10" />
-      <div className="fixed bottom-10 -right-40 w-[500px] h-[500px] bg-sky-500/5 rounded-full blur-3xl pointer-events-none -z-10" />
+    <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 relative selection:bg-sky-500 selection:text-slate-950 overflow-x-hidden">
+      {/* Background ambient lighting */}
+      <div className="fixed -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-sky-500/5 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="fixed bottom-10 -right-40 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none -z-10" />
 
       <Navbar />
 

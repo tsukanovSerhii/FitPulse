@@ -60,7 +60,7 @@ export const ExercisesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
         <div>
           <h1 className="text-2xl sm:text-4xl font-heading font-black text-white flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
               <Dumbbell className="w-5 h-5 -rotate-45" />
             </div>
             Каталог вправ
@@ -85,7 +85,7 @@ export const ExercisesPage: React.FC = () => {
           onClick={() => setActiveTab('all')}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'all'
-              ? 'bg-[#d4ff00] text-black shadow-md shadow-[#d4ff00]/20'
+              ? 'bg-white text-slate-950 shadow-md font-bold'
               : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/10'
           }`}
         >
@@ -118,12 +118,12 @@ export const ExercisesPage: React.FC = () => {
       {/* Loading state */}
       {status === 'loading' && items.length === 0 ? (
         <div className="text-center py-16 text-slate-400 text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-[#d4ff00] border-t-transparent rounded-full mx-auto mb-3" />
+          <div className="animate-spin w-8 h-8 border-2 border-sky-400 border-t-transparent rounded-full mx-auto mb-3" />
           Завантаження каталогу вправ...
         </div>
       ) : displayItems.length === 0 ? (
         <EmptyState
-          icon={<Dumbbell className="w-8 h-8 text-[#d4ff00]" />}
+          icon={<Dumbbell className="w-8 h-8 text-sky-400" />}
           title={activeTab === 'favorites' ? 'У вас ще немає обраних вправ' : 'Вправ не знайдено'}
           description={
             activeTab === 'favorites'

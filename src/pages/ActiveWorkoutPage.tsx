@@ -29,7 +29,6 @@ import { ALL_DAYS, DAY_LABELS, type DayOfWeek, type PlanExercise } from '@/featu
 import { RestTimerWidget } from '@/features/workoutSession/components/RestTimerWidget'
 import { SetLoggerRow } from '@/features/workoutSession/components/SetLoggerRow'
 import { SessionSummaryModal } from '@/features/workoutSession/components/SessionSummaryModal'
-import { MuscleMap } from '@/components/common/MuscleMap'
 import { ExerciseMotionPlayer } from '@/components/common/ExerciseMotionPlayer'
 import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
@@ -458,13 +457,12 @@ export const ActiveWorkoutPage: React.FC = () => {
               </div>
             )}
 
-            {/* Collapsible technique & anatomy */}
+            {/* Collapsible technique & anatomy hub */}
             {showInstructions && currentExerciseData && (
-              <div className="mt-5 space-y-4 animate-fade-in">
-                <ExerciseMotionPlayer exercise={currentExerciseData} />
-                <MuscleMap
-                  primaryMuscle={currentExerciseData.primaryMuscle}
-                  muscleGroups={currentExerciseData.muscleGroups}
+              <div className="mt-4 animate-fade-in">
+                <ExerciseMotionPlayer
+                  exercise={currentExerciseData}
+                  showTabSwitcher={true}
                 />
               </div>
             )}

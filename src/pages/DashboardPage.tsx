@@ -45,7 +45,7 @@ export const DashboardPage: React.FC = () => {
 
   useEffect(() => {
     updatePageSEO({
-      title: 'FitPulse — Щоденник тренувань у стилі Apollo Next',
+      title: 'FitPulse — Щоденник та планувальник силових тренувань',
       description: 'Головна панель тренувань FitPulse: щоденний розклад вправ, тоннаж, силові рекорди та персональні програми.',
       keywords: ['тренування сьогодні', 'план на тиждень', 'фітнес трекер'],
     })
@@ -98,11 +98,11 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-8 animate-fade-in pb-12">
       {/* =========================================================================
-          HERO BANNER — Apollo Next Minimalist Style
+          HERO BANNER — Minimalist Clean Style
       ========================================================================= */}
-      <div className="relative overflow-hidden rounded-3xl bg-[#131720] border border-white/[0.08] p-6 sm:p-10 shadow-2xl">
-        {/* Subtle geometric sports accent */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#d4ff00]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-[#121622] border border-white/[0.08] p-6 sm:p-10 shadow-2xl">
+        {/* Subtle sports accent */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Hero info */}
@@ -117,7 +117,7 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-              Привіт, <span className="text-[#d4ff00]">{profile.name}</span>!
+              Привіт, <span className="text-sky-400">{profile.name}</span>!
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl font-medium">
@@ -130,7 +130,7 @@ export const DashboardPage: React.FC = () => {
                   variant="primary"
                   size="lg"
                   onClick={() => navigate('/workout')}
-                  icon={<Play className="w-5 h-5 fill-black" />}
+                  icon={<Play className="w-5 h-5 fill-slate-950" />}
                   className="animate-pulse"
                 >
                   Продовжити тренування
@@ -140,7 +140,7 @@ export const DashboardPage: React.FC = () => {
                   variant="primary"
                   size="lg"
                   onClick={handleStartTodayWorkout}
-                  icon={<Play className="w-5 h-5 fill-black" />}
+                  icon={<Play className="w-5 h-5 fill-slate-950" />}
                 >
                   Почати сьогодні ({todayExercises.length} вправ)
                 </Button>
@@ -149,7 +149,7 @@ export const DashboardPage: React.FC = () => {
                   variant="primary"
                   size="lg"
                   onClick={() => navigate('/workout')}
-                  icon={<Play className="w-5 h-5 fill-black" />}
+                  icon={<Play className="w-5 h-5 fill-slate-950" />}
                 >
                   Почати тренування
                 </Button>
@@ -159,18 +159,18 @@ export const DashboardPage: React.FC = () => {
                 variant="secondary"
                 size="lg"
                 onClick={() => navigate('/plans')}
-                icon={<Calendar className="w-4 h-4 text-[#d4ff00]" />}
+                icon={<Calendar className="w-4 h-4 text-sky-400" />}
               >
                 Мої програми
               </Button>
             </div>
           </div>
 
-          {/* Right Hero Card: Apollo Next Status Widget */}
+          {/* Right Hero Card: Status Widget */}
           <div className="lg:col-span-5">
-            <div className="bg-[#0b0e14] border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+            <div className="bg-[#090d16] border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
               <div className="flex items-center justify-between gap-2 mb-3">
-                <span className="text-xs font-black uppercase tracking-wider text-[#d4ff00] flex items-center gap-1.5">
+                <span className="text-xs font-black uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   Сьогоднішній графік
                 </span>
@@ -204,7 +204,7 @@ export const DashboardPage: React.FC = () => {
                       )
                     })}
                     {todayExercises.length > 3 && (
-                      <span className="px-3 py-1.5 rounded-xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-xs font-black text-[#d4ff00]">
+                      <span className="px-3 py-1.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs font-black text-sky-300">
                         +{todayExercises.length - 3} ще
                       </span>
                     )}
@@ -237,7 +237,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* =========================================================================
-          KEY STATS CARDS — Apollo Minimalist Design
+          KEY STATS CARDS
       ========================================================================= */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {/* Card 1: Workouts */}
@@ -246,14 +246,14 @@ export const DashboardPage: React.FC = () => {
             <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
               Тренувань
             </span>
-            <div className="w-9 h-9 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-2xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center">
               <Flame className="w-4 h-4" />
             </div>
           </div>
           <div className="text-3xl sm:text-4xl font-heading font-black text-white">
             {totalWorkouts}
           </div>
-          <div className="flex items-center gap-1.5 mt-2 text-xs text-[#d4ff00] font-bold">
+          <div className="flex items-center gap-1.5 mt-2 text-xs text-sky-400 font-bold">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Зафіксовано в залі
           </div>
@@ -323,7 +323,7 @@ export const DashboardPage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-[#d4ff00]" />
+                <Calendar className="w-5 h-5 text-sky-400" />
                 План на сьогодні ({DAY_LABELS[currentDayKey]})
               </h2>
               <p className="text-xs text-slate-400 font-semibold mt-0.5">
@@ -333,7 +333,7 @@ export const DashboardPage: React.FC = () => {
 
             <Link
               to="/plans"
-              className="text-xs font-black text-[#d4ff00] hover:underline flex items-center gap-1 transition-all"
+              className="text-xs font-black text-sky-400 hover:underline flex items-center gap-1 transition-all"
             >
               Змінити план <ChevronRight className="w-4 h-4" />
             </Link>
@@ -363,15 +363,15 @@ export const DashboardPage: React.FC = () => {
                 return (
                   <div
                     key={pEx.id}
-                    className="p-4 sm:p-5 bg-[#131720] border border-white/[0.07] hover:border-[#d4ff00]/40 rounded-3xl transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group shadow-md"
+                    className="p-4 sm:p-5 bg-[#121622] border border-white/[0.07] hover:border-sky-500/40 rounded-3xl transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group shadow-md"
                   >
                     <div className="flex items-center gap-3.5">
-                      <span className="w-9 h-9 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] font-heading font-black text-xs flex items-center justify-center shrink-0">
+                      <span className="w-9 h-9 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-300 font-heading font-black text-xs flex items-center justify-center shrink-0">
                         {idx + 1}
                       </span>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-sm sm:text-base font-bold text-white group-hover:text-[#d4ff00] transition-colors">
+                          <h4 className="text-sm sm:text-base font-bold text-white group-hover:text-sky-400 transition-colors">
                             {ex?.name || 'Вправа'}
                           </h4>
                           {ex && (
@@ -395,7 +395,7 @@ export const DashboardPage: React.FC = () => {
                         variant="secondary"
                         size="sm"
                         onClick={handleStartTodayWorkout}
-                        icon={<Play className="w-3.5 h-3.5 fill-[#d4ff00] text-[#d4ff00]" />}
+                        icon={<Play className="w-3.5 h-3.5 fill-sky-400 text-sky-400" />}
                         className="text-xs"
                       >
                         Виконати
@@ -410,7 +410,7 @@ export const DashboardPage: React.FC = () => {
                   variant="primary"
                   size="lg"
                   onClick={handleStartTodayWorkout}
-                  icon={<Play className="w-4 h-4 fill-black" />}
+                  icon={<Play className="w-4 h-4 fill-slate-950" />}
                   className="w-full"
                 >
                   Розпочати все тренування ({todayExercises.length} вправ)
@@ -420,10 +420,10 @@ export const DashboardPage: React.FC = () => {
           )}
         </div>
 
-        {/* Side Column: Quick Navigation & Apollo Space Tip */}
+        {/* Side Column: Quick Navigation & Coach Tip */}
         <div className="lg:col-span-4 space-y-4">
           <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#d4ff00]" />
+            <Sparkles className="w-5 h-5 text-sky-400" />
             Швидкі дії
           </h2>
 
@@ -431,17 +431,17 @@ export const DashboardPage: React.FC = () => {
             <Link to="/exercises" className="block">
               <Card hover className="p-4 sm:p-5 flex items-center justify-between group">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-[#d4ff00]/15 border border-[#d4ff00]/30 text-[#d4ff00] flex items-center justify-center shrink-0">
+                  <div className="w-11 h-11 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
                     <Dumbbell className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white group-hover:text-[#d4ff00] transition-colors">
+                    <h3 className="text-sm font-bold text-white group-hover:text-sky-400 transition-colors">
                       Каталог вправ
                     </h3>
                     <p className="text-xs text-slate-400 font-medium">Анатомія, техніка, поради</p>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-[#d4ff00] group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 group-hover:translate-x-1 transition-all" />
               </Card>
             </Link>
 
@@ -479,11 +479,11 @@ export const DashboardPage: React.FC = () => {
               </Card>
             </Link>
 
-            {/* Apollo Space Coach Quote Card */}
-            <div className="p-6 rounded-3xl bg-[#131720] border border-white/10 shadow-lg relative overflow-hidden">
-              <div className="flex items-center gap-2 mb-2 text-[#d4ff00] font-black text-xs uppercase tracking-wider">
+            {/* Coach Quote Card */}
+            <div className="p-6 rounded-3xl bg-[#121622] border border-white/10 shadow-lg relative overflow-hidden">
+              <div className="flex items-center gap-2 mb-2 text-sky-400 font-black text-xs uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" />
-                Apollo Space Coach
+                Порада тренера
               </div>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
                 «Ніколи не пропускайте розминку та контролюйте ексцентричну фазу (опускання 2-3 секунди). Тільки чиста біомеханіка будує здорове та міцне тіло!»

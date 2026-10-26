@@ -52,7 +52,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         </div>
 
         {/* Title */}
-        <h4 className="text-base font-bold text-white group-hover:text-[#d4ff00] transition-colors line-clamp-1 mb-2">
+        <h4 className="text-base font-bold text-white group-hover:text-sky-400 transition-colors line-clamp-1 mb-2">
           {exercise.name}
         </h4>
 
@@ -69,7 +69,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             {DIFFICULTY_LABELS[exercise.difficulty]}
           </Badge>
           <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-300 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
-            <Dumbbell className="w-3 h-3 text-[#d4ff00]" />
+            <Dumbbell className="w-3 h-3 text-sky-400" />
             {EQUIPMENT_LABELS[exercise.equipment] || exercise.equipment}
           </span>
         </div>
@@ -80,7 +80,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             ~{exercise.calories} ккал
           </span>
         ) : (
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-[#d4ff00] group-hover:translate-x-1 transition-all" />
+          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 group-hover:translate-x-1 transition-all" />
         )}
       </div>
     </Card>
