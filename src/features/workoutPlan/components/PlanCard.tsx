@@ -44,13 +44,13 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   ).length
 
   return (
-    <Card className="flex flex-col justify-between border-slate-800/80 bg-slate-900/80 p-6 shadow-xl">
+    <Card className="flex flex-col justify-between p-6 shadow-xl">
       <div>
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800/80">
           <div>
             <div className="flex items-center gap-2.5 mb-1.5">
-              <h3 className="text-xl font-black text-white">{plan.name}</h3>
+              <h3 className="text-xl font-black text-slate-900 dark:text-white">{plan.name}</h3>
               {isActive ? (
                 <Badge variant="success" dot size="sm">
                   Активна програма
@@ -62,7 +62,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
               )}
             </div>
             {plan.description && (
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
                 {plan.description}
               </p>
             )}
@@ -81,7 +81,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
             )}
             <button
               onClick={() => onDelete(plan.id)}
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 border border-transparent hover:border-rose-500/30 transition-all cursor-pointer"
+              className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/15 border border-transparent hover:border-rose-200 dark:hover:border-rose-500/30 transition-all cursor-pointer"
               title="Видалити план"
             >
               <Trash2 className="w-4 h-4" />
@@ -100,8 +100,8 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                 key={day}
                 className={`p-3.5 rounded-2xl border transition-all ${
                   hasExercises
-                    ? 'bg-slate-950/60 border-slate-800/90 hover:border-slate-700'
-                    : 'bg-slate-950/20 border-dashed border-slate-800/50 opacity-60'
+                    ? 'bg-slate-50 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800/90 hover:border-sky-300 dark:hover:border-slate-700'
+                    : 'bg-slate-50/50 dark:bg-slate-950/20 border-dashed border-slate-200 dark:border-slate-800/50 opacity-60'
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
@@ -110,16 +110,16 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                       className={`w-8 h-8 rounded-xl text-xs font-black flex items-center justify-center shrink-0 ${
                         hasExercises
                           ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
-                          : 'bg-slate-800 text-slate-500'
+                          : 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-500'
                       }`}
                     >
                       {DAY_SHORT_LABELS[day]}
                     </span>
                     <div>
-                      <span className="text-sm font-bold text-slate-100 block sm:inline">
+                      <span className="text-sm font-bold text-slate-800 dark:text-slate-100 block sm:inline">
                         {DAY_LABELS[day]}
                       </span>
-                      <span className="text-xs text-slate-400 sm:ml-2">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 sm:ml-2">
                         {hasExercises ? `(${dayExercises.length} вправ)` : '— Відпочинок'}
                       </span>
                     </div>
@@ -157,10 +157,10 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                       return (
                         <span
                           key={pEx.id}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 shadow-sm"
                         >
-                          <Dumbbell className="w-3 h-3 text-sky-400" />
-                          <strong className="text-slate-200">{ex ? ex.name : 'Вправа'}:</strong>
+                          <Dumbbell className="w-3 h-3 text-sky-500 dark:text-sky-400" />
+                          <strong className="text-slate-800 dark:text-slate-200">{ex ? ex.name : 'Вправа'}:</strong>
                           <span>
                             {pEx.sets}×{pEx.reps}
                             {pEx.weight ? ` (${pEx.weight} кг)` : ''}
@@ -177,9 +177,9 @@ export const PlanCard: React.FC<PlanCardProps> = ({
       </div>
 
       {/* Summary Footer */}
-      <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 font-medium">
-        <span>Тренувальних днів на тиждень: <strong className="text-slate-200">{activeDaysCount}</strong></span>
-        <span>Всього вправ у програмі: <strong className="text-slate-200">{totalExercises}</strong></span>
+      <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-medium">
+        <span>Тренувальних днів на тиждень: <strong className="text-slate-800 dark:text-slate-200">{activeDaysCount}</strong></span>
+        <span>Всього вправ у програмі: <strong className="text-slate-800 dark:text-slate-200">{totalExercises}</strong></span>
       </div>
     </Card>
   )
