@@ -104,6 +104,7 @@ html.light .bg-card,
 html.light [class*="bg-card"]    { background-color: #f8fafc !important; }
 
 /* Text colors */
+html.light .text-white  { color: #0f172a !important; }
 html.light .text-slate-100 { color: #0f172a !important; }
 html.light .text-slate-200 { color: #1e293b !important; }
 html.light .text-slate-300 { color: #334155 !important; }

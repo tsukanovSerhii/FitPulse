@@ -14,8 +14,7 @@ import {
   Info,
   CheckCircle2,
 } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
 import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
 import { fetchProgress } from '@/features/progress/model/progressSlice'
 import { fetchProfile } from '@/features/profile/model/profileSlice'
@@ -60,6 +59,7 @@ export const DashboardPage: React.FC = () => {
   const exercisesState = useAppSelector((state) => state.exercises)
   const progressState = useAppSelector((state) => state.progress)
   const session = useAppSelector((state) => state.workoutSession)
+  const themeMode = useAppSelector((state) => state.theme.mode)
 
   const [currentDayKey] = useState<DayOfWeek>(getCurrentDayOfWeek)
 
@@ -100,7 +100,11 @@ export const DashboardPage: React.FC = () => {
       {/* =========================================================================
           HERO BANNER — Minimalist Clean Style
       ========================================================================= */}
-      <div className="relative overflow-hidden rounded-3xl bg-[#121622] border border-white/[0.08] p-6 sm:p-10 shadow-2xl">
+      <div className={`relative overflow-hidden rounded-3xl border p-6 sm:p-10 shadow-2xl transition-colors duration-300 ${
+        themeMode === 'light'
+          ? 'bg-white border-slate-200 shadow-slate-200/60'
+          : 'bg-[#121622] border-white/[0.08]'
+      }`}>
         {/* Subtle sports accent */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -111,16 +115,22 @@ export const DashboardPage: React.FC = () => {
               <Badge variant="primary" dot size="sm">
                 {FITNESS_GOAL_LABELS[profile.fitnessGoal]}
               </Badge>
-              <span className="text-xs font-bold text-slate-300 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+              <span className={`text-xs font-bold px-3 py-1 rounded-full border ${
+                themeMode === 'light'
+                  ? 'text-slate-600 bg-slate-100 border-slate-200'
+                  : 'text-slate-300 bg-white/5 border-white/10'
+              }`}>
                 {DAY_LABELS[currentDayKey]}
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-              Привіт, <span className="text-sky-400">{profile.name}</span>!
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
+              Привіт, <span className="text-sky-500">{profile.name}</span>!
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl font-medium">
+            <p className={`text-sm sm:text-base leading-relaxed max-w-xl font-medium ${
+              themeMode === 'light' ? 'text-slate-600' : 'text-slate-300'
+            }`}>
               Сьогодні день твого прогресу. Дотримуйся плану, фіксуй вагу та нарощуй силу без компромісів.
             </p>
 
@@ -168,13 +178,17 @@ export const DashboardPage: React.FC = () => {
 
           {/* Right Hero Card: Status Widget */}
           <div className="lg:col-span-5">
-            <div className="bg-[#090d16] border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+            <div className={`border rounded-3xl p-6 shadow-xl relative overflow-hidden transition-colors duration-300 ${
+              themeMode === 'light'
+                ? 'bg-slate-50 border-slate-200'
+                : 'bg-[#090d16] border-white/10'
+            }`}>
               <div className="flex items-center justify-between gap-2 mb-3">
-                <span className="text-xs font-black uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+                <span className="text-xs font-black uppercase tracking-wider text-sky-500 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   Сьогоднішній графік
                 </span>
-                <span className="text-xs font-bold text-slate-400">
+                <span className={`text-xs font-bold ${themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
                   {activePlan ? activePlan.name : 'Без плану'}
                 </span>
               </div>
@@ -182,10 +196,10 @@ export const DashboardPage: React.FC = () => {
               {todayExercises.length > 0 ? (
                 <div className="space-y-4">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-heading font-black text-white">
+                    <span className={`text-4xl font-heading font-black ${themeMode === 'light' ? 'text-slate-900' : 'text-white'}`}>
                       {todayExercises.length}
                     </span>
-                    <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                    <span className={`text-xs font-bold uppercase tracking-wider ${themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
                       вправ заплановано
                     </span>
                   </div>
@@ -197,25 +211,31 @@ export const DashboardPage: React.FC = () => {
                       return (
                         <span
                           key={pEx.id}
-                          className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-slate-200"
+                          className={`px-3 py-1.5 rounded-xl border text-xs font-bold ${
+                            themeMode === 'light'
+                              ? 'bg-slate-100 border-slate-200 text-slate-700'
+                              : 'bg-white/5 border-white/10 text-slate-200'
+                          }`}
                         >
                           {ex ? ex.name : 'Вправа'}
                         </span>
                       )
                     })}
                     {todayExercises.length > 3 && (
-                      <span className="px-3 py-1.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs font-black text-sky-300">
+                      <span className="px-3 py-1.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs font-black text-sky-500">
                         +{todayExercises.length - 3} ще
                       </span>
                     )}
                   </div>
 
-                  <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400 font-bold">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-4 h-4 text-slate-400" />
+                  <div className={`pt-3 border-t flex items-center justify-between text-xs font-bold ${
+                    themeMode === 'light' ? 'border-slate-200' : 'border-white/5'
+                  }`}>
+                    <span className={`flex items-center gap-1.5 ${themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      <Clock className="w-4 h-4" />
                       ~50-60 хвилин
                     </span>
-                    <span className="flex items-center gap-1.5 text-amber-400">
+                    <span className="flex items-center gap-1.5 text-amber-500">
                       <Flame className="w-4 h-4" />
                       ~400 ккал
                     </span>
@@ -223,10 +243,10 @@ export const DashboardPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-6 space-y-2">
-                  <p className="text-sm font-bold text-white">
+                  <p className={`text-sm font-bold ${themeMode === 'light' ? 'text-slate-800' : 'text-white'}`}>
                     Сьогодні день відновлення 🧘‍♂️
                   </p>
-                  <p className="text-xs text-slate-400 font-medium">
+                  <p className={`text-xs font-medium ${themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
                     Дайте м'язам відпочити або виберіть легке кардіо.
                   </p>
                 </div>
@@ -250,7 +270,7 @@ export const DashboardPage: React.FC = () => {
               <Flame className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-heading font-black text-white">
+          <div className={`text-3xl sm:text-4xl font-heading font-black ${themeMode === 'light' ? 'text-slate-900' : 'text-white'}`}>
             {totalWorkouts}
           </div>
           <div className="flex items-center gap-1.5 mt-2 text-xs text-sky-400 font-bold">
