@@ -294,7 +294,7 @@ export const INITIAL_EXERCISES: Exercise[] = [
     tips: ['Не вдаряйте гантелі одна об одну у верхній точці.', 'Зберігайте природний прогин у попереку.'],
     defaultSets: 3,
     defaultReps: 10,
-    defaultRestSeconds: 75,
+    defaultRestSeconds: 90,
     calories: 6,
     guide: {
       tempo: '3-0-1-0',
@@ -534,7 +534,7 @@ export const INITIAL_EXERCISES: Exercise[] = [
     tips: ['Дихайте рівномірно, не затримуйте дихання.'],
     defaultSets: 3,
     defaultReps: 45,
-    defaultRestSeconds: 45,
+    defaultRestSeconds: 60,
     calories: 4,
   },
   {
@@ -580,7 +580,7 @@ export const INITIAL_EXERCISES: Exercise[] = [
     tips: ['Затримайтесь у верхній точці на 1-2 секунди для максимального пікового скорочення.'],
     defaultSets: 4,
     defaultReps: 15,
-    defaultRestSeconds: 45,
+    defaultRestSeconds: 60,
     calories: 4,
   },
   {

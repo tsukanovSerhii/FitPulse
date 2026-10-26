@@ -104,33 +104,44 @@ export const RestTimerWidget: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Quick adjustment stepper (-15s / +15s), countdown & skip */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        {/* Right: Quick adjustment stepper (-30s, countdown, +30s, +1хв) & skip */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Minus button */}
           <button
             type="button"
-            onClick={() => dispatch(subtractRestSeconds(15))}
+            onClick={() => dispatch(subtractRestSeconds(30))}
             className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
-            title="Зменшити час на 15 секунд"
+            title="Зменшити час на 30 секунд (мін. 1 хв)"
           >
             <Minus className="w-3 h-3" />
-            <span>15с</span>
+            <span>30с</span>
           </button>
 
           {/* Monospace Tabular Countdown */}
-          <div className="text-xl sm:text-2xl font-black font-mono text-sky-400 tracking-wider tabular-nums px-1">
+          <div className="text-xl sm:text-2xl font-black font-mono text-sky-400 tracking-wider tabular-nums px-1.5 min-w-[65px] text-center">
             {formatDuration(restTimer.remainingSeconds)}
           </div>
 
-          {/* Plus button */}
+          {/* Plus 30s button */}
           <button
             type="button"
-            onClick={() => dispatch(addRestSeconds(15))}
+            onClick={() => dispatch(addRestSeconds(30))}
             className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
-            title="Додати 15 секунд"
+            title="Додати 30 секунд"
           >
             <Plus className="w-3 h-3" />
-            <span>15с</span>
+            <span>30с</span>
+          </button>
+
+          {/* Plus 1 min button */}
+          <button
+            type="button"
+            onClick={() => dispatch(addRestSeconds(60))}
+            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-sky-600/20 hover:bg-sky-600/30 active:bg-sky-600/20 text-sky-300 hover:text-sky-200 border border-sky-500/30 text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
+            title="Додати 1 хвилину"
+          >
+            <Plus className="w-3 h-3" />
+            <span>1 хв</span>
           </button>
 
           {/* Skip button */}

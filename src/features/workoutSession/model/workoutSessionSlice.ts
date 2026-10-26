@@ -146,31 +146,42 @@ export const workoutSessionSlice = createSlice({
       }
     },
 
+    setRestDuration: (state, action: PayloadAction<number>) => {
+      const seconds = Math.max(60, action.payload)
+      state.restTimer = {
+        isRunning: true,
+        totalSeconds: seconds,
+        remainingSeconds: seconds,
+      }
+    },
+
     addRestSeconds: (state, action: PayloadAction<number>) => {
-      if (state.restTimer.isRunning) {
-        state.restTimer.remainingSeconds += action.payload
-        state.restTimer.totalSeconds += action.payload
+      const delta = action.payload || 30
+      if (state.restTimer.isRunning && state.restTimer.remainingSeconds > 0) {
+        state.restTimer.remainingSeconds += delta
+        state.restTimer.totalSeconds = Math.max(state.restTimer.totalSeconds, state.restTimer.remainingSeconds)
       } else {
+        // Завжди починаємо з цілих хвилин: мінімум 60 секунд (1 хвилина)
+        const seconds = Math.max(60, delta)
         state.restTimer = {
           isRunning: true,
-          totalSeconds: action.payload,
-          remainingSeconds: action.payload,
+          totalSeconds: seconds,
+          remainingSeconds: seconds,
         }
       }
     },
 
     subtractRestSeconds: (state, action: PayloadAction<number>) => {
       if (state.restTimer.isRunning) {
-        const delta = action.payload || 15
-        if (state.restTimer.remainingSeconds <= delta) {
-          state.restTimer.remainingSeconds = 0
-          state.restTimer.isRunning = false
-        } else {
+        const delta = action.payload || 30
+        // Якщо час більше хвилини — не даємо зменшити нижче 60с (1 хвилини),
+        // щоб завжди зберігався вимір у хвилинах. Для швидкого виходу є кнопка «Пропустити»
+        if (state.restTimer.remainingSeconds > 60) {
+          state.restTimer.remainingSeconds = Math.max(60, state.restTimer.remainingSeconds - delta)
+        } else if (state.restTimer.remainingSeconds > delta) {
           state.restTimer.remainingSeconds -= delta
-          state.restTimer.totalSeconds = Math.max(
-            state.restTimer.remainingSeconds,
-            state.restTimer.totalSeconds - delta,
-          )
+        } else {
+          state.restTimer.remainingSeconds = Math.max(30, state.restTimer.remainingSeconds - delta)
         }
       }
     },
@@ -193,6 +204,7 @@ export const {
   previousExercise,
   tickWorkoutTimer,
   startRestTimer,
+  setRestDuration,
   tickRestTimer,
   addRestSeconds,
   subtractRestSeconds,
