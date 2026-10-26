@@ -23,6 +23,8 @@ import {
   tickWorkoutTimer,
 } from '@/features/workoutSession/model/workoutSessionSlice'
 import { logWorkoutAsync } from '@/features/progress/model/progressSlice'
+import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
+import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
 import type { CompletedSet } from '@/features/workoutSession/model/types'
 import type { WorkoutHistoryLog, ExerciseSummary } from '@/features/progress/model/types'
 import { ALL_DAYS, DAY_LABELS, type DayOfWeek, type PlanExercise } from '@/features/workoutPlan/model/types'
@@ -51,8 +53,24 @@ export const ActiveWorkoutPage: React.FC = () => {
   const [planWarning, setPlanWarning] = useState<string | null>(null)
 
   // Quick start picker state (when no active workout)
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(plans[0]?.id || '')
+  const [selectedPlanId, setSelectedPlanId] = useState<string>('')
   const [selectedDay, setSelectedDay] = useState<DayOfWeek>('monday')
+
+  // Автоматичне визначення обраного плану без каскадних рендерів
+  const effectivePlanId =
+    selectedPlanId && plans.some((p) => p.id === selectedPlanId)
+      ? selectedPlanId
+      : plans[0]?.id || ''
+
+  // Забезпечуємо завантаження даних при прямому відкритті URL /workout
+  useEffect(() => {
+    if (plans.length === 0) {
+      dispatch(fetchPlans())
+    }
+    if (allExercises.length === 0) {
+      dispatch(fetchExercises())
+    }
+  }, [dispatch, plans.length, allExercises.length])
 
   // SEO setup
   useEffect(() => {
@@ -99,7 +117,7 @@ export const ActiveWorkoutPage: React.FC = () => {
 
   // Handle start from plan
   const handleStartFromPlan = () => {
-    const plan = plans.find((p) => p.id === selectedPlanId)
+    const plan = plans.find((p) => p.id === effectivePlanId)
     if (!plan) return
     const exercises = plan.schedule[selectedDay] || []
     if (exercises.length === 0) {
@@ -180,6 +198,7 @@ export const ActiveWorkoutPage: React.FC = () => {
       if (sets.length > 0) {
         let exReps = 0
         let exMaxWeight = 0
+        let exRepsAtMax = 0
 
         for (const s of sets) {
           totalSets += 1
@@ -187,7 +206,12 @@ export const ActiveWorkoutPage: React.FC = () => {
           exReps += s.reps
           const w = s.weight || 0
           totalVolumeKg += s.reps * w
-          if (w > exMaxWeight) exMaxWeight = w
+          if (w > exMaxWeight) {
+            exMaxWeight = w
+            exRepsAtMax = s.reps
+          } else if (w === exMaxWeight && s.reps > exRepsAtMax) {
+            exRepsAtMax = s.reps
+          }
         }
 
         const exData = exerciseMap.get(pEx.exerciseId)
@@ -197,6 +221,7 @@ export const ActiveWorkoutPage: React.FC = () => {
           setsCompleted: sets.length,
           totalReps: exReps,
           maxWeightKg: exMaxWeight > 0 ? exMaxWeight : undefined,
+          repsAtMaxWeight: exMaxWeight > 0 ? exRepsAtMax : undefined,
         })
       }
     }
@@ -240,7 +265,7 @@ export const ActiveWorkoutPage: React.FC = () => {
   // VIEW: NO ACTIVE WORKOUT -> Selection Screen
   // =========================================================================
   if (!session.isActive) {
-    const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0]
+    const selectedPlan = plans.find((p) => p.id === effectivePlanId) || plans[0]
 
     return (
       <div className="max-w-2xl mx-auto space-y-6 animate-fade-in py-6">
@@ -276,7 +301,7 @@ export const ActiveWorkoutPage: React.FC = () => {
                 Оберіть програму
               </label>
               <select
-                value={selectedPlanId}
+                value={effectivePlanId}
                 onChange={(e) => {
                   setSelectedPlanId(e.target.value)
                   setPlanWarning(null)

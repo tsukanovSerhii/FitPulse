@@ -26,10 +26,8 @@ export const logWorkoutAsync = createAsyncThunk(
   'progress/logWorkoutAsync',
   async (log: WorkoutHistoryLog, { rejectWithValue }) => {
     try {
-      const saved = await progressApi.saveWorkoutLog(log)
-      // Оновимо також PRs
-      const data = await progressApi.getProgressData()
-      return { log: saved, personalRecords: data.personalRecords }
+      const result = await progressApi.saveWorkoutLog(log)
+      return result
     } catch (err) {
       return rejectWithValue((err as Error).message || 'Помилка збереження тренування')
     }
@@ -40,8 +38,8 @@ export const deleteWorkoutLogAsync = createAsyncThunk(
   'progress/deleteWorkoutLogAsync',
   async (logId: string, { rejectWithValue }) => {
     try {
-      const deletedId = await progressApi.deleteWorkoutLog(logId)
-      return deletedId
+      const result = await progressApi.deleteWorkoutLog(logId)
+      return result
     } catch (err) {
       return rejectWithValue((err as Error).message || 'Помилка видалення запису')
     }
@@ -75,7 +73,8 @@ export const progressSlice = createSlice({
       })
       // deleteWorkoutLogAsync
       .addCase(deleteWorkoutLogAsync.fulfilled, (state, action) => {
-        state.history = state.history.filter((item) => item.id !== action.payload)
+        state.history = state.history.filter((item) => item.id !== action.payload.deletedId)
+        state.personalRecords = action.payload.personalRecords
       })
   },
 })

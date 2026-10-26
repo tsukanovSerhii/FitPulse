@@ -55,13 +55,12 @@ export const RestTimerWidget: React.FC = () => {
     if (
       prevRemainingRef.current > 0 &&
       restTimer.remainingSeconds === 0 &&
-      restTimer.isRunning &&
       soundEnabled
     ) {
       playTimerBeep()
     }
     prevRemainingRef.current = restTimer.remainingSeconds
-  }, [restTimer.remainingSeconds, restTimer.isRunning, soundEnabled])
+  }, [restTimer.remainingSeconds, soundEnabled])
 
   if (!restTimer.isRunning && restTimer.remainingSeconds === 0) {
     return null

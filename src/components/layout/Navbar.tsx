@@ -1,4 +1,5 @@
-import { useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { toggleTheme } from '@/features/theme/model/themeSlice'
 import { formatDuration } from '@/utils/formatters'
 import {
 	Calendar,
@@ -16,6 +17,7 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 export const Navbar: React.FC = () => {
+	const dispatch = useAppDispatch()
 	const location = useLocation()
 	const themeMode = useAppSelector(state => state.theme.mode)
 	const session = useAppSelector(state => state.workoutSession)
@@ -120,19 +122,19 @@ export const Navbar: React.FC = () => {
 
 					{/* Theme Switcher */}
 					<button
-						className={`p-2.5 rounded-2xl border transition-colors cursor-not-allowed opacity-60 ${
+						onClick={() => dispatch(toggleTheme())}
+						className={`p-2.5 rounded-2xl border transition-colors cursor-pointer ${
 							themeMode === 'light'
-								? 'border-slate-300 bg-slate-200 text-slate-600'
-								: 'border-white/10 bg-[#121622] text-slate-400'
+								? 'border-slate-300 bg-slate-200 hover:bg-slate-300 text-slate-700 hover:text-slate-950'
+								: 'border-white/10 bg-[#121622] hover:bg-white/10 text-slate-300 hover:text-white'
 						}`}
 						aria-label="Перемкнути тему"
-						title="Перемкнути тему"
-						disabled={true}
+						title="Перемкнути тему (Світла / Темна)"
 					>
 						{themeMode === 'dark' ? (
 							<Sun className="w-4 h-4 text-sky-400" />
 						) : (
-							<Moon className="w-4 h-4 text-sky-500" />
+							<Moon className="w-4 h-4 text-sky-600" />
 						)}
 					</button>
 

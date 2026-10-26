@@ -1,64 +1,125 @@
 import type { WorkoutHistoryLog, PersonalRecord } from '../model/types'
-import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
+import {
+  hasStorageKey,
+  loadFromStorage,
+  saveToStorage,
+  STORAGE_KEYS,
+} from '@/services/storage/localStorage'
 import { INITIAL_HISTORY, INITIAL_PRS } from '@/services/mockData/initialProgress'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+/**
+ * Перерахунок персональних рекордів на основі повної актуальної історії тренувань.
+ * Це гарантує цілісність аналітики при додаванні та видаленні тренувань.
+ */
+export function recalculatePersonalRecords(
+  history: WorkoutHistoryLog[],
+): Record<string, PersonalRecord> {
+  const prs: Record<string, PersonalRecord> = {}
+
+  // Сортуємо тренування хронологічно від найстаріших до найновіших
+  const sorted = [...history].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  )
+
+  for (const log of sorted) {
+    for (const ex of log.exercises) {
+      if (ex.maxWeightKg && ex.maxWeightKg > 0) {
+        const existing = prs[ex.exerciseId]
+        const reps = ex.repsAtMaxWeight || (ex.totalReps > 0 ? Math.round(ex.totalReps / (ex.setsCompleted || 1)) : 1)
+
+        if (!existing) {
+          prs[ex.exerciseId] = {
+            exerciseId: ex.exerciseId,
+            exerciseName: ex.exerciseName,
+            maxWeightKg: ex.maxWeightKg,
+            maxReps: reps,
+            achievedAt: log.date,
+          }
+        } else if (ex.maxWeightKg > existing.maxWeightKg) {
+          prs[ex.exerciseId] = {
+            exerciseId: ex.exerciseId,
+            exerciseName: ex.exerciseName,
+            maxWeightKg: ex.maxWeightKg,
+            maxReps: reps,
+            achievedAt: log.date,
+          }
+        } else if (ex.maxWeightKg === existing.maxWeightKg && reps > existing.maxReps) {
+          // Повторний рекорд на тій же максимальній вазі
+          prs[ex.exerciseId] = {
+            ...existing,
+            maxReps: reps,
+            achievedAt: log.date,
+          }
+        }
+      }
+    }
+  }
+
+  return prs
+}
+
 export const progressApi = {
   // Отримати всю історію та рекорди
-  async getProgressData(): Promise<{ history: WorkoutHistoryLog[]; personalRecords: Record<string, PersonalRecord> }> {
-    await delay(200)
-    let history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, INITIAL_HISTORY)
-    if (!history || history.length === 0) {
+  async getProgressData(): Promise<{
+    history: WorkoutHistoryLog[]
+    personalRecords: Record<string, PersonalRecord>
+  }> {
+    await delay(100)
+    let history: WorkoutHistoryLog[]
+
+    // Перший запуск застосунку — ініціалізуємо демо-історією
+    if (!hasStorageKey(STORAGE_KEYS.WORKOUT_HISTORY)) {
       history = INITIAL_HISTORY
       saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, INITIAL_HISTORY)
+    } else {
+      // Ключ існує — повертаємо збережені дані (навіть якщо це порожній масив [])
+      history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
     }
 
-    let prs = loadFromStorage<Record<string, PersonalRecord>>(STORAGE_KEYS.PERSONAL_RECORDS, INITIAL_PRS)
-    if (!prs || Object.keys(prs).length === 0) {
+    let prs: Record<string, PersonalRecord>
+    if (!hasStorageKey(STORAGE_KEYS.PERSONAL_RECORDS)) {
       prs = INITIAL_PRS
       saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, INITIAL_PRS)
+    } else {
+      prs = loadFromStorage<Record<string, PersonalRecord>>(STORAGE_KEYS.PERSONAL_RECORDS, {})
     }
 
     return { history, personalRecords: prs }
   },
 
   // Зберегти нове завершене тренування
-  async saveWorkoutLog(log: WorkoutHistoryLog): Promise<WorkoutHistoryLog> {
-    await delay(250)
-    const history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, INITIAL_HISTORY)
+  async saveWorkoutLog(log: WorkoutHistoryLog): Promise<{
+    log: WorkoutHistoryLog
+    personalRecords: Record<string, PersonalRecord>
+  }> {
+    await delay(100)
+    const history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
     const updatedHistory = [log, ...history]
     saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
 
-    // Перевірка та оновлення персональних рекордів (PRs)
-    const prs = loadFromStorage<Record<string, PersonalRecord>>(STORAGE_KEYS.PERSONAL_RECORDS, INITIAL_PRS)
-    const updatedPrs = { ...prs }
-
-    for (const ex of log.exercises) {
-      if (ex.maxWeightKg && ex.maxWeightKg > 0) {
-        const existingPr = updatedPrs[ex.exerciseId]
-        if (!existingPr || ex.maxWeightKg > existingPr.maxWeightKg) {
-          updatedPrs[ex.exerciseId] = {
-            exerciseId: ex.exerciseId,
-            exerciseName: ex.exerciseName,
-            maxWeightKg: ex.maxWeightKg,
-            maxReps: ex.totalReps > 0 ? Math.round(ex.totalReps / (ex.setsCompleted || 1)) : 8,
-            achievedAt: log.date,
-          }
-        }
-      }
-    }
+    // Перераховуємо PRs на основі оновленої історії
+    const updatedPrs = recalculatePersonalRecords(updatedHistory)
     saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
 
-    return log
+    return { log, personalRecords: updatedPrs }
   },
 
-  // Видалити запис з історії
-  async deleteWorkoutLog(logId: string): Promise<string> {
-    await delay(200)
-    const history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, INITIAL_HISTORY)
-    const updated = history.filter((item) => item.id !== logId)
-    saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, updated)
-    return logId
+  // Видалити запис з історії та оновити рекорди
+  async deleteWorkoutLog(logId: string): Promise<{
+    deletedId: string
+    personalRecords: Record<string, PersonalRecord>
+  }> {
+    await delay(100)
+    const history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
+    const updatedHistory = history.filter((item) => item.id !== logId)
+    saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
+
+    // Перераховуємо рекорди за залишковою історією
+    const updatedPrs = recalculatePersonalRecords(updatedHistory)
+    saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
+
+    return { deletedId: logId, personalRecords: updatedPrs }
   },
 }

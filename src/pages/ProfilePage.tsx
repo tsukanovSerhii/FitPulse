@@ -14,7 +14,7 @@ import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { formatDate } from '@/utils/formatters'
-import { STORAGE_KEYS, removeFromStorage } from '@/services/storage/localStorage'
+import { STORAGE_KEYS, removeFromStorage, saveToStorage } from '@/services/storage/localStorage'
 import { updatePageSEO } from '@/utils/seo'
 
 export const ProfilePage: React.FC = () => {
@@ -42,6 +42,9 @@ export const ProfilePage: React.FC = () => {
       )
     ) {
       Object.values(STORAGE_KEYS).forEach((k) => removeFromStorage(k))
+      // Гарантуємо очищення історії та персональних рекордів при скиданні
+      saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, [])
+      saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, {})
       await dispatch(resetProfileAsync()).unwrap()
       window.location.reload()
     }

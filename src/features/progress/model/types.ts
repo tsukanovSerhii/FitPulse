@@ -4,6 +4,7 @@ export interface ExerciseSummary {
   setsCompleted: number
   totalReps: number
   maxWeightKg?: number
+  repsAtMaxWeight?: number
 }
 
 export interface WorkoutHistoryLog {

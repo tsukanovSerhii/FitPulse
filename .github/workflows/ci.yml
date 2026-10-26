@@ -31,6 +31,9 @@ jobs:
       - name: Code Quality (Linter)
         run: npm run lint
 
+      - name: Automated Business Logic Tests
+        run: npm run test
+
       - name: Type Check & Production Build
         run: npm run build
 

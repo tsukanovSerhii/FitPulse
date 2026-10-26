@@ -33,10 +33,16 @@ export const SetLoggerRow: React.FC<SetLoggerRowProps> = ({
     if (isCompleted) {
       onRemove()
     } else {
+      const sanitizedReps = Math.max(1, Math.min(500, Math.round(Number(reps)) || targetReps))
+      const sanitizedWeight =
+        weight === '' || isNaN(Number(weight))
+          ? undefined
+          : Math.max(0, Math.min(1000, Number(weight)))
+
       onComplete(
         {
-          reps: Number(reps) || targetReps,
-          weight: weight === '' ? undefined : Number(weight),
+          reps: sanitizedReps,
+          weight: sanitizedWeight,
           completedAt: new Date().toISOString(),
         },
         defaultRestSeconds,

@@ -1,11 +1,11 @@
 # 🏋️‍♂️ FitPulse — Трекер та Планувальник Тренувань
 
 > **Сучасний веб-додаток для силових тренувань, планування сплітів та біомеханіки вправ**  
-> Стек: **React 19**, **Redux Toolkit 2**, **TypeScript**, **Vite**, **Tailwind CSS v4**, **React Router v7**, **Lucide Icons**
+> Стек: **React 19**, **Redux Toolkit 2**, **TypeScript (Strict Mode)**, **Vite**, **Tailwind CSS v4**, **React Router v7**, **Lucide Icons**, **Vitest**
 
 [![Live Demo](https://img.shields.io/badge/🔥_Live_Demo-fit--pulse--beta--opal.vercel.app-38bdf8?style=for-the-badge&logo=vercel&labelColor=090d16)](https://fit-pulse-beta-opal.vercel.app)
-[![Build](https://img.shields.io/badge/Build-Passing-22c55e?style=for-the-badge&logo=github-actions&labelColor=090d16)](https://github.com/tsukanovSerhii/FitPulse/actions)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript&labelColor=090d16)](https://www.typescriptlang.org)
+[![Build & Tests](https://img.shields.io/badge/Build_%26_Tests-Passing-22c55e?style=for-the-badge&logo=github-actions&labelColor=090d16)](https://github.com/tsukanovSerhii/FitPulse/actions)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178c6?style=for-the-badge&logo=typescript&labelColor=090d16)](https://www.typescriptlang.org)
 
 ---
 
@@ -16,8 +16,9 @@
 FitPulse дозволяє:
 - Планувати щотижневі тренувальні розклади та спліти (Push/Pull/Legs, Full Body тощо).
 - Вести інтерактивні сесії в реальному часі: секундомір, фіксація ваги, повторень і таймер відпочинку зі звуковими сигналами.
+- Зберігати активну сесію при випадковому перезавантаженні сторінки без втрати поточного прогресу підходів.
 - Вивчати правильну техніку вправ через фотографічний плеєр рухів з реальними кадрами атлета та 3D-анімацію кінематичного манекена.
-- Аналізувати навантаження, відстежувати тоннаж і фіксувати особисті рекорди (PRs).
+- Аналізувати навантаження, відстежувати тоннаж і фіксувати достовірні особисті рекорди (PRs) з автоматичним перерахунком при коригуванні чи видаленні тренувань.
 - Розраховувати ІМТ та добову норму калорій за формулою Міффліна-Сан Жеора.
 
 ---
@@ -26,7 +27,7 @@ FitPulse дозволяє:
 
 🔗 **[https://fit-pulse-beta-opal.vercel.app](https://fit-pulse-beta-opal.vercel.app)**
 
-> Автоматично деплоїться з гілки `main` через **GitHub Actions → Vercel**. Кожен пуш у `main` запускає CI-пайплайн (lint → build → deploy).
+> Деплой на Vercel підключено через пряму GitHub-інтеграцію репозиторію. Перед цим кожен пуш у `main` проходить перевірку GitHub Actions CI (Linter → Automated Unit Tests → Strict Type Check & Build).
 
 ---
 
@@ -40,40 +41,37 @@ FitPulse дозволяє:
 - Фільтрація за групою м'язів, рівнем складності та обладнанням; повнотекстовий пошук.
 - Додавання кастомних вправ, збереження улюблених (Favorites).
 
-### 2. Планувальник тренувань
-- Створення та редагування тижневих програм (Пн–Нд).
+### 2. Планувальник тренувань та надійний Persistence
+- Створення, редагування та видалення тижневих програм (Пн–Нд).
 - Готові шаблони за замовчуванням (*"Push / Pull / Legs"*, *"Full Body для початківців"*).
-- Налаштування підходів, повторень, ваги, часу відпочинку та нотаток до кожної вправи.
-- Позначення активної програми для швидкого старту.
+- Додавання, зміна порядку та налаштування вправ через ізольовані асинхронні Redux Thunks (`addExerciseToDay`, `removeExerciseFromDay`, `updatePlanExercise`) з глибокою серіалізацією даних — жодних помилок Immer draft proxies.
+- Підтримка навмисно порожнього стану: видалення всіх програм зберігається у сховищі і не відновлює автоматично демонстраційні дані.
 
 ### 3. Активне тренування в реальному часі
-- Секундомір загальної тривалості.
+- Секундомір загальної тривалості тренування.
 - Покрокова навігація по запланованих вправах.
-- Фіксація фактичних повторень та ваги для кожного підходу.
-- **Автоматичний таймер відпочинку**: відлік назад, прогрес-бар, кнопки `−30с` / `+30с`, **іконка-перемикач звукового сигналу** (Web Audio API) та прямий `▶ Старт / ⏸ Пауза` без автозапуску при налаштуванні часу.
-- **Безпечне завершення / скасування тренування** через підтверджувальний модальний діалог.
+- **Збереження активної сесії**: навіть якщо випадково закрити чи перезавантажити вкладку, поточне тренування, час та зафіксовані підходи відновлюються зі сховища.
+- **Валідація підходів**: гарантована фільтрація від'ємних значень або помилкових даних для ваги та повторень перед фіксацією тоннажу.
+- **Автоматичний таймер відпочинку**: точний секундний таймер з коректним скиданням стану `isRunning=false` при досягненні нуля, кнопки швидкого додавання/віднімання часу, перемикач звукового сигналу (Web Audio API) та ручний `▶ Старт / ⏸ Пауза`.
+- **Безпечне завершення та скасування**: захист від випадкового скидання сесії через підтверджувальний діалог.
 
-### 4. Аналітика та особисті рекорди
-- Зведена статистика: кількість тренувань, загальний тоннаж, час у залі.
-- Автоматичне фіксування **PRs** у кожній вправі.
-- Детальний журнал історії з видаленням окремих записів.
+### 4. Аналітика та достовірні особисті рекорди (PRs)
+- Зведена статистика: кількість проведених тренувань, загальний піднятий тоннаж, час у залі.
+- **Математично достовірні рекорди**: максимальна вага фіксується разом із фактичною кількістю повторень, виконаних саме з цією вагою (`repsAtMaxWeight`).
+- **Синхронізація при видаленні**: при видаленні тренування з історії персональні рекорди автоматично перераховуються на основі залишкових сесій, видаляючи неактуальні значення.
+- Очищення всієї історії залишає журнал та рекорди порожніми без повернення демо-даних.
 
-### 5. Профіль та здоров'я
+### 5. Особистий профіль та здоров'я
 - Антропометричні дані: вік, стать, зріст, поточна та цільова вага, рівень активності.
-- Калькулятор **ІМТ / BMI** з категоріями ВООЗ.
-- Розрахунок добової норми калорій (BMR & TDEE) за метою (*набір маси, схуднення, підтримка*).
+- Калькулятор **ІМТ / BMI** з категоріями ВООЗ та здоровим діапазоном.
+- Розрахунок добової норми калорій (BMR & TDEE) за формулою Міффліна — Сан Жеора.
+- Опція повного скидання даних додатку.
 
 ### 6. Теми оформлення
-- Темна (Dark) та світла (Light) тема з плавним перемиканням і збереженням стану.
+- Підтримка темної (Dark) та світлої (Light) тем з інтерактивною кнопкою в Navbar, плавними переходами та збереженням у localStorage.
 
-### 7. Дизайн-система
-- Стримана, висококонтрастна темна естетика (`#090D16`), преміальні поверхні (`#121622`) і спокійний атлетичний акцент **Electric Sky (`#38BDF8`)**.
-- Типографіка: **Unbounded** для заголовків та метрик, **Manrope** для інтерфейсу.
-- Повна адаптивність: мобайл, планшет, десктоп.
-
-### 8. SEO та семантика
-- Динамічне оновлення `<title>`, мета-тегів і Open Graph для кожної сторінки.
-- Schema.org JSON-LD (`WebApplication`, `ExerciseAction`) для rich snippets у Google.
+### 7. Централізована ініціалізація даних
+- Забезпечено пряме відкриття будь-якого внутрішнього URL (наприклад, `/workout`, `/plans`, `/exercises`) у новій вкладці з автоматичним завантаженням каталогу та синхронізацією обраного плану.
 
 ---
 
@@ -83,7 +81,9 @@ FitPulse дозволяє:
 FitPulse/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml               # GitHub Actions: lint → build на кожен PR та push у main
+│       └── ci.yml               # GitHub Actions: Lint → Vitest Tests → Build
+├── tests/
+│   └── businessLogic.test.ts    # Автоматизовані регресійні тести persistence та PRs
 ├── public/
 │   ├── _redirects               # SPA-роутинг для Netlify
 │   ├── favicon.svg
@@ -107,13 +107,13 @@ FitPulse/
 │   │   └── layout/
 │   │       ├── Footer.tsx
 │   │       ├── MainLayout.tsx
-│   │       └── Navbar.tsx             # Таймер активного тренування, перемикач теми
+│   │       └── Navbar.tsx             # Меню, перемикач теми, статус тренування
 │   ├── features/
 │   │   ├── exercises/           # Каталог вправ
-│   │   ├── workoutPlan/         # Планувальник
-│   │   ├── workoutSession/      # Активна сесія
-│   │   ├── progress/            # Аналітика та PRs
-│   │   ├── profile/             # Профіль + ІМТ
+│   │   ├── workoutPlan/         # Планувальник програм
+│   │   ├── workoutSession/      # Активна сесія тренування
+│   │   ├── progress/            # Аналітика, журнал та PRs
+│   │   ├── profile/             # Профіль та калькулятор ІМТ
 │   │   └── theme/               # Dark / Light тема
 │   ├── pages/
 │   │   ├── DashboardPage.tsx
@@ -127,18 +127,18 @@ FitPulse/
 │   │   └── AppRoutes.tsx
 │   ├── services/
 │   │   ├── mockData/            # Початкові набори даних
-│   │   └── storage/             # localStorage-прошарок
+│   │   └── storage/             # Безпечний localStorage-прошарок
 │   ├── utils/
-│   │   ├── audio.ts             # Web Audio API — сигнал таймера відпочинку
+│   │   ├── audio.ts             # Web Audio API сигнал таймера
 │   │   ├── bmi.ts
 │   │   ├── formatters.ts
 │   │   └── seo.ts
-│   ├── App.tsx
+│   ├── App.tsx                  # DataInitializer + Router
 │   ├── main.tsx
 │   └── index.css
 ├── package.json
-├── tsconfig.json
-├── vercel.json                  # SPA-редиректи для Vercel
+├── tsconfig.app.json            # TypeScript Strict Mode
+├── vercel.json                  # SPA-конфігурація для Vercel
 └── vite.config.ts
 ```
 
@@ -146,36 +146,39 @@ FitPulse/
 
 ## ⚡ Управління станом: Redux Toolkit
 
-6 слайсів на `createSlice` + async thunks через `createAsyncThunk`:
+6 модульних слайсів на `createSlice` + async thunks через `createAsyncThunk`:
 
-| Слайс | Ключові thunks / reducers |
+| Слайс | Ключові операції |
 |:---|:---|
 | `exercisesSlice` | `fetchExercises`, `addCustomExercise`, `toggleFavorite`, `setFilter` |
-| `workoutPlanSlice` | `fetchPlans`, `savePlanAsync`, `deletePlanAsync`, `setActivePlanAsync`, `addExerciseToDay` |
-| `workoutSessionSlice` | `startWorkout`, `finishWorkout`, `cancelWorkout`, `completeSet`, `startRestTimer`, `toggleRestTimer`, `addRestSeconds`, `skipRestTimer` |
-| `progressSlice` | `fetchProgress`, `logWorkoutAsync`, `deleteWorkoutLogAsync` |
+| `workoutPlanSlice` | `fetchPlans`, `savePlanAsync`, `deletePlanAsync`, `setActivePlanAsync`, `addExerciseToDay`, `removeExerciseFromDay`, `updatePlanExercise` |
+| `workoutSessionSlice` | `startWorkout`, `finishWorkout`, `cancelWorkout`, `completeSet`, `tickRestTimer`, `toggleRestTimer`, `addRestSeconds`, `skipRestTimer` (з автозбереженням сесії) |
+| `progressSlice` | `fetchProgress`, `logWorkoutAsync`, `deleteWorkoutLogAsync` (з автоматичним перерахунком PRs) |
 | `profileSlice` | `fetchProfile`, `updateProfileAsync`, `resetProfileAsync` |
-| `themeSlice` | Dark / Light перемикання DOM-класу `light` |
+| `themeSlice` | Перемикання та збереження Dark/Light теми |
 
 ---
 
-## 🚀 Локальний запуск
+## 🚀 Локальний запуск та тестування
 
 ### Передумови
-**Node.js** ≥ 18
+**Node.js** ≥ 20.19 або **Node.js** ≥ 22.12+ (LTS)
 
 ```bash
 # 1. Встановити залежності
 npm install
 
-# 2. Запустити dev-сервер
+# 2. Запустити локальний dev-сервер
 npm run dev
 # → http://localhost:5173
 
-# 3. Перевірка лінтером
+# 3. Перевірка якості коду лінтером (0 warnings, 0 errors)
 npm run lint
 
-# 4. Продакшн-збірка
+# 4. Запуск автоматизованих бізнес-тестів (Vitest)
+npm run test
+
+# 5. Type-Check у строгому режимі та Production Build
 npm run build
 ```
 
@@ -183,34 +186,29 @@ npm run build
 
 ## 🌐 Деплой
 
-### Vercel (поточний хостинг)
-
+### Vercel (Production)
 1. Підключіть репозиторій до [Vercel](https://vercel.com).
-2. Vercel автоматично визначить Vite-пресет.
-3. Налаштування збірки:
+2. Налаштування збірки (визначаються автоматично):
+   - **Framework Preset**: Vite
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
-4. Файл `vercel.json` забезпечує коректну обробку SPA-маршрутів при прямих переходах.
-
-### Netlify (альтернатива)
-
-1. **Build command**: `npm run build`
-2. **Publish directory**: `dist`
-3. Файл `public/_redirects` вирішує 404 при прямих посиланнях.
+3. Файл `vercel.json` забезпечує коректну обробку всіх маршрутів SPA при прямих переходах та перезавантаженні сторінок.
 
 ---
 
-## 🔄 CI/CD: GitHub Actions
+## 🔄 CI/CD Пайплайн (GitHub Actions)
 
-Кожен `push` у `main` або `pull request` автоматично запускає пайплайн:
+Кожен `push` у гілку `main` або `pull request` автоматично запускає перевірки:
 
-```yaml
-# .github/workflows/ci.yml
-lint → build
+```text
+GitHub Actions Workflow (.github/workflows/ci.yml):
+├── 1. Code Quality: npm run lint
+├── 2. Automated Tests: npm run test (Vitest)
+└── 3. Type-Check & Production Build: npm run build (tsc strict + vite)
 ```
 
-Після успішного проходження CI, Vercel автоматично публікує нову версію на:  
-🔗 **https://fit-pulse-beta-opal.vercel.app**
+Після успішного проходження пайплайну оновлена версія автоматично розгортається на Vercel:  
+🔗 **[https://fit-pulse-beta-opal.vercel.app](https://fit-pulse-beta-opal.vercel.app)**
 
 ---
 
@@ -218,10 +216,11 @@ lint → build
 
 | Критерій | Статус | Деталі |
 |:---|:---:|:---|
-| **Vite + React 19** | ✅ | Найновіший стек, строгий TypeScript, no `any` |
-| **Redux Toolkit 2** | ✅ | 6 слайсів, 10+ async thunks з `pending/fulfilled/rejected` |
-| **0 Lint Errors** | ✅ | `npm run lint` та `npm run build` — 0 помилок, 0 попереджень |
-| **Біомеханіка** | ✅ | Кінематичний манекен, фотофази руху, карта м'язів |
-| **CI/CD** | ✅ | GitHub Actions → Vercel авто-деплой |
-| **Адаптивність** | ✅ | Mobile-first, Tailwind CSS v4 |
-| **SEO** | ✅ | Open Graph, Twitter Card, Schema.org JSON-LD |
+| **Vite + React 19** | ✅ | Сучасна компонентна архітектура, React Router 7 |
+| **TypeScript Strict** | ✅ | Повний строгий режим (`"strict": true`), 0 помилок типів |
+| **Автоматизовані тести** | ✅ | 6 тестів бізнес-логіки та persistence (Vitest) |
+| **Redux Toolkit 2** | ✅ | Чисті редьюсери, ізольовані async thunks, no draft leaks |
+| **0 Lint Errors** | ✅ | Швидкий Oxlint проходить із 0 помилок та 0 попереджень |
+| **Надійність даних** | ✅ | Підтримка порожніх станів, перерахунок рекордів, збереження сесії |
+| **CI/CD** | ✅ | Повний GitHub Actions CI + Vercel автоматичний деплой |
+| **Теми оформлення** | ✅ | Повноцінна підтримка світлої та темної тем через UI |

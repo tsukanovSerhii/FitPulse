@@ -11,13 +11,23 @@ const STORAGE_KEYS = {
   PERSONAL_RECORDS: 'fitpulse_prs_v1',
   USER_PROFILE: 'fitpulse_profile_v1',
   THEME: 'fitpulse_theme_v1',
+  ACTIVE_SESSION: 'fitpulse_active_session_v1',
 } as const
+
+export function hasStorageKey(key: string): boolean {
+  if (typeof window === 'undefined') return false
+  try {
+    return window.localStorage.getItem(key) !== null
+  } catch {
+    return false
+  }
+}
 
 export function loadFromStorage<T>(key: string, defaultValue: T): T {
   if (typeof window === 'undefined') return defaultValue
   try {
     const raw = window.localStorage.getItem(key)
-    if (!raw) return defaultValue
+    if (raw === null || raw === undefined || raw === '') return defaultValue
     return JSON.parse(raw) as T
   } catch (error) {
     console.warn(`[Storage] Помилка завантаження ключа "${key}":`, error)
