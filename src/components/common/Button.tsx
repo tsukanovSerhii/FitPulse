@@ -28,17 +28,17 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantClasses = {
     primary:
-      'bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold shadow-md shadow-sky-950/40 border border-sky-400/20 active:shadow-none',
+      'bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold shadow-md shadow-sky-950/20 border border-sky-400/20 active:shadow-none',
     secondary:
-      'bg-slate-800/90 hover:bg-slate-700 active:bg-slate-800 text-slate-100 border border-slate-700 shadow-sm',
+      'bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 border border-slate-300/80 dark:bg-slate-800/90 dark:hover:bg-slate-700 dark:active:bg-slate-800 dark:text-slate-100 dark:border-slate-700 shadow-sm',
     outline:
-      'border border-slate-700 text-slate-200 hover:bg-slate-800/60 hover:border-slate-600',
+      'border border-slate-300 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800/60 dark:hover:border-slate-600',
     danger:
-      'bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 active:bg-rose-500/30',
+      'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 active:bg-rose-200 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-500/30 dark:hover:bg-rose-500/25',
     ghost:
-      'text-slate-400 hover:text-white hover:bg-white/5',
+      'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5',
     success:
-      'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white border border-emerald-400/20 shadow-md shadow-emerald-950/30 font-bold',
+      'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white border border-emerald-400/20 shadow-md shadow-emerald-950/20 font-bold',
   }
 
   return (

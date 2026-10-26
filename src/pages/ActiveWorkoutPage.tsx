@@ -404,21 +404,21 @@ export const ActiveWorkoutPage: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-12">
       {/* Top Session Status Bar */}
-      <div className="glass-panel rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-2xl border border-sky-500/20">
+      <div className="rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl border bg-white dark:bg-[#121622] border-slate-200 dark:border-sky-500/20">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center shadow-lg shadow-sky-950/40 shrink-0">
             <Timer className="w-6 h-6 animate-pulse" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-white">
+            <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
               {sanitizedDayLabel}
             </h2>
             <div className="flex items-center gap-2.5 mt-1">
-              <span className="text-xs sm:text-sm text-sky-300 font-mono font-bold bg-sky-500/15 px-2.5 py-0.5 rounded-md border border-sky-500/30">
+              <span className="text-xs sm:text-sm font-mono font-bold text-sky-700 bg-sky-50 border-sky-200 dark:text-sky-300 dark:bg-sky-500/15 dark:border-sky-500/30 px-2.5 py-0.5 rounded-md border">
                 Час: {formatDuration(session.elapsedSeconds)}
               </span>
-              <span className="text-slate-600">•</span>
-              <span className="text-xs text-slate-300 font-semibold">
+              <span className="text-slate-400 dark:text-slate-600">•</span>
+              <span className="text-xs text-slate-600 dark:text-slate-300 font-semibold">
                 Вправа {currentIdx + 1} з {totalExercises}
               </span>
             </div>
@@ -452,9 +452,9 @@ export const ActiveWorkoutPage: React.FC = () => {
 
       {/* Main Exercise Card */}
       {currentPlanExercise && currentExerciseData ? (
-        <Card className="border-slate-800/80 bg-slate-900/85 p-6 space-y-6 shadow-2xl">
+        <Card className="p-6 space-y-6 shadow-xl">
           {/* Navigator Header */}
-          <div className="flex items-center justify-between gap-2 pb-4 border-b border-slate-800">
+          <div className="flex items-center justify-between gap-2 pb-4 border-b border-slate-200 dark:border-slate-800">
             <Button
               variant="secondary"
               size="sm"
@@ -465,7 +465,7 @@ export const ActiveWorkoutPage: React.FC = () => {
               Назад
             </Button>
 
-            <span className="text-xs font-bold text-sky-300 bg-sky-500/15 px-3 py-1 rounded-full border border-sky-500/30">
+            <span className="text-xs font-bold text-sky-700 bg-sky-50 border-sky-200 dark:text-sky-300 dark:bg-sky-500/15 px-3 py-1 rounded-full border dark:border-sky-500/30">
               Вправа {currentIdx + 1} з {totalExercises}
             </span>
 
@@ -483,7 +483,7 @@ export const ActiveWorkoutPage: React.FC = () => {
           <div>
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="text-2xl font-black text-white">
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white">
                   {currentExerciseData.name}
                 </h3>
                 <div className="flex flex-wrap items-center gap-2 mt-2">
@@ -512,7 +512,7 @@ export const ActiveWorkoutPage: React.FC = () => {
             </div>
 
             {currentPlanExercise.notes && (
-              <div className="mt-3 text-xs text-sky-300 bg-sky-500/10 p-3 rounded-xl border border-sky-500/20 italic">
+              <div className="mt-3 text-xs text-sky-800 bg-sky-50 border-sky-200 dark:text-sky-300 dark:bg-sky-500/10 p-3 rounded-xl border dark:border-sky-500/20 italic">
                 Вказівка: {currentPlanExercise.notes}
               </div>
             )}
@@ -530,7 +530,7 @@ export const ActiveWorkoutPage: React.FC = () => {
 
           {/* Sets Logger */}
           <div className="space-y-3 pt-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Підходи та вага:
             </h4>
 
@@ -554,9 +554,9 @@ export const ActiveWorkoutPage: React.FC = () => {
           </div>
 
           {/* Bottom stepper navigator bar */}
-          <div className="flex items-center justify-between pt-5 border-t border-slate-800">
-            <div className="text-xs text-slate-400">
-              Виконано в цій вправі: <strong className="text-white">{currentExerciseSets.length}</strong> з {currentPlanExercise.sets} сетів
+          <div className="flex items-center justify-between pt-5 border-t border-slate-200 dark:border-slate-800">
+            <div className="text-xs text-slate-500 dark:text-slate-400">
+              Виконано в цій вправі: <strong className="text-slate-900 dark:text-white">{currentExerciseSets.length}</strong> з {currentPlanExercise.sets} сетів
             </div>
 
             {currentIdx < totalExercises - 1 ? (
@@ -580,7 +580,7 @@ export const ActiveWorkoutPage: React.FC = () => {
           </div>
         </Card>
       ) : (
-        <div className="text-center py-12 text-slate-400">
+        <div className="text-center py-12 text-slate-500 dark:text-slate-400">
           У цьому тренуванні немає вправ.
         </div>
       )}

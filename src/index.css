@@ -41,7 +41,7 @@ body {
 }
 
 html.light body {
-  background-color: #f1f5f9;
+  background-color: #f8fafc;
   color: #0f172a;
 }
 
@@ -49,6 +49,15 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Unbounded', 'Manrope', sans-serif;
   letter-spacing: -0.03em;
   font-weight: 700;
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6 {
+  color: #0f172a;
 }
 
 /* Selection */
@@ -65,76 +74,104 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-track {
   background: #090d16;
 }
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #38bdf8;
 }
 
 /* ============================================================
-   LIGHT THEME — global overrides
-   All slate-8xx/9xx/9xx classes flip to light equivalents
+   LIGHT THEME — Clean Athletic Light Styling
    ============================================================ */
 
-/* Backgrounds: dark surfaces → light surfaces */
+/* Surface and card container overrides */
 html.light [class~="bg-[#090d16]"] { background-color: #f1f5f9 !important; }
 html.light [class~="bg-[#121622]"] { background-color: #ffffff !important; }
 html.light [class~="bg-[#161b28]"] { background-color: #f8fafc !important; }
 
-/* Tailwind slate BG overrides */
-html.light .bg-slate-950 { background-color: #f8fafc !important; }
-html.light .bg-slate-900 { background-color: #f1f5f9 !important; }
-html.light .bg-slate-800 { background-color: #e2e8f0 !important; }
-html.light .bg-slate-800\/90 { background-color: rgba(226,232,240,0.9) !important; }
-html.light .bg-slate-800\/60 { background-color: rgba(226,232,240,0.6) !important; }
-html.light .bg-slate-700 { background-color: #cbd5e1 !important; }
+/* Slate backgrounds in light mode */
+html.light .bg-slate-950,
+html.light [class*="bg-slate-950"] { background-color: #f8fafc !important; }
 
-/* Opacity variants */
-html.light .bg-slate-950\/60 { background-color: rgba(248,250,252,0.6) !important; }
-html.light .bg-slate-950\/20 { background-color: rgba(248,250,252,0.2) !important; }
-html.light .bg-slate-900\/60 { background-color: rgba(241,245,249,0.6) !important; }
-html.light .bg-slate-900\/40 { background-color: rgba(241,245,249,0.4) !important; }
+html.light .bg-slate-900,
+html.light [class*="bg-slate-900"] { background-color: #ffffff !important; }
 
-/* CSS variable surface / card / bg-surface / bg-card used in Tailwind v4 theme */
+html.light .bg-slate-800,
+html.light [class*="bg-slate-800"] { background-color: #f1f5f9 !important; }
+
+html.light .bg-slate-700 { background-color: #e2e8f0 !important; }
+
+/* CSS variable surface / card tokens */
 html.light .bg-surface,
 html.light [class*="bg-surface"] { background-color: #ffffff !important; }
 html.light .bg-card,
-html.light [class*="bg-card"]    { background-color: #f8fafc !important; }
+html.light [class*="bg-card"]    { background-color: #ffffff !important; }
 
-/* Text colors */
-html.light .text-white  { color: #0f172a !important; }
+/* Text colors — dark readable tones for light backgrounds */
 html.light .text-slate-100 { color: #0f172a !important; }
 html.light .text-slate-200 { color: #1e293b !important; }
 html.light .text-slate-300 { color: #334155 !important; }
 html.light .text-slate-400 { color: #475569 !important; }
 html.light .text-slate-500 { color: #64748b !important; }
 
+/* Solid colored buttons & badges MUST keep crisp white text */
+button.bg-sky-600,
+a.bg-sky-600,
+button.bg-sky-500,
+a.bg-sky-500,
+button.bg-emerald-600,
+a.bg-emerald-600,
+.badge-solid,
+[class*="bg-sky-600"] text {
+  color: #ffffff !important;
+}
+
 /* Border colors */
-html.light .border-slate-800 { border-color: #cbd5e1 !important; }
-html.light .border-slate-700 { border-color: #94a3b8 !important; }
-html.light .border-slate-600 { border-color: #64748b !important; }
-html.light .border-white\/5  { border-color: rgba(0,0,0,0.06) !important; }
-html.light .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
-html.light .border-white\/\[0\.07\] { border-color: rgba(0,0,0,0.07) !important; }
+html.light .border-slate-800,
+html.light [class*="border-slate-800"],
+html.light .border-slate-700,
+html.light [class*="border-slate-700"] {
+  border-color: #e2e8f0 !important;
+}
+
+html.light .border-slate-600 { border-color: #cbd5e1 !important; }
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/\[0\.07\],
+html.light .border-white\/\[0\.08\] {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
 
 /* border-border custom token */
 html.light .border-border,
-html.light [class*="border-border"] { border-color: #cbd5e1 !important; }
+html.light [class*="border-border"] { border-color: #e2e8f0 !important; }
 
-/* White/transparent overlays that invert in light mode */
-html.light .bg-white\/5  { background-color: rgba(0,0,0,0.04) !important; }
-html.light .bg-white\/10 { background-color: rgba(0,0,0,0.06) !important; }
-html.light .hover\:bg-white\/5:hover  { background-color: rgba(0,0,0,0.04) !important; }
-html.light .hover\:bg-white\/10:hover { background-color: rgba(0,0,0,0.06) !important; }
+/* Translucent overlay adjustments in light mode */
+html.light .bg-white\/5  { background-color: rgba(0, 0, 0, 0.03) !important; }
+html.light .bg-white\/10 { background-color: rgba(0, 0, 0, 0.05) !important; }
+html.light .hover\:bg-white\/5:hover  { background-color: rgba(0, 0, 0, 0.04) !important; }
+html.light .hover\:bg-white\/10:hover { background-color: rgba(0, 0, 0, 0.06) !important; }
 
-/* Modal / overlay backdrops */
-html.light .bg-slate-900\/80 { background-color: rgba(248,250,252,0.85) !important; }
-html.light .bg-slate-900\/90 { background-color: rgba(248,250,252,0.9) !important; }
-html.light .bg-slate-900\/95 { background-color: rgba(248,250,252,0.95) !important; }
+/* Mobile drawer bg in light mode */
+html.light [class~="bg-[#090d16]/98"] { background-color: rgba(255, 255, 255, 0.98) !important; }
 
-/* Inputs */
+/* Modal backdrops in light mode */
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/95 {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Inputs in light mode */
 html.light input,
 html.light textarea,
 html.light select {
@@ -179,12 +216,6 @@ html.light .fitness-card:hover {
 }
 
 html.light .glass-nav {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-/* MainLayout root wrapper — needed because bg is inline */
-html.light #root > div:first-child {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
 }

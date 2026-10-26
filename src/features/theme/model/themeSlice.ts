@@ -4,17 +4,22 @@ import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage
 
 const savedTheme = loadFromStorage<ThemeMode>(STORAGE_KEYS.THEME, 'dark')
 
-const initialState: ThemeState = {
-  mode: savedTheme,
-}
-
-// Застосовуємо тему до DOM
-if (typeof document !== 'undefined') {
-  if (savedTheme === 'light') {
+function applyThemeToDOM(mode: ThemeMode) {
+  if (typeof document === 'undefined') return
+  if (mode === 'light') {
     document.documentElement.classList.add('light')
+    document.documentElement.classList.remove('dark')
   } else {
+    document.documentElement.classList.add('dark')
     document.documentElement.classList.remove('light')
   }
+}
+
+// Застосовуємо тему до DOM при першому завантаженні
+applyThemeToDOM(savedTheme)
+
+const initialState: ThemeState = {
+  mode: savedTheme,
 }
 
 export const themeSlice = createSlice({
@@ -24,24 +29,12 @@ export const themeSlice = createSlice({
     toggleTheme: (state) => {
       state.mode = state.mode === 'dark' ? 'light' : 'dark'
       saveToStorage(STORAGE_KEYS.THEME, state.mode)
-      if (typeof document !== 'undefined') {
-        if (state.mode === 'light') {
-          document.documentElement.classList.add('light')
-        } else {
-          document.documentElement.classList.remove('light')
-        }
-      }
+      applyThemeToDOM(state.mode)
     },
     setTheme: (state, action: PayloadAction<ThemeMode>) => {
       state.mode = action.payload
       saveToStorage(STORAGE_KEYS.THEME, state.mode)
-      if (typeof document !== 'undefined') {
-        if (state.mode === 'light') {
-          document.documentElement.classList.add('light')
-        } else {
-          document.documentElement.classList.remove('light')
-        }
-      }
+      applyThemeToDOM(state.mode)
     },
   },
 })

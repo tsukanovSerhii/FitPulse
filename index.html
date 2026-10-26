@@ -13,6 +13,18 @@
     <meta name="author" content="FitPulse / Serhii Tsukanov" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#090d16" />
+    <script>
+      try {
+        var t = localStorage.getItem('fitpulse_theme_v1');
+        if (t === '"light"' || t === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        }
+      } catch (e) {}
+    </script>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
