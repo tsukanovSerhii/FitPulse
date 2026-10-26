@@ -159,6 +159,22 @@ export const workoutSessionSlice = createSlice({
       }
     },
 
+    subtractRestSeconds: (state, action: PayloadAction<number>) => {
+      if (state.restTimer.isRunning) {
+        const delta = action.payload || 15
+        if (state.restTimer.remainingSeconds <= delta) {
+          state.restTimer.remainingSeconds = 0
+          state.restTimer.isRunning = false
+        } else {
+          state.restTimer.remainingSeconds -= delta
+          state.restTimer.totalSeconds = Math.max(
+            state.restTimer.remainingSeconds,
+            state.restTimer.totalSeconds - delta,
+          )
+        }
+      }
+    },
+
     skipRestTimer: (state) => {
       state.restTimer.isRunning = false
       state.restTimer.remainingSeconds = 0
@@ -179,6 +195,7 @@ export const {
   startRestTimer,
   tickRestTimer,
   addRestSeconds,
+  subtractRestSeconds,
   skipRestTimer,
 } = workoutSessionSlice.actions
 

@@ -356,6 +356,20 @@ export const ActiveWorkoutPage: React.FC = () => {
     )
   }
 
+  // Sanitize dayLabel: remove nested parenthetical info
+  const sanitizedDayLabel = (() => {
+    const raw = session.dayLabel || ''
+    if (!raw) return 'Активне тренування'
+    // "Понеділок (Push / Pull / Legs (3 дні на тиждень))" → "Понеділок • Push / Pull / Legs"
+    const match = raw.match(/^([^(]+)\s*\((.+)\)\s*$/)
+    if (match) {
+      const day = match[1].trim()
+      const inner = match[2].replace(/\s*\([^)]*\)/g, '').trim()
+      return `${day} • ${inner}`
+    }
+    return raw
+  })()
+
   // =========================================================================
   // VIEW: ACTIVE WORKOUT IN PROGRESS
   // =========================================================================
@@ -372,7 +386,7 @@ export const ActiveWorkoutPage: React.FC = () => {
           </div>
           <div>
             <h2 className="text-lg sm:text-xl font-black text-white">
-              {session.dayLabel || 'Активне тренування'}
+              {sanitizedDayLabel}
             </h2>
             <div className="flex items-center gap-2.5 mt-1">
               <span className="text-xs sm:text-sm text-sky-300 font-mono font-bold bg-sky-500/15 px-2.5 py-0.5 rounded-md border border-sky-500/30">
