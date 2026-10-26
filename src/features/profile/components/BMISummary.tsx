@@ -18,7 +18,7 @@ export const BMISummary: React.FC<BMISummaryProps> = ({ profile }) => {
       <Card className="border-slate-800/80 bg-slate-900/80 p-6 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-2xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center shrink-0">
               <Activity className="w-6 h-6" />
             </div>
             <div>
@@ -27,7 +27,7 @@ export const BMISummary: React.FC<BMISummaryProps> = ({ profile }) => {
             </div>
           </div>
           <div className="text-left sm:text-right">
-            <span className="text-3xl sm:text-4xl font-black text-purple-300 font-mono tracking-tight">
+            <span className="text-3xl sm:text-4xl font-black text-sky-400 font-mono tracking-tight">
               {result.bmi}
             </span>
             <span className={`block text-xs font-bold ${result.color} mt-0.5`}>
@@ -51,10 +51,10 @@ export const BMISummary: React.FC<BMISummaryProps> = ({ profile }) => {
 
           <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800">
             <span className="text-slate-400 font-semibold block mb-1 flex items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-indigo-400" />
+              <Target className="w-3.5 h-3.5 text-sky-400" />
               До цільової ваги
             </span>
-            <span className="text-base font-black text-indigo-300 font-mono">
+            <span className="text-base font-black text-sky-300 font-mono">
               {weightDiff > 0 ? `+${weightDiff} кг` : weightDiff < 0 ? `${weightDiff} кг` : 'Досягнуто!'}
             </span>
           </div>

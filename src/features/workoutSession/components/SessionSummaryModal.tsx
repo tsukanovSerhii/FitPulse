@@ -39,7 +39,7 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
         <div className="grid grid-cols-2 gap-3 text-left">
           <div className="p-3.5 bg-surface rounded-xl border border-border">
             <span className="text-[11px] text-slate-400 flex items-center gap-1.5 mb-1">
-              <Clock className="w-3.5 h-3.5 text-purple-400" />
+              <Clock className="w-3.5 h-3.5 text-sky-400" />
               Тривалість
             </span>
             <span className="text-lg font-bold text-slate-100 font-mono">
@@ -49,7 +49,7 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
 
           <div className="p-3.5 bg-surface rounded-xl border border-border">
             <span className="text-[11px] text-slate-400 flex items-center gap-1.5 mb-1">
-              <Dumbbell className="w-3.5 h-3.5 text-indigo-400" />
+              <Dumbbell className="w-3.5 h-3.5 text-cyan-400" />
               Загальний тоннаж
             </span>
             <span className="text-lg font-bold text-slate-100 font-mono">
@@ -87,7 +87,7 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
             {workoutLog.exercises.map((ex) => (
               <div key={ex.exerciseId} className="flex justify-between items-center py-1 border-b border-border/40 last:border-0">
                 <span className="text-slate-200">{ex.exerciseName}</span>
-                <span className="text-purple-300 font-medium">
+                <span className="text-sky-300 font-medium">
                   {ex.setsCompleted} сетів • {ex.totalReps} повт {ex.maxWeightKg ? `(${ex.maxWeightKg} кг)` : ''}
                 </span>
               </div>

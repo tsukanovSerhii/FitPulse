@@ -31,12 +31,12 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
           </div>
           <div className="flex items-center gap-3 text-xs text-slate-400">
             <span className="flex items-center gap-1.5 font-medium">
-              <Calendar className="w-3.5 h-3.5 text-purple-400" />
+              <Calendar className="w-3.5 h-3.5 text-sky-400" />
               {formatDate(log.date)}
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5 font-medium">
-              <Clock className="w-3.5 h-3.5 text-indigo-400" />
+              <Clock className="w-3.5 h-3.5 text-sky-400" />
               {formatDuration(log.durationSeconds)}
             </span>
           </div>
@@ -98,7 +98,7 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
                   </span>
                 </div>
                 {ex.maxWeightKg ? (
-                  <span className="text-xs font-black text-purple-400 font-mono bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20">
+                  <span className="text-xs font-black text-sky-400 font-mono bg-sky-500/10 px-2.5 py-1 rounded-lg border border-sky-500/20">
                     макс. {ex.maxWeightKg} кг
                   </span>
                 ) : null}

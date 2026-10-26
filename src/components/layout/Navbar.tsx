@@ -109,7 +109,7 @@ export const Navbar: React.FC = () => {
             {themeMode === 'dark' ? (
               <Sun className="w-4 h-4 text-sky-400" />
             ) : (
-              <Moon className="w-4 h-4 text-purple-400" />
+              <Moon className="w-4 h-4 text-sky-400" />
             )}
           </button>
 

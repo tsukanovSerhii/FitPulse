@@ -109,7 +109,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                     <span
                       className={`w-8 h-8 rounded-xl text-xs font-black flex items-center justify-center shrink-0 ${
                         hasExercises
-                          ? 'bg-gradient-to-tr from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30'
+                          ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
                           : 'bg-slate-800 text-slate-500'
                       }`}
                     >
@@ -159,7 +159,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                           key={pEx.id}
                           className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 shadow-sm"
                         >
-                          <Dumbbell className="w-3 h-3 text-purple-400" />
+                          <Dumbbell className="w-3 h-3 text-sky-400" />
                           <strong className="text-slate-200">{ex ? ex.name : 'Вправа'}:</strong>
                           <span>
                             {pEx.sets}×{pEx.reps}

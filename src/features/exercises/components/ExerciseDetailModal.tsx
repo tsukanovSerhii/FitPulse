@@ -89,7 +89,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               Підходи
             </span>
             <span className="text-base font-extrabold text-white flex items-center justify-center gap-1 font-mono">
-              <RefreshCw className="w-3.5 h-3.5 text-purple-400" />
+              <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
               {exercise.defaultSets} сети
             </span>
           </div>
@@ -99,7 +99,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               Повторення
             </span>
             <span className="text-base font-extrabold text-white flex items-center justify-center gap-1 font-mono">
-              <Dumbbell className="w-3.5 h-3.5 text-indigo-400" />
+              <Dumbbell className="w-3.5 h-3.5 text-sky-400" />
               {exercise.defaultReps} повт
             </span>
           </div>
@@ -122,7 +122,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             onClick={() => setActiveTab('technique')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'technique'
-                ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30'
+                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -135,7 +135,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             onClick={() => setActiveTab('anatomy')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'anatomy'
-                ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30'
+                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -148,7 +148,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             onClick={() => setActiveTab('guide')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'guide'
-                ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30'
+                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -175,7 +175,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                     key={step.step}
                     className="flex items-start gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 leading-relaxed"
                   >
-                    <span className="w-6 h-6 rounded-lg bg-purple-600/20 text-purple-300 border border-purple-500/30 font-bold flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 rounded-lg bg-sky-500/15 text-sky-300 border border-sky-500/30 font-bold flex items-center justify-center shrink-0">
                       {step.step}
                     </span>
                     <span className="pt-0.5">{step.description}</span>
@@ -247,9 +247,9 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             </div>
 
             {/* Pro Tips for Experienced Gymgoers */}
-            <div className="p-4 rounded-2xl bg-purple-950/25 border border-purple-500/30 space-y-2.5">
-              <h4 className="text-sm font-extrabold text-purple-300 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-purple-400" />
+            <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 space-y-2.5">
+              <h4 className="text-sm font-extrabold text-amber-300 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-amber-400" />
                 Професійні тонкощі для досвідчених (Pro Level):
               </h4>
               <ul className="space-y-2 text-xs text-slate-200">

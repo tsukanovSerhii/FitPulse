@@ -33,7 +33,7 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
   const getSvgStroke = (muscle: MuscleGroup) => {
     const status = getMuscleStatus(muscle)
     if (status === 'primary') return '#38bdf8'
-    if (status === 'secondary') return '#818cf8'
+    if (status === 'secondary') return '#22d3ee'
     return '#334155'
   }
 
@@ -56,8 +56,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
             <span className="w-2 h-2 rounded-full bg-sky-400" />
             Основний
           </span>
-          <span className="flex items-center gap-1.5 text-indigo-300 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-indigo-400" />
+          <span className="flex items-center gap-1.5 text-cyan-300 font-semibold">
+            <span className="w-2 h-2 rounded-full bg-cyan-400" />
             Допоміжний
           </span>
         </div>
@@ -77,8 +77,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
                 <stop offset="100%" stopColor="#0284c7" />
               </linearGradient>
               <linearGradient id="secondaryGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#818cf8" />
-                <stop offset="100%" stopColor="#4f46e5" />
+                <stop offset="0%" stopColor="#22d3ee" />
+                <stop offset="100%" stopColor="#0891b2" />
               </linearGradient>
             </defs>
 
@@ -315,7 +315,7 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               {secondaryMuscles.map((m) => (
                 <span
                   key={m}
-                  className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20"
+                  className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20"
                 >
                   {MUSCLE_GROUP_LABELS[m]}
                 </span>

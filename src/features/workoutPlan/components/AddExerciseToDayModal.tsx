@@ -102,7 +102,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
                     className="p-3 bg-surface rounded-xl border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-lg bg-purple-600/20 text-purple-400 font-bold text-xs flex items-center justify-center shrink-0">
+                      <span className="w-6 h-6 rounded-lg bg-sky-500/15 text-sky-400 font-bold text-xs flex items-center justify-center shrink-0 border border-sky-500/20">
                         {index + 1}
                       </span>
                       <div>
@@ -115,7 +115,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
                           <span>• {pEx.restSeconds}с відпочинок</span>
                         </div>
                         {pEx.notes && (
-                          <p className="text-[11px] text-purple-300 italic mt-1">
+                          <p className="text-[11px] text-sky-300 italic mt-1">
                             Нотатка: {pEx.notes}
                           </p>
                         )}
@@ -134,7 +134,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
                               weight: e.target.value === '' ? undefined : Number(e.target.value),
                             })
                           }
-                          className="w-14 px-2 py-1 bg-card border border-border rounded-lg text-center text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          className="w-14 px-2 py-1 bg-card border border-border rounded-lg text-center text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
                         />
                       </div>
 
@@ -156,7 +156,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
         {/* Add new exercise form */}
         <div className="pt-4 border-t border-border">
           <h4 className="text-sm font-bold text-slate-200 mb-3 flex items-center gap-2">
-            <Plus className="w-4 h-4 text-purple-400" />
+            <Plus className="w-4 h-4 text-sky-400" />
             Додати вправу до розкладу
           </h4>
 
@@ -168,7 +168,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
               <select
                 value={selectedExId}
                 onChange={(e) => handleExerciseSelectChange(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
               >
                 {allExercises.map((e) => (
                   <option key={e.id} value={e.id}>

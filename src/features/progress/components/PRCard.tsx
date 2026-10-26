@@ -18,7 +18,7 @@ export const PRCard: React.FC<PRCardProps> = ({ pr }) => {
         <div>
           <h4 className="text-sm font-bold text-white">{pr.exerciseName}</h4>
           <span className="text-[11px] text-slate-400 flex items-center gap-1.5 mt-1">
-            <Calendar className="w-3 h-3 text-purple-400" />
+            <Calendar className="w-3 h-3 text-slate-400" />
             Встановлено: {formatDate(pr.achievedAt)}
           </span>
         </div>

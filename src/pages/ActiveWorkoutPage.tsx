@@ -487,7 +487,7 @@ export const ActiveWorkoutPage: React.FC = () => {
             </div>
 
             {currentPlanExercise.notes && (
-              <div className="mt-3 text-xs text-purple-300 bg-purple-500/10 p-3 rounded-xl border border-purple-500/20 italic">
+              <div className="mt-3 text-xs text-sky-300 bg-sky-500/10 p-3 rounded-xl border border-sky-500/20 italic">
                 Вказівка: {currentPlanExercise.notes}
               </div>
             )}

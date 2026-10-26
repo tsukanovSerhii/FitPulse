@@ -6,7 +6,7 @@ import { Button } from '@/components/common/Button'
 export const NotFoundPage: React.FC = () => {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-4">
-      <div className="w-16 h-16 rounded-3xl bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center mb-4">
+      <div className="w-16 h-16 rounded-3xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center mb-4">
         <Dumbbell className="w-8 h-8" />
       </div>
       <h1 className="text-4xl font-black text-slate-100 mb-2">404</h1>
