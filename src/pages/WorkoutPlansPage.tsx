@@ -11,6 +11,8 @@ import { usePlanActions } from '@/features/workoutPlan/hooks/usePlanActions'
 import { searchPlans } from '@/features/workoutPlan/lib/search'
 import type { DayOfWeek, WorkoutPlan } from '@/features/workoutPlan/model/types'
 import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
+import { SESSION_KEYS } from '@/services/storage/sessionStorage'
+import { useSessionState } from '@/services/storage/useSessionState'
 
 export function WorkoutPlansPage() {
   const dispatch = useAppDispatch()
@@ -18,9 +20,11 @@ export function WorkoutPlansPage() {
   const { plans, activePlanId, status } = useAppSelector((state) => state.workoutPlan)
   const allExercises = useAppSelector((state) => state.exercises.items)
 
-  const [query, setQuery] = useState('')
-  // undefined: nothing toggled yet, so the active plan is shown expanded
-  const [expandedId, setExpandedId] = useState<string | null | undefined>(undefined)
+  // null expandedId means everything collapsed; a missing one falls back to the active plan
+  const [view, setView] = useSessionState<{ query: string; expandedId?: string | null }>(SESSION_KEYS.PLANS_VIEW, { query: '' })
+  const { query, expandedId } = view
+  const setQuery = (next: string) => setView((v) => ({ ...v, query: next }))
+  const setExpandedId = (next: string | null) => setView((v) => ({ ...v, expandedId: next }))
   const [editor, setEditor] = useState<{ open: boolean; plan: WorkoutPlan | null }>({ open: false, plan: null })
   const [dayEditor, setDayEditor] = useState<{ planId: string; day: DayOfWeek } | null>(null)
 

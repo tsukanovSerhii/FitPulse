@@ -19,6 +19,11 @@ export interface Credentials {
   password: string
 }
 
+export interface LoginData extends Credentials {
+  /** false keeps the session only for the current tab */
+  remember: boolean
+}
+
 export interface RegistrationData extends Credentials {
   name: string
 }
