@@ -1,7 +1,3 @@
-/**
- * SEO & Meta Tags Manager
- * Динамічне оновлення мета-тегів, Open Graph та Schema.org Structured Data
- */
 
 export interface SEOProps {
   title: string
@@ -18,11 +14,9 @@ export function updatePageSEO({
 }: SEOProps): void {
   if (typeof document === 'undefined') return
 
-  // Update document title
   const fullTitle = title.includes('FitPulse') ? title : `${title} | FitPulse`
   document.title = fullTitle
 
-  // Update or create meta tag
   const setMetaTag = (name: string, content: string, isProperty = false) => {
     const attr = isProperty ? 'property' : 'name'
     let el = document.querySelector(`meta[${attr}="${name}"]`)
@@ -34,7 +28,6 @@ export function updatePageSEO({
     el.setAttribute('content', content)
   }
 
-  // Standard Meta Tags
   setMetaTag('description', description)
   if (keywords.length > 0) {
     setMetaTag(
@@ -51,22 +44,17 @@ export function updatePageSEO({
     )
   }
 
-  // Open Graph
   setMetaTag('og:title', fullTitle, true)
   setMetaTag('og:description', description, true)
   setMetaTag('og:type', ogType, true)
   setMetaTag('og:site_name', 'FitPulse Workout Tracker', true)
   setMetaTag('og:locale', 'uk_UA', true)
 
-  // Twitter Cards
   setMetaTag('twitter:card', 'summary_large_image')
   setMetaTag('twitter:title', fullTitle)
   setMetaTag('twitter:description', description)
 }
 
-/**
- * Генерує Schema.org JSON-LD структуровані дані для вправ
- */
 export function injectExerciseSchema(exerciseName: string, description: string, muscles: string[]): void {
   if (typeof document === 'undefined') return
 

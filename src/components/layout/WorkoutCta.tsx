@@ -5,7 +5,6 @@ import { buttonClasses } from '@/components/ui'
 import { formatDuration } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
 
-/** Кнопка старту тренування; під час активної сесії показує живий таймер. */
 export function WorkoutCta({ className }: { className?: string }) {
   const session = useAppSelector((state) => state.workoutSession)
 

@@ -5,6 +5,7 @@ import workoutSessionReducer from '@/features/workoutSession/model/workoutSessio
 import progressReducer from '@/features/progress/model/progressSlice'
 import profileReducer from '@/features/profile/model/profileSlice'
 import themeReducer from '@/features/theme/model/themeSlice'
+import authReducer from '@/features/auth/model/authSlice'
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     progress: progressReducer,
     profile: profileReducer,
     theme: themeReducer,
+    auth: authReducer,
   },
 })
 

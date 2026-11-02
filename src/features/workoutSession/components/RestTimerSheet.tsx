@@ -27,14 +27,13 @@ function useSoundPreference() {
       try {
         localStorage.setItem(SOUND_KEY, String(!prev))
       } catch {
-        // без сховища налаштування живе до перезавантаження
+        // without storage the preference lasts until reload
       }
       return !prev
     })
   return [enabled, toggle] as const
 }
 
-/** Нижня шторка відпочинку між підходами. */
 export function RestTimerSheet({ nextHint }: { nextHint?: string }) {
   const dispatch = useAppDispatch()
   const timer = useAppSelector((state) => state.workoutSession.restTimer)

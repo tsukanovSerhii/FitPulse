@@ -26,7 +26,6 @@ export const ACTIVITY_LEVEL_LABELS: Record<ActivityLevel, string> = {
 export interface UserProfile {
   name: string
   email: string
-  avatarUrl?: string
   gender: 'male' | 'female' | 'other'
   age: number
   heightCm: number

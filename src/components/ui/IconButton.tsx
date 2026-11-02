@@ -2,7 +2,7 @@ import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { cn } from '@/utils/cn'
 
 export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
-  /** Обов'язковий доступний підпис — у кнопки немає тексту */
+  /** Required: the button has no visible text. */
   label: string
   icon: ReactNode
   size?: 'sm' | 'md'

@@ -60,10 +60,7 @@ function BasicAd({ ad }: { ad: AdCampaign }) {
   )
 }
 
-/**
- * Рекламне місце. Нічого не рендерить, якщо реклама вимкнена
- * або триває тренування.
- */
+/** Renders nothing when ads are disabled or a workout is in progress. */
 export function AdSlot({ placement, className }: { placement: AdPlacement; className?: string }) {
   const isTraining = useAppSelector((state) => state.workoutSession.isActive)
   const [ad] = useState(() => pickCampaign(DEMO_CAMPAIGNS, placement))

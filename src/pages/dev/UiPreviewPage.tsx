@@ -21,7 +21,6 @@ import {
   ThemeToggle,
 } from '@/components/ui'
 
-/** Вітрина UI-примітивів для візуальної перевірки обох тем. Доступна лише в dev-режимі. */
 export function UiPreviewPage() {
   const [tab, setTab] = useState<'all' | 'chest' | 'back' | 'legs'>('all')
   const [open, setOpen] = useState(false)

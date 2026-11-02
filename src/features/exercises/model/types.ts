@@ -1,4 +1,3 @@
-// Групи м'язів
 export type MuscleGroup =
   | 'chest'
   | 'back'
@@ -24,7 +23,6 @@ export const MUSCLE_GROUP_LABELS: Record<MuscleGroup, string> = {
   calves: 'Гомілки',
 }
 
-// Рівень складності
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced'
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
@@ -33,7 +31,6 @@ export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   advanced: 'Просунутий',
 }
 
-// Тип обладнання
 export type Equipment =
   | 'barbell'
   | 'dumbbell'
@@ -53,13 +50,11 @@ export const EQUIPMENT_LABELS: Record<Equipment, string> = {
   bands: 'Гумки',
 }
 
-// Крок інструкції
 export interface InstructionStep {
   step: number
   description: string
 }
 
-// Фази руху вправи
 export interface MovementPhase {
   name: string
   instruction: string
@@ -67,7 +62,6 @@ export interface MovementPhase {
   breathing: 'inhale' | 'exhale' | 'hold'
 }
 
-// Детальний навчальний гайд
 export interface ExerciseGuide {
   tempo?: string
   breathingAdvice?: string
@@ -77,11 +71,10 @@ export interface ExerciseGuide {
   proTips?: string[]
 }
 
-// Основна модель вправи
 export interface Exercise {
   id: string
   name: string
-  muscleGroups: MuscleGroup[]        // основна + додаткові групи
+  muscleGroups: MuscleGroup[]
   primaryMuscle: MuscleGroup
   difficulty: Difficulty
   equipment: Equipment
@@ -93,12 +86,11 @@ export interface Exercise {
   defaultRestSeconds: number
   imageUrl?: string
   videoUrl?: string
-  animationFrames?: string[]         // реальні кадри руху атлета
-  calories?: number                  // ккал/хв
-  guide?: ExerciseGuide              // розширене керівництво з техніки
+  animationFrames?: string[]
+  calories?: number
+  guide?: ExerciseGuide
 }
 
-// Фільтри
 export interface ExerciseFilters {
   muscleGroup: MuscleGroup | 'all'
   difficulty: Difficulty | 'all'
@@ -106,7 +98,6 @@ export interface ExerciseFilters {
   searchQuery: string
 }
 
-// Стан слайсу
 export interface ExercisesState {
   items: Exercise[]
   filteredItems: Exercise[]

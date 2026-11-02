@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Heart, Search, SlidersHorizontal, X } from 'lucide-react'
-import { Button, IconButton, Modal } from '@/components/ui'
+import { Heart, SlidersHorizontal } from 'lucide-react'
+import { Button, IconButton, Modal, SearchInput } from '@/components/ui'
 import { cn } from '@/utils/cn'
 import type { Difficulty, Equipment, ExerciseFilters, MuscleGroup } from '../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
@@ -32,7 +32,6 @@ function Chip({ selected, onClick, children }: { selected: boolean; onClick: () 
   )
 }
 
-/** Липка панель: пошук, обране, кнопка фільтрів і рядок груп м'язів. */
 export function ExerciseFiltersBar({
   filters,
   onChange,
@@ -48,27 +47,13 @@ export function ExerciseFiltersBar({
   return (
     <div className="sticky top-14 z-30 -mx-5 space-y-3 border-b border-line bg-bg/95 px-5 py-3 backdrop-blur-md sm:-mx-8 sm:px-8 lg:top-0 lg:-mx-12 lg:px-12">
       <div className="flex items-center gap-2">
-        <label className="relative flex-1">
-          <span className="sr-only">Пошук вправи</span>
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" aria-hidden="true" />
-          <input
-            type="search"
-            value={filters.searchQuery}
-            onChange={(e) => onChange({ searchQuery: e.target.value })}
-            placeholder="Пошук вправи"
-            className="h-11 w-full rounded-md border border-line bg-surface pl-10 pr-10 text-sm text-fg placeholder:text-fg-subtle focus:border-accent focus:outline-none"
-          />
-          {filters.searchQuery && (
-            <button
-              type="button"
-              aria-label="Очистити пошук"
-              onClick={() => onChange({ searchQuery: '' })}
-              className="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded text-fg-subtle hover:text-fg"
-            >
-              <X className="size-4" />
-            </button>
-          )}
-        </label>
+        <SearchInput
+          className="flex-1"
+          label="Пошук вправи"
+          placeholder="Пошук вправи"
+          value={filters.searchQuery}
+          onChange={(searchQuery) => onChange({ searchQuery })}
+        />
 
         <IconButton
           label={favoritesOnly ? 'Показати всі вправи' : 'Лише обрані'}

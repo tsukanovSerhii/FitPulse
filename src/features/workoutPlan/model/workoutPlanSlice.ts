@@ -10,7 +10,6 @@ const initialState: WorkoutPlanState = {
   error: null,
 }
 
-// Async Thunks
 export const fetchPlans = createAsyncThunk(
   'workoutPlan/fetchPlans',
   async (_, { rejectWithValue }) => {
@@ -160,7 +159,6 @@ export const workoutPlanSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // fetchPlans
       .addCase(fetchPlans.pending, (state) => {
         state.status = 'loading'
         state.error = null
@@ -174,7 +172,6 @@ export const workoutPlanSlice = createSlice({
         state.status = 'failed'
         state.error = (action.payload as string) || 'Помилка завантаження'
       })
-      // savePlanAsync
       .addCase(savePlanAsync.fulfilled, (state, action) => {
         const index = state.plans.findIndex((p) => p.id === action.payload.id)
         if (index >= 0) {
@@ -186,32 +183,27 @@ export const workoutPlanSlice = createSlice({
           state.activePlanId = action.payload.id
         }
       })
-      // deletePlanAsync
       .addCase(deletePlanAsync.fulfilled, (state, action) => {
         state.plans = state.plans.filter((p) => p.id !== action.payload)
         if (state.activePlanId === action.payload) {
           state.activePlanId = state.plans.length > 0 ? state.plans[0].id : null
         }
       })
-      // setActivePlanAsync
       .addCase(setActivePlanAsync.fulfilled, (state, action) => {
         state.activePlanId = action.payload
       })
-      // addExerciseToDay
       .addCase(addExerciseToDay.fulfilled, (state, action) => {
         const index = state.plans.findIndex((p) => p.id === action.payload.id)
         if (index >= 0) {
           state.plans[index] = action.payload
         }
       })
-      // removeExerciseFromDay
       .addCase(removeExerciseFromDay.fulfilled, (state, action) => {
         const index = state.plans.findIndex((p) => p.id === action.payload.id)
         if (index >= 0) {
           state.plans[index] = action.payload
         }
       })
-      // updatePlanExercise
       .addCase(updatePlanExercise.fulfilled, (state, action) => {
         const index = state.plans.findIndex((p) => p.id === action.payload.id)
         if (index >= 0) {

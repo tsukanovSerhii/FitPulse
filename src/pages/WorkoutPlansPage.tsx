@@ -1,167 +1,39 @@
-import { toast } from 'sonner'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
 import { Calendar, Plus, Search } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import {
-  fetchPlans,
-  savePlanAsync,
-  deletePlanAsync,
-  setActivePlanAsync,
-  addExerciseToDay,
-  removeExerciseFromDay,
-  updatePlanExercise,
-} from '@/features/workoutPlan/model/workoutPlanSlice'
+import { SEO } from '@/components/common/SEO'
+import { Button, EmptyState, IconButton, PageHeader, SearchInput } from '@/components/ui'
 import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
-import { startWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
-import type { WorkoutPlan, DayOfWeek, PlanExercise } from '@/features/workoutPlan/model/types'
-import { ALL_DAYS, DAY_LABELS } from '@/features/workoutPlan/model/types'
+import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
 import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
 import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorModal'
-import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
-import { Button, IconButton, PageHeader, confirmAction } from '@/components/ui'
-import { EmptyState } from '@/components/ui'
-import { SEO } from '@/components/common/SEO'
+import { usePlanActions } from '@/features/workoutPlan/hooks/usePlanActions'
+import { searchPlans } from '@/features/workoutPlan/lib/search'
+import type { DayOfWeek, WorkoutPlan } from '@/features/workoutPlan/model/types'
+import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
 
-export const WorkoutPlansPage: React.FC = () => {
+export function WorkoutPlansPage() {
   const dispatch = useAppDispatch()
-  const navigate = useNavigate()
-
+  const actions = usePlanActions()
   const { plans, activePlanId, status } = useAppSelector((state) => state.workoutPlan)
   const allExercises = useAppSelector((state) => state.exercises.items)
 
   const [query, setQuery] = useState('')
-  // undefined — користувач ще нічого не розгортав, тож показуємо активну програму
+  // undefined: nothing toggled yet, so the active plan is shown expanded
   const [expandedId, setExpandedId] = useState<string | null | undefined>(undefined)
-  const openPlanId = expandedId === undefined ? activePlanId : expandedId
-  const [isEditorOpen, setIsEditorOpen] = useState(false)
-  const [editingPlan, setEditingPlan] = useState<WorkoutPlan | null>(null)
-
-  // Day editor state
-  const [dayEditorModal, setDayEditorModal] = useState<{
-    isOpen: boolean
-    plan: WorkoutPlan | null
-    day: DayOfWeek | null
-  }>({
-    isOpen: false,
-    plan: null,
-    day: null,
-  })
+  const [editor, setEditor] = useState<{ open: boolean; plan: WorkoutPlan | null }>({ open: false, plan: null })
+  const [dayEditor, setDayEditor] = useState<{ planId: string; day: DayOfWeek } | null>(null)
 
   useEffect(() => {
-    
-    if (plans.length === 0) {
-      dispatch(fetchPlans())
-    }
-    if (allExercises.length === 0) {
-      dispatch(fetchExercises())
-    }
+    if (plans.length === 0) dispatch(fetchPlans())
+    if (allExercises.length === 0) dispatch(fetchExercises())
   }, [dispatch, plans.length, allExercises.length])
 
-  const handleCreatePlan = () => {
-    setEditingPlan(null)
-    setIsEditorOpen(true)
-  }
+  const openPlanId = expandedId === undefined ? activePlanId : expandedId
+  const visiblePlans = useMemo(() => searchPlans(plans, allExercises, query, activePlanId), [plans, allExercises, query, activePlanId])
+  const dayEditorPlan = dayEditor ? (plans.find((p) => p.id === dayEditor.planId) ?? null) : null
 
-  const handleSavePlan = async (plan: WorkoutPlan) => {
-    await dispatch(savePlanAsync(plan)).unwrap()
-  }
-
-  const handleDeletePlan = async (planId: string) => {
-    const plan = plans.find((p) => p.id === planId)
-    const confirmed = await confirmAction({
-      title: 'Видалити програму?',
-      description: plan ? `«${plan.name}» буде видалено без можливості відновлення.` : undefined,
-      confirmLabel: 'Видалити',
-      destructive: true,
-    })
-    if (!confirmed) return
-    await dispatch(deletePlanAsync(planId)).unwrap()
-    toast.success('Програму видалено')
-  }
-
-  const handleSetActivePlan = (planId: string) => {
-    dispatch(setActivePlanAsync(planId))
-  }
-
-  const handleOpenDayEditor = (planId: string, day: DayOfWeek) => {
-    const plan = plans.find((p) => p.id === planId)
-    if (plan) {
-      setDayEditorModal({
-        isOpen: true,
-        plan,
-        day,
-      })
-    }
-  }
-
-  const handleStartDayWorkout = (planId: string, day: DayOfWeek) => {
-    const plan = plans.find((p) => p.id === planId)
-    if (!plan) return
-    const exercises = plan.schedule[day] || []
-    if (exercises.length === 0) {
-      toast.warning('У цьому дні ще немає вправ', { description: 'Додайте хоча б одну вправу перед початком.' })
-      return
-    }
-
-    dispatch(
-      startWorkout({
-        planId: plan.id,
-        dayLabel: `${DAY_LABELS[day]} (${plan.name})`,
-        exercises,
-      }),
-    )
-    navigate('/workout')
-  }
-
-  const handleAddExerciseToDay = (
-    planId: string,
-    day: DayOfWeek,
-    exercise: Omit<PlanExercise, 'id' | 'order'>,
-  ) => {
-    dispatch(addExerciseToDay({ planId, day, exercise }))
-    setTimeout(() => {
-      const updatedPlan = plans.find((p) => p.id === planId)
-      if (updatedPlan) {
-        setDayEditorModal((prev) => ({ ...prev, plan: updatedPlan }))
-      }
-    }, 50)
-  }
-
-  const handleRemoveExerciseFromDay = (planId: string, day: DayOfWeek, exerciseId: string) => {
-    dispatch(removeExerciseFromDay({ planId, day, exerciseId }))
-    setTimeout(() => {
-      const updatedPlan = plans.find((p) => p.id === planId)
-      if (updatedPlan) {
-        setDayEditorModal((prev) => ({ ...prev, plan: updatedPlan }))
-      }
-    }, 50)
-  }
-
-  const handleUpdateExercise = (
-    planId: string,
-    day: DayOfWeek,
-    exerciseId: string,
-    updates: Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>,
-  ) => {
-    dispatch(updatePlanExercise({ planId, day, exerciseId, updates }))
-  }
-
-  const visiblePlans = useMemo(() => {
-    const names = new Map(allExercises.map((e) => [e.id, e.name.toLowerCase()]))
-    const q = query.trim().toLowerCase()
-    const matches = (plan: WorkoutPlan) =>
-      !q ||
-      plan.name.toLowerCase().includes(q) ||
-      plan.description?.toLowerCase().includes(q) ||
-      ALL_DAYS.some((day) => plan.schedule[day]?.some((pEx) => names.get(pEx.exerciseId)?.includes(q)))
-    return plans.filter(matches).sort((a, b) => Number(b.id === activePlanId) - Number(a.id === activePlanId))
-  }, [plans, allExercises, query, activePlanId])
-
-  // Get current plan for modal
-  const activeModalPlan = dayEditorModal.plan
-    ? plans.find((p) => p.id === dayEditorModal.plan?.id) || dayEditorModal.plan
-    : null
+  const openCreate = () => setEditor({ open: true, plan: null })
 
   return (
     <div className="space-y-4">
@@ -172,27 +44,15 @@ export const WorkoutPlansPage: React.FC = () => {
         description="Тижневі спліти та розклад"
         actions={
           <>
-            <IconButton label="Нова програма" icon={<Plus />} onClick={handleCreatePlan} className="border border-line sm:hidden" />
-            <Button className="hidden sm:inline-flex" onClick={handleCreatePlan} icon={<Plus />}>
+            <IconButton label="Нова програма" icon={<Plus />} onClick={openCreate} className="border border-line sm:hidden" />
+            <Button className="hidden sm:inline-flex" onClick={openCreate} icon={<Plus />}>
               Нова програма
             </Button>
           </>
         }
       />
 
-      {plans.length > 0 && (
-        <label className="relative block">
-          <span className="sr-only">Пошук програми</span>
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" aria-hidden="true" />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Пошук за назвою або вправою"
-            className="h-11 w-full rounded-md border border-line bg-surface pl-10 pr-3 text-sm text-fg placeholder:text-fg-subtle focus:border-accent focus:outline-none"
-          />
-        </label>
-      )}
+      {plans.length > 0 && <SearchInput label="Пошук програми" placeholder="Пошук за назвою або вправою" value={query} onChange={setQuery} />}
 
       {status === 'loading' && plans.length === 0 ? (
         <p className="py-16 text-center text-sm text-fg-muted">Завантаження програм...</p>
@@ -202,7 +62,7 @@ export const WorkoutPlansPage: React.FC = () => {
           title="Програм ще немає"
           description="Створіть тижневий план, щоб систематизувати тренування."
           action={
-            <Button onClick={handleCreatePlan} icon={<Plus />}>
+            <Button onClick={openCreate} icon={<Plus />}>
               Створити програму
             </Button>
           }
@@ -228,33 +88,33 @@ export const WorkoutPlansPage: React.FC = () => {
               expanded={openPlanId === plan.id}
               onToggle={() => setExpandedId(openPlanId === plan.id ? null : plan.id)}
               allExercises={allExercises}
-              onSetActive={handleSetActivePlan}
-              onEditDay={handleOpenDayEditor}
-              onDelete={handleDeletePlan}
-              onStartDayWorkout={handleStartDayWorkout}
+              onSetActive={actions.setActive}
+              onEdit={() => setEditor({ open: true, plan })}
+              onEditDay={(planId, day) => setDayEditor({ planId, day })}
+              onDelete={actions.remove}
+              onStartDayWorkout={actions.startDay}
             />
           ))}
         </div>
       )}
 
-      {/* Plan Metadata Editor Modal */}
       <PlanEditorModal
-        isOpen={isEditorOpen}
-        onClose={() => setIsEditorOpen(false)}
-        onSave={handleSavePlan}
-        initialPlan={editingPlan}
+        key={editor.plan?.id ?? 'new'}
+        isOpen={editor.open}
+        onClose={() => setEditor({ open: false, plan: null })}
+        onSave={actions.save}
+        initialPlan={editor.plan}
       />
 
-      {/* Day Schedule Editor Modal */}
       <AddExerciseToDayModal
-        isOpen={dayEditorModal.isOpen}
-        onClose={() => setDayEditorModal({ isOpen: false, plan: null, day: null })}
-        plan={activeModalPlan}
-        day={dayEditorModal.day}
+        isOpen={dayEditor !== null}
+        onClose={() => setDayEditor(null)}
+        plan={dayEditorPlan}
+        day={dayEditor?.day ?? null}
         allExercises={allExercises}
-        onAddExercise={handleAddExerciseToDay}
-        onRemoveExercise={handleRemoveExerciseFromDay}
-        onUpdateExercise={handleUpdateExercise}
+        onAddExercise={actions.addExercise}
+        onRemoveExercise={actions.removeExercise}
+        onUpdateExercise={actions.updateExercise}
       />
     </div>
   )

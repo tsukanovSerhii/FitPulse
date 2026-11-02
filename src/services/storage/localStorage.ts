@@ -1,6 +1,3 @@
-/**
- * Безпечна робота з localStorage з fallback значеннями
- */
 
 const STORAGE_KEYS = {
   EXERCISES: 'fitpulse_exercises_v1',
@@ -12,6 +9,8 @@ const STORAGE_KEYS = {
   USER_PROFILE: 'fitpulse_profile_v1',
   THEME: 'fitpulse_theme_v1',
   ACTIVE_SESSION: 'fitpulse_active_session_v1',
+  ACCOUNTS: 'fitpulse_accounts_v1',
+  SESSION: 'fitpulse_auth_session_v1',
 } as const
 
 export function hasStorageKey(key: string): boolean {

@@ -50,10 +50,8 @@ export const ProgressPage: React.FC = () => {
         description="Відстежуйте об'єм навантажень, час у залі та особисті силові максимуми"
       />
 
-      {/* Stats Summary Grid */}
       <StatsGrid history={history} personalRecords={personalRecords} />
 
-      {/* Personal Records (PRs) */}
       <section className="space-y-4">
         <h3 className="text-lg sm:text-xl font-display font-black text-fg flex items-center gap-2">
           <Trophy className="w-5 h-5 text-warning" />
@@ -75,7 +73,6 @@ export const ProgressPage: React.FC = () => {
         )}
       </section>
 
-      {/* Workout History */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg sm:text-xl font-display font-black text-fg flex items-center gap-2">

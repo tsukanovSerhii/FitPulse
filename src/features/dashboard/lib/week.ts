@@ -1,6 +1,5 @@
 import type { DayOfWeek } from '@/features/workoutPlan/model/types'
 
-/** Дні тижня у порядку з понеділка (індекс відповідає зміщенню від понеділка). */
 export const WEEK_DAYS: DayOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
 export function dayKeyOf(date: Date): DayOfWeek {
@@ -14,7 +13,7 @@ export function startOfWeek(date: Date): Date {
   return start
 }
 
-/** Наступний після сьогодні день, у який заплановані вправи (з переходом на наступний тиждень). */
+/** Next day after `today` with planned exercises, wrapping into next week. */
 export function nextTrainingDay(today: DayOfWeek, isTrainingDay: (day: DayOfWeek) => boolean): DayOfWeek | null {
   const start = WEEK_DAYS.indexOf(today)
   for (let offset = 1; offset <= 7; offset++) {

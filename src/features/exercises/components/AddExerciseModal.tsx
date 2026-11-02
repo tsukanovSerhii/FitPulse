@@ -68,7 +68,6 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
         calories: 6,
       })
 
-      // Reset form
       setName('')
       setDescription('')
       setInstructionsText('')

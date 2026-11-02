@@ -1,7 +1,4 @@
-/**
- * Фото з Wikimedia Commons. Ліцензія CC BY 2.0 вимагає атрибуції —
- * вона відображається у футері (див. Footer).
- */
+/** Wikimedia Commons photos. CC BY 2.0 requires attribution, rendered in Footer. */
 export interface Photo {
   src: string
   alt: string

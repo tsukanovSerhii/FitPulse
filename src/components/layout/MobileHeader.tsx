@@ -5,7 +5,7 @@ import { Avatar } from './Avatar'
 import { Wordmark } from './Wordmark'
 
 export function MobileHeader() {
-  const profile = useAppSelector((state) => state.profile.profile)
+  const user = useAppSelector((state) => state.auth.user)
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md lg:hidden">
@@ -14,7 +14,7 @@ export function MobileHeader() {
         <div className="flex items-center gap-1">
           <ThemeCycleButton />
           <Link to="/profile" aria-label="Профіль" className="flex size-11 items-center justify-center">
-            <Avatar name={profile.name} src={profile.avatarUrl} className="size-8" />
+            <Avatar seed={user?.avatarSeed ?? 'guest'} name={user?.name} className="size-8" />
           </Link>
         </div>
       </div>

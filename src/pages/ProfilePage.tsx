@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Pencil, RotateCcw } from 'lucide-react'
+import { LogOut, Pencil, RotateCcw, Shuffle } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SEO } from '@/components/common/SEO'
 import { Avatar } from '@/components/layout/Avatar'
@@ -9,6 +10,8 @@ import { ProfileEditModal } from '@/features/profile/components/ProfileEditModal
 import { fetchProfile, resetProfileAsync, updateProfileAsync } from '@/features/profile/model/profileSlice'
 import type { UserProfile } from '@/features/profile/model/types'
 import { ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS } from '@/features/profile/model/types'
+import { PLAN_NAMES } from '@/features/auth/model/plans'
+import { logout, regenerateAvatar, syncAccount } from '@/features/auth/model/authSlice'
 import { removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
 import { formatDate, formatNumber } from '@/utils/formatters'
 
@@ -23,7 +26,9 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 export function ProfilePage() {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const profile = useAppSelector((state) => state.profile.profile)
+  const user = useAppSelector((state) => state.auth.user)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   useEffect(() => {
@@ -32,6 +37,14 @@ export function ProfilePage() {
 
   const handleUpdateProfile = async (updated: UserProfile) => {
     await dispatch(updateProfileAsync(updated)).unwrap()
+    if (user) dispatch(syncAccount(user.id, { name: updated.name, email: updated.email }))
+  }
+
+  const handleLogout = async () => {
+    const ok = await confirmAction({ title: 'Вийти з акаунта?', confirmLabel: 'Вийти' })
+    if (!ok) return
+    dispatch(logout())
+    navigate('/welcome')
   }
 
   const handleResetAllData = async () => {
@@ -42,7 +55,10 @@ export function ProfilePage() {
       destructive: true,
     })
     if (!confirmed) return
-    Object.values(STORAGE_KEYS).forEach((k) => removeFromStorage(k))
+    const keepKeys: string[] = [STORAGE_KEYS.ACCOUNTS, STORAGE_KEYS.SESSION, STORAGE_KEYS.THEME]
+    Object.values(STORAGE_KEYS)
+      .filter((k) => !keepKeys.includes(k))
+      .forEach((k) => removeFromStorage(k))
     saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, [])
     saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, {})
     await dispatch(resetProfileAsync()).unwrap()
@@ -70,7 +86,12 @@ export function ProfilePage() {
 
       <Card padding="none">
         <div className="flex items-center gap-4 p-5 sm:p-6">
-          <Avatar name={profile.name} src={profile.avatarUrl} className="size-16 text-xl" />
+          <div className="flex flex-col items-center gap-1">
+            <Avatar seed={user?.avatarSeed ?? 'guest'} name={profile.name} className="size-16" />
+            {user && (
+              <IconButton size="sm" label="Нова аватарка" icon={<Shuffle />} onClick={() => dispatch(regenerateAvatar(user.id))} />
+            )}
+          </div>
           <div className="min-w-0 flex-1 space-y-1">
             <p className="truncate text-lg font-semibold text-fg">{profile.name}</p>
             <p className="truncate text-sm text-fg-subtle">{profile.email}</p>
@@ -111,6 +132,29 @@ export function ProfilePage() {
           <div className="flex items-center justify-between gap-4 p-4 sm:px-6">
             <span className="text-sm text-fg">Активність</span>
             <span className="text-right text-sm text-fg-muted">{ACTIVITY_LEVEL_LABELS[profile.activityLevel]}</span>
+          </div>
+        </Card>
+      </Section>
+
+      <Section title="Акаунт">
+        <Card padding="none" className="divide-y divide-line">
+          <div className="flex items-center justify-between gap-4 p-4 sm:px-6">
+            <div>
+              <p className="text-sm text-fg">Тариф</p>
+              <p className="text-xs text-fg-subtle">Pro і «Тренер» з'являться незабаром</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge variant="primary">{PLAN_NAMES[user?.plan ?? 'free']}</Badge>
+              <Link to="/welcome#pricing" className="text-sm font-semibold text-accent hover:text-accent-hover">
+                Тарифи
+              </Link>
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-4 p-4 sm:px-6">
+            <span className="text-sm text-fg">{user?.email ?? profile.email}</span>
+            <Button variant="ghost" size="sm" onClick={handleLogout} icon={<LogOut />}>
+              Вийти
+            </Button>
           </div>
         </Card>
       </Section>

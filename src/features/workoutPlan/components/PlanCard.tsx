@@ -13,6 +13,7 @@ export interface PlanCardProps {
   onToggle: () => void
   allExercises: Exercise[]
   onSetActive: (planId: string) => void
+  onEdit: () => void
   onEditDay: (planId: string, day: DayOfWeek) => void
   onDelete: (planId: string) => void
   onStartDayWorkout: (planId: string, day: DayOfWeek) => void
@@ -25,6 +26,7 @@ export function PlanCard({
   onToggle,
   allExercises,
   onSetActive,
+  onEdit,
   onEditDay,
   onDelete,
   onStartDayWorkout,
@@ -134,11 +136,16 @@ export function PlanCard({
             >
               Видалити
             </Button>
-            {!isActive && (
-              <Button variant="outline" size="sm" onClick={() => onSetActive(plan.id)} icon={<Check />}>
-                Зробити активною
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={onEdit} icon={<Pencil />}>
+                Перейменувати
               </Button>
-            )}
+              {!isActive && (
+                <Button variant="outline" size="sm" onClick={() => onSetActive(plan.id)} icon={<Check />}>
+                  Зробити активною
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       )}

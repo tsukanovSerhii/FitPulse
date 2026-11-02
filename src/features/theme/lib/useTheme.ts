@@ -6,7 +6,7 @@ import type { ThemeMode } from '../model/types'
 
 const META_THEME_COLOR = { light: '#f4f4f2', dark: '#0e0e10' } as const
 
-/** Синхронізує тему зі сторінкою. Викликається один раз у корені застосунку. */
+/** Syncs the theme with the document. Call once at the app root. */
 export function useThemeSync() {
   const dispatch = useAppDispatch()
   const { mode, resolved } = useAppSelector((state) => state.theme)

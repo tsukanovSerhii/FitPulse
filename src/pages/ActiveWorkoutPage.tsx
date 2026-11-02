@@ -43,7 +43,7 @@ export function ActiveWorkoutPage() {
   return (
     <>
       <SEO title={isActive ? 'Активне тренування' : 'Тренування'} description="Фіксація підходів, ваги та таймер відпочинку." />
-      {/* Портал: <main> анімується й створює власний контекст накладання, тож fixed-шар не перекрив би шапку */}
+      {/* Portal: the animated <main> creates a stacking context that would trap this fixed layer */}
       {isActive ? createPortal(<WorkoutFocusView onFinish={setSummary} />, document.body) : <WorkoutLauncher />}
       <SessionSummaryModal
         isOpen={!!summary}

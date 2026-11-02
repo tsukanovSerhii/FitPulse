@@ -18,7 +18,6 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
-      {/* 1. Workouts */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
@@ -36,7 +35,6 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
         </span>
       </Card>
 
-      {/* 2. Total Volume */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
@@ -55,7 +53,6 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
         </span>
       </Card>
 
-      {/* 3. Time trained */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
@@ -73,7 +70,6 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
         </span>
       </Card>
 
-      {/* 4. Personal Records */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-fg-subtle">

@@ -7,7 +7,7 @@ export const INITIAL_HISTORY: WorkoutHistoryLog[] = [
     planName: 'Push / Pull / Legs (3 дні на тиждень)',
     dayLabel: 'Понеділок (Push)',
     date: '2026-03-23T18:30:00.000Z',
-    durationSeconds: 3120, // 52 хв
+    durationSeconds: 3120,
     totalSets: 16,
     totalReps: 144,
     totalVolumeKg: 6480,
@@ -26,7 +26,7 @@ export const INITIAL_HISTORY: WorkoutHistoryLog[] = [
     planName: 'Push / Pull / Legs (3 дні на тиждень)',
     dayLabel: 'Середа (Pull)',
     date: '2026-03-25T18:00:00.000Z',
-    durationSeconds: 3450, // 57.5 хв
+    durationSeconds: 3450,
     totalSets: 14,
     totalReps: 112,
     totalVolumeKg: 7920,
@@ -44,7 +44,7 @@ export const INITIAL_HISTORY: WorkoutHistoryLog[] = [
     planName: 'Push / Pull / Legs (3 дні на тиждень)',
     dayLabel: 'П\'ятниця (Legs)',
     date: '2026-03-27T17:45:00.000Z',
-    durationSeconds: 3600, // 60 хв
+    durationSeconds: 3600,
     totalSets: 17,
     totalReps: 172,
     totalVolumeKg: 8500,

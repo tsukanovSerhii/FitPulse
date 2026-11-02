@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
 /**
- * Не дає екрану згаснути, доки `active`. Браузер знімає блокування,
- * коли вкладка ховається, тому повторно запитуємо його при поверненні.
+ * Keeps the screen awake while `active`. Browsers release the lock when the
+ * tab is hidden, so it is requested again once the page is visible.
  */
 export function useWakeLock(active: boolean) {
   useEffect(() => {
@@ -16,7 +16,7 @@ export function useWakeLock(active: boolean) {
         if (cancelled) lock.release()
         else sentinel = lock
       } catch {
-        // відмова (низький заряд, політика браузера) — працюємо без блокування
+        // denied (low battery, browser policy): continue without the lock
       }
     }
 

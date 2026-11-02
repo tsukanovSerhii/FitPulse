@@ -9,13 +9,11 @@ export interface NumberStepperProps {
   min?: number
   max?: number
   unit?: string
-  /** Кількість знаків після коми у полі */
   decimals?: number
 }
 
 const round = (value: number, decimals: number) => Number(value.toFixed(decimals))
 
-/** Велике поле з кнопками −/+ для введення однією рукою. */
 export function NumberStepper({ label, value, onChange, step, min = 0, max = 999, unit, decimals = 0 }: NumberStepperProps) {
   const id = useId()
   const clamp = (v: number) => Math.min(max, Math.max(min, round(v, decimals)))

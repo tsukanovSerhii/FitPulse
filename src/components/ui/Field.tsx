@@ -10,7 +10,6 @@ export interface FieldProps {
   className?: string
 }
 
-/** Спільна обгортка поля форми: видимий лейбл, підказка, помилка біля поля. */
 export function Field({ id, label, error, helperText, children, className }: FieldProps) {
   return (
     <div className={cn('flex w-full flex-col gap-1.5', className)}>
