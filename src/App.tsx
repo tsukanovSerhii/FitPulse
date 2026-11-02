@@ -7,9 +7,11 @@ import { fetchExercises } from './features/exercises/model/exercisesSlice'
 import { fetchPlans } from './features/workoutPlan/model/workoutPlanSlice'
 import { fetchProgress } from './features/progress/model/progressSlice'
 import { fetchProfile } from './features/profile/model/profileSlice'
+import { useThemeSync } from './features/theme/lib/useTheme'
 
 const DataInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useAppDispatch()
+  useThemeSync()
 
   useEffect(() => {
     dispatch(fetchExercises())

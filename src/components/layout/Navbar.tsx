@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { toggleTheme } from '@/features/theme/model/themeSlice'
+import { useTheme } from '@/features/theme/lib/useTheme'
 import { formatDuration } from '@/utils/formatters'
 import {
 	Calendar,
@@ -20,7 +20,7 @@ import { cn } from '@/utils/cn'
 export const Navbar: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const location = useLocation()
-	const themeMode = useAppSelector(state => state.theme.mode)
+	const { resolved: themeMode, setMode } = useTheme()
 	const session = useAppSelector(state => state.workoutSession)
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -108,7 +108,7 @@ export const Navbar: React.FC = () => {
 
 					{/* Theme Switcher */}
 					<button
-						onClick={() => dispatch(toggleTheme())}
+						onClick={() => setMode(themeMode === 'dark' ? 'light' : 'dark')}
 						className="p-2 rounded-xl border border-t-d bg-t-card hover:bg-t-hover text-t-2 hover:text-t-1 transition-colors cursor-pointer"
 						aria-label="Перемкнути тему"
 						title="Перемкнути тему (Світла / Темна)"

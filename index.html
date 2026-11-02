@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk" class="dark">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -12,18 +12,17 @@
     <meta name="keywords" content="тренування, фітнес, вправи в залі, техніка виконання вправ, анатомія м'язів, жим лежачи, присідання, станова тяга, програма тренувань, як правильно тренуватися, бодібілдинг" />
     <meta name="author" content="FitPulse / Serhii Tsukanov" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#090d16" />
+    <meta name="theme-color" content="#0e0e10" />
     <script>
+      // Застосовує тему до першого рендеру, щоб уникнути «блимання»
       try {
-        var t = localStorage.getItem('fitpulse_theme_v1');
-        if (t === '"light"' || t === 'light') {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.classList.add('light');
-        } else {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.remove('light');
-        }
-      } catch (e) {}
+        var mode = JSON.parse(localStorage.getItem('fitpulse_theme_v1') || '"system"');
+        var dark = mode === 'dark' || (mode !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.add(dark ? 'dark' : 'light');
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#0e0e10' : '#f4f4f2');
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+      }
     </script>
 
     <!-- Open Graph / Facebook -->
@@ -56,12 +55,12 @@
       }
     </script>
 
-    <!-- Google Fonts: Plus Jakarta Sans, JetBrains Mono, Unbounded -->
+    <!-- Google Fonts: Oswald (display), Manrope (body), JetBrains Mono (numbers) — all with Cyrillic -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&family=Unbounded:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
   </head>
-  <body class="antialiased selection:bg-emerald-500 selection:text-white">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

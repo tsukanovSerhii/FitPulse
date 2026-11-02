@@ -5,7 +5,7 @@ import { Footer } from './Footer'
 import { useAppSelector } from '@/app/hooks'
 
 export const MainLayout: React.FC = () => {
-  const themeMode = useAppSelector((state) => state.theme.mode)
+  const themeMode = useAppSelector((state) => state.theme.resolved)
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden transition-colors duration-200 bg-t-page text-t-1">
       {/* Background ambient lighting (dark mode only) */}
