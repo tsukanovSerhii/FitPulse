@@ -11,7 +11,7 @@ export function PhoneMockup() {
   return (
     <div
       aria-hidden="true"
-      className="relative mx-auto w-[270px] rounded-[2.5rem] border border-line-strong bg-surface p-3 shadow-pop sm:w-[300px]"
+      className="relative mx-auto w-[290px] rounded-[2.5rem] border border-line-strong bg-surface p-3 shadow-pop sm:w-[340px]"
     >
       <div className="overflow-hidden rounded-[2rem] border border-line bg-bg">
         <div className="flex items-center justify-between px-5 pb-2 pt-4 text-[10px] text-fg-subtle">

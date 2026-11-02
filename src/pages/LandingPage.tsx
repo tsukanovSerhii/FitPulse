@@ -1,38 +1,32 @@
-import { Link } from 'react-router-dom'
 import { SEO } from '@/components/common/SEO'
 import { Footer } from '@/components/layout/Footer'
-import { buttonClasses } from '@/components/ui'
+import { FAQ_JSON_LD } from '@/features/landing/faq'
+import { FaqSection } from '@/features/landing/components/FaqSection'
 import { FeaturesSection } from '@/features/landing/components/FeaturesSection'
+import { FinalCta } from '@/features/landing/components/FinalCta'
 import { HeroSection } from '@/features/landing/components/HeroSection'
 import { HowItWorksSection } from '@/features/landing/components/HowItWorksSection'
 import { LandingNav } from '@/features/landing/components/LandingNav'
 import { PricingSection } from '@/features/landing/components/PricingSection'
+import { StatsBand } from '@/features/landing/components/StatsBand'
 
 export function LandingPage() {
   return (
     <div className="min-h-dvh bg-bg text-fg">
       <SEO
-        title="FitPulse — трекер силових тренувань"
-        description="План, техніка вправ і прогрес в одному застосунку. Створений для тренувань у залі з телефона."
+        title="FitPulse — програма тренувань у залі, техніка вправ і прогрес"
+        description="Безкоштовний трекер тренувань для телефона: програми на тиждень, техніка кожної вправи, таймер відпочинку та прогрес у залі. Почніть за хвилину."
+        jsonLd={FAQ_JSON_LD}
       />
       <LandingNav />
       <main>
         <HeroSection />
+        <StatsBand />
         <FeaturesSection />
         <HowItWorksSection />
         <PricingSection />
-        <section className="border-t border-line">
-          <div className="mx-auto flex max-w-6xl flex-col items-start gap-8 px-5 py-20 sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:py-28">
-            <h2 className="text-5xl leading-[1.05] text-fg sm:text-6xl">
-              Наступне тренування
-              <br />
-              <span className="text-accent">вже сьогодні</span>
-            </h2>
-            <Link to="/register" className={buttonClasses('primary', 'lg')}>
-              Створити акаунт
-            </Link>
-          </div>
-        </section>
+        <FaqSection />
+        <FinalCta />
       </main>
       <Footer />
     </div>

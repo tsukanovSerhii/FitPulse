@@ -7,6 +7,7 @@ const LINKS = [
   { href: '#features', label: 'Можливості' },
   { href: '#how', label: 'Як це працює' },
   { href: '#pricing', label: 'Тарифи' },
+  { href: '#faq', label: 'Питання' },
 ]
 
 export function LandingNav() {
@@ -14,7 +15,7 @@ export function LandingNav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5 sm:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 sm:px-8">
         <Wordmark />
         <nav aria-label="Розділи сторінки" className="hidden gap-8 md:flex">
           {LINKS.map((link) => (
