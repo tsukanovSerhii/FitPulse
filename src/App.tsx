@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { HelmetProvider } from 'react-helmet-async'
 import { Toaster } from 'sonner'
 import { AppRoutes } from './routes/AppRoutes'
 import { useAppDispatch } from './app/hooks'
@@ -24,14 +23,12 @@ const DataInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
 export const App: React.FC = () => {
   return (
-    <HelmetProvider>
-      <BrowserRouter>
-        <DataInitializer>
-          <AppRoutes />
-          <Toaster richColors position="bottom-right" closeButton />
-        </DataInitializer>
-      </BrowserRouter>
-    </HelmetProvider>
+    <BrowserRouter>
+      <DataInitializer>
+        <AppRoutes />
+        <Toaster richColors position="bottom-right" closeButton />
+      </DataInitializer>
+    </BrowserRouter>
   )
 }
 
