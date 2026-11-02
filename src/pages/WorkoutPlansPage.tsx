@@ -20,7 +20,7 @@ import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorMod
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
 import { Button } from '@/components/common/Button'
 import { EmptyState } from '@/components/common/EmptyState'
-import { updatePageSEO } from '@/utils/seo'
+import { SEO } from '@/components/common/SEO'
 
 export const WorkoutPlansPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -44,11 +44,7 @@ export const WorkoutPlansPage: React.FC = () => {
   })
 
   useEffect(() => {
-    updatePageSEO({
-      title: 'Програми тренувань: тижневі плани та графік занять | FitPulse',
-      description: 'Створюйте та налаштовуйте тижневі спліти: Push/Pull/Legs, Full Body. Керування підходами, повтореннями, вагою та днями відпочинку.',
-      keywords: ['програма тренувань на тиждень', 'спліт тренувань', 'push pull legs розклад'],
-    })
+    
     if (plans.length === 0) {
       dispatch(fetchPlans())
     }
@@ -146,11 +142,12 @@ export const WorkoutPlansPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-12">
+      <SEO title="Програми тренувань" description="Створюйте та налаштовуйте тижневі спліти: Push/Pull/Legs, Full Body. Керування підходами, повтореннями та днями відпочинку." />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
         <div>
           <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
               <Calendar className="w-5 h-5" />
             </div>
             Програми тренувань

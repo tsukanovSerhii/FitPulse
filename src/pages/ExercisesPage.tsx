@@ -17,7 +17,8 @@ import { ExerciseDetailModal } from '@/features/exercises/components/ExerciseDet
 import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
 import { Button } from '@/components/common/Button'
 import { EmptyState } from '@/components/common/EmptyState'
-import { updatePageSEO, injectExerciseSchema } from '@/utils/seo'
+import { SEO } from '@/components/common/SEO'
+import { injectExerciseSchema } from '@/utils/seo'
 
 export const ExercisesPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -29,11 +30,7 @@ export const ExercisesPage: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
   useEffect(() => {
-    updatePageSEO({
-      title: 'Каталог вправ з правильною технікою та анатомією м\'язів | FitPulse',
-      description: 'Повний довідник вправ для тренажерного залу та дому. Анатомічна карта м\'язів, фази руху, поради для новачків та тонкощі для профі.',
-      keywords: ['вправи в залі', 'техніка вправ', 'анатомія м\'язів', 'як правильно робити жим', 'присідання техніка'],
-    })
+    
     if (items.length === 0) {
       dispatch(fetchExercises())
     }
@@ -56,16 +53,17 @@ export const ExercisesPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-12">
+      <SEO title="Каталог вправ" description="Повний довідник вправ для тренажерного залу та дому. Анатомічна карта м'язів, фази руху та техніка." />
       {/* Page Title & Add Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
         <div>
           <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
               <Dumbbell className="w-5 h-5 -rotate-45" />
             </div>
             Каталог вправ
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-t-3 mt-1 font-medium">
             База силових та функціональних вправ з анатомією м'язів, фазами руху та порадами
           </p>
         </div>
@@ -85,7 +83,7 @@ export const ExercisesPage: React.FC = () => {
           onClick={() => setActiveTab('all')}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'all'
-              ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20 font-bold'
+              ? 'bg-emerald-600 text-white shadow-sm border border-emerald-500/30'
               : 'bg-t-hover text-t-3 hover:text-t-1 hover:bg-t-hover border border-t-d'
           }`}
         >

@@ -6,18 +6,14 @@ import { StatsGrid } from '@/features/progress/components/StatsGrid'
 import { WorkoutHistoryItem } from '@/features/progress/components/WorkoutHistoryItem'
 import { PRCard } from '@/features/progress/components/PRCard'
 import { EmptyState } from '@/components/common/EmptyState'
-import { updatePageSEO } from '@/utils/seo'
+import { SEO } from '@/components/common/SEO'
 
 export const ProgressPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const { history, personalRecords, status } = useAppSelector((state) => state.progress)
 
   useEffect(() => {
-    updatePageSEO({
-      title: 'Прогрес та аналітика: історія тренувань, тоннаж, силові рекорди | FitPulse',
-      description: 'Аналітика вашого фітнес-прогресу: сумарний піднятий тоннаж, час у залі, графік занять та особисті рекорди (Personal Records).',
-      keywords: ['аналітика залу', 'щоденник ваги', 'силові рекорди атлета'],
-    })
+    
     if (history.length === 0) {
       dispatch(fetchProgress())
     }
@@ -33,10 +29,11 @@ export const ProgressPage: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-fade-in pb-12">
+      <SEO title="Прогрес та аналітика" description="Аналітика вашого фітнес-прогресу: сумарний піднятий тоннаж, час у залі, графік занять та особисті рекорди." />
       {/* Page Title */}
       <div className="pb-4 border-b border-t-d">
         <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
             <TrendingUp className="w-5 h-5" />
           </div>
           Прогрес та аналітика

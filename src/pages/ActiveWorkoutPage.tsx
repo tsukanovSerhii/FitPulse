@@ -37,7 +37,7 @@ import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { formatDuration } from '@/utils/formatters'
-import { updatePageSEO } from '@/utils/seo'
+import { SEO } from '@/components/common/SEO'
 
 export const ActiveWorkoutPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -74,14 +74,7 @@ export const ActiveWorkoutPage: React.FC = () => {
 
   // SEO setup
   useEffect(() => {
-    updatePageSEO({
-      title: session.isActive
-        ? `Тренування: ${session.dayLabel || 'Активна сесія'} | FitPulse`
-        : 'Почати тренування: секундомір, підходи, вага та таймер | FitPulse',
-      description:
-        'Інтерактивний трекер тренування: фіксація ваги та повторень, таймер відпочинку, анатомія та фази виконання вправ.',
-      keywords: ['тренування онлайн', 'секундомір відпочинку', 'фіксація підходів у залі'],
-    })
+    
   }, [session.isActive, session.dayLabel])
 
   // Workout stopwatch timer effect
@@ -270,7 +263,7 @@ export const ActiveWorkoutPage: React.FC = () => {
     return (
       <div className="max-w-2xl mx-auto space-y-6 animate-fade-in py-6">
         <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-3xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center mx-auto mb-3 shadow-xl shadow-sky-950/40">
+          <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto mb-3 shadow-xl shadow-sky-950/40">
             <Play className="w-8 h-8 fill-current translate-x-0.5" />
           </div>
           <h1 className="text-3xl font-black text-t-1">
@@ -334,7 +327,7 @@ export const ActiveWorkoutPage: React.FC = () => {
                       }}
                       className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-sky-600 text-white border-sky-400 shadow-md shadow-sky-950/40'
+                          ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs'
                           : count > 0
                           ? 'bg-t-subtle hover:bg-t-hover text-t-2 border-t-d'
                           : 'bg-t-subtle/40 text-t-3 border-t-d/50 opacity-60'
@@ -403,10 +396,11 @@ export const ActiveWorkoutPage: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-12">
+      <SEO title="Активне тренування" description="Фіксація підходів, робочої ваги та таймер відпочинку." />
       {/* Top Session Status Bar */}
-      <div className="rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl border bg-t-card border-slate-200 dark:border-sky-500/20">
+      <div className="rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl border bg-t-card border-t-d">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center shadow-lg shadow-sky-950/40 shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shadow-lg shadow-sky-950/40 shrink-0">
             <Timer className="w-6 h-6 animate-pulse" />
           </div>
           <div>
@@ -414,7 +408,7 @@ export const ActiveWorkoutPage: React.FC = () => {
               {sanitizedDayLabel}
             </h2>
             <div className="flex items-center gap-2.5 mt-1">
-              <span className="text-xs sm:text-sm font-mono font-bold text-sky-700 bg-sky-50 border-sky-200 dark:text-sky-300 dark:bg-sky-500/15 dark:border-sky-500/30 px-2.5 py-0.5 rounded-md border">
+              <span className="text-xs sm:text-sm font-mono font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-lg">
                 Час: {formatDuration(session.elapsedSeconds)}
               </span>
               <span className="text-t-4">•</span>

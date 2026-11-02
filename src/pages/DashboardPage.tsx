@@ -2,6 +2,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
+import { SEO } from '@/components/common/SEO'
 import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
 import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
 import { fetchProfile } from '@/features/profile/model/profileSlice'
@@ -10,20 +11,18 @@ import { fetchProgress } from '@/features/progress/model/progressSlice'
 import { DAY_LABELS, type DayOfWeek } from '@/features/workoutPlan/model/types'
 import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
 import { startWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
-import { updatePageSEO } from '@/utils/seo'
+import { formatDuration } from '@/utils/formatters'
 import {
 	ArrowRight,
 	Calendar,
 	CheckCircle2,
-	ChevronRight,
-	Clock,
 	Dumbbell,
 	Flame,
-	Info,
 	Play,
 	Sparkles,
 	TrendingUp,
-	Trophy
+	Trophy,
+	Zap
 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -44,12 +43,6 @@ export const DashboardPage: React.FC = () => {
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		updatePageSEO({
-			title: 'FitPulse — Щоденник та планувальник силових тренувань',
-			description:
-				'Головна панель тренувань FitPulse: щоденний розклад вправ, тоннаж, силові рекорди та персональні програми.',
-			keywords: ['тренування сьогодні', 'план на тиждень', 'фітнес трекер']
-		})
 		dispatch(fetchExercises())
 		dispatch(fetchPlans())
 		dispatch(fetchProgress())
@@ -61,7 +54,6 @@ export const DashboardPage: React.FC = () => {
 	const exercisesState = useAppSelector(state => state.exercises)
 	const progressState = useAppSelector(state => state.progress)
 	const session = useAppSelector(state => state.workoutSession)
-	const themeMode = useAppSelector(state => state.theme.mode)
 
 	const [currentDayKey] = useState<DayOfWeek>(getCurrentDayOfWeek)
 
@@ -70,7 +62,7 @@ export const DashboardPage: React.FC = () => {
 		plansState.plans[0]
 	const todayExercises = activePlan?.schedule[currentDayKey] || []
 
-	// Exercise map
+	// Exercise map for fast name lookup
 	const exerciseMap = React.useMemo(() => {
 		const map = new Map<string, (typeof exercisesState.items)[0]>()
 		exercisesState.items.forEach(e => map.set(e.id, e))
@@ -92,7 +84,7 @@ export const DashboardPage: React.FC = () => {
 		navigate('/workout')
 	}
 
-	// Quick stats
+	// Performance statistics
 	const totalWorkouts = progressState.history.length
 	const totalVolumeKg = progressState.history.reduce(
 		(a, b) => a + b.totalVolumeKg,
@@ -100,504 +92,312 @@ export const DashboardPage: React.FC = () => {
 	)
 	const totalVolumeTons = (totalVolumeKg / 1000).toFixed(1)
 	const totalPrs = Object.keys(progressState.personalRecords).length
+	const totalSetsToday = todayExercises.reduce((acc, e) => acc + e.sets, 0)
+
+	const todayDateString = new Intl.DateTimeFormat('uk-UA', {
+		weekday: 'long',
+		day: 'numeric',
+		month: 'long'
+	}).format(new Date())
 
 	return (
-		<div className="space-y-8 animate-fade-in pb-12">
-			{/* =========================================================================
-          HERO BANNER — Minimalist Clean Style
-      ========================================================================= */}
-			<div
-				className={`relative overflow-hidden rounded-3xl border p-6 sm:p-10 shadow-2xl transition-colors duration-300 ${
-					themeMode === 'light'
-						? 'bg-white border-slate-200 shadow-slate-200/60'
-						: 'bg-t-card border-t-d'
-				}`}
-			>
-				{/* Subtle sports accent */}
-				<div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
+		<div className="space-y-6 sm:space-y-8 animate-fade-in pb-12">
+			<SEO
+				title="Головна панель"
+				description="FitPulse — Щоденник та планувальник силових тренувань: фокус дня, показники тоннажу та швидкий старт."
+			/>
 
-				<div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-					{/* Left Hero info */}
-					<div className="lg:col-span-7 space-y-4">
-						<div className="flex flex-wrap items-center gap-2">
-							<Badge
-								variant="primary"
-								dot
-								size="sm"
-							>
-								{FITNESS_GOAL_LABELS[profile.fitnessGoal]}
+			{/* =========================================================================
+          TOP BAR: GREETING & CONTEXT
+      ========================================================================= */}
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+				<div>
+					<div className="flex items-center gap-2 mb-1">
+						<span className="text-xs font-semibold text-t-3 capitalize">
+							{todayDateString}
+						</span>
+						<span className="text-t-4">•</span>
+						<Badge variant="primary" size="sm">
+							{FITNESS_GOAL_LABELS[profile.fitnessGoal] || 'Сила та форма'}
+						</Badge>
+					</div>
+					<h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-t-1 tracking-tight">
+						Привіт, {profile.name || 'Атлете'}!
+					</h1>
+				</div>
+
+				{session.isActive && (
+					<Link
+						to="/workout"
+						className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all animate-pulse"
+					>
+						<span className="w-2 h-2 rounded-full bg-white" />
+						<span>Активне тренування: {formatDuration(session.elapsedSeconds)}</span>
+						<ArrowRight className="w-3.5 h-3.5" />
+					</Link>
+				)}
+			</div>
+
+			{/* =========================================================================
+          MAIN TRAINING HERO CARD (FOCUSED HIGH-SIGNAL UI)
+      ========================================================================= */}
+			<Card className="p-6 sm:p-8 bg-t-card border-t-d relative overflow-hidden">
+				{/* Background accent aura */}
+				<div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+
+				<div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+					<div className="space-y-3 max-w-xl">
+						<div className="flex items-center gap-2">
+							<Badge variant={todayExercises.length > 0 ? 'success' : 'neutral'} dot size="md">
+								{activePlan?.name || 'План не обрано'}
 							</Badge>
-							<span
-								className={`text-xs font-bold px-3 py-1 rounded-full border ${
-									themeMode === 'light'
-										? 'text-slate-600 bg-slate-100 border-slate-200'
-										: 'text-t-2 bg-t-hover border-t-d'
-								}`}
-							>
+							<span className="text-xs font-semibold text-t-3">
 								{DAY_LABELS[currentDayKey]}
 							</span>
 						</div>
 
-						<h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-t-1">
-							Привіт, <span className="text-sky-500">{profile.name}</span>!
-						</h1>
-
-						<p
-							className={`text-sm sm:text-base leading-relaxed max-w-xl font-medium ${
-								'text-t-2'
-							}`}
-						>
-							Сьогодні день твого прогресу. Дотримуйся плану, фіксуй вагу та
-							нарощуй силу без компромісів.
-						</p>
-
-						<div className="flex flex-wrap items-center gap-3 pt-3">
-							{session.isActive ? (
-								<Button
-									variant="primary"
-									size="lg"
-									onClick={() => navigate('/workout')}
-									icon={<Play className="w-5 h-5 fill-slate-950" />}
-									className="animate-pulse"
-								>
-									Продовжити тренування
-								</Button>
-							) : todayExercises.length > 0 ? (
-								<Button
-									variant="primary"
-									size="lg"
-									onClick={handleStartTodayWorkout}
-									icon={<Play className="w-5 h-5 fill-slate-950" />}
-								>
-									Почати сьогодні ({todayExercises.length} вправ)
-								</Button>
-							) : (
-								<Button
-									variant="primary"
-									size="lg"
-									onClick={() => navigate('/workout')}
-									icon={<Play className="w-5 h-5 fill-slate-950" />}
-								>
-									Почати тренування
-								</Button>
-							)}
-
-							<Button
-								variant="secondary"
-								size="lg"
-								onClick={() => navigate('/plans')}
-								icon={<Calendar className="w-4 h-4 text-sky-400" />}
-							>
-								Мої програми
-							</Button>
-						</div>
+						{todayExercises.length > 0 ? (
+							<>
+								<h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-t-1 tracking-tight leading-snug">
+									Сьогоднішнє тренування за планом
+								</h2>
+								<p className="text-xs sm:text-sm text-t-2 font-medium">
+									Заплановано <strong className="text-t-1">{todayExercises.length} вправ</strong>,{' '}
+									<strong className="text-t-1">{totalSetsToday} підходів</strong> • приблизно{' '}
+									{todayExercises.length * 10}–{todayExercises.length * 12} хв
+								</p>
+							</>
+						) : (
+							<>
+								<h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-t-1 tracking-tight leading-snug">
+									Сьогодні день відновлення 🌱
+								</h2>
+								<p className="text-xs sm:text-sm text-t-2 font-medium">
+									За планом на сьогодні тренувань немає. Ви можете відпочити або розпочати вільне заняття в будь-який момент.
+								</p>
+							</>
+						)}
 					</div>
 
-					{/* Right Hero Card: Status Widget */}
-					<div className="lg:col-span-5">
-						<div
-							className={`border rounded-3xl p-6 shadow-xl relative overflow-hidden transition-colors duration-300 ${
-								themeMode === 'light'
-									? 'bg-slate-50 border-slate-200'
-									: 'bg-t-page border-t-d'
-							}`}
+					<div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0">
+						{todayExercises.length > 0 ? (
+							<Button
+								variant="primary"
+								size="lg"
+								onClick={handleStartTodayWorkout}
+								icon={<Play className="w-5 h-5 fill-white text-white" />}
+								className="w-full sm:w-auto text-sm sm:text-base font-extrabold"
+							>
+								Почати тренування ({todayExercises.length} вправ)
+							</Button>
+						) : (
+							<Button
+								variant="primary"
+								size="lg"
+								onClick={() => navigate('/workout')}
+								icon={<Play className="w-5 h-5 fill-white text-white" />}
+								className="w-full sm:w-auto"
+							>
+								Вільне тренування
+							</Button>
+						)}
+
+						<Button
+							variant="outline"
+							size="md"
+							onClick={() => navigate('/plans')}
+							icon={<Calendar className="w-4 h-4" />}
+							className="w-full sm:w-auto text-xs"
 						>
-							<div className="flex items-center justify-between gap-2 mb-3">
-								<span className="text-xs font-black uppercase tracking-wider text-sky-500 flex items-center gap-1.5">
-									<Sparkles className="w-3.5 h-3.5" />
-									Сьогоднішній графік
-								</span>
-								<span
-									className={`text-xs font-bold ${themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}
-								>
-									{activePlan ? activePlan.name : 'Без плану'}
-								</span>
-							</div>
-
-							{todayExercises.length > 0 ? (
-								<div className="space-y-4">
-									<div className="flex items-baseline gap-2">
-										<span
-											className={`text-4xl font-heading font-black ${'text-t-1'}`}
-										>
-											{todayExercises.length}
-										</span>
-										<span
-											className={`text-xs font-bold uppercase tracking-wider ${themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}
-										>
-											вправ заплановано
-										</span>
-									</div>
-
-									{/* Exercise preview pills */}
-									<div className="flex flex-wrap gap-2 pt-1">
-										{todayExercises.slice(0, 3).map(pEx => {
-											const ex = exerciseMap.get(pEx.exerciseId)
-											return (
-												<span
-													key={pEx.id}
-													className={`px-3 py-1.5 rounded-xl border text-xs font-bold ${
-														themeMode === 'light'
-															? 'bg-slate-100 border-slate-200 text-slate-700'
-															: 'bg-t-hover border-t-d text-t-2'
-													}`}
-												>
-													{ex ? ex.name : 'Вправа'}
-												</span>
-											)
-										})}
-										{todayExercises.length > 3 && (
-											<span className="px-3 py-1.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs font-black text-sky-500">
-												+{todayExercises.length - 3} ще
-											</span>
-										)}
-									</div>
-
-									<div
-										className={`pt-3 border-t flex items-center justify-between text-xs font-bold ${
-											themeMode === 'light'
-												? 'border-slate-200'
-												: 'border-t-d'
-										}`}
-									>
-										<span
-											className={`flex items-center gap-1.5 ${themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}
-										>
-											<Clock className="w-4 h-4" />
-											~50-60 хвилин
-										</span>
-										<span className="flex items-center gap-1.5 text-amber-500">
-											<Flame className="w-4 h-4" />
-											~400 ккал
-										</span>
-									</div>
-								</div>
-							) : (
-								<div className="text-center py-6 space-y-2">
-									<p
-										className={`text-sm font-bold ${'text-t-1'}`}
-									>
-										Сьогодні день відновлення 🧘‍♂️
-									</p>
-									<p
-										className={`text-xs font-medium ${themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}
-									>
-										Дайте м'язам відпочити або виберіть легке кардіо.
-									</p>
-								</div>
-							)}
-						</div>
+							Налаштувати розклад
+						</Button>
 					</div>
 				</div>
-			</div>
 
-			{/* =========================================================================
-          KEY STATS CARDS
-      ========================================================================= */}
-			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-				{/* Card 1: Workouts */}
-				<Card
-					hover
-					className="relative overflow-hidden"
-				>
-					<div className="flex items-center justify-between mb-3">
-						<span className="text-[11px] font-black uppercase tracking-wider text-t-3">
-							Тренувань
+				{/* Scheduled exercises preview chips (clean & compact) */}
+				{todayExercises.length > 0 && (
+					<div className="mt-6 pt-5 border-t border-t-d">
+						<span className="text-[11px] font-bold uppercase tracking-wider text-t-3 block mb-3">
+							Вправи на сьогодні:
 						</span>
-						<div className="w-9 h-9 rounded-2xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center">
-							<Flame className="w-4 h-4" />
-						</div>
-					</div>
-					<div
-						className={`text-3xl sm:text-4xl font-heading font-black ${'text-t-1'}`}
-					>
-						{totalWorkouts}
-					</div>
-					<div className="flex items-center gap-1.5 mt-2 text-xs text-sky-400 font-bold">
-						<CheckCircle2 className="w-3.5 h-3.5" />
-						Зафіксовано в залі
-					</div>
-				</Card>
-
-				{/* Card 2: Total Volume */}
-				<Card
-					hover
-					className="relative overflow-hidden"
-				>
-					<div className="flex items-center justify-between mb-3">
-						<span className="text-[11px] font-black uppercase tracking-wider text-t-3">
-							Тоннаж
-						</span>
-						<div className="w-9 h-9 rounded-2xl bg-sky-400/15 border border-sky-400/30 text-sky-400 flex items-center justify-center">
-							<Dumbbell className="w-4 h-4" />
-						</div>
-					</div>
-					<div className="text-3xl sm:text-4xl font-heading font-black text-t-1">
-						{totalVolumeTons}{' '}
-						<span className="text-lg font-bold text-t-3">т</span>
-					</div>
-					<div className="flex items-center gap-1.5 mt-2 text-xs text-sky-400 font-bold">
-						<span>{totalVolumeKg.toLocaleString()} кг піднято</span>
-					</div>
-				</Card>
-
-				{/* Card 3: Personal Records */}
-				<Card
-					hover
-					className="relative overflow-hidden"
-				>
-					<div className="flex items-center justify-between mb-3">
-						<span className="text-[11px] font-black uppercase tracking-wider text-t-3">
-							Рекорди (PR)
-						</span>
-						<div className="w-9 h-9 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-400 flex items-center justify-center">
-							<Trophy className="w-4 h-4" />
-						</div>
-					</div>
-					<div className="text-3xl sm:text-4xl font-heading font-black text-t-1">
-						{totalPrs}
-					</div>
-					<div className="flex items-center gap-1.5 mt-2 text-xs text-amber-400 font-bold">
-						<span>Особисті максимуми</span>
-					</div>
-				</Card>
-
-				{/* Card 4: Catalog Size */}
-				<Card
-					hover
-					className="relative overflow-hidden"
-				>
-					<div className="flex items-center justify-between mb-3">
-						<span className="text-[11px] font-black uppercase tracking-wider text-t-3">
-							База вправ
-						</span>
-						<div className="w-9 h-9 rounded-2xl bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 flex items-center justify-center">
-							<TrendingUp className="w-4 h-4" />
-						</div>
-					</div>
-					<div className="text-3xl sm:text-4xl font-heading font-black text-t-1">
-						{exercisesState.items.length}
-					</div>
-					<div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-400 font-bold">
-						<span>Всі м'язові групи</span>
-					</div>
-				</Card>
-			</div>
-
-			{/* =========================================================================
-          TODAY'S SCHEDULE & QUICK ACTIONS
-      ========================================================================= */}
-			<div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-				{/* Main Column: Today's Exercises */}
-				<div className="lg:col-span-8 space-y-4">
-					<div className="flex items-center justify-between">
-						<div>
-							<h2 className="text-xl sm:text-2xl font-black text-t-1 flex items-center gap-2">
-								<Calendar className="w-5 h-5 text-sky-500 dark:text-sky-400" />
-								План на сьогодні ({DAY_LABELS[currentDayKey]})
-							</h2>
-							<p className="text-xs text-t-3 font-semibold mt-0.5">
-								Програма:{' '}
-								<strong className="text-t-1">{activePlan?.name}</strong>
-							</p>
-						</div>
-
-						<Link
-							to="/plans"
-							className="text-xs font-black text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 transition-all"
-						>
-							Змінити план <ChevronRight className="w-4 h-4" />
-						</Link>
-					</div>
-
-					{todayExercises.length === 0 ? (
-						<Card className="text-center py-12 space-y-3">
-							<div className="w-12 h-12 rounded-2xl bg-t-hover border border-t-d text-t-3 flex items-center justify-center mx-auto">
-								<Calendar className="w-6 h-6" />
-							</div>
-							<h3 className="text-base font-bold text-t-2">
-								На {DAY_LABELS[currentDayKey]} немає запланованих вправ
-							</h3>
-							<p className="text-xs text-slate-400 max-w-md mx-auto">
-								Ви можете відкрити розклад і призначити вправи або розпочати
-								вільне тренування.
-							</p>
-							<div className="pt-2">
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => navigate('/plans')}
-								>
-									Налаштувати розклад
-								</Button>
-							</div>
-						</Card>
-					) : (
-						<div className="space-y-3">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
 							{todayExercises.map((pEx, idx) => {
 								const ex = exerciseMap.get(pEx.exerciseId)
 								return (
 									<div
 										key={pEx.id}
-										className="p-4 sm:p-5 bg-t-card border border-t-d hover:border-sky-500/40 rounded-3xl transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group shadow-md"
+										className="flex items-center justify-between p-3 rounded-xl bg-t-subtle border border-t-d"
 									>
-										<div className="flex items-center gap-3.5">
-											<span className="w-9 h-9 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-300 font-heading font-black text-xs flex items-center justify-center shrink-0">
+										<div className="flex items-center gap-2.5 min-w-0">
+											<span className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 font-mono font-bold text-xs flex items-center justify-center shrink-0">
 												{idx + 1}
 											</span>
-											<div>
-												<div className="flex items-center gap-2">
-													<h4 className="text-sm sm:text-base font-bold text-t-1 group-hover:text-sky-400 transition-colors">
-														{ex?.name || 'Вправа'}
-													</h4>
-													{ex && (
-														<Badge
-															variant="primary"
-															size="sm"
-														>
-															{MUSCLE_GROUP_LABELS[ex.primaryMuscle] ||
-																ex.primaryMuscle}
-														</Badge>
-													)}
-												</div>
-												<div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 font-semibold mt-1">
-													<span className="text-t-2">
-														{pEx.sets} підходи × {pEx.reps} повт
-													</span>
-													{pEx.weight ? <span>• {pEx.weight} кг</span> : null}
-													<span>• {pEx.restSeconds}с відп.</span>
-												</div>
+											<div className="truncate">
+												<span className="text-xs font-bold text-t-1 block truncate">
+													{ex?.name || 'Вправа'}
+												</span>
+												<span className="text-[11px] text-t-3 font-medium">
+													{pEx.sets} сети × {pEx.reps} повт
+													{pEx.weight ? ` • ${pEx.weight} кг` : ''}
+												</span>
 											</div>
 										</div>
-
-										<div className="flex items-center gap-2 self-end sm:self-center">
-											<Button
-												variant="secondary"
-												size="sm"
-												onClick={handleStartTodayWorkout}
-												icon={
-													<Play className="w-3.5 h-3.5 fill-sky-400 text-sky-400" />
-												}
-												className="text-xs"
-											>
-												Виконати
-											</Button>
-										</div>
+										{ex && (
+											<span className="text-[10px] font-semibold text-t-3 bg-t-card px-2 py-0.5 rounded-md border border-t-d shrink-0 ml-2">
+												{MUSCLE_GROUP_LABELS[ex.primaryMuscle]}
+											</span>
+										)}
 									</div>
 								)
 							})}
-
-							<div className="pt-2">
-								<Button
-									variant="primary"
-									size="lg"
-									onClick={handleStartTodayWorkout}
-									icon={<Play className="w-4 h-4 fill-slate-950" />}
-									className="w-full"
-								>
-									Розпочати все тренування ({todayExercises.length} вправ)
-								</Button>
-							</div>
-						</div>
-					)}
-				</div>
-
-				{/* Side Column: Quick Navigation & Coach Tip */}
-				<div className="lg:col-span-4 space-y-4">
-					<h2 className="text-xl sm:text-2xl font-black text-t-1 flex items-center gap-2">
-						<Sparkles className="w-5 h-5 text-sky-500 dark:text-sky-400" />
-						Швидкі дії
-					</h2>
-
-					<div className="space-y-3">
-						<Link
-							to="/exercises"
-							className="block"
-						>
-							<Card
-								hover
-								className="p-4 sm:p-5 flex items-center justify-between group"
-							>
-								<div className="flex items-center gap-3.5">
-									<div className="w-11 h-11 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
-										<Dumbbell className="w-5 h-5" />
-									</div>
-									<div>
-										<h3 className="text-sm font-bold text-t-1 group-hover:text-sky-400 transition-colors">
-											Каталог вправ
-										</h3>
-										<p className="text-xs text-slate-400 font-medium">
-											Анатомія, техніка, поради
-										</p>
-									</div>
-								</div>
-								<ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 group-hover:translate-x-1 transition-all" />
-							</Card>
-						</Link>
-
-						<Link
-							to="/progress"
-							className="block"
-						>
-							<Card
-								hover
-								className="p-4 sm:p-5 flex items-center justify-between group"
-							>
-								<div className="flex items-center gap-3.5">
-									<div className="w-11 h-11 rounded-2xl bg-sky-400/15 border border-sky-400/30 text-sky-400 flex items-center justify-center shrink-0">
-										<TrendingUp className="w-5 h-5" />
-									</div>
-									<div>
-										<h3 className="text-sm font-bold text-t-1 group-hover:text-sky-300 transition-colors">
-											Історія та аналітика
-										</h3>
-										<p className="text-xs text-slate-400 font-medium">
-											Журнал сесій та рекорди
-										</p>
-									</div>
-								</div>
-								<ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 group-hover:translate-x-1 transition-all" />
-							</Card>
-						</Link>
-
-						<Link
-							to="/profile"
-							className="block"
-						>
-							<Card
-								hover
-								className="p-4 sm:p-5 flex items-center justify-between group"
-							>
-								<div className="flex items-center gap-3.5">
-									<div className="w-11 h-11 rounded-2xl bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 flex items-center justify-center shrink-0">
-										<Info className="w-5 h-5" />
-									</div>
-									<div>
-										<h3 className="text-sm font-bold text-t-1 group-hover:text-emerald-300 transition-colors">
-											Калькулятор ІМТ
-										</h3>
-										<p className="text-xs text-slate-400 font-medium">
-											Норми калорій та здоров'я
-										</p>
-									</div>
-								</div>
-								<ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
-							</Card>
-						</Link>
-
-						{/* Coach Quote Card */}
-						<div className="p-6 rounded-3xl bg-t-card border border-t-d shadow-lg relative overflow-hidden">
-							<div className="flex items-center gap-2 mb-2 text-sky-400 font-black text-xs uppercase tracking-wider">
-								<Sparkles className="w-3.5 h-3.5" />
-								Порада тренера
-							</div>
-							<p className="text-xs sm:text-sm text-t-2 leading-relaxed font-medium">
-								«Ніколи не пропускайте розминку та контролюйте ексцентричну фазу
-								(опускання 2-3 секунди). Тільки чиста біомеханіка будує здорове
-								та міцне тіло!»
-							</p>
 						</div>
 					</div>
+				)}
+			</Card>
+
+			{/* =========================================================================
+          KEY ATHLETIC METRICS (CLEAN NUMBERS, ZERO JUNK)
+      ========================================================================= */}
+			<div>
+				<div className="flex items-center justify-between mb-3">
+					<h3 className="text-sm font-bold uppercase tracking-wider text-t-3">
+						Ваш поточний прогрес
+					</h3>
+					<Link
+						to="/progress"
+						className="text-xs font-semibold text-emerald-500 hover:text-emerald-400 flex items-center gap-1 transition-colors"
+					>
+						<span>Вся аналітика</span>
+						<ArrowRight className="w-3.5 h-3.5" />
+					</Link>
+				</div>
+
+				<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+					{/* Metric 1: Total Volume */}
+					<Card className="p-5 flex items-center justify-between">
+						<div>
+							<span className="text-xs font-semibold text-t-3 block mb-1">
+								Загальний тоннаж
+							</span>
+							<div className="text-2xl sm:text-3xl font-mono font-extrabold text-t-1 tracking-tight">
+								{totalVolumeKg > 0 ? totalVolumeKg.toLocaleString() : '0'}{' '}
+								<span className="text-sm font-sans text-t-3 font-semibold">кг</span>
+							</div>
+							<span className="text-[11px] text-t-3 mt-1 block">
+								≈ {totalVolumeTons} тонни піднятої ваги
+							</span>
+						</div>
+						<div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 flex items-center justify-center shrink-0">
+							<Flame className="w-5 h-5" />
+						</div>
+					</Card>
+
+					{/* Metric 2: Completed Sessions */}
+					<Card className="p-5 flex items-center justify-between">
+						<div>
+							<span className="text-xs font-semibold text-t-3 block mb-1">
+								Завершено занять
+							</span>
+							<div className="text-2xl sm:text-3xl font-mono font-extrabold text-t-1 tracking-tight">
+								{totalWorkouts}
+							</div>
+							<span className="text-[11px] text-t-3 mt-1 block">
+								сесій у щоденнику
+							</span>
+						</div>
+						<div className="w-11 h-11 rounded-xl bg-sky-500/10 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0">
+							<CheckCircle2 className="w-5 h-5" />
+						</div>
+					</Card>
+
+					{/* Metric 3: Personal Records */}
+					<Card className="p-5 flex items-center justify-between">
+						<div>
+							<span className="text-xs font-semibold text-t-3 block mb-1">
+								Силові рекорди (PR)
+							</span>
+							<div className="text-2xl sm:text-3xl font-mono font-extrabold text-t-1 tracking-tight">
+								{totalPrs}
+							</div>
+							<span className="text-[11px] text-t-3 mt-1 block">
+								вправ із зафіксованим піком
+							</span>
+						</div>
+						<div className="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-500 dark:text-amber-400 flex items-center justify-center shrink-0">
+							<Trophy className="w-5 h-5" />
+						</div>
+					</Card>
+				</div>
+			</div>
+
+			{/* =========================================================================
+          FAST NAVIGATION: 3 CORE MODULES
+      ========================================================================= */}
+			<div>
+				<h3 className="text-sm font-bold uppercase tracking-wider text-t-3 mb-3">
+					Основні інструменти
+				</h3>
+
+				<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+					<Link to="/exercises" className="block group">
+						<Card hover className="p-5 h-full flex flex-col justify-between">
+							<div className="flex items-center gap-3.5 mb-3">
+								<div className="w-10 h-10 rounded-xl bg-t-subtle border border-t-d text-t-1 group-hover:text-emerald-500 flex items-center justify-center shrink-0 transition-colors">
+									<Dumbbell className="w-5 h-5" />
+								</div>
+								<div>
+									<h4 className="text-sm font-bold text-t-1 group-hover:text-emerald-500 transition-colors">
+										База вправ
+									</h4>
+									<span className="text-xs text-t-3">Анатомія та техніка</span>
+								</div>
+							</div>
+							<div className="flex items-center justify-between text-xs text-t-3 pt-2 border-t border-t-d">
+								<span>18 вправ з біомеханікою</span>
+								<ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+							</div>
+						</Card>
+					</Link>
+
+					<Link to="/plans" className="block group">
+						<Card hover className="p-5 h-full flex flex-col justify-between">
+							<div className="flex items-center gap-3.5 mb-3">
+								<div className="w-10 h-10 rounded-xl bg-t-subtle border border-t-d text-t-1 group-hover:text-emerald-500 flex items-center justify-center shrink-0 transition-colors">
+									<Calendar className="w-5 h-5" />
+								</div>
+								<div>
+									<h4 className="text-sm font-bold text-t-1 group-hover:text-emerald-500 transition-colors">
+										Програми тренувань
+									</h4>
+									<span className="text-xs text-t-3">Спліти та графіки</span>
+								</div>
+							</div>
+							<div className="flex items-center justify-between text-xs text-t-3 pt-2 border-t border-t-d">
+								<span>Push / Pull / Legs</span>
+								<ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+							</div>
+						</Card>
+					</Link>
+
+					<Link to="/progress" className="block group">
+						<Card hover className="p-5 h-full flex flex-col justify-between">
+							<div className="flex items-center gap-3.5 mb-3">
+								<div className="w-10 h-10 rounded-xl bg-t-subtle border border-t-d text-t-1 group-hover:text-emerald-500 flex items-center justify-center shrink-0 transition-colors">
+									<TrendingUp className="w-5 h-5" />
+								</div>
+								<div>
+									<h4 className="text-sm font-bold text-t-1 group-hover:text-emerald-500 transition-colors">
+										Історія та аналітика
+									</h4>
+									<span className="text-xs text-t-3">Журнал та рекорди</span>
+								</div>
+							</div>
+							<div className="flex items-center justify-between text-xs text-t-3 pt-2 border-t border-t-d">
+								<span>{totalWorkouts} виконаних сесій</span>
+								<ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+							</div>
+						</Card>
+					</Link>
 				</div>
 			</div>
 		</div>

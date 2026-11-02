@@ -15,7 +15,7 @@ import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { formatDate } from '@/utils/formatters'
 import { STORAGE_KEYS, removeFromStorage, saveToStorage } from '@/services/storage/localStorage'
-import { updatePageSEO } from '@/utils/seo'
+import { SEO } from '@/components/common/SEO'
 
 export const ProfilePage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -23,11 +23,7 @@ export const ProfilePage: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   useEffect(() => {
-    updatePageSEO({
-      title: 'Особистий профіль: антропометрія, калькулятор ІМТ (BMI) та цілі | FitPulse',
-      description: 'Керування параметрами атлета: вага, зріст, фітнес-цілі, калькулятор індексу маси тіла та розрахунок добової норми калорій.',
-      keywords: ['калькулятор і володіння імт', 'норма калорій', 'профіль тренувань'],
-    })
+    
     dispatch(fetchProfile())
   }, [dispatch])
 
@@ -52,16 +48,17 @@ export const ProfilePage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-12">
+      <SEO title="Особистий профіль" description="Антропометрія, цільова вага, рівень навантажень та норми калоражу." />
       {/* Page Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
         <div>
           <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
               <User className="w-5 h-5" />
             </div>
             Особистий профіль
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-t-3 mt-1 font-medium">
             Антропометрія, цільова вага, рівень навантажень та норми калоражу
           </p>
         </div>
