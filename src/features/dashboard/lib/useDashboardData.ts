@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/store/hooks'
 import type { DayOfWeek } from '@/features/workoutPlan/model/types'
 import { dayKeyOf, nextTrainingDay, startOfWeek, WEEK_DAYS } from './week'
 

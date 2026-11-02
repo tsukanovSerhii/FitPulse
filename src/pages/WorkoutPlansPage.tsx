@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Calendar, Plus, Search } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Button, EmptyState, IconButton, PageHeader, SearchInput } from '@/shared/ui'
 import { fetchExercises } from '@/features/exercises/model/exercisesSlice'

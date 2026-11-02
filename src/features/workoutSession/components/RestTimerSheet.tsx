@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Pause, Play, Volume2, VolumeX } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { Button, IconButton, ProgressRing } from '@/shared/ui'
 import { playTimerBeep } from '@/shared/lib/audio'
 import { formatDuration } from '@/shared/lib/formatters'

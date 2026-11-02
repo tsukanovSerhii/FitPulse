@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { Play } from 'lucide-react'
-import { useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '../store/hooks'
 import { formatDuration } from '@/shared/lib/formatters'
 import { cn } from '@/shared/lib/cn'
 import { NAV_ITEMS, type NavItem } from './navigation'

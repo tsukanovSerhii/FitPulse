@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
-import { useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '../store/hooks'
 import { ThemeToggle } from '@/shared/ui'
 import { AdSlot } from '@/features/ads/components/AdSlot'
 import { cn } from '@/shared/lib/cn'

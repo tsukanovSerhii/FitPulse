@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { LogOut, Pencil, RotateCcw } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Badge, Button, Card, IconButton, PageHeader, Stat, ThemeToggle, confirmAction } from '@/shared/ui'

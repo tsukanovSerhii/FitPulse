@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Play, Zap } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { Button, LoadingRegion, PageHeader, Select, Skeleton } from '@/shared/ui'
 import { dayKeyOf } from '@/features/dashboard/lib/week'
 import { ALL_DAYS, DAY_LABELS, type PlanExercise } from '@/features/workoutPlan/model/types'

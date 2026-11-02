@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { confirmAction } from '@/shared/ui'
 import type { WorkoutHistoryLog } from '@/features/progress/model/types'
 import { buildWorkoutLog } from '../../lib/summary'

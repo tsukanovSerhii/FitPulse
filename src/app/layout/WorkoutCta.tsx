@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Play } from 'lucide-react'
-import { useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '../store/hooks'
 import { buttonClasses } from '@/shared/ui'
 import { formatDuration } from '@/shared/lib/formatters'
 import { cn } from '@/shared/lib/cn'

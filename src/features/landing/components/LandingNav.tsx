@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { useAppSelector } from '@/app/hooks'
-import { Wordmark } from '@/components/layout/Wordmark'
+import { useAppSelector } from '@/app/store/hooks'
+import { Wordmark } from '@/app/layout/Wordmark'
 import { ThemeCycleButton, buttonClasses } from '@/shared/ui'
 
 const LINKS = [

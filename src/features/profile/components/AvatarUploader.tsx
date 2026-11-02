@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Camera, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useAppDispatch } from '@/app/hooks'
+import { useAppDispatch } from '@/app/store/hooks'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Button, IconButton } from '@/shared/ui'
 import { setAvatar } from '@/features/auth/model/authSlice'

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import { Wordmark } from '@/components/layout/Wordmark'
+import { Wordmark } from '@/app/layout/Wordmark'
 import { ThemeCycleButton } from '@/shared/ui'
 import { PHOTOS } from '@/shared/config/photos'
 

@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState, type MouseEvent } from 'react'
 import { Dumbbell, Plus } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Button, EmptyState, IconButton, PageHeader } from '@/shared/ui'
 import { AdSlot } from '@/features/ads/components/AdSlot'

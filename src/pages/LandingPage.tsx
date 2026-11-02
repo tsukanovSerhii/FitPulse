@@ -1,5 +1,5 @@
 import { SEO } from '@/shared/seo/SEO'
-import { Footer } from '@/components/layout/Footer'
+import { Footer } from '@/app/layout/Footer'
 import { FAQ_JSON_LD } from '@/features/landing/faq'
 import { FaqSection } from '@/features/landing/components/FaqSection'
 import { FeaturesSection } from '@/features/landing/components/FeaturesSection'

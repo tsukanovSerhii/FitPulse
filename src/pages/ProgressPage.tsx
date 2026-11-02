@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
 import React, { useEffect } from 'react'
 import { Trophy, History, Dumbbell } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { useLocation } from 'react-router-dom'
 import { PostWorkoutAd } from '@/features/ads/components/PostWorkoutAd'
 import { fetchProgress, deleteWorkoutLogAsync } from '@/features/progress/model/progressSlice'

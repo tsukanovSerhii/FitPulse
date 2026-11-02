@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
-import { useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '@/app/store/hooks'
 import { cn } from '@/shared/lib/cn'
 import { DEMO_CAMPAIGNS } from '../model/campaigns'
 import { ADS_ENABLED, pickCampaign } from '../model/selection'

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useAppSelector } from '@/app/hooks'
+import { useAppSelector } from '../store/hooks'
 import { ThemeCycleButton } from '@/shared/ui'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Wordmark } from './Wordmark'
