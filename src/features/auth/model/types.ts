@@ -4,7 +4,7 @@ export interface AuthUser {
   id: string
   name: string
   email: string
-  avatarSeed: string
+  avatarUrl?: string
   plan: SubscriptionPlan
   createdAt: string
 }
@@ -21,7 +21,6 @@ export interface Credentials {
 
 export interface RegistrationData extends Credentials {
   name: string
-  avatarSeed?: string
 }
 
 export interface AuthState {

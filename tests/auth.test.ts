@@ -14,7 +14,7 @@ globalThis.window = {
 
 const { authApi } = await import('@/features/auth/api/authApi')
 const { passwordStrength, validateRegistration } = await import('@/features/auth/lib/validation')
-const { avatarShapes } = await import('@/utils/avatar')
+const { validateImageFile } = await import('@/utils/image')
 const { STORAGE_KEYS } = await import('@/services/storage/localStorage')
 
 describe('authApi', () => {
@@ -59,9 +59,14 @@ describe('validation', () => {
   })
 })
 
-describe('avatarShapes', () => {
-  it('is deterministic per seed', () => {
-    expect(avatarShapes('abc')).toEqual(avatarShapes('abc'))
-    expect(avatarShapes('abc')).not.toEqual(avatarShapes('abd'))
+describe('validateImageFile', () => {
+  it('accepts common image types under 5 MB', () => {
+    expect(validateImageFile({ type: 'image/jpeg', size: 200_000 })).toBeNull()
+    expect(validateImageFile({ type: 'image/png', size: 4_000_000 })).toBeNull()
+  })
+
+  it('rejects other types and oversized files', () => {
+    expect(validateImageFile({ type: 'application/pdf', size: 1000 })).toMatch(/JPG/)
+    expect(validateImageFile({ type: 'image/png', size: 6 * 1024 * 1024 })).toMatch(/5 МБ/)
   })
 })

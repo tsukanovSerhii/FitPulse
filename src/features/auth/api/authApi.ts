@@ -10,8 +10,6 @@ const saveAccounts = (accounts: StoredAccount[]) => saveToStorage(STORAGE_KEYS.A
 
 const toUser = ({ passwordHash: _hash, salt: _salt, ...user }: StoredAccount): AuthUser => user
 
-export const randomSeed = () => crypto.randomUUID().slice(0, 8)
-
 /** Local, storage-backed auth. Swap this module for HTTP calls when a backend exists. */
 export const authApi = {
   currentUser(): AuthUser | null {
@@ -20,7 +18,7 @@ export const authApi = {
     return account ? toUser(account) : null
   },
 
-  async register({ name, email, password, avatarSeed }: RegistrationData): Promise<AuthUser> {
+  async register({ name, email, password }: RegistrationData): Promise<AuthUser> {
     const accounts = loadAccounts()
     const normalized = normalizeEmail(email)
     if (accounts.some((a) => a.email === normalized)) {
@@ -31,7 +29,6 @@ export const authApi = {
       id: crypto.randomUUID(),
       name: name.trim(),
       email: normalized,
-      avatarSeed: avatarSeed ?? randomSeed(),
       plan: 'free',
       createdAt: new Date().toISOString(),
       salt,
@@ -55,7 +52,7 @@ export const authApi = {
     removeFromStorage(STORAGE_KEYS.SESSION)
   },
 
-  updateUser(id: string, changes: Partial<Pick<AuthUser, 'name' | 'email' | 'avatarSeed'>>): AuthUser {
+  updateUser(id: string, changes: Partial<Pick<AuthUser, 'name' | 'email' | 'avatarUrl'>>): AuthUser {
     const accounts = loadAccounts()
     const index = accounts.findIndex((a) => a.id === id)
     if (index === -1) throw new AuthError('Акаунт не знайдено')

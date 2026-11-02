@@ -88,6 +88,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
         <Input
           label="Ваше ім'я"
+          placeholder="Напр. Олександр"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -96,6 +97,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="Вік (років)"
+            placeholder="Напр. 25"
             type="number"
             min={12}
             max={120}
@@ -113,6 +115,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         <div className="grid grid-cols-3 gap-3">
           <Input
             label="Зріст (см)"
+            placeholder="Напр. 178"
             type="number"
             min={100}
             max={250}
@@ -121,6 +124,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           />
           <Input
             label="Поточна вага (кг)"
+            placeholder="Напр. 75"
             type="number"
             min={30}
             max={300}
@@ -130,6 +134,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           />
           <Input
             label="Цільова вага (кг)"
+            placeholder="Напр. 80"
             type="number"
             min={30}
             max={300}

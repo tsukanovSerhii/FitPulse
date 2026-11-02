@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { LogOut, Pencil, RotateCcw, Shuffle } from 'lucide-react'
+import { LogOut, Pencil, RotateCcw } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SEO } from '@/components/common/SEO'
@@ -11,7 +11,8 @@ import { fetchProfile, resetProfileAsync, updateProfileAsync } from '@/features/
 import type { UserProfile } from '@/features/profile/model/types'
 import { ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS } from '@/features/profile/model/types'
 import { PLAN_NAMES } from '@/features/auth/model/plans'
-import { logout, regenerateAvatar, syncAccount } from '@/features/auth/model/authSlice'
+import { logout, syncAccount } from '@/features/auth/model/authSlice'
+import { AvatarUploader } from '@/features/profile/components/AvatarUploader'
 import { removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
 import { formatDate, formatNumber } from '@/utils/formatters'
 
@@ -86,12 +87,7 @@ export function ProfilePage() {
 
       <Card padding="none">
         <div className="flex items-center gap-4 p-5 sm:p-6">
-          <div className="flex flex-col items-center gap-1">
-            <Avatar seed={user?.avatarSeed ?? 'guest'} name={profile.name} className="size-16" />
-            {user && (
-              <IconButton size="sm" label="Нова аватарка" icon={<Shuffle />} onClick={() => dispatch(regenerateAvatar(user.id))} />
-            )}
-          </div>
+          {user ? <AvatarUploader user={user} name={profile.name} /> : <Avatar name={profile.name} className="size-20" />}
           <div className="min-w-0 flex-1 space-y-1">
             <p className="truncate text-lg font-semibold text-fg">{profile.name}</p>
             <p className="truncate text-sm text-fg-subtle">{profile.email}</p>
