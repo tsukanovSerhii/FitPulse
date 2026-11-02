@@ -1,405 +1,278 @@
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { Badge } from '@/components/common/Badge'
-import { Button } from '@/components/common/Button'
-import { Card } from '@/components/common/Card'
-import { SEO } from '@/components/common/SEO'
-import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
-import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
-import { fetchProfile } from '@/features/profile/model/profileSlice'
-import { FITNESS_GOAL_LABELS } from '@/features/profile/model/types'
-import { fetchProgress } from '@/features/progress/model/progressSlice'
-import { DAY_LABELS, type DayOfWeek } from '@/features/workoutPlan/model/types'
-import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
-import { startWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
-import { formatDuration } from '@/utils/formatters'
-import {
-	ArrowRight,
-	Calendar,
-	CheckCircle2,
-	Dumbbell,
-	Flame,
-	Play,
-	Sparkles,
-	TrendingUp,
-	Trophy,
-	Zap
-} from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ArrowRight, ArrowUpRight, Calendar, Play } from 'lucide-react'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { SEO } from '@/components/common/SEO'
+import { Button, SectionLabel, Stat } from '@/components/ui'
+import { PHOTOS } from '@/data/photos'
+import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
+import { FITNESS_GOAL_LABELS } from '@/features/profile/model/types'
+import { DAY_LABELS, type DayOfWeek } from '@/features/workoutPlan/model/types'
+import { startWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
+import { formatDate, formatDuration, formatNumber } from '@/utils/formatters'
+import { cn } from '@/utils/cn'
+
+const DAY_KEYS: DayOfWeek[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+const HERO_LIST_LIMIT = 5
 
 function getCurrentDayOfWeek(): DayOfWeek {
-	const dayIndex = new Date().getDay()
-	if (dayIndex === 0) return 'sunday'
-	if (dayIndex === 1) return 'monday'
-	if (dayIndex === 2) return 'tuesday'
-	if (dayIndex === 3) return 'wednesday'
-	if (dayIndex === 4) return 'thursday'
-	if (dayIndex === 5) return 'friday'
-	return 'saturday'
+  return DAY_KEYS[new Date().getDay()]
 }
 
-export const DashboardPage: React.FC = () => {
-	const dispatch = useAppDispatch()
-	const navigate = useNavigate()
+function formatToday() {
+  return new Intl.DateTimeFormat('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date())
+}
 
-	useEffect(() => {
-		dispatch(fetchExercises())
-		dispatch(fetchPlans())
-		dispatch(fetchProgress())
-		dispatch(fetchProfile())
-	}, [dispatch])
+const TOOLS = [
+  { to: '/exercises', title: 'Вправи', caption: 'Анатомія, фази руху та техніка' },
+  { to: '/plans', title: 'Програми', caption: 'Тижневі спліти та розклад' },
+  { to: '/progress', title: 'Прогрес', caption: 'Журнал сесій та особисті рекорди' },
+]
 
-	const profile = useAppSelector(state => state.profile.profile)
-	const plansState = useAppSelector(state => state.workoutPlan)
-	const exercisesState = useAppSelector(state => state.exercises)
-	const progressState = useAppSelector(state => state.progress)
-	const session = useAppSelector(state => state.workoutSession)
+export function DashboardPage() {
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
-	const [currentDayKey] = useState<DayOfWeek>(getCurrentDayOfWeek)
+  const profile = useAppSelector((state) => state.profile.profile)
+  const plansState = useAppSelector((state) => state.workoutPlan)
+  const exercises = useAppSelector((state) => state.exercises.items)
+  const progress = useAppSelector((state) => state.progress)
+  const session = useAppSelector((state) => state.workoutSession)
 
-	const activePlan =
-		plansState.plans.find(p => p.id === plansState.activePlanId) ||
-		plansState.plans[0]
-	const todayExercises = activePlan?.schedule[currentDayKey] || []
+  const [currentDayKey] = useState<DayOfWeek>(getCurrentDayOfWeek)
+  const [todayLabel] = useState(formatToday)
 
-	// Exercise map for fast name lookup
-	const exerciseMap = React.useMemo(() => {
-		const map = new Map<string, (typeof exercisesState.items)[0]>()
-		exercisesState.items.forEach(e => map.set(e.id, e))
-		return map
-	}, [exercisesState.items])
+  const activePlan = plansState.plans.find((p) => p.id === plansState.activePlanId) || plansState.plans[0]
+  const todayExercises = activePlan?.schedule[currentDayKey] || []
+  const isTrainingDay = todayExercises.length > 0
 
-	const handleStartTodayWorkout = () => {
-		if (todayExercises.length === 0) {
-			navigate('/workout')
-			return
-		}
-		dispatch(
-			startWorkout({
-				planId: activePlan?.id || null,
-				dayLabel: `${DAY_LABELS[currentDayKey]} (${activePlan?.name})`,
-				exercises: todayExercises
-			})
-		)
-		navigate('/workout')
-	}
+  const exerciseMap = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises])
 
-	// Performance statistics
-	const totalWorkouts = progressState.history.length
-	const totalVolumeKg = progressState.history.reduce(
-		(a, b) => a + b.totalVolumeKg,
-		0
-	)
-	const totalVolumeTons = (totalVolumeKg / 1000).toFixed(1)
-	const totalPrs = Object.keys(progressState.personalRecords).length
-	const totalSetsToday = todayExercises.reduce((acc, e) => acc + e.sets, 0)
+  const totalWorkouts = progress.history.length
+  const totalVolumeKg = progress.history.reduce((sum, log) => sum + log.totalVolumeKg, 0)
+  const totalSeconds = progress.history.reduce((sum, log) => sum + log.durationSeconds, 0)
+  const totalPrs = Object.keys(progress.personalRecords).length
+  const totalSetsToday = todayExercises.reduce((sum, e) => sum + e.sets, 0)
 
-	const todayDateString = new Intl.DateTimeFormat('uk-UA', {
-		weekday: 'long',
-		day: 'numeric',
-		month: 'long'
-	}).format(new Date())
+  const latestPr = useMemo(
+    () =>
+      Object.values(progress.personalRecords).sort(
+        (a, b) => new Date(b.achievedAt).getTime() - new Date(a.achievedAt).getTime(),
+      )[0],
+    [progress.personalRecords],
+  )
 
-	return (
-		<div className="space-y-6 sm:space-y-8 animate-fade-in pb-12">
-			<SEO
-				title="Головна панель"
-				description="FitPulse — Щоденник та планувальник силових тренувань: фокус дня, показники тоннажу та швидкий старт."
-			/>
+  const handleStart = () => {
+    if (session.isActive || !isTrainingDay) {
+      navigate('/workout')
+      return
+    }
+    dispatch(
+      startWorkout({
+        planId: activePlan?.id || null,
+        dayLabel: `${DAY_LABELS[currentDayKey]} (${activePlan?.name})`,
+        exercises: todayExercises,
+      }),
+    )
+    navigate('/workout')
+  }
 
-			{/* =========================================================================
-          TOP BAR: GREETING & CONTEXT
-      ========================================================================= */}
-			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-				<div>
-					<div className="flex items-center gap-2 mb-1">
-						<span className="text-xs font-semibold text-t-3 capitalize">
-							{todayDateString}
-						</span>
-						<span className="text-t-4">•</span>
-						<Badge variant="primary" size="sm">
-							{FITNESS_GOAL_LABELS[profile.fitnessGoal] || 'Сила та форма'}
-						</Badge>
-					</div>
-					<h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-t-1 tracking-tight">
-						Привіт, {profile.name || 'Атлете'}!
-					</h1>
-				</div>
+  return (
+    <div className="space-y-16 lg:space-y-24">
+      <SEO
+        title="Головна панель"
+        description="FitPulse — Щоденник та планувальник силових тренувань: фокус дня, показники тоннажу та швидкий старт."
+      />
 
-				{session.isActive && (
-					<Link
-						to="/workout"
-						className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all animate-pulse"
-					>
-						<span className="w-2 h-2 rounded-full bg-white" />
-						<span>Активне тренування: {formatDuration(session.elapsedSeconds)}</span>
-						<ArrowRight className="w-3.5 h-3.5" />
-					</Link>
-				)}
-			</div>
+      {/* ── HERO + INFO STRIP ─────────────────────────────────────────── */}
+      <section aria-labelledby="hero-title" className="-mx-5 sm:mx-0">
+        <div className="relative isolate overflow-hidden sm:rounded-t-lg">
+          <img
+            src={PHOTOS.heroRunner.src}
+            alt=""
+            className="absolute inset-0 -z-10 size-full object-cover object-[70%_center]"
+            fetchPriority="high"
+          />
+          <div
+            className="absolute inset-0 -z-10 bg-gradient-to-r from-scrim/90 via-scrim/60 to-scrim/20"
+            aria-hidden="true"
+          />
 
-			{/* =========================================================================
-          MAIN TRAINING HERO CARD (FOCUSED HIGH-SIGNAL UI)
-      ========================================================================= */}
-			<Card className="p-6 sm:p-8 bg-t-card border-t-d relative overflow-hidden">
-				{/* Background accent aura */}
-				<div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+          <div className="grid min-h-[520px] gap-10 px-6 py-10 text-on-photo sm:px-10 lg:min-h-[600px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:px-14 lg:py-14">
+            {/* Ліва колонка: індекс і список вправ — як «/ 01 Work Collection» у референсі */}
+            <div className="hidden flex-col justify-center gap-4 sm:flex lg:max-w-xs">
+              <div className="flex items-baseline gap-3 font-mono text-sm text-accent">
+                / {String(DAY_KEYS.indexOf(currentDayKey) || 7).padStart(2, '0')}
+              </div>
+              <div className="relative h-px w-full bg-on-photo/20" aria-hidden="true">
+                <div className="absolute inset-y-0 left-0 w-2/3 bg-accent" />
+              </div>
+              <p className="text-sm font-semibold">{activePlan?.name || 'План не обрано'}</p>
+              {isTrainingDay ? (
+                <ul className="space-y-1.5 text-xs text-on-photo/60">
+                  {todayExercises.slice(0, HERO_LIST_LIMIT).map((item) => (
+                    <li key={item.id} className="truncate">
+                      {exerciseMap.get(item.exerciseId)?.name || 'Вправа'}
+                    </li>
+                  ))}
+                  {todayExercises.length > HERO_LIST_LIMIT && (
+                    <li>+ ще {todayExercises.length - HERO_LIST_LIMIT}</li>
+                  )}
+                </ul>
+              ) : (
+                <p className="text-xs text-on-photo/60">За розкладом сьогодні тренувань немає</p>
+              )}
+            </div>
 
-				<div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-					<div className="space-y-3 max-w-xl">
-						<div className="flex items-center gap-2">
-							<Badge variant={todayExercises.length > 0 ? 'success' : 'neutral'} dot size="md">
-								{activePlan?.name || 'План не обрано'}
-							</Badge>
-							<span className="text-xs font-semibold text-t-3">
-								{DAY_LABELS[currentDayKey]}
-							</span>
-						</div>
+            {/* Права колонка: великий заголовок і CTA */}
+            <div className="flex flex-col justify-center">
+              <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-on-photo/70 first-letter:uppercase">
+                {todayLabel} · {FITNESS_GOAL_LABELS[profile.fitnessGoal] || 'Сила та форма'}
+              </p>
+              <h1 id="hero-title" className="text-6xl leading-[1.05] sm:text-7xl lg:text-8xl">
+                {isTrainingDay ? (
+                  <>
+                    Тренуйся
+                    <br />
+                    сьогодні
+                  </>
+                ) : (
+                  <>
+                    День
+                    <br />
+                    відновлення
+                  </>
+                )}
+              </h1>
+              <p className="mt-6 max-w-md text-sm leading-relaxed text-on-photo/75 sm:text-base">
+                {isTrainingDay ? (
+                  <>
+                    {profile.name ? `${profile.name}, у` : 'У'} плані {todayExercises.length} вправ і {totalSetsToday} підходів —
+                    приблизно {todayExercises.length * 10}–{todayExercises.length * 12} хвилин роботи.
+                  </>
+                ) : (
+                  <>Відпочинок — частина програми. Або почніть вільне заняття, якщо є енергія.</>
+                )}
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button size="lg" onClick={handleStart} icon={<Play className="fill-current" />}>
+                  {session.isActive
+                    ? `Продовжити · ${formatDuration(session.elapsedSeconds)}`
+                    : isTrainingDay
+                      ? 'Почати тренування'
+                      : 'Вільне тренування'}
+                </Button>
+                <Link
+                  to="/plans"
+                  className="inline-flex h-12 items-center gap-2 rounded-md border border-on-photo/30 px-6 text-sm font-semibold uppercase tracking-wide text-on-photo transition-colors hover:border-on-photo hover:bg-on-photo/10"
+                >
+                  <Calendar className="size-4" aria-hidden="true" />
+                  Розклад
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
 
-						{todayExercises.length > 0 ? (
-							<>
-								<h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-t-1 tracking-tight leading-snug">
-									Сьогоднішнє тренування за планом
-								</h2>
-								<p className="text-xs sm:text-sm text-t-2 font-medium">
-									Заплановано <strong className="text-t-1">{todayExercises.length} вправ</strong>,{' '}
-									<strong className="text-t-1">{totalSetsToday} підходів</strong> • приблизно{' '}
-									{todayExercises.length * 10}–{todayExercises.length * 12} хв
-								</p>
-							</>
-						) : (
-							<>
-								<h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-t-1 tracking-tight leading-snug">
-									Сьогодні день відновлення 🌱
-								</h2>
-								<p className="text-xs sm:text-sm text-t-2 font-medium">
-									За планом на сьогодні тренувань немає. Ви можете відпочити або розпочати вільне заняття в будь-який момент.
-								</p>
-							</>
-						)}
-					</div>
+        {/* Нижня смуга: план дня · фото · рекорд */}
+        <div className="grid border-x-0 border-b border-line bg-surface sm:rounded-b-lg sm:border-x md:grid-cols-[1.3fr_0.7fr_1fr]">
+          <div className="space-y-4 p-6 sm:p-8">
+            <h2 className="font-sans text-xs font-bold tracking-[0.2em] text-fg">План на сьогодні</h2>
+            {isTrainingDay ? (
+              <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                {todayExercises.slice(0, 4).map((item) => {
+                  const ex = exerciseMap.get(item.exerciseId)
+                  return (
+                    <li key={item.id} className="min-w-0 text-xs">
+                      <span className="block truncate font-semibold text-fg-muted">{ex?.name || 'Вправа'}</span>
+                      <span className="font-mono font-semibold text-fg tabular">
+                        {item.sets} × {item.reps}
+                        {item.weight ? ` · ${item.weight} кг` : ''}
+                      </span>
+                      {ex && <span className="ml-2 text-fg-subtle">{MUSCLE_GROUP_LABELS[ex.primaryMuscle]}</span>}
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <p className="text-sm text-fg-muted">Відпочинок і відновлення. Наступне тренування — за розкладом програми.</p>
+            )}
+          </div>
 
-					<div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0">
-						{todayExercises.length > 0 ? (
-							<Button
-								variant="primary"
-								size="lg"
-								onClick={handleStartTodayWorkout}
-								icon={<Play className="w-5 h-5 fill-white text-white" />}
-								className="w-full sm:w-auto text-sm sm:text-base font-extrabold"
-							>
-								Почати тренування ({todayExercises.length} вправ)
-							</Button>
-						) : (
-							<Button
-								variant="primary"
-								size="lg"
-								onClick={() => navigate('/workout')}
-								icon={<Play className="w-5 h-5 fill-white text-white" />}
-								className="w-full sm:w-auto"
-							>
-								Вільне тренування
-							</Button>
-						)}
+          <div className="relative hidden min-h-[180px] md:block">
+            <img src={PHOTOS.deadlift.src} alt={PHOTOS.deadlift.alt} loading="lazy" className="absolute inset-0 size-full object-cover" />
+          </div>
 
-						<Button
-							variant="outline"
-							size="md"
-							onClick={() => navigate('/plans')}
-							icon={<Calendar className="w-4 h-4" />}
-							className="w-full sm:w-auto text-xs"
-						>
-							Налаштувати розклад
-						</Button>
-					</div>
-				</div>
+          <div className="space-y-4 border-t border-line p-6 sm:p-8 md:border-t-0">
+            <h2 className="font-sans text-xs font-bold tracking-[0.2em] text-fg">Останній рекорд</h2>
+            {latestPr ? (
+              <>
+                <p className="text-sm text-fg-muted">
+                  {latestPr.exerciseName} ·{' '}
+                  <span className="font-mono font-semibold text-fg tabular">
+                    {latestPr.maxWeightKg > 0 ? `${latestPr.maxWeightKg} кг` : `${latestPr.maxReps} повт.`}
+                  </span>
+                  <span className="block text-xs text-fg-subtle">{formatDate(latestPr.achievedAt)}</span>
+                </p>
+                <Link to="/progress" className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:text-accent-hover">
+                  Усі рекорди <ArrowRight className="size-3.5" aria-hidden="true" />
+                </Link>
+              </>
+            ) : (
+              <p className="text-sm text-fg-muted">Завершіть перше тренування, щоб зафіксувати рекорд.</p>
+            )}
+          </div>
+        </div>
+      </section>
 
-				{/* Scheduled exercises preview chips (clean & compact) */}
-				{todayExercises.length > 0 && (
-					<div className="mt-6 pt-5 border-t border-t-d">
-						<span className="text-[11px] font-bold uppercase tracking-wider text-t-3 block mb-3">
-							Вправи на сьогодні:
-						</span>
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-							{todayExercises.map((pEx, idx) => {
-								const ex = exerciseMap.get(pEx.exerciseId)
-								return (
-									<div
-										key={pEx.id}
-										className="flex items-center justify-between p-3 rounded-xl bg-t-subtle border border-t-d"
-									>
-										<div className="flex items-center gap-2.5 min-w-0">
-											<span className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 font-mono font-bold text-xs flex items-center justify-center shrink-0">
-												{idx + 1}
-											</span>
-											<div className="truncate">
-												<span className="text-xs font-bold text-t-1 block truncate">
-													{ex?.name || 'Вправа'}
-												</span>
-												<span className="text-[11px] text-t-3 font-medium">
-													{pEx.sets} сети × {pEx.reps} повт
-													{pEx.weight ? ` • ${pEx.weight} кг` : ''}
-												</span>
-											</div>
-										</div>
-										{ex && (
-											<span className="text-[10px] font-semibold text-t-3 bg-t-card px-2 py-0.5 rounded-md border border-t-d shrink-0 ml-2">
-												{MUSCLE_GROUP_LABELS[ex.primaryMuscle]}
-											</span>
-										)}
-									</div>
-								)
-							})}
-						</div>
-					</div>
-				)}
-			</Card>
+      {/* ── METRICS ───────────────────────────────────────────────────── */}
+      <section aria-labelledby="metrics-title" className="space-y-8">
+        <div className="flex items-end justify-between gap-4">
+          <SectionLabel index={1}>
+            <span id="metrics-title">Ваш прогрес</span>
+          </SectionLabel>
+          <Link to="/progress" className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:text-accent-hover">
+            Аналітика <ArrowRight className="size-3.5" aria-hidden="true" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-y-10 border-t border-line pt-8 lg:grid-cols-4">
+          <Stat label="Тоннаж" value={formatNumber(totalVolumeKg)} unit="кг" accent size="lg" />
+          <Stat label="Сесій" value={totalWorkouts} size="lg" />
+          <Stat label="Рекордів" value={totalPrs} size="lg" />
+          <Stat label="У залі" value={formatNumber(totalSeconds / 3600, 1)} unit="год" size="lg" />
+        </div>
+      </section>
 
-			{/* =========================================================================
-          KEY ATHLETIC METRICS (CLEAN NUMBERS, ZERO JUNK)
-      ========================================================================= */}
-			<div>
-				<div className="flex items-center justify-between mb-3">
-					<h3 className="text-sm font-bold uppercase tracking-wider text-t-3">
-						Ваш поточний прогрес
-					</h3>
-					<Link
-						to="/progress"
-						className="text-xs font-semibold text-emerald-500 hover:text-emerald-400 flex items-center gap-1 transition-colors"
-					>
-						<span>Вся аналітика</span>
-						<ArrowRight className="w-3.5 h-3.5" />
-					</Link>
-				</div>
-
-				<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-					{/* Metric 1: Total Volume */}
-					<Card className="p-5 flex items-center justify-between">
-						<div>
-							<span className="text-xs font-semibold text-t-3 block mb-1">
-								Загальний тоннаж
-							</span>
-							<div className="text-2xl sm:text-3xl font-mono font-extrabold text-t-1 tracking-tight">
-								{totalVolumeKg > 0 ? totalVolumeKg.toLocaleString() : '0'}{' '}
-								<span className="text-sm font-sans text-t-3 font-semibold">кг</span>
-							</div>
-							<span className="text-[11px] text-t-3 mt-1 block">
-								≈ {totalVolumeTons} тонни піднятої ваги
-							</span>
-						</div>
-						<div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 flex items-center justify-center shrink-0">
-							<Flame className="w-5 h-5" />
-						</div>
-					</Card>
-
-					{/* Metric 2: Completed Sessions */}
-					<Card className="p-5 flex items-center justify-between">
-						<div>
-							<span className="text-xs font-semibold text-t-3 block mb-1">
-								Завершено занять
-							</span>
-							<div className="text-2xl sm:text-3xl font-mono font-extrabold text-t-1 tracking-tight">
-								{totalWorkouts}
-							</div>
-							<span className="text-[11px] text-t-3 mt-1 block">
-								сесій у щоденнику
-							</span>
-						</div>
-						<div className="w-11 h-11 rounded-xl bg-sky-500/10 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0">
-							<CheckCircle2 className="w-5 h-5" />
-						</div>
-					</Card>
-
-					{/* Metric 3: Personal Records */}
-					<Card className="p-5 flex items-center justify-between">
-						<div>
-							<span className="text-xs font-semibold text-t-3 block mb-1">
-								Силові рекорди (PR)
-							</span>
-							<div className="text-2xl sm:text-3xl font-mono font-extrabold text-t-1 tracking-tight">
-								{totalPrs}
-							</div>
-							<span className="text-[11px] text-t-3 mt-1 block">
-								вправ із зафіксованим піком
-							</span>
-						</div>
-						<div className="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-500 dark:text-amber-400 flex items-center justify-center shrink-0">
-							<Trophy className="w-5 h-5" />
-						</div>
-					</Card>
-				</div>
-			</div>
-
-			{/* =========================================================================
-          FAST NAVIGATION: 3 CORE MODULES
-      ========================================================================= */}
-			<div>
-				<h3 className="text-sm font-bold uppercase tracking-wider text-t-3 mb-3">
-					Основні інструменти
-				</h3>
-
-				<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-					<Link to="/exercises" className="block group">
-						<Card hover className="p-5 h-full flex flex-col justify-between">
-							<div className="flex items-center gap-3.5 mb-3">
-								<div className="w-10 h-10 rounded-xl bg-t-subtle border border-t-d text-t-1 group-hover:text-emerald-500 flex items-center justify-center shrink-0 transition-colors">
-									<Dumbbell className="w-5 h-5" />
-								</div>
-								<div>
-									<h4 className="text-sm font-bold text-t-1 group-hover:text-emerald-500 transition-colors">
-										База вправ
-									</h4>
-									<span className="text-xs text-t-3">Анатомія та техніка</span>
-								</div>
-							</div>
-							<div className="flex items-center justify-between text-xs text-t-3 pt-2 border-t border-t-d">
-								<span>18 вправ з біомеханікою</span>
-								<ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-							</div>
-						</Card>
-					</Link>
-
-					<Link to="/plans" className="block group">
-						<Card hover className="p-5 h-full flex flex-col justify-between">
-							<div className="flex items-center gap-3.5 mb-3">
-								<div className="w-10 h-10 rounded-xl bg-t-subtle border border-t-d text-t-1 group-hover:text-emerald-500 flex items-center justify-center shrink-0 transition-colors">
-									<Calendar className="w-5 h-5" />
-								</div>
-								<div>
-									<h4 className="text-sm font-bold text-t-1 group-hover:text-emerald-500 transition-colors">
-										Програми тренувань
-									</h4>
-									<span className="text-xs text-t-3">Спліти та графіки</span>
-								</div>
-							</div>
-							<div className="flex items-center justify-between text-xs text-t-3 pt-2 border-t border-t-d">
-								<span>Push / Pull / Legs</span>
-								<ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-							</div>
-						</Card>
-					</Link>
-
-					<Link to="/progress" className="block group">
-						<Card hover className="p-5 h-full flex flex-col justify-between">
-							<div className="flex items-center gap-3.5 mb-3">
-								<div className="w-10 h-10 rounded-xl bg-t-subtle border border-t-d text-t-1 group-hover:text-emerald-500 flex items-center justify-center shrink-0 transition-colors">
-									<TrendingUp className="w-5 h-5" />
-								</div>
-								<div>
-									<h4 className="text-sm font-bold text-t-1 group-hover:text-emerald-500 transition-colors">
-										Історія та аналітика
-									</h4>
-									<span className="text-xs text-t-3">Журнал та рекорди</span>
-								</div>
-							</div>
-							<div className="flex items-center justify-between text-xs text-t-3 pt-2 border-t border-t-d">
-								<span>{totalWorkouts} виконаних сесій</span>
-								<ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-							</div>
-						</Card>
-					</Link>
-				</div>
-			</div>
-		</div>
-	)
+      {/* ── TOOLS ─────────────────────────────────────────────────────── */}
+      <section aria-labelledby="tools-title" className="space-y-8">
+        <SectionLabel index={2}>
+          <span id="tools-title">Інструменти</span>
+        </SectionLabel>
+        <ul className="border-t border-line">
+          {TOOLS.map((tool, i) => (
+            <li key={tool.to} className="border-b border-line">
+              <Link to={tool.to} className="group flex items-center gap-6 py-6 sm:gap-10 sm:py-8">
+                <span className="w-8 font-mono text-sm text-fg-subtle transition-colors group-hover:text-accent">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="flex-1">
+                  <span className="block font-display text-3xl uppercase text-fg transition-colors group-hover:text-accent sm:text-5xl">
+                    {tool.title}
+                  </span>
+                  <span className="mt-1 block text-sm text-fg-muted">{tool.caption}</span>
+                </span>
+                <ArrowUpRight
+                  className={cn(
+                    'size-6 shrink-0 text-fg-subtle transition-[color,transform] duration-300',
+                    'group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-accent',
+                  )}
+                  aria-hidden="true"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  )
 }

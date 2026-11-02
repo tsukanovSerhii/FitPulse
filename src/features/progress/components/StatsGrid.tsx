@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dumbbell, Calendar, Clock, Trophy } from 'lucide-react'
 import type { WorkoutHistoryLog, PersonalRecord } from '../model/types'
-import { Card } from '@/components/common/Card'
+import { Card } from '@/components/ui'
 import { formatDuration } from '@/utils/formatters'
 
 export interface StatsGridProps {
@@ -21,17 +21,17 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
       {/* 1. Workouts */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-t-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
             Всього тренувань
           </span>
-          <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-md bg-accent-soft border border-accent/30 text-accent flex items-center justify-center">
             <Calendar className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-3xl sm:text-4xl font-black text-t-1 font-mono">
+        <div className="text-3xl sm:text-4xl font-black text-fg font-mono">
           {totalWorkouts}
         </div>
-        <span className="text-xs text-sky-600 dark:text-sky-400 font-semibold mt-2 block">
+        <span className="text-xs text-accent font-semibold mt-2 block">
           Завершених сесій
         </span>
       </Card>
@@ -39,18 +39,18 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
       {/* 2. Total Volume */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-t-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
             Піднята вага
           </span>
-          <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-md bg-accent-soft border border-accent/30 text-accent flex items-center justify-center">
             <Dumbbell className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-3xl sm:text-4xl font-black text-t-1 font-mono">
+        <div className="text-3xl sm:text-4xl font-black text-fg font-mono">
           {(totalVolumeKg / 1000).toFixed(1)}{' '}
-          <span className="text-lg font-bold text-t-3">т</span>
+          <span className="text-lg font-bold text-fg-subtle">т</span>
         </div>
-        <span className="text-xs text-cyan-600 dark:text-cyan-400 font-semibold mt-2 block">
+        <span className="text-xs text-accent font-semibold mt-2 block">
           {totalVolumeKg.toLocaleString()} кг сумарно
         </span>
       </Card>
@@ -58,17 +58,17 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
       {/* 3. Time trained */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-t-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
             Час у залі
           </span>
-          <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-md bg-accent-soft border border-accent/30 text-accent flex items-center justify-center">
             <Clock className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-2xl sm:text-3xl font-black text-t-1 font-mono">
+        <div className="text-2xl sm:text-3xl font-black text-fg font-mono">
           {Math.floor(totalSeconds / 3600)}г {Math.round((totalSeconds % 3600) / 60)}хв
         </div>
-        <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-2 block">
+        <span className="text-xs text-accent font-semibold mt-2 block">
           {formatDuration(totalSeconds)}
         </span>
       </Card>
@@ -76,17 +76,17 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
       {/* 4. Personal Records */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-t-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
             Рекорди (PR)
           </span>
-          <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-md bg-warning-soft border border-warning/30 text-warning flex items-center justify-center">
             <Trophy className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-3xl sm:text-4xl font-black text-t-1 font-mono">
+        <div className="text-3xl sm:text-4xl font-black text-fg font-mono">
           {prCount}
         </div>
-        <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-2 block">
+        <span className="text-xs text-warning font-semibold mt-2 block">
           ~{totalCalories.toLocaleString()} спалених ккал
         </span>
       </Card>

@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { Plus } from 'lucide-react'
 import type { Exercise, MuscleGroup, Difficulty, Equipment } from '../model/types'
 import { MUSCLE_GROUP_LABELS, DIFFICULTY_LABELS, EQUIPMENT_LABELS } from '../model/types'
-import { Modal } from '@/components/common/Modal'
-import { Input } from '@/components/common/Input'
-import { Select } from '@/components/common/Select'
-import { Button } from '@/components/common/Button'
+import { Modal } from '@/components/ui'
+import { Input } from '@/components/ui'
+import { Select } from '@/components/ui'
+import { Button } from '@/components/ui'
 
 export interface AddExerciseModalProps {
   isOpen: boolean
@@ -100,7 +100,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} title="Додати нову вправу" maxWidth="lg">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 bg-rose-500/15 border border-rose-500/30 rounded-xl text-xs text-rose-400">
+          <div className="p-3 bg-danger-soft border border-danger/30 rounded-md text-xs text-danger">
             {error}
           </div>
         )}
@@ -135,7 +135,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-t-2 block mb-1.5">
+          <label className="text-xs font-semibold text-fg-muted block mb-1.5">
             Короткий опис
           </label>
           <textarea
@@ -143,7 +143,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Опишіть призначення вправи..."
-            className="w-full px-3.5 py-2.5 rounded-xl bg-t-input border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full px-3.5 py-2.5 rounded-md bg-surface-2 border border-line text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-accent/50"
           />
         </div>
 
@@ -176,7 +176,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-t-2 block mb-1.5">
+          <label className="text-xs font-semibold text-fg-muted block mb-1.5">
             Покрокова техніка (кожен крок з нового рядка)
           </label>
           <textarea
@@ -184,11 +184,11 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
             value={instructionsText}
             onChange={(e) => setInstructionsText(e.target.value)}
             placeholder="Крок 1: Займіть початкове положення...&#10;Крок 2: На вдиху опустіться...&#10;Крок 3: На видиху підніміться..."
-            className="w-full px-3.5 py-2.5 rounded-xl bg-t-input border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full px-3.5 py-2.5 rounded-md bg-surface-2 border border-line text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-accent/50"
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-line">
           <Button type="button" variant="secondary" onClick={onClose}>
             Скасувати
           </Button>

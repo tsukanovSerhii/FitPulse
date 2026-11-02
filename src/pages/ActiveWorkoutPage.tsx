@@ -1,3 +1,4 @@
+import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -33,9 +34,9 @@ import { SetLoggerRow } from '@/features/workoutSession/components/SetLoggerRow'
 import { SessionSummaryModal } from '@/features/workoutSession/components/SessionSummaryModal'
 import { CancelWorkoutModal } from '@/features/workoutSession/components/CancelWorkoutModal'
 import { ExerciseMotionPlayer } from '@/components/common/ExerciseMotionPlayer'
-import { Card } from '@/components/common/Card'
-import { Button } from '@/components/common/Button'
-import { Badge } from '@/components/common/Badge'
+import { Card, PageHeader } from '@/components/ui'
+import { Button } from '@/components/ui'
+import { Badge } from '@/components/ui'
 import { formatDuration } from '@/utils/formatters'
 import { SEO } from '@/components/common/SEO'
 
@@ -261,36 +262,31 @@ export const ActiveWorkoutPage: React.FC = () => {
     const selectedPlan = plans.find((p) => p.id === effectivePlanId) || plans[0]
 
     return (
-      <div className="max-w-2xl mx-auto space-y-6 animate-fade-in py-6">
-        <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto mb-3 shadow-xl shadow-sky-950/40">
-            <Play className="w-8 h-8 fill-current translate-x-0.5" />
-          </div>
-          <h1 className="text-3xl font-black text-t-1">
-            Почати тренування
-          </h1>
-          <p className="text-sm text-t-3">
-            Оберіть день з існуючої програми або запустіть експрес-сесію
-          </p>
-        </div>
+      <div className="max-w-3xl space-y-8">
+        <PageHeader
+          index={3}
+          eyebrow="Сесія"
+          title="Тренування"
+          description="Оберіть день з існуючої програми або запустіть експрес-сесію"
+        />
 
         {/* Start from active plan */}
-        <Card className="p-6 space-y-5 shadow-xl">
-          <h3 className="text-base font-bold text-t-2 flex items-center gap-2">
-            <Dumbbell className="w-4 h-4 text-sky-400" />
+        <Card className="p-6 space-y-5">
+          <h3 className="text-base font-bold text-fg-muted flex items-center gap-2">
+            <Dumbbell className="w-4 h-4 text-accent" />
             Запустити тренування за планом
           </h3>
 
           <div className="space-y-4">
             {planWarning && (
-              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center gap-2">
+              <div className="p-3.5 rounded-md bg-warning-soft border border-warning/20 text-warning text-xs flex items-center gap-2">
                 <span>⚠️</span>
                 <span>{planWarning}</span>
               </div>
             )}
 
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-t-3 block mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-fg-subtle block mb-2">
                 Оберіть програму
               </label>
               <select
@@ -299,7 +295,7 @@ export const ActiveWorkoutPage: React.FC = () => {
                   setSelectedPlanId(e.target.value)
                   setPlanWarning(null)
                 }}
-                className="w-full px-4 py-3 rounded-xl bg-t-input border border-t-d text-sm font-semibold text-t-1 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-3 rounded-md bg-surface-2 border border-line text-sm font-semibold text-fg focus:outline-none focus:ring-2 focus:ring-accent"
               >
                 {plans.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -310,7 +306,7 @@ export const ActiveWorkoutPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-t-3 block mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-fg-subtle block mb-2">
                 Оберіть день тижня
               </label>
               <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
@@ -325,12 +321,12 @@ export const ActiveWorkoutPage: React.FC = () => {
                         setSelectedDay(d)
                         setPlanWarning(null)
                       }}
-                      className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                      className={`p-2.5 rounded-md border text-center transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs'
+                          ? 'bg-accent text-on-accent border-accent'
                           : count > 0
-                          ? 'bg-t-subtle hover:bg-t-hover text-t-2 border-t-d'
-                          : 'bg-t-subtle/40 text-t-3 border-t-d/50 opacity-60'
+                          ? 'bg-surface-2 hover:bg-surface-2 text-fg-muted border-line'
+                          : 'bg-surface-2/40 text-fg-subtle border-line/50 opacity-60'
                       }`}
                     >
                       <span className="block text-xs font-bold">{DAY_LABELS[d].slice(0, 2)}</span>
@@ -346,7 +342,7 @@ export const ActiveWorkoutPage: React.FC = () => {
                 variant="primary"
                 size="lg"
                 onClick={handleStartFromPlan}
-                icon={<Play className="w-5 h-5 fill-white" />}
+                icon={<Play className="w-5 h-5 fill-current" />}
                 className="w-full"
               >
                 Почати тренування ({DAY_LABELS[selectedDay]})
@@ -356,13 +352,13 @@ export const ActiveWorkoutPage: React.FC = () => {
         </Card>
 
         {/* Quick Workout Alternative */}
-        <Card hover className="flex items-center justify-between p-5 shadow-lg">
+        <Card hover className="flex items-center justify-between p-5">
           <div>
-            <h4 className="text-sm font-bold text-t-1 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400" />
+            <h4 className="text-sm font-bold text-fg flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-warning" />
               Швидкий старт (Full Body мікс)
             </h4>
-            <p className="text-xs text-t-3 mt-1">
+            <p className="text-xs text-fg-subtle mt-1">
               Запустити експрес-сесію з базовими 4 вправами без розкладу
             </p>
           </div>
@@ -398,21 +394,21 @@ export const ActiveWorkoutPage: React.FC = () => {
     <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-12">
       <SEO title="Активне тренування" description="Фіксація підходів, робочої ваги та таймер відпочинку." />
       {/* Top Session Status Bar */}
-      <div className="rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl border bg-t-card border-t-d">
+      <div className="rounded-lg p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border bg-surface border-line">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shadow-lg shadow-sky-950/40 shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-accent-soft border border-accent/20 text-accent flex items-center justify-center shrink-0">
             <Timer className="w-6 h-6 animate-pulse" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-t-1">
+            <h2 className="text-lg sm:text-xl font-black text-fg">
               {sanitizedDayLabel}
             </h2>
             <div className="flex items-center gap-2.5 mt-1">
-              <span className="text-xs sm:text-sm font-mono font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-lg">
+              <span className="text-xs sm:text-sm font-mono font-bold text-accent bg-accent-soft border border-accent/20 px-2.5 py-0.5 rounded-lg">
                 Час: {formatDuration(session.elapsedSeconds)}
               </span>
-              <span className="text-t-4">•</span>
-              <span className="text-xs text-t-2 font-semibold">
+              <span className="text-fg-subtle">•</span>
+              <span className="text-xs text-fg-muted font-semibold">
                 Вправа {currentIdx + 1} з {totalExercises}
               </span>
             </div>
@@ -446,9 +442,9 @@ export const ActiveWorkoutPage: React.FC = () => {
 
       {/* Main Exercise Card */}
       {currentPlanExercise && currentExerciseData ? (
-        <Card className="p-6 space-y-6 shadow-xl">
+        <Card className="p-6 space-y-6">
           {/* Navigator Header */}
-          <div className="flex items-center justify-between gap-2 pb-4 border-b border-t-d">
+          <div className="flex items-center justify-between gap-2 pb-4 border-b border-line">
             <Button
               variant="secondary"
               size="sm"
@@ -459,7 +455,7 @@ export const ActiveWorkoutPage: React.FC = () => {
               Назад
             </Button>
 
-            <span className="text-xs font-bold text-sky-700 bg-sky-50 border-sky-200 dark:text-sky-300 dark:bg-sky-500/15 px-3 py-1 rounded-full border dark:border-sky-500/30">
+            <span className="text-xs font-bold text-accent bg-accent-soft border-accent px-3 py-1 rounded-full border">
               Вправа {currentIdx + 1} з {totalExercises}
             </span>
 
@@ -477,12 +473,12 @@ export const ActiveWorkoutPage: React.FC = () => {
           <div>
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="text-2xl font-black text-t-1">
+                <h3 className="text-2xl font-black text-fg">
                   {currentExerciseData.name}
                 </h3>
                 <div className="flex flex-wrap items-center gap-2 mt-2">
                   <Badge variant="primary" dot size="sm">
-                    {currentExerciseData.primaryMuscle}
+                    {MUSCLE_GROUP_LABELS[currentExerciseData.primaryMuscle]}
                   </Badge>
                   <Badge variant="neutral" size="sm">
                     Ціль: {currentPlanExercise.sets}×{currentPlanExercise.reps}
@@ -506,7 +502,7 @@ export const ActiveWorkoutPage: React.FC = () => {
             </div>
 
             {currentPlanExercise.notes && (
-              <div className="mt-3 text-xs text-sky-800 bg-sky-50 border-sky-200 dark:text-sky-300 dark:bg-sky-500/10 p-3 rounded-xl border dark:border-sky-500/20 italic">
+              <div className="mt-3 text-xs text-accent bg-accent-soft border-accent p-3 rounded-md border italic">
                 Вказівка: {currentPlanExercise.notes}
               </div>
             )}
@@ -524,7 +520,7 @@ export const ActiveWorkoutPage: React.FC = () => {
 
           {/* Sets Logger */}
           <div className="space-y-3 pt-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-t-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
               Підходи та вага:
             </h4>
 
@@ -548,9 +544,9 @@ export const ActiveWorkoutPage: React.FC = () => {
           </div>
 
           {/* Bottom stepper navigator bar */}
-          <div className="flex items-center justify-between pt-5 border-t border-t-d">
-            <div className="text-xs text-t-3">
-              Виконано в цій вправі: <strong className="text-t-1">{currentExerciseSets.length}</strong> з {currentPlanExercise.sets} сетів
+          <div className="flex items-center justify-between pt-5 border-t border-line">
+            <div className="text-xs text-fg-subtle">
+              Виконано в цій вправі: <strong className="text-fg">{currentExerciseSets.length}</strong> з {currentPlanExercise.sets} сетів
             </div>
 
             {currentIdx < totalExercises - 1 ? (
@@ -574,7 +570,7 @@ export const ActiveWorkoutPage: React.FC = () => {
           </div>
         </Card>
       ) : (
-        <div className="text-center py-12 text-t-3">
+        <div className="text-center py-12 text-fg-subtle">
           У цьому тренуванні немає вправ.
         </div>
       )}

@@ -72,19 +72,19 @@ export const RestTimerWidget: React.FC = () => {
       : 0
 
   return (
-    <div className="bg-t-card border border-slate-200 dark:border-sky-500/25 rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-xl backdrop-blur-md mb-6 animate-fade-in">
+    <div className="bg-surface border border-line rounded-lg px-4 py-3 sm:px-5 sm:py-3.5 mb-6 animate-fade-in">
       <div className="flex items-center justify-between gap-3">
         {/* Left: Compact label + Sound icon toggle */}
         <div className="flex items-center gap-2 sm:gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0">
-            <Timer className={`w-4 h-4 ${restTimer.isRunning ? 'animate-pulse' : 'text-slate-400'}`} />
+          <div className="w-8 h-8 rounded-md bg-accent-soft border border-accent/30 text-accent flex items-center justify-center shrink-0">
+            <Timer className={`w-4 h-4 ${restTimer.isRunning ? 'animate-pulse' : 'text-fg-muted'}`} />
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-sm font-bold text-t-1 tracking-tight">Відпочинок</span>
+            <span className="text-xs sm:text-sm font-bold text-fg tracking-tight">Відпочинок</span>
 
             {!restTimer.isRunning && (
-              <span className="text-[10px] text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-300 font-bold dark:bg-amber-500/15 px-1.5 py-0.5 rounded border dark:border-amber-500/30">
+              <span className="text-[10px] text-warning bg-warning-soft border-warning font-bold px-1.5 py-0.5 rounded border">
                 Пауза
               </span>
             )}
@@ -95,8 +95,8 @@ export const RestTimerWidget: React.FC = () => {
               onClick={toggleSound}
               className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
                 soundEnabled
-                  ? 'bg-sky-50 border-sky-200 text-sky-600 dark:bg-sky-500/15 dark:border-sky-500/30 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-500/25'
-                  : 'bg-slate-100 border-slate-200 text-slate-500 hover:text-slate-800 dark:bg-slate-800/80 dark:border-slate-700/60 dark:text-slate-500 dark:hover:text-slate-300'
+                  ? 'bg-accent-soft border-accent text-accent hover:bg-accent-soft'
+                  : 'bg-surface-2 border-line text-fg-subtle hover:text-fg-muted'
               }`}
               title={soundEnabled ? 'Звук увімкнено (натисніть, щоб вимкнути)' : 'Звук вимкнено (натисніть, щоб увімкнути)'}
               aria-label="Звуковий сигнал"
@@ -116,7 +116,7 @@ export const RestTimerWidget: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(subtractRestSeconds(30))}
-            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-t-subtle hover:bg-t-hover text-t-2 hover:text-t-1 border border-t-d text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
+            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-md bg-surface-2 hover:bg-surface-2 text-fg-muted hover:text-fg border border-line text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
             title="Зменшити час на 30 секунд (мін. 1 хв)"
           >
             <Minus className="w-3 h-3" />
@@ -124,7 +124,7 @@ export const RestTimerWidget: React.FC = () => {
           </button>
 
           {/* Monospace Tabular Countdown */}
-          <div className="text-xl sm:text-2xl font-black font-mono text-sky-600 dark:text-sky-400 tracking-wider tabular-nums px-1.5 min-w-[65px] text-center">
+          <div className="text-xl sm:text-2xl font-black font-mono text-accent tracking-wider tabular-nums px-1.5 min-w-[65px] text-center">
             {formatDuration(restTimer.remainingSeconds)}
           </div>
 
@@ -132,7 +132,7 @@ export const RestTimerWidget: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(addRestSeconds(30))}
-            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-t-subtle hover:bg-t-hover text-t-2 hover:text-t-1 border border-t-d text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
+            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-md bg-surface-2 hover:bg-surface-2 text-fg-muted hover:text-fg border border-line text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
             title="Додати 30 секунд"
           >
             <Plus className="w-3 h-3" />
@@ -143,7 +143,7 @@ export const RestTimerWidget: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(addRestSeconds(60))}
-            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-sky-50 hover:bg-sky-100 active:bg-sky-50 text-sky-700 hover:text-sky-800 border border-sky-200 dark:bg-sky-600/20 dark:hover:bg-sky-600/30 dark:active:bg-sky-600/20 dark:text-sky-300 dark:hover:text-sky-200 dark:border-sky-500/30 text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
+            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-md bg-accent-soft hover:bg-accent-soft active:bg-accent-soft text-accent hover:text-accent border border-accent text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
             title="Додати 1 хвилину"
           >
             <Plus className="w-3 h-3" />
@@ -154,10 +154,10 @@ export const RestTimerWidget: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(toggleRestTimer())}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
               restTimer.isRunning
-                ? 'bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 dark:bg-amber-500/15 dark:hover:bg-amber-500/25 dark:border-amber-500/30 dark:text-amber-300'
-                : 'bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 dark:bg-emerald-500/20 dark:hover:bg-emerald-500/30 dark:border-emerald-500/40 dark:text-emerald-300'
+                ? 'bg-warning-soft hover:bg-warning-soft border border-warning text-warning'
+                : 'bg-accent-soft hover:bg-accent-soft border border-accent text-accent'
             }`}
             title={restTimer.isRunning ? 'Поставити на паузу' : 'Запустити відлік таймера'}
           >
@@ -178,7 +178,7 @@ export const RestTimerWidget: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(skipRestTimer())}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold text-t-3 hover:text-t-1 hover:bg-t-hover transition-all cursor-pointer ml-1"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold text-fg-subtle hover:text-fg hover:bg-surface-2 transition-all cursor-pointer ml-1"
             title="Пропустити відпочинок"
           >
             <SkipForward className="w-3.5 h-3.5" />
@@ -188,9 +188,9 @@ export const RestTimerWidget: React.FC = () => {
       </div>
 
       {/* Slim Progress Bar */}
-      <div className="w-full bg-slate-100 dark:bg-slate-950/90 h-1.5 rounded-full mt-2.5 overflow-hidden border border-t-d/60">
+      <div className="w-full bg-surface-2 h-1.5 rounded-full mt-2.5 overflow-hidden border border-line/60">
         <div
-          className="bg-gradient-to-r from-sky-500 to-cyan-400 h-full transition-all duration-1000 ease-linear rounded-full shadow-sm"
+          className="bg-gradient-to-r from-accent to-accent h-full transition-all duration-1000 ease-linear rounded-full"
           style={{ width: `${percent}%` }}
         />
       </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, Dumbbell, Heart, Sparkles } from 'lucide-react'
+import { Plus, Dumbbell } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import {
   fetchExercises,
@@ -15,8 +15,8 @@ import { ExerciseCard } from '@/features/exercises/components/ExerciseCard'
 import { ExerciseFiltersBar } from '@/features/exercises/components/ExerciseFiltersBar'
 import { ExerciseDetailModal } from '@/features/exercises/components/ExerciseDetailModal'
 import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
-import { Button } from '@/components/common/Button'
-import { EmptyState } from '@/components/common/EmptyState'
+import { Button, PageHeader, SegmentedControl } from '@/components/ui'
+import { EmptyState } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 import { injectExerciseSchema } from '@/utils/seo'
 
@@ -54,55 +54,28 @@ export const ExercisesPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-12">
       <SEO title="Каталог вправ" description="Повний довідник вправ для тренажерного залу та дому. Анатомічна карта м'язів, фази руху та техніка." />
-      {/* Page Title & Add Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
-        <div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
-              <Dumbbell className="w-5 h-5 -rotate-45" />
-            </div>
-            Каталог вправ
-          </h1>
-          <p className="text-xs sm:text-sm text-t-3 mt-1 font-medium">
-            База силових та функціональних вправ з анатомією м'язів, фазами руху та порадами
-          </p>
-        </div>
+      <PageHeader
+        index={1}
+        eyebrow="Бібліотека"
+        title={<>Каталог<br />вправ</>}
+        description="База силових та функціональних вправ з анатомією м'язів, фазами руху та порадами"
+        actions={
+          <Button onClick={() => setIsAddModalOpen(true)} icon={<Plus />}>
+            Додати вправу
+          </Button>
+        }
+      />
 
-        <Button
-          variant="primary"
-          onClick={() => setIsAddModalOpen(true)}
-          icon={<Plus className="w-4 h-4" />}
-        >
-          Додати власну вправу
-        </Button>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => setActiveTab('all')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
-            activeTab === 'all'
-              ? 'bg-emerald-600 text-white shadow-sm border border-emerald-500/30'
-              : 'bg-t-hover text-t-3 hover:text-t-1 hover:bg-t-hover border border-t-d'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          Всі вправи ({items.length})
-        </button>
-
-        <button
-          onClick={() => setActiveTab('favorites')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
-            activeTab === 'favorites'
-              ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
-              : 'bg-t-hover text-t-3 hover:text-t-1 hover:bg-t-hover border border-t-d'
-          }`}
-        >
-          <Heart className={`w-3.5 h-3.5 ${activeTab === 'favorites' ? 'fill-white' : ''}`} />
-          Обрані ({favorites.length})
-        </button>
-      </div>
+      <SegmentedControl
+        label="Набір вправ"
+        appearance="underline"
+        value={activeTab}
+        onChange={setActiveTab}
+        options={[
+          { value: 'all', label: <>Усі <span className="font-mono text-fg-subtle">{items.length}</span></> },
+          { value: 'favorites', label: <>Обрані <span className="font-mono text-fg-subtle">{favorites.length}</span></> },
+        ]}
+      />
 
       {/* Filter component */}
       <ExerciseFiltersBar
@@ -115,13 +88,13 @@ export const ExercisesPage: React.FC = () => {
 
       {/* Loading state */}
       {status === 'loading' && items.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-sky-400 border-t-transparent rounded-full mx-auto mb-3" />
+        <div className="text-center py-16 text-fg-muted text-sm">
+          <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-3" />
           Завантаження каталогу вправ...
         </div>
       ) : displayItems.length === 0 ? (
         <EmptyState
-          icon={<Dumbbell className="w-8 h-8 text-sky-400" />}
+          icon={<Dumbbell className="w-8 h-8 text-accent" />}
           title={activeTab === 'favorites' ? 'У вас ще немає обраних вправ' : 'Вправ не знайдено'}
           description={
             activeTab === 'favorites'

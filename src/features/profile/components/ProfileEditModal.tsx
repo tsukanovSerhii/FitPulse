@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import type { UserProfile, FitnessGoal, ActivityLevel } from '../model/types'
 import { FITNESS_GOAL_LABELS, ACTIVITY_LEVEL_LABELS } from '../model/types'
-import { Modal } from '@/components/common/Modal'
-import { Input } from '@/components/common/Input'
-import { Select } from '@/components/common/Select'
-import { Button } from '@/components/common/Button'
+import { Modal } from '@/components/ui'
+import { Input } from '@/components/ui'
+import { Select } from '@/components/ui'
+import { Button } from '@/components/ui'
 
 export interface ProfileEditModalProps {
   isOpen: boolean
@@ -81,7 +81,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} title="Редагування особистого профілю" maxWidth="md">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 bg-rose-500/15 border border-rose-500/30 rounded-xl text-xs text-rose-400">
+          <div className="p-3 bg-danger-soft border border-danger/30 rounded-md text-xs text-danger">
             {error}
           </div>
         )}
@@ -153,7 +153,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           options={activityOptions}
         />
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-line">
           <Button type="button" variant="secondary" onClick={onClose}>
             Скасувати
           </Button>

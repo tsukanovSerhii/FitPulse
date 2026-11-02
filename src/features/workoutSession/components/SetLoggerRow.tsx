@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Check, RotateCcw } from 'lucide-react'
 import type { CompletedSet } from '../model/types'
-import { Button } from '@/components/common/Button'
+import { Button } from '@/components/ui'
 
 export interface SetLoggerRowProps {
   setNumber: number
@@ -52,38 +52,40 @@ export const SetLoggerRow: React.FC<SetLoggerRowProps> = ({
 
   return (
     <div
-      className={`p-3.5 sm:p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+      className={`p-3.5 sm:p-4 rounded-lg border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
         isCompleted
-          ? 'bg-emerald-50 border-emerald-300 dark:bg-emerald-950/20 dark:border-emerald-500/40 shadow-sm'
-          : 'bg-slate-50 border-slate-200 hover:border-slate-300 dark:bg-slate-950/70 dark:border-slate-800/80 dark:hover:border-slate-700 shadow-sm'
+          ? 'bg-accent-soft border-accent'
+          : 'bg-surface-2 border-line hover:border-line-strong'
       }`}
     >
       {/* Set Number & target info */}
       <div className="flex items-center gap-3.5">
         <span
-          className={`w-9 h-9 rounded-xl font-black text-xs flex items-center justify-center shrink-0 ${
+          className={`w-9 h-9 rounded-md font-black text-xs flex items-center justify-center shrink-0 ${
             isCompleted
-              ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40'
-              : 'bg-white dark:bg-slate-800 text-t-2 border border-t-d shadow-xs'
+              ? 'bg-accent-soft text-accent border border-accent/40'
+              : 'bg-surface text-fg-muted border border-line'
           }`}
         >
           {setNumber}
         </span>
         <div>
-          <span className="text-sm font-bold text-t-1">Підхід {setNumber}</span>
-          <span className="block text-xs text-t-3 mt-0.5">
-            Ціль: <strong className="text-t-2">{targetReps} повт</strong>
+          <span className="text-sm font-bold text-fg">Підхід {setNumber}</span>
+          <span className="block text-xs text-fg-subtle mt-0.5">
+            Ціль: <strong className="text-fg-muted">{targetReps} повт</strong>
             {targetWeight ? ` • ${targetWeight} кг` : ''}
           </span>
         </div>
       </div>
 
       {/* Actual Inputs & Check action */}
-      <div className="flex items-center gap-2.5 self-end sm:self-center">
+      <div className="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:w-auto sm:gap-2.5">
         {/* Weight input */}
-        <div className="flex items-center gap-1 bg-t-input px-3 py-2 rounded-xl border border-t-d shadow-xs">
+        <label className="flex h-9 min-w-0 items-center gap-1 rounded-md border border-line bg-surface-2 px-3 focus-within:border-accent">
+          <span className="sr-only">Вага, підхід {setNumber}</span>
           <input
             type="number"
+            inputMode="decimal"
             disabled={isCompleted}
             min={0}
             max={500}
@@ -91,25 +93,27 @@ export const SetLoggerRow: React.FC<SetLoggerRowProps> = ({
             placeholder="0"
             value={weight}
             onChange={(e) => setWeight(e.target.value === '' ? '' : Number(e.target.value))}
-            className="w-12 text-center text-xs font-bold text-t-1 bg-transparent focus:outline-none"
+            className="w-full min-w-0 bg-transparent text-center font-mono text-sm font-semibold text-fg tabular focus:outline-none sm:w-12"
           />
-          <span className="text-[11px] font-semibold text-t-3">кг</span>
-        </div>
+          <span className="text-[11px] font-semibold text-fg-subtle" aria-hidden="true">кг</span>
+        </label>
 
         {/* Reps input */}
-        <div className="flex items-center gap-1 bg-t-input px-3 py-2 rounded-xl border border-t-d shadow-xs">
+        <label className="flex h-9 min-w-0 items-center gap-1 rounded-md border border-line bg-surface-2 px-3 focus-within:border-accent">
+          <span className="sr-only">Повторення, підхід {setNumber}</span>
           <input
             type="number"
+            inputMode="numeric"
             disabled={isCompleted}
             min={1}
             max={200}
             placeholder="0"
             value={reps}
             onChange={(e) => setReps(Number(e.target.value))}
-            className="w-10 text-center text-xs font-bold text-t-1 bg-transparent focus:outline-none"
+            className="w-full min-w-0 bg-transparent text-center font-mono text-sm font-semibold text-fg tabular focus:outline-none sm:w-10"
           />
-          <span className="text-[11px] font-semibold text-t-3">повт</span>
-        </div>
+          <span className="text-[11px] font-semibold text-fg-subtle" aria-hidden="true">повт</span>
+        </label>
 
         {/* Complete / Undo button */}
         <Button

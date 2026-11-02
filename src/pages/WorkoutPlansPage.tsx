@@ -18,8 +18,8 @@ import { DAY_LABELS } from '@/features/workoutPlan/model/types'
 import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
 import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorModal'
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
-import { Button } from '@/components/common/Button'
-import { EmptyState } from '@/components/common/EmptyState'
+import { Button, PageHeader } from '@/components/ui'
+import { EmptyState } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 
 export const WorkoutPlansPage: React.FC = () => {
@@ -143,38 +143,27 @@ export const WorkoutPlansPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-12">
       <SEO title="Програми тренувань" description="Створюйте та налаштовуйте тижневі спліти: Push/Pull/Legs, Full Body. Керування підходами, повтореннями та днями відпочинку." />
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
-        <div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
-              <Calendar className="w-5 h-5" />
-            </div>
-            Програми тренувань
-          </h1>
-          <p className="text-xs sm:text-sm text-t-3 mt-1 font-medium">
-            Спліти та графіки: налаштовуйте підходи, повторення, цільову вагу та час відпочинку
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          onClick={handleCreatePlan}
-          icon={<Plus className="w-4 h-4" />}
-        >
-          Створити нову програму
-        </Button>
-      </div>
+      <PageHeader
+        index={2}
+        eyebrow="Розклад"
+        title={<>Програми<br />тренувань</>}
+        description="Спліти та графіки: налаштовуйте підходи, повторення, цільову вагу та час відпочинку"
+        actions={
+          <Button onClick={handleCreatePlan} icon={<Plus />}>
+            Нова програма
+          </Button>
+        }
+      />
 
       {/* Plans List */}
       {status === 'loading' && plans.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-sky-400 border-t-transparent rounded-full mx-auto mb-3" />
+        <div className="text-center py-16 text-fg-muted text-sm">
+          <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-3" />
           Завантаження програм тренувань...
         </div>
       ) : plans.length === 0 ? (
         <EmptyState
-          icon={<Calendar className="w-8 h-8 text-sky-400" />}
+          icon={<Calendar className="w-8 h-8 text-accent" />}
           title="Немає створених програм"
           description="Створіть свій перший тижневий план тренувань, щоб систематизувати свої заняття."
           action={

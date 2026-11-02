@@ -42,11 +42,11 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
   }
 
   // Active muscle highlight styling: Electric athletic sky/cyan
-  const activeColor = '#38bdf8'
-  const bodyColor = '#94a3b8'
-  const jointColor = '#cbd5e1'
-  const equipmentColor = '#cbd5e1'
-  const benchColor = '#1e293b'
+  const activeColor = 'var(--accent)'
+  const bodyColor = 'var(--fg-subtle)'
+  const jointColor = 'var(--fg-muted)'
+  const equipmentColor = 'var(--fg-muted)'
+  const benchColor = 'var(--surface-2)'
 
   // Normalize phaseIndex to 0-3
   const phase = Math.min(Math.max(phaseIndex, 0), 3)
@@ -71,15 +71,15 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
           {/* Gym Floor */}
-          <line x1="20" y1="190" x2="340" y2="190" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="20" y1="190" x2="340" y2="190" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
 
           {/* Bench Legs & Bench Top */}
-          <rect x="75" y="138" width="165" height="12" rx="4" fill={benchColor} stroke="#334155" strokeWidth="1.5" />
-          <rect x="90" y="150" width="10" height="40" rx="2" fill="#334155" />
-          <rect x="220" y="150" width="10" height="40" rx="2" fill="#334155" />
+          <rect x="75" y="138" width="165" height="12" rx="4" fill={benchColor} stroke="var(--line-strong)" strokeWidth="1.5" />
+          <rect x="90" y="150" width="10" height="40" rx="2" fill="var(--line-strong)" />
+          <rect x="220" y="150" width="10" height="40" rx="2" fill="var(--line-strong)" />
           {/* Barbell Rack upright */}
-          <rect x="76" y="70" width="8" height="68" rx="2" fill="#1e293b" stroke="#334155" strokeWidth="1" />
-          <path d="M 72 70 L 88 70 L 88 80 L 72 80 Z" fill="#475569" />
+          <rect x="76" y="70" width="8" height="68" rx="2" fill="var(--surface-2)" stroke="var(--line-strong)" strokeWidth="1" />
+          <path d="M 72 70 L 88 70 L 88 80 L 72 80 Z" fill="var(--line-strong)" />
 
           {/* ATHLETE BODY (Lying on bench) */}
           {/* Head resting on bench */}
@@ -148,23 +148,23 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
             {/* Bar */}
             <line x1="60" y1={barY} x2="240" y2={barY} stroke={equipmentColor} strokeWidth="5" strokeLinecap="round" />
             {/* Inner collar */}
-            <rect x="75" y={barY - 14} width="5" height="28" rx="2" fill="#64748b" />
+            <rect x="75" y={barY - 14} width="5" height="28" rx="2" fill="var(--fg-subtle)" />
             {/* 20kg Plate */}
-            <rect x="80" y={barY - 26} width="8" height="52" rx="3" fill="#0284c7" stroke="#38bdf8" strokeWidth="1" />
+            <rect x="80" y={barY - 26} width="8" height="52" rx="3" fill="var(--accent)" stroke="var(--accent)" strokeWidth="1" />
             {/* Outer plate */}
-            <rect x="88" y={barY - 22} width="6" height="44" rx="2" fill="#0369a1" />
+            <rect x="88" y={barY - 22} width="6" height="44" rx="2" fill="color-mix(in srgb, var(--accent) 65%, var(--bg))" />
             {/* Right Plate */}
-            <rect x="210" y={barY - 26} width="8" height="52" rx="3" fill="#0284c7" stroke="#38bdf8" strokeWidth="1" />
-            <rect x="218" y={barY - 22} width="6" height="44" rx="2" fill="#0369a1" />
+            <rect x="210" y={barY - 26} width="8" height="52" rx="3" fill="var(--accent)" stroke="var(--accent)" strokeWidth="1" />
+            <rect x="218" y={barY - 22} width="6" height="44" rx="2" fill="color-mix(in srgb, var(--accent) 65%, var(--bg))" />
           </g>
 
           {/* Biomechanical Angle Badge */}
           <g transform="translate(260, 45)">
-            <rect x="0" y="0" width="86" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="43" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="86" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="43" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               КУТ ЛІКТІВ
             </text>
-            <text x="43" y="27" fill="#38bdf8" fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="43" y="27" fill="var(--accent)" fontSize="11" fontWeight="900" textAnchor="middle">
               ~75° (Оптимально)
             </text>
           </g>
@@ -204,9 +204,9 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
           {/* Gym Floor */}
-          <line x1="30" y1="195" x2="330" y2="195" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="30" y1="195" x2="330" y2="195" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
           {/* Vertical center of balance dashed guide */}
-          <line x1="180" y1="20" x2="180" y2="195" stroke="#334155" strokeWidth="1" strokeDasharray="3 3" />
+          <line x1="180" y1="20" x2="180" y2="195" stroke="var(--line-strong)" strokeWidth="1" strokeDasharray="3 3" />
 
           {/* Foot on floor */}
           <line x1="165" y1="193" x2="198" y2="193" stroke={jointColor} strokeWidth="6" strokeLinecap="round" />
@@ -274,18 +274,18 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
           {/* BARBELL (Side slice: Barbell plate) */}
           <g style={tStyle}>
-            <circle cx={barX} cy={barY} r="22" fill="#0284c7" stroke="#38bdf8" strokeWidth="2" />
-            <circle cx={barX} cy={barY} r="12" fill="#0369a1" />
-            <circle cx={barX} cy={barY} r="4" fill="#cbd5e1" />
+            <circle cx={barX} cy={barY} r="22" fill="var(--accent)" stroke="var(--accent)" strokeWidth="2" />
+            <circle cx={barX} cy={barY} r="12" fill="color-mix(in srgb, var(--accent) 65%, var(--bg))" />
+            <circle cx={barX} cy={barY} r="4" fill="var(--fg-muted)" />
           </g>
 
           {/* Depth / Biomechanics Badge */}
           <g transform="translate(240, 35)">
-            <rect x="0" y="0" width="102" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="51" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="102" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="51" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               ГЛИБИНА ПРИСІДУ
             </text>
-            <text x="51" y="27" fill={isDeep ? '#38bdf8' : '#e2e8f0'} fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="51" y="27" fill={isDeep ? 'var(--accent)' : 'var(--fg)'} fontSize="11" fontWeight="900" textAnchor="middle">
               {isDeep ? 'Паралель досягнута' : 'Контроль спуску'}
             </text>
           </g>
@@ -314,7 +314,7 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
-          <line x1="30" y1="195" x2="330" y2="195" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="30" y1="195" x2="330" y2="195" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
 
           {/* Foot */}
           <line x1="165" y1="193" x2="198" y2="193" stroke={jointColor} strokeWidth="6" strokeLinecap="round" />
@@ -365,18 +365,18 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
           {/* Barbell Plate */}
           <g style={tStyle}>
-            <circle cx="188" cy={barY} r="22" fill="#0284c7" stroke="#38bdf8" strokeWidth="2" />
-            <circle cx="188" cy={barY} r="11" fill="#0369a1" />
-            <circle cx="188" cy={barY} r="4" fill="#cbd5e1" />
+            <circle cx="188" cy={barY} r="22" fill="var(--accent)" stroke="var(--accent)" strokeWidth="2" />
+            <circle cx="188" cy={barY} r="11" fill="color-mix(in srgb, var(--accent) 65%, var(--bg))" />
+            <circle cx="188" cy={barY} r="4" fill="var(--fg-muted)" />
           </g>
 
           {/* Biomechanical Cue Badge */}
           <g transform="translate(235, 35)">
-            <rect x="0" y="0" width="110" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="55" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="110" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="55" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               БІОМЕХАНІКА СПИНИ
             </text>
-            <text x="55" y="27" fill={isLockout ? '#38bdf8' : '#e2e8f0'} fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="55" y="27" fill={isLockout ? 'var(--accent)' : 'var(--fg)'} fontSize="11" fontWeight="900" textAnchor="middle">
               {isLockout ? 'Повний локаут тазу' : 'Нейтральний хребет'}
             </text>
           </g>
@@ -399,9 +399,9 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
           {/* Pull-up Bar Rig */}
-          <line x1="80" y1="28" x2="280" y2="28" stroke="#475569" strokeWidth="6" strokeLinecap="round" />
-          <line x1="90" y1="28" x2="90" y2="0" stroke="#334155" strokeWidth="4" />
-          <line x1="270" y1="28" x2="270" y2="0" stroke="#334155" strokeWidth="4" />
+          <line x1="80" y1="28" x2="280" y2="28" stroke="var(--line-strong)" strokeWidth="6" strokeLinecap="round" />
+          <line x1="90" y1="28" x2="90" y2="0" stroke="var(--line-strong)" strokeWidth="4" />
+          <line x1="270" y1="28" x2="270" y2="0" stroke="var(--line-strong)" strokeWidth="4" />
 
           {/* Hands gripping bar */}
           <circle cx="150" cy="28" r="6" fill={jointColor} />
@@ -462,11 +462,11 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
           {/* Cue Badge */}
           <g transform="translate(240, 45)">
-            <rect x="0" y="0" width="105" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="52" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="105" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="52" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               ПІКОВЕ СКОРОЧЕННЯ
             </text>
-            <text x="52" y="27" fill={isPeak ? '#38bdf8' : '#e2e8f0'} fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="52" y="27" fill={isPeak ? 'var(--accent)' : 'var(--fg)'} fontSize="11" fontWeight="900" textAnchor="middle">
               {isPeak ? 'Підборіддя над грифом' : 'Повний розтяг найширших'}
             </text>
           </g>
@@ -488,7 +488,7 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
-          <line x1="30" y1="195" x2="330" y2="195" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="30" y1="195" x2="330" y2="195" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
 
           {/* Legs & Torso */}
           <line x1="168" y1="195" x2="174" y2="135" stroke={bodyColor} strokeWidth="10" strokeLinecap="round" />
@@ -543,16 +543,16 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
           {/* Barbell Overhead */}
           <g style={tStyle}>
             <line x1="110" y1={barY} x2="250" y2={barY} stroke={equipmentColor} strokeWidth="5" strokeLinecap="round" />
-            <rect x="120" y={barY - 20} width="7" height="40" rx="2" fill="#0284c7" stroke="#38bdf8" strokeWidth="1" />
-            <rect x="233" y={barY - 20} width="7" height="40" rx="2" fill="#0284c7" stroke="#38bdf8" strokeWidth="1" />
+            <rect x="120" y={barY - 20} width="7" height="40" rx="2" fill="var(--accent)" stroke="var(--accent)" strokeWidth="1" />
+            <rect x="233" y={barY - 20} width="7" height="40" rx="2" fill="var(--accent)" stroke="var(--accent)" strokeWidth="1" />
           </g>
 
           <g transform="translate(245, 35)">
-            <rect x="0" y="0" width="98" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="49" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="98" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="49" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               ТРАЄКТОРІЯ
             </text>
-            <text x="49" y="27" fill={isLockout ? '#38bdf8' : '#e2e8f0'} fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="49" y="27" fill={isLockout ? 'var(--accent)' : 'var(--fg)'} fontSize="11" fontWeight="900" textAnchor="middle">
               {isLockout ? 'Вертикальний локаут' : 'Траєкторія над центром'}
             </text>
           </g>
@@ -575,7 +575,7 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
-          <line x1="30" y1="195" x2="330" y2="195" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="30" y1="195" x2="330" y2="195" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
 
           {/* Standing legs & torso */}
           <line x1="168" y1="195" x2="174" y2="135" stroke={bodyColor} strokeWidth="10" strokeLinecap="round" />
@@ -613,16 +613,16 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
           {/* Dumbbell */}
           <g style={tStyle}>
             <circle cx={handX} cy={handY} r="7" fill={jointColor} />
-            <rect x={handX - 5} y={handY - 14} width="10" height="7" rx="2" fill="#0284c7" stroke="#38bdf8" strokeWidth="1" />
-            <rect x={handX - 5} y={handY + 7} width="10" height="7" rx="2" fill="#0284c7" stroke="#38bdf8" strokeWidth="1" />
+            <rect x={handX - 5} y={handY - 14} width="10" height="7" rx="2" fill="var(--accent)" stroke="var(--accent)" strokeWidth="1" />
+            <rect x={handX - 5} y={handY + 7} width="10" height="7" rx="2" fill="var(--accent)" stroke="var(--accent)" strokeWidth="1" />
           </g>
 
           <g transform="translate(240, 35)">
-            <rect x="0" y="0" width="100" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="50" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="100" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="50" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               ПОЗИЦІЯ ЛІКТІВ
             </text>
-            <text x="50" y="27" fill={isPeak ? '#38bdf8' : '#e2e8f0'} fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="50" y="27" fill={isPeak ? 'var(--accent)' : 'var(--fg)'} fontSize="11" fontWeight="900" textAnchor="middle">
               {isPeak ? 'Максимальний пік' : 'Лікті зафіксовані'}
             </text>
           </g>
@@ -644,7 +644,7 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
-          <line x1="30" y1="195" x2="330" y2="195" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="30" y1="195" x2="330" y2="195" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
 
           {/* Legs with knee bend */}
           <line x1="165" y1="193" x2="198" y2="193" stroke={jointColor} strokeWidth="6" strokeLinecap="round" />
@@ -684,17 +684,17 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
           {/* Barbell */}
           <g style={tStyle}>
-            <circle cx="180" cy={barY} r="18" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
-            <circle cx="180" cy={barY} r="9" fill="#0369a1" />
-            <circle cx="180" cy={barY} r="3" fill="#cbd5e1" />
+            <circle cx="180" cy={barY} r="18" fill="var(--accent)" stroke="var(--accent)" strokeWidth="1.5" />
+            <circle cx="180" cy={barY} r="9" fill="color-mix(in srgb, var(--accent) 65%, var(--bg))" />
+            <circle cx="180" cy={barY} r="3" fill="var(--fg-muted)" />
           </g>
 
           <g transform="translate(240, 35)">
-            <rect x="0" y="0" width="105" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="52" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="105" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="52" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               НАХИЛ КОРПУСУ
             </text>
-            <text x="52" y="27" fill={isPeak ? '#38bdf8' : '#e2e8f0'} fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="52" y="27" fill={isPeak ? 'var(--accent)' : 'var(--fg)'} fontSize="11" fontWeight="900" textAnchor="middle">
               {isPeak ? 'Зведення лопаток' : 'Кут нахилу 45°'}
             </text>
           </g>
@@ -717,7 +717,7 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
-          <line x1="30" y1="185" x2="330" y2="185" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="30" y1="185" x2="330" y2="185" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
 
           {/* Hands and feet touching floor */}
           <circle cx="160" cy="182" r="5" fill={jointColor} />
@@ -765,11 +765,11 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
           </g>
 
           <g transform="translate(240, 35)">
-            <rect x="0" y="0" width="105" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="52" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="105" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="52" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               ЛІНІЯ ТОРСУ
             </text>
-            <text x="52" y="27" fill={isBottom ? '#38bdf8' : '#e2e8f0'} fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="52" y="27" fill={isBottom ? 'var(--accent)' : 'var(--fg)'} fontSize="11" fontWeight="900" textAnchor="middle">
               {isBottom ? 'Повна амплітуда' : 'Прес напружений'}
             </text>
           </g>
@@ -783,9 +783,9 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
     case 'plank': {
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
-          <line x1="30" y1="185" x2="330" y2="185" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="30" y1="185" x2="330" y2="185" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
           {/* Mat */}
-          <rect x="70" y="183" width="220" height="5" rx="2" fill="#1e293b" />
+          <rect x="70" y="183" width="220" height="5" rx="2" fill="var(--surface-2)" />
 
           {/* Forearms on mat */}
           <line x1="120" y1="183" x2="145" y2="183" stroke={jointColor} strokeWidth="6" strokeLinecap="round" />
@@ -814,11 +814,11 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
           <circle cx="125" cy="142" r="10" fill={jointColor} />
 
           <g transform="translate(240, 35)">
-            <rect x="0" y="0" width="105" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="52" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="105" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="52" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               СТАБІЛІЗАЦІЯ
             </text>
-            <text x="52" y="27" fill="#38bdf8" fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="52" y="27" fill="var(--accent)" fontSize="11" fontWeight="900" textAnchor="middle">
               Кор в одній лінії
             </text>
           </g>
@@ -836,7 +836,7 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
 
       return (
         <svg viewBox="0 0 360 210" className={`w-full h-full ${className}`}>
-          <line x1="30" y1="195" x2="330" y2="195" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+          <line x1="30" y1="195" x2="330" y2="195" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="4 4" />
 
           {/* Legs & Torso */}
           <line x1="168" y1="195" x2="174" y2="135" stroke={bodyColor} strokeWidth="10" strokeLinecap="round" />
@@ -886,11 +886,11 @@ export const AthleteRig: React.FC<AthleteRigProps> = ({
           </g>
 
           <g transform="translate(240, 35)">
-            <rect x="0" y="0" width="100" height="34" rx="10" fill="#111622" stroke="#334155" strokeWidth="1" />
-            <text x="50" y="14" fill="#94a3b8" fontSize="8" fontWeight="bold" textAnchor="middle">
+            <rect x="0" y="0" width="100" height="34" rx="10" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="1" />
+            <text x="50" y="14" fill="var(--fg-subtle)" fontSize="8" fontWeight="bold" textAnchor="middle">
               БІОМЕХАНІКА
             </text>
-            <text x="50" y="27" fill={isPeak ? '#38bdf8' : '#e2e8f0'} fontSize="11" fontWeight="900" textAnchor="middle">
+            <text x="50" y="27" fill={isPeak ? 'var(--accent)' : 'var(--fg)'} fontSize="11" fontWeight="900" textAnchor="middle">
               {isPeak ? 'Піковий фокус' : 'Підконтрольний рух'}
             </text>
           </g>
