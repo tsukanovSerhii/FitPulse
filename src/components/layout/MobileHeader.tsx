@@ -14,7 +14,7 @@ export function MobileHeader() {
         <div className="flex items-center gap-1">
           <ThemeCycleButton />
           <Link to="/profile" aria-label="Профіль" className="flex size-11 items-center justify-center">
-            <Avatar seed={user?.avatarSeed ?? 'guest'} name={user?.name} className="size-8" />
+            <Avatar src={user?.avatarUrl} name={user?.name} className="size-8" />
           </Link>
         </div>
       </div>

@@ -1,46 +1,74 @@
-import { Calendar, Dumbbell, Timer, TrendingUp, type LucideIcon } from 'lucide-react'
-import { SectionLabel } from '@/components/ui'
+import type { ReactNode } from 'react'
+import { cn } from '@/utils/cn'
+import { AnatomyVisual, ProgressVisual, RestVisual, StepperVisual, WeekVisual } from './FeatureVisuals'
+import { SectionHeader } from './SectionHeader'
 
-const FEATURES: { icon: LucideIcon; title: string; text: string }[] = [
+interface Feature {
+  title: string
+  text: string
+  visual: ReactNode
+  className: string
+}
+
+const FEATURES: Feature[] = [
   {
-    icon: Dumbbell,
     title: 'Техніка кожної вправи',
-    text: 'Фази руху, анатомічна карта м’язів, типові помилки й поради для новачків і досвідчених.',
+    text: 'Анімація фаз руху, анатомічна карта м’язів, типові помилки й поради для новачків і досвідчених. Ви знаєте, що робите і навіщо.',
+    visual: <AnatomyVisual />,
+    className: 'lg:col-span-4 lg:row-span-2',
   },
   {
-    icon: Calendar,
-    title: 'Програми й розклад',
-    text: 'Готові спліти Push / Pull / Legs і Full Body або власна програма на тиждень.',
-  },
-  {
-    icon: Timer,
     title: 'Режим тренування',
-    text: 'Великі кнопки під палець, таймер відпочинку з вібрацією, екран не гасне в залі.',
+    text: 'Великі кнопки під палець: вага, повтори, підхід — без клавіатури.',
+    visual: <StepperVisual />,
+    className: 'lg:col-span-2',
   },
   {
-    icon: TrendingUp,
+    title: 'Таймер відпочинку',
+    text: 'Запускається сам після підходу, з вібрацією і звуком.',
+    visual: <RestVisual />,
+    className: 'lg:col-span-2',
+  },
+  {
+    title: 'Програми на тиждень',
+    text: 'Готові спліти Push / Pull / Legs і Full Body або власна програма тренувань.',
+    visual: <WeekVisual />,
+    className: 'lg:col-span-3',
+  },
+  {
     title: 'Прогрес і рекорди',
-    text: 'Журнал сесій, тоннаж, час у залі та автоматичний облік особистих рекордів.',
+    text: 'Тоннаж, журнал сесій і особисті рекорди рахуються автоматично.',
+    visual: <ProgressVisual />,
+    className: 'lg:col-span-3',
   },
 ]
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="scroll-mt-20 border-t border-line">
-      <div className="mx-auto max-w-6xl space-y-12 px-5 py-20 sm:px-8 lg:py-28">
-        <div className="grid gap-6 lg:grid-cols-2 lg:items-end">
-          <SectionLabel index={2}>Можливості</SectionLabel>
-          <h2 className="text-4xl leading-[1.08] text-fg sm:text-5xl">Все для тренування — в одному місці</h2>
-        </div>
-        <ul className="grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
-          {FEATURES.map(({ icon: Icon, title, text }, i) => (
-            <li key={title} className="space-y-4 bg-surface p-6 sm:p-8">
-              <div className="flex items-center justify-between">
-                <Icon className="size-6 text-accent" aria-hidden="true" />
-                <span className="font-mono text-xs text-fg-subtle">{String(i + 1).padStart(2, '0')}</span>
+    <section id="features" aria-labelledby="features-title" className="scroll-mt-20">
+      <div className="mx-auto max-w-7xl space-y-14 px-5 py-24 sm:px-8 lg:py-32">
+        <SectionHeader
+          id="features-title"
+          index={2}
+          label="Можливості"
+          title="Все для тренування — в одному місці"
+          lead="Від вибору вправи до запису рекорду: FitPulse закриває весь шлях тренування в залі."
+        />
+        <ul className="grid gap-4 lg:grid-cols-6">
+          {FEATURES.map((feature, i) => (
+            <li
+              key={feature.title}
+              className={cn(
+                'flex flex-col justify-between gap-10 rounded-lg border border-line bg-surface p-6 transition-colors hover:border-line-strong sm:p-8',
+                feature.className,
+              )}
+            >
+              <div className="space-y-3">
+                <span className="font-mono text-sm text-accent">{String(i + 1).padStart(2, '0')}</span>
+                <h3 className="text-3xl leading-tight text-fg sm:text-4xl">{feature.title}</h3>
+                <p className="max-w-xl text-base text-fg-muted sm:text-lg">{feature.text}</p>
               </div>
-              <h3 className="font-sans text-lg font-semibold normal-case tracking-normal text-fg">{title}</h3>
-              <p className="text-sm text-fg-muted">{text}</p>
+              <div className={cn('flex', i === 0 && 'flex-1 items-center')}>{feature.visual}</div>
             </li>
           ))}
         </ul>

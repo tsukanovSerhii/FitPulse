@@ -52,6 +52,7 @@ export function LoginPage() {
         )}
         <Input
           label="Email"
+          placeholder="you@example.com"
           type="email"
           autoComplete="email"
           inputMode="email"
@@ -61,6 +62,7 @@ export function LoginPage() {
         />
         <PasswordField
           label="Пароль"
+          placeholder="Ваш пароль"
           autoComplete="current-password"
           value={form.password}
           onChange={(e) => update('password')(e.target.value)}

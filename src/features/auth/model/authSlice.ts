@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { updateProfileAsync } from '@/features/profile/model/profileSlice'
 import { INITIAL_PROFILE } from '@/services/mockData/initialProfile'
-import { authApi, AuthError, randomSeed } from '../api/authApi'
+import { authApi, AuthError } from '../api/authApi'
 import type { AuthState, AuthUser, Credentials, RegistrationData } from './types'
 
 const errorMessage = (err: unknown) => (err instanceof AuthError ? err.message : 'Щось пішло не так. Спробуйте ще раз')
@@ -79,7 +79,7 @@ export const logout = () => {
   return loggedOut()
 }
 
-export const regenerateAvatar = (userId: string) => userUpdated(authApi.updateUser(userId, { avatarSeed: randomSeed() }))
+export const setAvatar = (userId: string, avatarUrl: string | undefined) => userUpdated(authApi.updateUser(userId, { avatarUrl }))
 
 export const syncAccount = (userId: string, changes: { name?: string; email?: string }) =>
   userUpdated(authApi.updateUser(userId, changes))

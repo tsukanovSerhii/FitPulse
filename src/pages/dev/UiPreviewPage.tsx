@@ -128,7 +128,7 @@ export function UiPreviewPage() {
         </SectionLabel>
         <div className="grid gap-4 sm:grid-cols-3">
           <Input label="Вага" type="number" placeholder="80" helperText="Робоча вага в кг" />
-          <Input label="Повтори" type="number" defaultValue={0} error="Мінімум 1 повтор" />
+          <Input label="Повтори" placeholder="Напр. 10" type="number" defaultValue={0} error="Мінімум 1 повтор" />
           <Select
             label="Рівень"
             options={[
@@ -179,7 +179,7 @@ export function UiPreviewPage() {
       >
         <div className="space-y-4">
           <p className="text-sm text-fg-muted">Фокус залишається всередині діалогу, Esc закриває.</p>
-          <Input label="Підходи" type="number" defaultValue={4} />
+          <Input label="Підходи" placeholder="Напр. 4" type="number" defaultValue={4} />
         </div>
       </Modal>
     </div>

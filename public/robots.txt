@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /welcome
+Allow: /register
+Allow: /login
+Disallow: /
+
+Sitemap: https://fit-pulse-beta-opal.vercel.app/sitemap.xml

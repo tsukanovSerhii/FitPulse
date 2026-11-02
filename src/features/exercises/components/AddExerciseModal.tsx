@@ -149,6 +149,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
         <div className="grid grid-cols-3 gap-3">
           <Input
             label="Підходи (сети)"
+            placeholder="Напр. 4"
             type="number"
             min={1}
             max={20}
@@ -157,6 +158,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
           />
           <Input
             label="Повторення"
+            placeholder="Напр. 10"
             type="number"
             min={1}
             max={200}
@@ -165,6 +167,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
           />
           <Input
             label="Відпочинок (сек)"
+            placeholder="Напр. 90"
             type="number"
             min={10}
             max={600}

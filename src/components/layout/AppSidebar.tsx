@@ -57,7 +57,7 @@ export function AppSidebar() {
             )
           }
         >
-          <Avatar seed={user?.avatarSeed ?? 'guest'} name={user?.name} className="size-9" />
+          <Avatar src={user?.avatarUrl} name={user?.name} className="size-9" />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-semibold text-fg">{user?.name || 'Атлет'}</span>
             <span className="block text-xs text-fg-subtle">Профіль</span>

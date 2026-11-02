@@ -178,6 +178,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               <Input
                 label="Сети"
+                placeholder="Напр. 4"
                 type="number"
                 min={1}
                 max={20}
@@ -186,6 +187,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
               />
               <Input
                 label="Повторення"
+                placeholder="Напр. 10"
                 type="number"
                 min={1}
                 max={200}
@@ -204,6 +206,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
               />
               <Input
                 label="Відпочинок (сек)"
+                placeholder="Напр. 90"
                 type="number"
                 min={10}
                 max={600}

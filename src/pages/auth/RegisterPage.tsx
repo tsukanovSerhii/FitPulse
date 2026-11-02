@@ -1,25 +1,21 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { Shuffle } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SEO } from '@/components/common/SEO'
-import { Avatar } from '@/components/layout/Avatar'
 import { Button, Input } from '@/components/ui'
-import { randomSeed } from '@/features/auth/api/authApi'
 import { AuthLayout } from '@/features/auth/components/AuthLayout'
 import { PasswordField } from '@/features/auth/components/PasswordField'
 import { validateRegistration, type FieldErrors } from '@/features/auth/lib/validation'
 import { authErrorCleared, registerUser } from '@/features/auth/model/authSlice'
 import type { RegistrationData } from '@/features/auth/model/types'
 
-type Form = Omit<RegistrationData, 'avatarSeed'>
+type Form = RegistrationData
 
 export function RegisterPage() {
   const dispatch = useAppDispatch()
   const { status, error } = useAppSelector((state) => state.auth)
   const [form, setForm] = useState<Form>({ name: '', email: '', password: '' })
   const [errors, setErrors] = useState<FieldErrors<Form>>({})
-  const [avatarSeed, setAvatarSeed] = useState(randomSeed)
 
   useEffect(() => {
     dispatch(authErrorCleared())
@@ -34,7 +30,7 @@ export function RegisterPage() {
     event.preventDefault()
     const found = validateRegistration(form)
     setErrors(found)
-    if (Object.keys(found).length === 0) dispatch(registerUser({ ...form, avatarSeed }))
+    if (Object.keys(found).length === 0) dispatch(registerUser(form))
   }
 
   return (
@@ -51,17 +47,6 @@ export function RegisterPage() {
     >
       <SEO title="Реєстрація" description="Створіть акаунт FitPulse безкоштовно." />
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
-        <div className="flex items-center gap-4 rounded-lg border border-line bg-surface p-3">
-          <Avatar seed={avatarSeed} name={form.name} className="size-14" />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-fg">{form.name.trim() || 'Ваша аватарка'}</p>
-            <p className="text-xs text-fg-subtle">Згенерована випадково</p>
-          </div>
-          <Button type="button" variant="ghost" size="sm" icon={<Shuffle />} onClick={() => setAvatarSeed(randomSeed())}>
-            Інша
-          </Button>
-        </div>
-
         {error && (
           <p role="alert" className="rounded-md border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">
             {error}
@@ -69,6 +54,7 @@ export function RegisterPage() {
         )}
         <Input
           label="Ім'я"
+          placeholder="Як до вас звертатися"
           autoComplete="name"
           value={form.name}
           onChange={(e) => update('name')(e.target.value)}
@@ -76,6 +62,7 @@ export function RegisterPage() {
         />
         <Input
           label="Email"
+          placeholder="you@example.com"
           type="email"
           autoComplete="email"
           inputMode="email"
@@ -85,6 +72,7 @@ export function RegisterPage() {
         />
         <PasswordField
           label="Пароль"
+          placeholder="Щонайменше 8 символів, літери й цифри"
           autoComplete="new-password"
           showStrength
           value={form.password}

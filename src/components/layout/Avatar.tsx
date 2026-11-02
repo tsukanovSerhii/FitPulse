@@ -1,34 +1,15 @@
-import { useId, useMemo } from 'react'
-import { avatarShapes } from '@/utils/avatar'
+import { UserRound } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
-export function Avatar({ seed, name, className }: { seed: string; name?: string; className?: string }) {
-  const clipId = useId()
-  const s = useMemo(() => avatarShapes(seed), [seed])
-
+/** User photo, or the same neutral placeholder for everyone without one. */
+export function Avatar({ src, name, className }: { src?: string; name?: string; className?: string }) {
   return (
-    <svg
-      viewBox="0 0 64 64"
-      role="img"
-      aria-label={name ? `Аватар: ${name}` : 'Аватар'}
-      className={cn('shrink-0 rounded-full', className)}
-    >
-      <clipPath id={clipId}>
-        <circle cx="32" cy="32" r="32" />
-      </clipPath>
-      <g clipPath={`url(#${clipId})`}>
-        <rect width="64" height="64" fill={s.background} />
-        <circle {...s.circle} />
-        <rect
-          x={s.block.x - s.block.size / 2}
-          y={s.block.y - s.block.size / 2}
-          width={s.block.size}
-          height={s.block.size}
-          fill={s.block.fill}
-          transform={`rotate(${s.block.rotate} ${s.block.x} ${s.block.y})`}
-        />
-        <path d={s.arc.d} fill="none" stroke={s.arc.stroke} strokeWidth="4" strokeLinecap="round" />
-      </g>
-    </svg>
+    <span className={cn('inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-surface-2 text-fg-subtle', className)}>
+      {src ? (
+        <img src={src} alt={name ? `Фото: ${name}` : 'Фото профілю'} className="size-full object-cover" />
+      ) : (
+        <UserRound className="size-[55%]" aria-label={name ? `Аватар: ${name}` : 'Аватар'} />
+      )}
+    </span>
   )
 }
