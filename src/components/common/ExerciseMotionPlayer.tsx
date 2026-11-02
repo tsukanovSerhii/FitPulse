@@ -136,8 +136,8 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
   const currentPhase = phases[activePhaseIndex] || phases[0]
 
   const breathingBadge = {
-    inhale: { label: 'Вдих 🌬️', desc: 'Наповнення легень при опусканні' },
-    exhale: { label: 'Видих 💨', desc: 'Потужне зусилля на підйомі' },
+    inhale: { label: 'Вдих', desc: 'Наповнення легень при опусканні' },
+    exhale: { label: 'Видих', desc: 'Потужне зусилля на підйомі' },
     hold: { label: 'Затримка ⏸️', desc: 'Стабілізація в піковій точці' },
   }[currentPhase.breathing]
 
@@ -325,7 +325,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
             {/* Coach Cue & Breathing Strip */}
             <div className="pt-2 border-t border-line flex flex-wrap items-center justify-between gap-2 text-xs">
               <div className="flex items-center gap-1.5 text-fg-muted">
-                <span className="text-accent font-bold">🧠 Фокус:</span>
+                <span className="text-accent font-bold">Фокус:</span>
                 <span className="italic font-medium">«{currentPhase.cue}»</span>
               </div>
 
@@ -412,7 +412,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
             {/* Coach Cue & Breathing Strip */}
             <div className="pt-2 border-t border-line flex flex-wrap items-center justify-between gap-2 text-xs">
               <div className="flex items-center gap-1.5 text-fg-muted">
-                <span className="text-accent font-bold">🧠 Фокус:</span>
+                <span className="text-accent font-bold">Фокус:</span>
                 <span className="italic font-medium">«{currentPhase.cue}»</span>
               </div>
 

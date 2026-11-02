@@ -20,6 +20,9 @@ import { Button } from '@/components/ui'
 import { MuscleMap } from '@/components/common/MuscleMap'
 import { ExerciseMotionPlayer } from '@/components/common/ExerciseMotionPlayer'
 
+/** Прибирає емодзі-маркер на початку поради (старі дані в localStorage). */
+const stripMarker = (text: string) => text.replace(/^(?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\u{FE0F}?\s*)+/u, '')
+
 export interface ExerciseDetailModalProps {
   exercise: Exercise | null
   isOpen: boolean
@@ -216,12 +219,12 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               </h4>
               <ul className="space-y-2 text-xs text-fg">
                 {(guide?.commonMistakes || [
-                  '❌ Занадто велика вага на шкоду амплітуді та безпеці суглобів.',
-                  '❌ Різке скидання ваги замість підконтрольного негативного руху.',
-                  '❌ Неправильне дихання (затримка подиху викликає спазм тиску).',
+                  'Занадто велика вага на шкоду амплітуді та безпеці суглобів.',
+                  'Різке скидання ваги замість підконтрольного негативного руху.',
+                  'Неправильне дихання (затримка подиху викликає спазм тиску).',
                 ]).map((m, idx) => (
                   <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                    <span>{m}</span>
+                    <span>{stripMarker(m)}</span>
                   </li>
                 ))}
               </ul>
@@ -235,12 +238,12 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               </h4>
               <ul className="space-y-2 text-xs text-fg">
                 {(guide?.beginnerTips || [
-                  '🔰 Перші 2-3 тижні працюйте з помірною вагою на 10-12 повторень для закріплення зв\'язку «мозок-м\'яз».',
-                  '🔰 Робіть розминочні підходи з легким обтяженням перед робочими сетами.',
-                  '🔰 Якщо відчуваєте біль у зв\'язках чи суглобах — зупиніться та перевірте кут постановки кінцівок.',
+                  'Перші 2-3 тижні працюйте з помірною вагою на 10-12 повторень для закріплення зв\'язку «мозок-м\'яз».',
+                  'Робіть розминочні підходи з легким обтяженням перед робочими сетами.',
+                  'Якщо відчуваєте біль у зв\'язках чи суглобах — зупиніться та перевірте кут постановки кінцівок.',
                 ]).map((t, idx) => (
                   <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                    <span>{t}</span>
+                    <span>{stripMarker(t)}</span>
                   </li>
                 ))}
               </ul>
@@ -254,12 +257,12 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               </h4>
               <ul className="space-y-2 text-xs text-fg">
                 {(guide?.proTips || [
-                  '⚡ Застосовуйте метод «Rest-Pause» або дропсет в останньому підході для максимального рекрутування рухових одиниць.',
-                  '⚡ Контролюйте темп 3-0-1-0: 3 секунди опускання дають на 40% більший мікронадрив саркомерів для росту.',
-                  '⚡ Фіксуйте пікове скорочення на 1 секунду для подолання інерції.',
+                  'Застосовуйте метод «Rest-Pause» або дропсет в останньому підході для максимального рекрутування рухових одиниць.',
+                  'Контролюйте темп 3-0-1-0: 3 секунди опускання дають на 40% більший мікронадрив саркомерів для росту.',
+                  'Фіксуйте пікове скорочення на 1 секунду для подолання інерції.',
                 ]).map((p, idx) => (
                   <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                    <span>{p}</span>
+                    <span>{stripMarker(p)}</span>
                   </li>
                 ))}
               </ul>
