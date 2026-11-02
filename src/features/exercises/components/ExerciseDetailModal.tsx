@@ -14,9 +14,9 @@ import {
 } from 'lucide-react'
 import type { Exercise } from '../model/types'
 import { MUSCLE_GROUP_LABELS, DIFFICULTY_LABELS, EQUIPMENT_LABELS } from '../model/types'
-import { Modal } from '@/components/common/Modal'
-import { Badge } from '@/components/common/Badge'
-import { Button } from '@/components/common/Button'
+import { Modal } from '@/components/ui'
+import { Badge } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { MuscleMap } from '@/components/common/MuscleMap'
 import { ExerciseMotionPlayer } from '@/components/common/ExerciseMotionPlayer'
 

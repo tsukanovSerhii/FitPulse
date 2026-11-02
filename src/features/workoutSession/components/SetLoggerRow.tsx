@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Check, RotateCcw } from 'lucide-react'
 import type { CompletedSet } from '../model/types'
-import { Button } from '@/components/common/Button'
+import { Button } from '@/components/ui'
 
 export interface SetLoggerRowProps {
   setNumber: number

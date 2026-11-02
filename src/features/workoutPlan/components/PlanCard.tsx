@@ -3,9 +3,9 @@ import { Check, Edit, Trash2, Dumbbell, Play, Plus } from 'lucide-react'
 import type { WorkoutPlan, DayOfWeek } from '../model/types'
 import { ALL_DAYS, DAY_SHORT_LABELS, DAY_LABELS } from '../model/types'
 import type { Exercise } from '@/features/exercises/model/types'
-import { Card } from '@/components/common/Card'
-import { Badge } from '@/components/common/Badge'
-import { Button } from '@/components/common/Button'
+import { Card } from '@/components/ui'
+import { Badge } from '@/components/ui'
+import { Button } from '@/components/ui'
 
 export interface PlanCardProps {
   plan: WorkoutPlan

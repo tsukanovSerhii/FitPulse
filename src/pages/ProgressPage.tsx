@@ -5,7 +5,7 @@ import { fetchProgress, deleteWorkoutLogAsync } from '@/features/progress/model/
 import { StatsGrid } from '@/features/progress/components/StatsGrid'
 import { WorkoutHistoryItem } from '@/features/progress/components/WorkoutHistoryItem'
 import { PRCard } from '@/features/progress/components/PRCard'
-import { EmptyState } from '@/components/common/EmptyState'
+import { EmptyState } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 
 export const ProgressPage: React.FC = () => {

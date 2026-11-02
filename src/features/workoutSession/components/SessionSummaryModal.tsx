@@ -1,8 +1,8 @@
 import React from 'react'
 import { Trophy, Clock, Dumbbell, Flame, CheckCircle } from 'lucide-react'
 import type { WorkoutHistoryLog } from '@/features/progress/model/types'
-import { Modal } from '@/components/common/Modal'
-import { Button } from '@/components/common/Button'
+import { Modal } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { formatDuration } from '@/utils/formatters'
 
 export interface SessionSummaryModalProps {

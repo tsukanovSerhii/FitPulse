@@ -2,7 +2,7 @@ import React from 'react'
 import { Activity, Flame, Target } from 'lucide-react'
 import type { UserProfile } from '../model/types'
 import { calculateBMI } from '@/utils/bmi'
-import { Card } from '@/components/common/Card'
+import { Card } from '@/components/ui'
 
 export interface BMISummaryProps {
   profile: UserProfile

@@ -18,8 +18,8 @@ import { DAY_LABELS } from '@/features/workoutPlan/model/types'
 import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
 import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorModal'
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
-import { Button } from '@/components/common/Button'
-import { EmptyState } from '@/components/common/EmptyState'
+import { Button } from '@/components/ui'
+import { EmptyState } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 
 export const WorkoutPlansPage: React.FC = () => {

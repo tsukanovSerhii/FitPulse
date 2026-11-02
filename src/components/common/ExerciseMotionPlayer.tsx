@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Play, Pause, RotateCcw, Wind, Activity, User, Eye, Sparkles } from 'lucide-react'
 import type { Exercise, MovementPhase } from '@/features/exercises/model/types'
-import { Button } from './Button'
+import { Button } from '@/components/ui'
 import { AthleteRig, type MovementPattern } from './AthleteRig'
 import { MuscleMap } from './MuscleMap'
 

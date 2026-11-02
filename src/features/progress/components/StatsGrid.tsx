@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dumbbell, Calendar, Clock, Trophy } from 'lucide-react'
 import type { WorkoutHistoryLog, PersonalRecord } from '../model/types'
-import { Card } from '@/components/common/Card'
+import { Card } from '@/components/ui'
 import { formatDuration } from '@/utils/formatters'
 
 export interface StatsGridProps {

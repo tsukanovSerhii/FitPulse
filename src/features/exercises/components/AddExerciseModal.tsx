@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { Plus } from 'lucide-react'
 import type { Exercise, MuscleGroup, Difficulty, Equipment } from '../model/types'
 import { MUSCLE_GROUP_LABELS, DIFFICULTY_LABELS, EQUIPMENT_LABELS } from '../model/types'
-import { Modal } from '@/components/common/Modal'
-import { Input } from '@/components/common/Input'
-import { Select } from '@/components/common/Select'
-import { Button } from '@/components/common/Button'
+import { Modal } from '@/components/ui'
+import { Input } from '@/components/ui'
+import { Select } from '@/components/ui'
+import { Button } from '@/components/ui'
 
 export interface AddExerciseModalProps {
   isOpen: boolean

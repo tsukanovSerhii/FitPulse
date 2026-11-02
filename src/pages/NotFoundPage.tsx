@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Dumbbell, Home } from 'lucide-react'
-import { Button } from '@/components/common/Button'
+import { Button } from '@/components/ui'
 
 export const NotFoundPage: React.FC = () => {
   return (

@@ -1,7 +1,7 @@
 import React from 'react'
 import type { MuscleGroup } from '@/features/exercises/model/types'
 import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
-import { Badge } from './Badge'
+import { Badge } from '@/components/ui'
 
 export interface MuscleMapProps {
   primaryMuscle: MuscleGroup

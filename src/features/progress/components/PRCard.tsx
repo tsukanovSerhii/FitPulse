@@ -1,7 +1,7 @@
 import React from 'react'
 import { Trophy, Calendar } from 'lucide-react'
 import type { PersonalRecord } from '../model/types'
-import { Card } from '@/components/common/Card'
+import { Card } from '@/components/ui'
 import { formatDate } from '@/utils/formatters'
 
 export interface PRCardProps {

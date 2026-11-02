@@ -1,7 +1,7 @@
 import React from 'react'
 import { AlertTriangle, ArrowLeft, XCircle } from 'lucide-react'
-import { Modal } from '@/components/common/Modal'
-import { Button } from '@/components/common/Button'
+import { Modal } from '@/components/ui'
+import { Button } from '@/components/ui'
 
 export interface CancelWorkoutModalProps {
   isOpen: boolean

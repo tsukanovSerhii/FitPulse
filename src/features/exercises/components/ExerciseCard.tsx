@@ -2,8 +2,8 @@ import React from 'react'
 import { Heart, Flame, Dumbbell, ChevronRight } from 'lucide-react'
 import type { Exercise } from '../model/types'
 import { MUSCLE_GROUP_LABELS, DIFFICULTY_LABELS, EQUIPMENT_LABELS } from '../model/types'
-import { Card } from '@/components/common/Card'
-import { Badge } from '@/components/common/Badge'
+import { Card } from '@/components/ui'
+import { Badge } from '@/components/ui'
 
 export interface ExerciseCardProps {
   exercise: Exercise

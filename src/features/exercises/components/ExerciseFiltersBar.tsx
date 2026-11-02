@@ -2,7 +2,7 @@ import React from 'react'
 import { Search, RotateCcw, Filter, X } from 'lucide-react'
 import type { ExerciseFilters, MuscleGroup, Difficulty, Equipment } from '../model/types'
 import { MUSCLE_GROUP_LABELS, DIFFICULTY_LABELS, EQUIPMENT_LABELS } from '../model/types'
-import { Button } from '@/components/common/Button'
+import { Button } from '@/components/ui'
 
 export interface ExerciseFiltersBarProps {
   filters: ExerciseFilters
