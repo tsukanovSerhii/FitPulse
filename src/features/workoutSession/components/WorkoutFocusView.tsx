@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Check, ChevronLeft, ChevronRight, Info } from 'lucide-react'
-import { ExerciseMotionPlayer } from '@/components/common/motion-player/ExerciseMotionPlayer'
 import { Button, IconButton, Modal } from '@/components/ui'
+import { TechniquePlayer } from '@/features/exercises/components/technique/TechniquePlayer'
 import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
 import type { WorkoutHistoryLog } from '@/features/progress/model/types'
 import { formatSessionTitle } from '../lib/summary'
@@ -102,7 +102,7 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
       <RestTimerSheet nextHint={focus.nextHint} />
 
       <Modal isOpen={techniqueOpen} onClose={() => setTechniqueOpen(false)} title={exercise?.name} maxWidth="2xl">
-        {exercise && <ExerciseMotionPlayer exercise={exercise} showTabSwitcher />}
+        {exercise && <TechniquePlayer exercise={exercise} />}
       </Modal>
     </div>
   )
