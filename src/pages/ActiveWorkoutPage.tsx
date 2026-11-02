@@ -33,7 +33,7 @@ import { SetLoggerRow } from '@/features/workoutSession/components/SetLoggerRow'
 import { SessionSummaryModal } from '@/features/workoutSession/components/SessionSummaryModal'
 import { CancelWorkoutModal } from '@/features/workoutSession/components/CancelWorkoutModal'
 import { ExerciseMotionPlayer } from '@/components/common/ExerciseMotionPlayer'
-import { Card } from '@/components/ui'
+import { Card, PageHeader } from '@/components/ui'
 import { Button } from '@/components/ui'
 import { Badge } from '@/components/ui'
 import { formatDuration } from '@/utils/formatters'
@@ -261,18 +261,13 @@ export const ActiveWorkoutPage: React.FC = () => {
     const selectedPlan = plans.find((p) => p.id === effectivePlanId) || plans[0]
 
     return (
-      <div className="max-w-2xl mx-auto space-y-6 animate-fade-in py-6">
-        <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-lg bg-accent-soft border border-accent/20 text-accent flex items-center justify-center mx-auto mb-3">
-            <Play className="w-8 h-8 fill-current translate-x-0.5" />
-          </div>
-          <h1 className="text-3xl font-black text-fg">
-            Почати тренування
-          </h1>
-          <p className="text-sm text-fg-subtle">
-            Оберіть день з існуючої програми або запустіть експрес-сесію
-          </p>
-        </div>
+      <div className="max-w-3xl space-y-8">
+        <PageHeader
+          index={3}
+          eyebrow="Сесія"
+          title="Тренування"
+          description="Оберіть день з існуючої програми або запустіть експрес-сесію"
+        />
 
         {/* Start from active plan */}
         <Card className="p-6 space-y-5">

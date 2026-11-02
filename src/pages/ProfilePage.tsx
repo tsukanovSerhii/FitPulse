@@ -10,7 +10,7 @@ import type { UserProfile } from '@/features/profile/model/types'
 import { FITNESS_GOAL_LABELS, ACTIVITY_LEVEL_LABELS } from '@/features/profile/model/types'
 import { BMISummary } from '@/features/profile/components/BMISummary'
 import { ProfileEditModal } from '@/features/profile/components/ProfileEditModal'
-import { Card } from '@/components/ui'
+import { Card, PageHeader } from '@/components/ui'
 import { Button } from '@/components/ui'
 import { Badge } from '@/components/ui'
 import { formatDate } from '@/utils/formatters'
@@ -49,30 +49,17 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-12">
       <SEO title="Особистий профіль" description="Антропометрія, цільова вага, рівень навантажень та норми калоражу." />
-      {/* Page Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
-        <div>
-          <h1 className="text-2xl sm:text-4xl font-display font-black text-fg flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-accent-soft border border-accent/20 text-accent flex items-center justify-center shrink-0">
-              <User className="w-5 h-5" />
-            </div>
-            Особистий профіль
-          </h1>
-          <p className="text-xs sm:text-sm text-fg-subtle mt-1 font-medium">
-            Антропометрія, цільова вага, рівень навантажень та норми калоражу
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setIsEditModalOpen(true)}
-            icon={<Edit className="w-4 h-4" />}
-          >
-            Редагувати профіль
+      <PageHeader
+        index={5}
+        eyebrow="Атлет"
+        title="Профіль"
+        description="Антропометрія, цільова вага, рівень навантажень та норми калоражу"
+        actions={
+          <Button variant="outline" onClick={() => setIsEditModalOpen(true)} icon={<Edit />}>
+            Редагувати
           </Button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Main Profile Info Card */}
       <Card className="p-6 sm:p-8">

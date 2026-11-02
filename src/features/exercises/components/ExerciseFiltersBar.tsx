@@ -88,11 +88,12 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
               <button
                 key={m}
                 type="button"
+                aria-pressed={isSelected}
                 onClick={() => onChange({ muscleGroup: m })}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
+                className={`h-9 px-3.5 rounded-md border text-xs font-semibold transition-colors duration-200 cursor-pointer ${
                   isSelected
-                    ? 'bg-accent text-on-accent border border-accent/20'
-                    : 'bg-surface-2 text-fg-muted hover:text-fg hover:bg-surface-2 border border-line'
+                    ? 'bg-fg text-bg border-fg'
+                    : 'text-fg-muted border-line hover:text-fg hover:border-line-strong'
                 }`}
               >
                 {label}

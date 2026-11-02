@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, Dumbbell, Heart, Sparkles } from 'lucide-react'
+import { Plus, Dumbbell } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import {
   fetchExercises,
@@ -15,7 +15,7 @@ import { ExerciseCard } from '@/features/exercises/components/ExerciseCard'
 import { ExerciseFiltersBar } from '@/features/exercises/components/ExerciseFiltersBar'
 import { ExerciseDetailModal } from '@/features/exercises/components/ExerciseDetailModal'
 import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
-import { Button } from '@/components/ui'
+import { Button, PageHeader, SegmentedControl } from '@/components/ui'
 import { EmptyState } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 import { injectExerciseSchema } from '@/utils/seo'
@@ -54,55 +54,28 @@ export const ExercisesPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-12">
       <SEO title="Каталог вправ" description="Повний довідник вправ для тренажерного залу та дому. Анатомічна карта м'язів, фази руху та техніка." />
-      {/* Page Title & Add Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
-        <div>
-          <h1 className="text-2xl sm:text-4xl font-display font-black text-fg flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-accent-soft border border-accent/20 text-accent flex items-center justify-center shrink-0">
-              <Dumbbell className="w-5 h-5 -rotate-45" />
-            </div>
-            Каталог вправ
-          </h1>
-          <p className="text-xs sm:text-sm text-fg-subtle mt-1 font-medium">
-            База силових та функціональних вправ з анатомією м'язів, фазами руху та порадами
-          </p>
-        </div>
+      <PageHeader
+        index={1}
+        eyebrow="Бібліотека"
+        title={<>Каталог<br />вправ</>}
+        description="База силових та функціональних вправ з анатомією м'язів, фазами руху та порадами"
+        actions={
+          <Button onClick={() => setIsAddModalOpen(true)} icon={<Plus />}>
+            Додати вправу
+          </Button>
+        }
+      />
 
-        <Button
-          variant="primary"
-          onClick={() => setIsAddModalOpen(true)}
-          icon={<Plus className="w-4 h-4" />}
-        >
-          Додати власну вправу
-        </Button>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => setActiveTab('all')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
-            activeTab === 'all'
-              ? 'bg-accent text-on-accent border border-accent/30'
-              : 'bg-surface-2 text-fg-subtle hover:text-fg hover:bg-surface-2 border border-line'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          Всі вправи ({items.length})
-        </button>
-
-        <button
-          onClick={() => setActiveTab('favorites')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
-            activeTab === 'favorites'
-              ? 'bg-danger text-on-accent'
-              : 'bg-surface-2 text-fg-subtle hover:text-fg hover:bg-surface-2 border border-line'
-          }`}
-        >
-          <Heart className={`w-3.5 h-3.5 ${activeTab === 'favorites' ? 'fill-current' : ''}`} />
-          Обрані ({favorites.length})
-        </button>
-      </div>
+      <SegmentedControl
+        label="Набір вправ"
+        appearance="underline"
+        value={activeTab}
+        onChange={setActiveTab}
+        options={[
+          { value: 'all', label: <>Усі <span className="font-mono text-fg-subtle">{items.length}</span></> },
+          { value: 'favorites', label: <>Обрані <span className="font-mono text-fg-subtle">{favorites.length}</span></> },
+        ]}
+      />
 
       {/* Filter component */}
       <ExerciseFiltersBar

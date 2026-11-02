@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
-import { TrendingUp, Trophy, History, Dumbbell } from 'lucide-react'
+import { Trophy, History, Dumbbell } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { fetchProgress, deleteWorkoutLogAsync } from '@/features/progress/model/progressSlice'
 import { StatsGrid } from '@/features/progress/components/StatsGrid'
 import { WorkoutHistoryItem } from '@/features/progress/components/WorkoutHistoryItem'
 import { PRCard } from '@/features/progress/components/PRCard'
-import { EmptyState } from '@/components/ui'
+import { EmptyState, PageHeader } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 
 export const ProgressPage: React.FC = () => {
@@ -30,18 +30,12 @@ export const ProgressPage: React.FC = () => {
   return (
     <div className="space-y-8 animate-fade-in pb-12">
       <SEO title="Прогрес та аналітика" description="Аналітика вашого фітнес-прогресу: сумарний піднятий тоннаж, час у залі, графік занять та особисті рекорди." />
-      {/* Page Title */}
-      <div className="pb-4 border-b border-line">
-        <h1 className="text-2xl sm:text-4xl font-display font-black text-fg flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-accent-soft border border-accent/20 text-accent flex items-center justify-center shrink-0">
-            <TrendingUp className="w-5 h-5" />
-          </div>
-          Прогрес та аналітика
-        </h1>
-        <p className="text-xs sm:text-sm text-fg-subtle mt-1 font-medium">
-          Відстежуйте об'єм навантажень, час у залі та особисті силові максимуми
-        </p>
-      </div>
+      <PageHeader
+        index={4}
+        eyebrow="Аналітика"
+        title="Прогрес"
+        description="Відстежуйте об'єм навантажень, час у залі та особисті силові максимуми"
+      />
 
       {/* Stats Summary Grid */}
       <StatsGrid history={history} personalRecords={personalRecords} />

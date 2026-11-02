@@ -18,7 +18,7 @@ import { DAY_LABELS } from '@/features/workoutPlan/model/types'
 import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
 import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorModal'
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
-import { Button } from '@/components/ui'
+import { Button, PageHeader } from '@/components/ui'
 import { EmptyState } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 
@@ -143,28 +143,17 @@ export const WorkoutPlansPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-12">
       <SEO title="Програми тренувань" description="Створюйте та налаштовуйте тижневі спліти: Push/Pull/Legs, Full Body. Керування підходами, повтореннями та днями відпочинку." />
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
-        <div>
-          <h1 className="text-2xl sm:text-4xl font-display font-black text-fg flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-accent-soft border border-accent/20 text-accent flex items-center justify-center shrink-0">
-              <Calendar className="w-5 h-5" />
-            </div>
-            Програми тренувань
-          </h1>
-          <p className="text-xs sm:text-sm text-fg-subtle mt-1 font-medium">
-            Спліти та графіки: налаштовуйте підходи, повторення, цільову вагу та час відпочинку
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          onClick={handleCreatePlan}
-          icon={<Plus className="w-4 h-4" />}
-        >
-          Створити нову програму
-        </Button>
-      </div>
+      <PageHeader
+        index={2}
+        eyebrow="Розклад"
+        title={<>Програми<br />тренувань</>}
+        description="Спліти та графіки: налаштовуйте підходи, повторення, цільову вагу та час відпочинку"
+        actions={
+          <Button onClick={handleCreatePlan} icon={<Plus />}>
+            Нова програма
+          </Button>
+        }
+      />
 
       {/* Plans List */}
       {status === 'loading' && plans.length === 0 ? (

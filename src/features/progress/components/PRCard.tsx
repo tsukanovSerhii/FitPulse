@@ -25,7 +25,7 @@ export const PRCard: React.FC<PRCardProps> = ({ pr }) => {
       </div>
 
       <div className="text-right">
-        <span className="text-2xl font-black text-warning font-mono tracking-tight">
+        <span className="whitespace-nowrap text-2xl font-semibold text-accent font-mono tabular tracking-tight">
           {pr.maxWeightKg} кг
         </span>
         <span className="block text-[11px] text-fg-subtle font-semibold mt-0.5">
