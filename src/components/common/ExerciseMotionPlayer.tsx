@@ -148,14 +148,14 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
 
   return (
     <div
-      className={`rounded-3xl bg-[#101522] border border-slate-800/80 p-5 sm:p-6 shadow-xl shadow-black/40 space-y-4 ${className}`}
+      className={`rounded-3xl bg-t-card border border-t-d p-5 sm:p-6 shadow-xl shadow-black/40 space-y-4 ${className}`}
     >
       {/* Top Header & Tab Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
         {/* Title & View Switcher */}
         <div className="flex items-center gap-2">
           {showTabSwitcher ? (
-            <div className="inline-flex p-1 rounded-2xl bg-slate-900 border border-slate-800">
+            <div className="inline-flex p-1 rounded-2xl bg-t-subtle border border-t-d">
               {hasFrames && (
                 <button
                   type="button"
@@ -207,7 +207,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-white font-bold text-sm">
+            <div className="flex items-center gap-2 text-t-1 font-bold text-sm">
               <Sparkles className="w-4 h-4 text-sky-400" />
               <span>Правильна техніка виконання</span>
             </div>
@@ -248,7 +248,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
       {activeTab === 'photo' && hasFrames && (
         <div className="space-y-4 animate-fade-in">
           {/* Main Photo Visualizer */}
-          <div className="relative h-64 sm:h-72 rounded-2xl bg-[#090d16] border border-slate-800/80 overflow-hidden flex items-center justify-center p-3">
+          <div className="relative h-64 sm:h-72 rounded-2xl bg-t-page border border-t-d overflow-hidden flex items-center justify-center p-3">
             {/* Subtle Gym Spotlight */}
             <div className="absolute w-56 h-56 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -261,16 +261,16 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
             />
 
             {/* Bottom-left Phase Pill */}
-            <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#101522]/90 border border-slate-800 text-xs backdrop-blur-md">
+            <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-t-card/90 border border-t-d text-xs backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
               <span className="text-slate-400 font-medium">Кадр {activeFrameIndex + 1} з {frameCount}:</span>
-              <strong className="text-white">
+              <strong className="text-t-1">
                 {frameLabels[activeFrameIndex]?.title || `Фаза ${activeFrameIndex + 1}`}
               </strong>
             </div>
 
             {/* Bottom-right Tempo Pill */}
-            <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#101522]/90 border border-slate-800 text-xs font-mono text-slate-300 backdrop-blur-md">
+            <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-t-card/90 border border-t-d text-xs font-mono text-t-2 backdrop-blur-md">
               <span className="text-slate-400 font-sans">Темп:</span>
               <strong className="text-sky-300">{exercise.guide?.tempo || '3-0-1-0'}</strong>
             </div>
@@ -293,7 +293,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                   className={`p-3 rounded-2xl text-left border transition-all cursor-pointer ${
                     isSelected
                       ? 'bg-sky-500/15 border-sky-500/40 text-white font-bold shadow-md shadow-sky-950/30'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/50'
+                      : 'bg-t-subtle border-t-d text-t-3 hover:text-t-1 hover:bg-t-hover'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -308,7 +308,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                       <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
                     )}
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-0.5 truncate">{info.title}</div>
+                  <div className="text-xs font-bold text-t-1 mt-0.5 truncate">{info.title}</div>
                   <p className="text-[11px] text-slate-400 truncate mt-0.5">{info.desc}</p>
                 </button>
               )
@@ -316,15 +316,15 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
           </div>
 
           {/* High-Signal Guidance Box */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80 space-y-3">
+          <div className="p-4 rounded-2xl bg-t-subtle border border-t-d space-y-3">
             <div>
-              <h5 className="text-sm font-bold text-white mb-1">{currentPhase.name}</h5>
-              <p className="text-xs text-slate-300 leading-relaxed">{currentPhase.instruction}</p>
+              <h5 className="text-sm font-bold text-t-1 mb-1">{currentPhase.name}</h5>
+              <p className="text-xs text-t-2 leading-relaxed">{currentPhase.instruction}</p>
             </div>
 
             {/* Coach Cue & Breathing Strip */}
-            <div className="pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div className="flex items-center gap-1.5 text-slate-300">
+            <div className="pt-2 border-t border-t-d flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-1.5 text-t-2">
                 <span className="text-sky-400 font-bold">🧠 Фокус:</span>
                 <span className="italic font-medium">«{currentPhase.cue}»</span>
               </div>
@@ -348,7 +348,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
       {activeTab === 'motion' && (
         <div className="space-y-4 animate-fade-in">
           {/* Main Stage: Vector Biomechanical Human Athlete */}
-          <div className="relative h-60 sm:h-64 rounded-2xl bg-[#090d16] border border-slate-800/80 overflow-hidden flex items-center justify-center p-3">
+          <div className="relative h-60 sm:h-64 rounded-2xl bg-t-page border border-t-d overflow-hidden flex items-center justify-center p-3">
             {/* Ambient center spotlight */}
             <div className="absolute w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -356,14 +356,14 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
             <AthleteRig pattern={pattern} phaseIndex={activePhaseIndex} />
 
             {/* Bottom-left Phase Pill */}
-            <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#101522]/90 border border-slate-800 text-xs backdrop-blur-md">
+            <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-t-card/90 border border-t-d text-xs backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
               <span className="text-slate-400 font-medium">Фаза {activePhaseIndex + 1}:</span>
-              <strong className="text-white">{currentPhase.name.split('(')[0]}</strong>
+              <strong className="text-t-1">{currentPhase.name.split('(')[0]}</strong>
             </div>
 
             {/* Bottom-right Tempo Pill */}
-            <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#101522]/90 border border-slate-800 text-xs font-mono text-slate-300 backdrop-blur-md">
+            <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-t-card/90 border border-t-d text-xs font-mono text-t-2 backdrop-blur-md">
               <span className="text-slate-400 font-sans">Темп:</span>
               <strong className="text-sky-300">{exercise.guide?.tempo || '3-0-1-0'}</strong>
             </div>
@@ -386,7 +386,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                   className={`p-2.5 rounded-2xl text-left border transition-all cursor-pointer ${
                     isActive
                       ? 'bg-sky-500/15 border-sky-500/40 text-white font-bold shadow-md shadow-sky-950/30'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/50'
+                      : 'bg-t-subtle border-t-d text-t-3 hover:text-t-1 hover:bg-t-hover'
                   }`}
                 >
                   <span
@@ -403,15 +403,15 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
           </div>
 
           {/* Single High-Signal Guidance Box */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80 space-y-3">
+          <div className="p-4 rounded-2xl bg-t-subtle border border-t-d space-y-3">
             <div>
-              <h5 className="text-sm font-bold text-white mb-1">{currentPhase.name}</h5>
-              <p className="text-xs text-slate-300 leading-relaxed">{currentPhase.instruction}</p>
+              <h5 className="text-sm font-bold text-t-1 mb-1">{currentPhase.name}</h5>
+              <p className="text-xs text-t-2 leading-relaxed">{currentPhase.instruction}</p>
             </div>
 
             {/* Coach Cue & Breathing Strip */}
-            <div className="pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div className="flex items-center gap-1.5 text-slate-300">
+            <div className="pt-2 border-t border-t-d flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-1.5 text-t-2">
                 <span className="text-sky-400 font-bold">🧠 Фокус:</span>
                 <span className="italic font-medium">«{currentPhase.cue}»</span>
               </div>

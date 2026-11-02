@@ -38,11 +38,11 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
   }
 
   return (
-    <div className={`p-4 sm:p-5 rounded-2xl bg-[#090d16] border border-white/[0.06] shadow-xl ${className}`}>
+    <div className={`p-4 sm:p-5 rounded-2xl bg-t-page border border-white/[0.06] shadow-xl ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/[0.06]">
         <div>
-          <h4 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+          <h4 className="text-xs sm:text-sm font-bold text-t-1 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
             Анатомічна карта цільових м'язів
           </h4>

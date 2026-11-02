@@ -100,8 +100,9 @@ html.light {
   .text-t-4     { color: var(--t-text-4); }
 
   /* Borders */
-  .border-t-d   { border-color: var(--t-border); }
-  .border-t-s   { border-color: var(--t-border-strong); }
+  .border-t-d    { border-color: var(--t-border); }
+  .border-t-s    { border-color: var(--t-border-strong); }
+  .border-t-card { border-color: var(--t-bg-card); }
 
   /* Accent */
   .text-t-accent   { color: var(--t-accent); }
@@ -134,7 +135,6 @@ html.light .bg-white\/5   { background-color: rgba(0,0,0,0.03) !important; }
 html.light .bg-white\/10  { background-color: rgba(0,0,0,0.05) !important; }
 
 /* Legacy text colors → semantic equivalents in light */
-html.light .text-white   { color: var(--t-text-1) !important; }
 html.light .text-slate-100 { color: var(--t-text-1) !important; }
 html.light .text-slate-200 { color: var(--t-text-2) !important; }
 html.light .text-slate-300 { color: var(--t-text-2) !important; }

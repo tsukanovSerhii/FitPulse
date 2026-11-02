@@ -110,7 +110,7 @@ export const DashboardPage: React.FC = () => {
 				className={`relative overflow-hidden rounded-3xl border p-6 sm:p-10 shadow-2xl transition-colors duration-300 ${
 					themeMode === 'light'
 						? 'bg-white border-slate-200 shadow-slate-200/60'
-						: 'bg-[#121622] border-white/[0.08]'
+						: 'bg-t-card border-t-d'
 				}`}
 			>
 				{/* Subtle sports accent */}
@@ -131,7 +131,7 @@ export const DashboardPage: React.FC = () => {
 								className={`text-xs font-bold px-3 py-1 rounded-full border ${
 									themeMode === 'light'
 										? 'text-slate-600 bg-slate-100 border-slate-200'
-										: 'text-slate-300 bg-white/5 border-white/10'
+										: 'text-t-2 bg-t-hover border-t-d'
 								}`}
 							>
 								{DAY_LABELS[currentDayKey]}
@@ -144,7 +144,7 @@ export const DashboardPage: React.FC = () => {
 
 						<p
 							className={`text-sm sm:text-base leading-relaxed max-w-xl font-medium ${
-								themeMode === 'light' ? 'text-slate-600' : 'text-slate-300'
+								'text-t-2'
 							}`}
 						>
 							Сьогодні день твого прогресу. Дотримуйся плану, фіксуй вагу та
@@ -199,7 +199,7 @@ export const DashboardPage: React.FC = () => {
 							className={`border rounded-3xl p-6 shadow-xl relative overflow-hidden transition-colors duration-300 ${
 								themeMode === 'light'
 									? 'bg-slate-50 border-slate-200'
-									: 'bg-[#090d16] border-white/10'
+									: 'bg-t-page border-t-d'
 							}`}
 						>
 							<div className="flex items-center justify-between gap-2 mb-3">
@@ -218,7 +218,7 @@ export const DashboardPage: React.FC = () => {
 								<div className="space-y-4">
 									<div className="flex items-baseline gap-2">
 										<span
-											className={`text-4xl font-heading font-black ${themeMode === 'light' ? 'text-slate-900' : 'text-white'}`}
+											className={`text-4xl font-heading font-black ${'text-t-1'}`}
 										>
 											{todayExercises.length}
 										</span>
@@ -239,7 +239,7 @@ export const DashboardPage: React.FC = () => {
 													className={`px-3 py-1.5 rounded-xl border text-xs font-bold ${
 														themeMode === 'light'
 															? 'bg-slate-100 border-slate-200 text-slate-700'
-															: 'bg-white/5 border-white/10 text-slate-200'
+															: 'bg-t-hover border-t-d text-t-2'
 													}`}
 												>
 													{ex ? ex.name : 'Вправа'}
@@ -257,7 +257,7 @@ export const DashboardPage: React.FC = () => {
 										className={`pt-3 border-t flex items-center justify-between text-xs font-bold ${
 											themeMode === 'light'
 												? 'border-slate-200'
-												: 'border-white/5'
+												: 'border-t-d'
 										}`}
 									>
 										<span
@@ -275,7 +275,7 @@ export const DashboardPage: React.FC = () => {
 							) : (
 								<div className="text-center py-6 space-y-2">
 									<p
-										className={`text-sm font-bold ${themeMode === 'light' ? 'text-slate-800' : 'text-white'}`}
+										className={`text-sm font-bold ${'text-t-1'}`}
 									>
 										Сьогодні день відновлення 🧘‍♂️
 									</p>
@@ -309,7 +309,7 @@ export const DashboardPage: React.FC = () => {
 						</div>
 					</div>
 					<div
-						className={`text-3xl sm:text-4xl font-heading font-black ${themeMode === 'light' ? 'text-slate-900' : 'text-white'}`}
+						className={`text-3xl sm:text-4xl font-heading font-black ${'text-t-1'}`}
 					>
 						{totalWorkouts}
 					</div>
@@ -412,10 +412,10 @@ export const DashboardPage: React.FC = () => {
 
 					{todayExercises.length === 0 ? (
 						<Card className="text-center py-12 space-y-3">
-							<div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-center mx-auto">
+							<div className="w-12 h-12 rounded-2xl bg-t-hover border border-t-d text-t-3 flex items-center justify-center mx-auto">
 								<Calendar className="w-6 h-6" />
 							</div>
-							<h3 className="text-base font-bold text-slate-200">
+							<h3 className="text-base font-bold text-t-2">
 								На {DAY_LABELS[currentDayKey]} немає запланованих вправ
 							</h3>
 							<p className="text-xs text-slate-400 max-w-md mx-auto">
@@ -439,7 +439,7 @@ export const DashboardPage: React.FC = () => {
 								return (
 									<div
 										key={pEx.id}
-										className="p-4 sm:p-5 bg-[#121622] border border-white/[0.07] hover:border-sky-500/40 rounded-3xl transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group shadow-md"
+										className="p-4 sm:p-5 bg-t-card border border-t-d hover:border-sky-500/40 rounded-3xl transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group shadow-md"
 									>
 										<div className="flex items-center gap-3.5">
 											<span className="w-9 h-9 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-300 font-heading font-black text-xs flex items-center justify-center shrink-0">
@@ -447,7 +447,7 @@ export const DashboardPage: React.FC = () => {
 											</span>
 											<div>
 												<div className="flex items-center gap-2">
-													<h4 className="text-sm sm:text-base font-bold text-white group-hover:text-sky-400 transition-colors">
+													<h4 className="text-sm sm:text-base font-bold text-t-1 group-hover:text-sky-400 transition-colors">
 														{ex?.name || 'Вправа'}
 													</h4>
 													{ex && (
@@ -461,7 +461,7 @@ export const DashboardPage: React.FC = () => {
 													)}
 												</div>
 												<div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 font-semibold mt-1">
-													<span className="text-slate-200">
+													<span className="text-t-2">
 														{pEx.sets} підходи × {pEx.reps} повт
 													</span>
 													{pEx.weight ? <span>• {pEx.weight} кг</span> : null}
@@ -523,7 +523,7 @@ export const DashboardPage: React.FC = () => {
 										<Dumbbell className="w-5 h-5" />
 									</div>
 									<div>
-										<h3 className="text-sm font-bold text-white group-hover:text-sky-400 transition-colors">
+										<h3 className="text-sm font-bold text-t-1 group-hover:text-sky-400 transition-colors">
 											Каталог вправ
 										</h3>
 										<p className="text-xs text-slate-400 font-medium">
@@ -548,7 +548,7 @@ export const DashboardPage: React.FC = () => {
 										<TrendingUp className="w-5 h-5" />
 									</div>
 									<div>
-										<h3 className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors">
+										<h3 className="text-sm font-bold text-t-1 group-hover:text-sky-300 transition-colors">
 											Історія та аналітика
 										</h3>
 										<p className="text-xs text-slate-400 font-medium">
@@ -573,7 +573,7 @@ export const DashboardPage: React.FC = () => {
 										<Info className="w-5 h-5" />
 									</div>
 									<div>
-										<h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+										<h3 className="text-sm font-bold text-t-1 group-hover:text-emerald-300 transition-colors">
 											Калькулятор ІМТ
 										</h3>
 										<p className="text-xs text-slate-400 font-medium">
@@ -586,12 +586,12 @@ export const DashboardPage: React.FC = () => {
 						</Link>
 
 						{/* Coach Quote Card */}
-						<div className="p-6 rounded-3xl bg-[#121622] border border-white/10 shadow-lg relative overflow-hidden">
+						<div className="p-6 rounded-3xl bg-t-card border border-t-d shadow-lg relative overflow-hidden">
 							<div className="flex items-center gap-2 mb-2 text-sky-400 font-black text-xs uppercase tracking-wider">
 								<Sparkles className="w-3.5 h-3.5" />
 								Порада тренера
 							</div>
-							<p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+							<p className="text-xs sm:text-sm text-t-2 leading-relaxed font-medium">
 								«Ніколи не пропускайте розминку та контролюйте ексцентричну фазу
 								(опускання 2-3 секунди). Тільки чиста біомеханіка будує здорове
 								та міцне тіло!»

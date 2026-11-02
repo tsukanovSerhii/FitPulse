@@ -57,9 +57,9 @@ export const ExercisesPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-12">
       {/* Page Title & Add Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black text-white flex items-center gap-3">
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
               <Dumbbell className="w-5 h-5 -rotate-45" />
             </div>
@@ -86,7 +86,7 @@ export const ExercisesPage: React.FC = () => {
           className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'all'
               ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20 font-bold'
-              : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/10'
+              : 'bg-t-hover text-t-3 hover:text-t-1 hover:bg-t-hover border border-t-d'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
@@ -98,7 +98,7 @@ export const ExercisesPage: React.FC = () => {
           className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'favorites'
               ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
-              : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/10'
+              : 'bg-t-hover text-t-3 hover:text-t-1 hover:bg-t-hover border border-t-d'
           }`}
         >
           <Heart className={`w-3.5 h-3.5 ${activeTab === 'favorites' ? 'fill-white' : ''}`} />

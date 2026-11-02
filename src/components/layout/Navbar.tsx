@@ -39,7 +39,7 @@ export const Navbar: React.FC = () => {
 	return (
 		<header className="sticky top-0 z-50 w-full glass-nav transition-all duration-300">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-				{/* Brand Logo - Minimalist clean typography */}
+				{/* Brand Logo */}
 				<Link
 					to="/"
 					className="flex items-center gap-2.5 group shrink-0"
@@ -49,33 +49,19 @@ export const Navbar: React.FC = () => {
 					</div>
 					<div className="flex flex-col">
 						<div className="flex items-center gap-1.5">
-							<span
-								className={`font-heading font-black text-lg sm:text-xl tracking-tight group-hover:text-sky-500 transition-colors ${
-									themeMode === 'light' ? 'text-slate-900' : 'text-white'
-								}`}
-							>
+							<span className="font-heading font-black text-lg sm:text-xl tracking-tight text-t-1 group-hover:text-sky-500 transition-colors">
 								FITPULSE
 							</span>
 							<span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
 						</div>
-						<span
-							className={`text-[9px] font-bold tracking-widest uppercase -mt-1 ${
-								themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'
-							}`}
-						>
+						<span className="text-[9px] font-bold tracking-widest uppercase -mt-1 text-t-3">
 							Minimalist Workout Tracker
 						</span>
 					</div>
 				</Link>
 
 				{/* Desktop Navigation */}
-				<nav
-					className={`hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full border transition-colors duration-300 ${
-						themeMode === 'light'
-							? 'bg-slate-200 border-slate-300'
-							: 'bg-[#121622] border-white/5'
-					}`}
-				>
+				<nav className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full border border-t-d bg-t-card transition-colors duration-300">
 					{navItems.map(item => {
 						const active = isActive(item.path)
 						const Icon = item.icon
@@ -86,13 +72,11 @@ export const Navbar: React.FC = () => {
 								className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 ${
 									active
 										? 'bg-sky-600 text-white shadow-sm'
-										: themeMode === 'light'
-											? 'text-slate-600 hover:text-slate-900 hover:bg-slate-300'
-											: 'text-slate-400 hover:text-white hover:bg-white/5'
+										: 'text-t-3 hover:text-t-1 hover:bg-t-hover'
 								}`}
 							>
 								<Icon
-									className={`w-3.5 h-3.5 ${active ? 'text-white' : themeMode === 'light' ? 'text-slate-500' : 'text-slate-400'}`}
+									className={`w-3.5 h-3.5 ${active ? 'text-white' : 'text-t-3'}`}
 								/>
 								{item.label}
 							</Link>
@@ -123,11 +107,7 @@ export const Navbar: React.FC = () => {
 					{/* Theme Switcher */}
 					<button
 						onClick={() => dispatch(toggleTheme())}
-						className={`p-2.5 rounded-2xl border transition-colors cursor-pointer ${
-							themeMode === 'light'
-								? 'border-slate-300 bg-slate-200 hover:bg-slate-300 text-slate-700 hover:text-slate-950'
-								: 'border-white/10 bg-[#121622] hover:bg-white/10 text-slate-300 hover:text-white'
-						}`}
+						className="p-2.5 rounded-2xl border border-t-d bg-t-card hover:bg-t-hover text-t-2 hover:text-t-1 transition-colors cursor-pointer"
 						aria-label="Перемкнути тему"
 						title="Перемкнути тему (Світла / Темна)"
 					>
@@ -141,11 +121,7 @@ export const Navbar: React.FC = () => {
 					{/* Mobile hamburger */}
 					<button
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-						className={`md:hidden p-2.5 rounded-2xl border transition-colors ${
-							themeMode === 'light'
-								? 'border-slate-300 bg-slate-200 text-slate-600 hover:text-slate-900'
-								: 'border-white/10 bg-[#121622] text-slate-300 hover:text-white'
-						}`}
+						className="md:hidden p-2.5 rounded-2xl border border-t-d bg-t-card text-t-2 hover:text-t-1 transition-colors"
 						aria-label="Меню"
 					>
 						{mobileMenuOpen ? (
@@ -159,13 +135,7 @@ export const Navbar: React.FC = () => {
 
 			{/* Mobile Drawer */}
 			{mobileMenuOpen && (
-				<div
-					className={`md:hidden border-t px-4 pt-3 pb-6 space-y-2 animate-fade-in backdrop-blur-2xl ${
-						themeMode === 'light'
-							? 'border-slate-200 bg-white/95'
-							: 'border-white/5 bg-[#090d16]/98'
-					}`}
-				>
+				<div className="md:hidden border-t border-t-d px-4 pt-3 pb-6 space-y-2 animate-fade-in backdrop-blur-2xl bg-t-card/95">
 					{navItems.map(item => {
 						const active = isActive(item.path)
 						const Icon = item.icon
@@ -177,9 +147,7 @@ export const Navbar: React.FC = () => {
 								className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-colors ${
 									active
 										? 'bg-sky-600 text-white'
-										: themeMode === 'light'
-											? 'text-slate-600 hover:bg-slate-100'
-											: 'text-slate-300 hover:bg-white/5'
+										: 'text-t-2 hover:bg-t-hover'
 								}`}
 							>
 								<Icon className="w-4 h-4" />

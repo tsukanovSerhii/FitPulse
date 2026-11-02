@@ -22,7 +22,7 @@ export const BMISummary: React.FC<BMISummaryProps> = ({ profile }) => {
               <Activity className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Індекс маси тіла (ІМТ / BMI)</h3>
+              <h3 className="text-lg font-bold text-t-1">Індекс маси тіла (ІМТ / BMI)</h3>
               <p className="text-xs text-slate-400">Показник відповідності маси тіла та зросту</p>
             </div>
           </div>
@@ -36,7 +36,7 @@ export const BMISummary: React.FC<BMISummaryProps> = ({ profile }) => {
           </div>
         </div>
 
-        <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/70 p-4 rounded-xl border border-slate-800 mb-5">
+        <p className="text-xs text-t-2 leading-relaxed bg-t-subtle p-4 rounded-xl border border-t-d mb-5">
           {result.description}
         </p>
 
@@ -44,7 +44,7 @@ export const BMISummary: React.FC<BMISummaryProps> = ({ profile }) => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800">
             <span className="text-slate-400 font-semibold block mb-1">Здорова вага (діапазон)</span>
-            <span className="text-base font-black text-white font-mono">
+            <span className="text-base font-black text-t-1 font-mono">
               {result.healthyWeightMin} - {result.healthyWeightMax} кг
             </span>
           </div>

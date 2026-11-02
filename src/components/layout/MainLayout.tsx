@@ -8,11 +8,7 @@ export const MainLayout: React.FC = () => {
   const themeMode = useAppSelector((state) => state.theme.mode)
   return (
     <div
-      className={`min-h-screen flex flex-col relative overflow-x-hidden transition-colors duration-300 ${
-        themeMode === 'light'
-          ? 'bg-slate-100 text-slate-900'
-          : 'bg-[#090d16] text-slate-100'
-      }`}
+      className="min-h-screen flex flex-col relative overflow-x-hidden transition-colors duration-300 bg-t-page text-t-1"
     >
       {/* Background ambient lighting (dark mode only) */}
       {themeMode === 'dark' && (

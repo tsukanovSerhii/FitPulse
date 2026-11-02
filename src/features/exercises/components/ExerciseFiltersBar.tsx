@@ -54,7 +54,7 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
     filters.equipment !== 'all'
 
   return (
-    <div className="bg-[#121622] border border-white/[0.08] rounded-3xl p-5 sm:p-6 mb-6 space-y-5 shadow-xl">
+    <div className="bg-t-card border border-t-d rounded-3xl p-5 sm:p-6 mb-6 space-y-5 shadow-xl">
       {/* Search Input Row */}
       <div className="relative">
         <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -63,12 +63,12 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
           value={filters.searchQuery}
           onChange={(e) => onChange({ searchQuery: e.target.value })}
           placeholder="Пошук вправи за назвою або описом..."
-          className="w-full pl-11 pr-11 py-3.5 bg-[#090d16] border border-white/10 rounded-2xl text-sm font-semibold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all"
+          className="w-full pl-11 pr-11 py-3.5 bg-t-page border border-white/10 rounded-2xl text-sm font-semibold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all"
         />
         {filters.searchQuery && (
           <button
             onClick={() => onChange({ searchQuery: '' })}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white cursor-pointer"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-t-3 hover:text-t-1 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -92,7 +92,7 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
                   isSelected
                     ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
-                    : 'bg-white/[0.04] text-slate-300 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]'
+                    : 'bg-t-hover text-t-2 hover:text-t-1 hover:bg-t-hover border border-t-d'
                 }`}
               >
                 {label}
@@ -111,10 +111,10 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
           <select
             value={filters.difficulty}
             onChange={(e) => onChange({ difficulty: e.target.value as Difficulty | 'all' })}
-            className="w-full px-4 py-3 bg-[#090d16] border border-white/10 rounded-2xl text-xs font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full px-4 py-3 bg-t-page border border-white/10 rounded-2xl text-xs font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
           >
             {difficulties.map((d) => (
-              <option key={d.value} value={d.value} className="bg-[#121622] text-white">
+              <option key={d.value} value={d.value} className="bg-t-card text-white">
                 {d.label}
               </option>
             ))}
@@ -128,10 +128,10 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
           <select
             value={filters.equipment}
             onChange={(e) => onChange({ equipment: e.target.value as Equipment | 'all' })}
-            className="w-full px-4 py-3 bg-[#090d16] border border-white/10 rounded-2xl text-xs font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full px-4 py-3 bg-t-page border border-white/10 rounded-2xl text-xs font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
           >
             {equipments.map((eq) => (
-              <option key={eq.value} value={eq.value} className="bg-[#121622] text-white">
+              <option key={eq.value} value={eq.value} className="bg-t-card text-white">
                 {eq.label}
               </option>
             ))}
@@ -143,7 +143,7 @@ export const ExerciseFiltersBar: React.FC<ExerciseFiltersBarProps> = ({
       <div className="flex items-center justify-between pt-3 border-t border-white/5 text-xs text-slate-400">
         <span className="flex items-center gap-1.5 font-bold">
           <Filter className="w-3.5 h-3.5 text-sky-400" />
-          Знайдено <strong className="text-white">{filteredCount}</strong> із {totalCount} вправ
+          Знайдено <strong className="text-t-1">{filteredCount}</strong> із {totalCount} вправ
         </span>
 
         {hasActiveFilters && (

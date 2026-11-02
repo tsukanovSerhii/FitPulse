@@ -116,7 +116,7 @@ export const RestTimerWidget: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(subtractRestSeconds(30))}
-            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200 dark:bg-slate-800/90 dark:hover:bg-slate-700 dark:active:bg-slate-800 dark:text-slate-300 dark:hover:text-white dark:border-slate-700/80 text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
+            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-t-subtle hover:bg-t-hover text-t-2 hover:text-t-1 border border-t-d text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
             title="Зменшити час на 30 секунд (мін. 1 хв)"
           >
             <Minus className="w-3 h-3" />
@@ -132,7 +132,7 @@ export const RestTimerWidget: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(addRestSeconds(30))}
-            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200 dark:bg-slate-800/90 dark:hover:bg-slate-700 dark:active:bg-slate-800 dark:text-slate-300 dark:hover:text-white dark:border-slate-700/80 text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
+            className="flex items-center gap-0.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-t-subtle hover:bg-t-hover text-t-2 hover:text-t-1 border border-t-d text-[11px] sm:text-xs font-bold transition-all cursor-pointer select-none"
             title="Додати 30 секунд"
           >
             <Plus className="w-3 h-3" />
@@ -178,7 +178,7 @@ export const RestTimerWidget: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(skipRestTimer())}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800/80 transition-all cursor-pointer ml-1"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold text-t-3 hover:text-t-1 hover:bg-t-hover transition-all cursor-pointer ml-1"
             title="Пропустити відпочинок"
           >
             <SkipForward className="w-3.5 h-3.5" />

@@ -135,7 +135,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-slate-300 block mb-1.5">
+          <label className="text-xs font-semibold text-t-2 block mb-1.5">
             Короткий опис
           </label>
           <textarea
@@ -143,7 +143,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Опишіть призначення вправи..."
-            className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-t-input border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
           />
         </div>
 
@@ -176,7 +176,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-slate-300 block mb-1.5">
+          <label className="text-xs font-semibold text-t-2 block mb-1.5">
             Покрокова техніка (кожен крок з нового рядка)
           </label>
           <textarea
@@ -184,7 +184,7 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
             value={instructionsText}
             onChange={(e) => setInstructionsText(e.target.value)}
             placeholder="Крок 1: Займіть початкове положення...&#10;Крок 2: На вдиху опустіться...&#10;Крок 3: На видиху підніміться..."
-            className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-t-input border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
           />
         </div>
 

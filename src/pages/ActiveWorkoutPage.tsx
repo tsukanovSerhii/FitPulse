@@ -273,17 +273,17 @@ export const ActiveWorkoutPage: React.FC = () => {
           <div className="w-16 h-16 rounded-3xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center mx-auto mb-3 shadow-xl shadow-sky-950/40">
             <Play className="w-8 h-8 fill-current translate-x-0.5" />
           </div>
-          <h1 className="text-3xl font-black text-white">
+          <h1 className="text-3xl font-black text-t-1">
             Почати тренування
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-t-3">
             Оберіть день з існуючої програми або запустіть експрес-сесію
           </p>
         </div>
 
         {/* Start from active plan */}
-        <Card className="border-slate-800/80 bg-slate-900/80 p-6 space-y-5 shadow-xl">
-          <h3 className="text-base font-bold text-slate-200 flex items-center gap-2">
+        <Card className="p-6 space-y-5 shadow-xl">
+          <h3 className="text-base font-bold text-t-2 flex items-center gap-2">
             <Dumbbell className="w-4 h-4 text-sky-400" />
             Запустити тренування за планом
           </h3>
@@ -297,7 +297,7 @@ export const ActiveWorkoutPage: React.FC = () => {
             )}
 
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-t-3 block mb-2">
                 Оберіть програму
               </label>
               <select
@@ -306,7 +306,7 @@ export const ActiveWorkoutPage: React.FC = () => {
                   setSelectedPlanId(e.target.value)
                   setPlanWarning(null)
                 }}
-                className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-3 rounded-xl bg-t-input border border-t-d text-sm font-semibold text-t-1 focus:outline-none focus:ring-2 focus:ring-sky-500"
               >
                 {plans.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -317,7 +317,7 @@ export const ActiveWorkoutPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-t-3 block mb-2">
                 Оберіть день тижня
               </label>
               <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
@@ -336,8 +336,8 @@ export const ActiveWorkoutPage: React.FC = () => {
                         isSelected
                           ? 'bg-sky-600 text-white border-sky-400 shadow-md shadow-sky-950/40'
                           : count > 0
-                          ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-800'
-                          : 'bg-slate-950/30 text-slate-500 border-slate-900 opacity-60'
+                          ? 'bg-t-subtle hover:bg-t-hover text-t-2 border-t-d'
+                          : 'bg-t-subtle/40 text-t-3 border-t-d/50 opacity-60'
                       }`}
                     >
                       <span className="block text-xs font-bold">{DAY_LABELS[d].slice(0, 2)}</span>
@@ -363,13 +363,13 @@ export const ActiveWorkoutPage: React.FC = () => {
         </Card>
 
         {/* Quick Workout Alternative */}
-        <Card hover className="border-slate-800/80 bg-slate-900/80 flex items-center justify-between p-5 shadow-lg">
+        <Card hover className="flex items-center justify-between p-5 shadow-lg">
           <div>
-            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+            <h4 className="text-sm font-bold text-t-1 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400" />
               Швидкий старт (Full Body мікс)
             </h4>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-t-3 mt-1">
               Запустити експрес-сесію з базовими 4 вправами без розкладу
             </p>
           </div>

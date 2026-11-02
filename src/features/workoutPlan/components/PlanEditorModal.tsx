@@ -86,7 +86,7 @@ export const PlanEditorModal: React.FC<PlanEditorModalProps> = ({
         />
 
         <div>
-          <label className="text-xs font-semibold text-slate-300 block mb-1.5">
+          <label className="text-xs font-semibold text-t-2 block mb-1.5">
             Опис та цілі програми
           </label>
           <textarea
@@ -94,7 +94,7 @@ export const PlanEditorModal: React.FC<PlanEditorModalProps> = ({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Опишіть для кого підходить план, періодичність відпочинку тощо..."
-            className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-t-input border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
           />
         </div>
 

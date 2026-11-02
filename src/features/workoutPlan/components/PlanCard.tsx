@@ -100,8 +100,8 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                 key={day}
                 className={`p-3.5 rounded-2xl border transition-all ${
                   hasExercises
-                    ? 'bg-slate-50 dark:bg-slate-950/60 border-t-d/90 hover:border-sky-300 dark:hover:border-slate-700'
-                    : 'bg-slate-50/50 dark:bg-slate-950/20 border-dashed border-t-d/50 opacity-60'
+                    ? 'bg-t-subtle border-t-d hover:border-sky-500/30'
+                    : 'bg-t-subtle/50 border-dashed border-t-d/50 opacity-60'
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
@@ -110,7 +110,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                       className={`w-8 h-8 rounded-xl text-xs font-black flex items-center justify-center shrink-0 ${
                         hasExercises
                           ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
-                          : 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-500'
+                          : 'bg-t-subtle text-t-3 border border-t-d'
                       }`}
                     >
                       {DAY_SHORT_LABELS[day]}

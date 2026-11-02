@@ -34,7 +34,7 @@ export const ProgressPage: React.FC = () => {
   return (
     <div className="space-y-8 animate-fade-in pb-12">
       {/* Page Title */}
-      <div className="pb-4 border-b border-slate-200 dark:border-white/[0.06]">
+      <div className="pb-4 border-b border-t-d">
         <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0">
             <TrendingUp className="w-5 h-5" />

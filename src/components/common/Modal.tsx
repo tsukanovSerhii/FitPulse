@@ -52,15 +52,15 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Dialog box */}
       <div
-        className={`relative w-full ${maxWidthClasses[maxWidth]} bg-card border border-border rounded-2xl shadow-2xl overflow-hidden z-10 animate-fade-in max-h-[90vh] flex flex-col`}
+        className={`relative w-full ${maxWidthClasses[maxWidth]} bg-t-card border border-t-d rounded-2xl shadow-2xl overflow-hidden z-10 animate-fade-in max-h-[90vh] flex flex-col`}
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface/50">
-            <h3 className="text-lg font-bold text-slate-100">{title}</h3>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-t-d bg-t-input/50">
+            <h3 className="text-lg font-bold text-t-1">{title}</h3>
             <button
               onClick={onClose}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+              className="p-1 rounded-lg text-t-3 hover:text-t-1 hover:bg-t-subtle transition-colors"
               aria-label="Закрити"
             >
               <X className="w-5 h-5" />

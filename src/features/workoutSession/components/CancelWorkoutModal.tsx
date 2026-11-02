@@ -20,7 +20,7 @@ export const CancelWorkoutModal: React.FC<CancelWorkoutModalProps> = ({
         <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-200">
           <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
           <div className="text-xs leading-relaxed space-y-1">
-            <p className="font-bold text-white">Ви впевнені, що бажаєте зупинити сесію?</p>
+            <p className="font-bold text-t-1">Ви впевнені, що бажаєте зупинити сесію?</p>
             <p className="text-rose-200/90">
               Поточні записані підходи та таймер буде скинуто. Дані цього тренування не потраплять в аналітику прогресу.
             </p>

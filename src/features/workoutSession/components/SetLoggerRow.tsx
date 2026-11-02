@@ -70,7 +70,7 @@ export const SetLoggerRow: React.FC<SetLoggerRowProps> = ({
           {setNumber}
         </span>
         <div>
-          <span className="text-sm font-bold text-slate-900 dark:text-slate-100">Підхід {setNumber}</span>
+          <span className="text-sm font-bold text-t-1">Підхід {setNumber}</span>
           <span className="block text-xs text-t-3 mt-0.5">
             Ціль: <strong className="text-t-2">{targetReps} повт</strong>
             {targetWeight ? ` • ${targetWeight} кг` : ''}

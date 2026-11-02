@@ -46,7 +46,7 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
         <div className="flex items-center gap-4 self-end sm:self-center">
           <div className="flex items-center gap-4 text-xs">
             <div className="text-right">
-              <span className="block font-black text-slate-900 dark:text-slate-100 text-sm font-mono">
+              <span className="block font-black text-t-1 text-sm font-mono">
                 {log.totalVolumeKg.toLocaleString()} кг
               </span>
               <span className="text-[11px] text-t-3">{log.totalSets} підходів</span>
@@ -63,7 +63,7 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 dark:text-slate-400 dark:hover:text-white dark:bg-slate-800/60 dark:hover:bg-slate-800 dark:border-slate-700/60 transition-colors cursor-pointer"
+              className="p-2 rounded-xl border border-t-d bg-t-subtle hover:bg-t-hover text-t-3 hover:text-t-1 transition-colors cursor-pointer"
               title="Детальніше"
             >
               {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -92,7 +92,7 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
                 className="p-3 rounded-xl bg-slate-50 border border-slate-200 dark:bg-slate-950/70 dark:border-slate-800 flex items-center justify-between"
               >
                 <div>
-                  <span className="font-bold text-slate-900 dark:text-slate-200 block">{ex.exerciseName}</span>
+                  <span className="font-bold text-t-1 block">{ex.exerciseName}</span>
                   <span className="text-[11px] text-t-3 mt-0.5 block">
                     {ex.setsCompleted} підходів • {ex.totalReps} повт
                   </span>

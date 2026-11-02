@@ -42,7 +42,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             className={`p-2 rounded-2xl border transition-all duration-300 cursor-pointer ${
               isFavorite
                 ? 'bg-rose-500/20 border-rose-500/40 text-rose-400 shadow-sm shadow-rose-500/30'
-                : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10'
+                : 'bg-t-hover border-t-d text-t-3 hover:text-t-1 hover:bg-t-hover'
             }`}
             title={isFavorite ? 'Видалити з обраного' : 'Додати в обране'}
             aria-label="Обране"
@@ -52,12 +52,12 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         </div>
 
         {/* Title */}
-        <h4 className="text-base font-bold text-white group-hover:text-sky-400 transition-colors line-clamp-1 mb-2">
+        <h4 className="text-base font-bold text-t-1 group-hover:text-sky-400 transition-colors line-clamp-1 mb-2">
           {exercise.name}
         </h4>
 
         {/* Description */}
-        <p className="text-xs text-slate-300 leading-relaxed line-clamp-2 mb-4 font-medium">
+        <p className="text-xs text-t-2 leading-relaxed line-clamp-2 mb-4 font-medium">
           {exercise.description}
         </p>
       </div>
@@ -68,7 +68,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           <Badge variant={difficultyBadgeVariant[exercise.difficulty]} size="sm">
             {DIFFICULTY_LABELS[exercise.difficulty]}
           </Badge>
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-300 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-t-2 bg-t-hover px-2.5 py-1 rounded-full border border-t-d">
             <Dumbbell className="w-3 h-3 text-sky-400" />
             {EQUIPMENT_LABELS[exercise.equipment] || exercise.equipment}
           </span>

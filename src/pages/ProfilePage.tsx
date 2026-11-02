@@ -53,9 +53,9 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-12">
       {/* Page Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black text-white flex items-center gap-3">
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
               <User className="w-5 h-5" />
             </div>
@@ -82,7 +82,7 @@ export const ProfilePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           {/* Avatar */}
           <div className="relative">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-2 border-sky-500/40 shadow-2xl shadow-sky-500/10 bg-[#090d16]">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-2 border-sky-500/40 shadow-2xl shadow-sky-500/10 bg-t-page">
               {profile.avatarUrl ? (
                 <img
                   src={profile.avatarUrl}
@@ -95,7 +95,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
               )}
             </div>
-            <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-sky-500 border-2 border-[#121622] flex items-center justify-center text-xs text-white font-black shadow-md shadow-sky-950/40">
+            <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-sky-500 border-2 border-t-card flex items-center justify-center text-xs text-white font-black shadow-md shadow-sky-950/40">
               ✓
             </span>
           </div>
@@ -103,7 +103,7 @@ export const ProfilePage: React.FC = () => {
           {/* Details */}
           <div className="flex-1 text-center sm:text-left space-y-2">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <h2 className="text-2xl font-black text-white">{profile.name}</h2>
+              <h2 className="text-2xl font-black text-t-1">{profile.name}</h2>
               <Badge variant="primary" dot size="sm">
                 {FITNESS_GOAL_LABELS[profile.fitnessGoal]}
               </Badge>
@@ -111,7 +111,7 @@ export const ProfilePage: React.FC = () => {
 
             <p className="text-xs font-semibold text-slate-400">{profile.email}</p>
 
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2 text-xs text-slate-300 font-medium">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2 text-xs text-t-2 font-medium">
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-sky-400" />
                 У додатку з: {formatDate(profile.joinedDate)}
@@ -126,25 +126,25 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         {/* Parameters Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-8 pt-6 border-t border-white/[0.06]">
-          <div className="p-4 bg-[#090d16] rounded-2xl border border-white/5 text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-8 pt-6 border-t border-t-d">
+          <div className="p-4 bg-t-subtle rounded-2xl border border-t-d text-center">
             <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Вік</span>
-            <span className="text-xl font-heading font-black text-white">{profile.age} р.</span>
+            <span className="text-xl font-heading font-black text-t-1">{profile.age} р.</span>
           </div>
 
-          <div className="p-4 bg-[#090d16] rounded-2xl border border-white/5 text-center">
+          <div className="p-4 bg-t-subtle rounded-2xl border border-t-d text-center">
             <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Зріст</span>
-            <span className="text-xl font-heading font-black text-white">{profile.heightCm} см</span>
+            <span className="text-xl font-heading font-black text-t-1">{profile.heightCm} см</span>
           </div>
 
-          <div className="p-4 bg-[#090d16] rounded-2xl border border-white/5 text-center">
+          <div className="p-4 bg-t-subtle rounded-2xl border border-t-d text-center">
             <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Поточна вага</span>
-            <span className="text-xl font-heading font-black text-white">
+            <span className="text-xl font-heading font-black text-t-1">
               {profile.weightKg} кг
             </span>
           </div>
 
-          <div className="p-4 bg-[#090d16] rounded-2xl border border-white/5 text-center">
+          <div className="p-4 bg-t-subtle rounded-2xl border border-t-d text-center">
             <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1 flex items-center justify-center gap-1">
               <Target className="w-3.5 h-3.5 text-sky-400" />
               Цільова

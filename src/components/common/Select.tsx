@@ -24,19 +24,19 @@ export const Select: React.FC<SelectProps> = ({
   return (
     <div className="w-full flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={selectId} className="text-xs font-semibold text-slate-300">
+        <label htmlFor={selectId} className="text-xs font-semibold text-t-2">
           {label}
         </label>
       )}
       <select
         id={selectId}
-        className={`w-full px-3.5 py-2.5 rounded-xl bg-surface border text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500/50 transition-colors cursor-pointer ${
-          error ? 'border-rose-500 focus:border-rose-500' : 'border-border focus:border-sky-500'
+        className={`w-full px-3.5 py-2.5 rounded-xl bg-t-input border text-sm text-t-1 focus:outline-none focus:ring-2 focus:ring-sky-500/50 transition-colors cursor-pointer ${
+          error ? 'border-rose-500 focus:border-rose-500' : 'border-t-d focus:border-sky-500'
         } ${className}`}
         {...props}
       >
         {options.map((opt) => (
-          <option key={opt.value} value={opt.value} className="bg-surface text-slate-100">
+          <option key={opt.value} value={opt.value} className="bg-t-input text-t-1">
             {opt.label}
           </option>
         ))}
