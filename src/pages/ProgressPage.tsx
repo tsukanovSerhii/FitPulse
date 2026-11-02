@@ -2,6 +2,8 @@ import { toast } from 'sonner'
 import React, { useEffect } from 'react'
 import { Trophy, History, Dumbbell } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useLocation } from 'react-router-dom'
+import { PostWorkoutAd } from '@/features/ads/components/PostWorkoutAd'
 import { fetchProgress, deleteWorkoutLogAsync } from '@/features/progress/model/progressSlice'
 import { StatsGrid } from '@/features/progress/components/StatsGrid'
 import { WorkoutHistoryItem } from '@/features/progress/components/WorkoutHistoryItem'
@@ -32,10 +34,14 @@ export const ProgressPage: React.FC = () => {
     toast.success('Запис видалено')
   }
 
+  const location = useLocation()
+  const justFinished = Boolean((location.state as { justFinished?: boolean } | null)?.justFinished)
+
   const prList = Object.values(personalRecords)
 
   return (
     <div className="space-y-8 animate-fade-in pb-12">
+      <PostWorkoutAd trigger={justFinished} />
       <SEO title="Прогрес та аналітика" description="Аналітика вашого фітнес-прогресу: сумарний піднятий тоннаж, час у залі, графік занять та особисті рекорди." />
       <PageHeader
         index={4}
