@@ -7,6 +7,7 @@ import { Avatar } from '@/components/layout/Avatar'
 import { Badge, Button, Card, IconButton, PageHeader, Stat, ThemeToggle, confirmAction } from '@/components/ui'
 import { BMISummary } from '@/features/profile/components/BMISummary'
 import { ProfileEditModal } from '@/features/profile/components/ProfileEditModal'
+import { ProfileSkeleton } from '@/features/profile/components/ProfileSkeleton'
 import { fetchProfile, resetProfileAsync, updateProfileAsync } from '@/features/profile/model/profileSlice'
 import type { UserProfile } from '@/features/profile/model/types'
 import { ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS } from '@/features/profile/model/types'
@@ -28,7 +29,8 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 export function ProfilePage() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const profile = useAppSelector((state) => state.profile.profile)
+  const { profile, status } = useAppSelector((state) => state.profile)
+  const isLoading = status === 'idle' || status === 'loading'
   const user = useAppSelector((state) => state.auth.user)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
@@ -85,39 +87,45 @@ export function ProfilePage() {
         }
       />
 
-      <Card padding="none">
-        <div className="flex items-center gap-4 p-5 sm:p-6">
-          {user ? <AvatarUploader user={user} name={profile.name} /> : <Avatar name={profile.name} className="size-20" />}
-          <div className="min-w-0 flex-1 space-y-1">
-            <p className="truncate text-lg font-semibold text-fg">{profile.name}</p>
-            <p className="truncate text-sm text-fg-subtle">{profile.email}</p>
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <Badge variant="primary" size="sm">
-                {FITNESS_GOAL_LABELS[profile.fitnessGoal]}
-              </Badge>
-              <span className="text-xs text-fg-subtle">з {formatDate(profile.joinedDate)}</span>
+      {isLoading ? (
+        <ProfileSkeleton />
+      ) : (
+        <>
+          <Card padding="none">
+            <div className="flex items-center gap-4 p-5 sm:p-6">
+              {user ? <AvatarUploader user={user} name={profile.name} /> : <Avatar name={profile.name} className="size-20" />}
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className="truncate text-lg font-semibold text-fg">{profile.name}</p>
+                <p className="truncate text-sm text-fg-subtle">{profile.email}</p>
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <Badge variant="primary" size="sm">
+                    {FITNESS_GOAL_LABELS[profile.fitnessGoal]}
+                  </Badge>
+                  <span className="text-xs text-fg-subtle">з {formatDate(profile.joinedDate)}</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 border-t border-line sm:grid-cols-4 [&>*]:border-line [&>*]:p-4 sm:[&>*]:p-5 [&>*:nth-child(odd)]:border-r sm:[&>*:not(:last-child)]:border-r [&>*:nth-child(-n+2)]:border-b sm:[&>*:nth-child(-n+2)]:border-b-0">
-          <Stat label="Вік" value={profile.age} unit="р." />
-          <Stat label="Зріст" value={profile.heightCm} unit="см" />
-          <Stat label="Вага" value={formatNumber(profile.weightKg, 1)} unit="кг" />
-          <Stat
-            label="Ціль"
-            value={formatNumber(profile.targetWeightKg, 1)}
-            unit="кг"
-            accent
-            hint={weightDelta === 0 ? 'досягнуто' : `${weightDelta > 0 ? '+' : ''}${formatNumber(weightDelta, 1)} кг`}
-          />
-        </div>
-      </Card>
+            <div className="grid grid-cols-2 border-t border-line sm:grid-cols-4 [&>*]:border-line [&>*]:p-4 sm:[&>*]:p-5 [&>*:nth-child(odd)]:border-r sm:[&>*:not(:last-child)]:border-r [&>*:nth-child(-n+2)]:border-b sm:[&>*:nth-child(-n+2)]:border-b-0">
+              <Stat label="Вік" value={profile.age} unit="р." />
+              <Stat label="Зріст" value={profile.heightCm} unit="см" />
+              <Stat label="Вага" value={formatNumber(profile.weightKg, 1)} unit="кг" />
+              <Stat
+                label="Ціль"
+                value={formatNumber(profile.targetWeightKg, 1)}
+                unit="кг"
+                accent
+                hint={weightDelta === 0 ? 'досягнуто' : `${weightDelta > 0 ? '+' : ''}${formatNumber(weightDelta, 1)} кг`}
+              />
+            </div>
+          </Card>
 
-      <Section title="Індекс маси тіла">
-        <Card>
-          <BMISummary profile={profile} />
-        </Card>
-      </Section>
+          <Section title="Індекс маси тіла">
+            <Card>
+              <BMISummary profile={profile} />
+            </Card>
+          </Section>
+        </>
+      )}
 
       <Section title="Налаштування">
         <Card padding="none" className="divide-y divide-line">

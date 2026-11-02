@@ -58,20 +58,29 @@ const WEEK = [
 
 export function WeekVisual() {
   return (
-    <ol aria-hidden="true" className="grid w-full grid-cols-7 gap-1.5">
-      {WEEK.map((d) => (
-        <li
-          key={d.day}
-          className={cn(
-            'flex h-20 flex-col items-center justify-between rounded-md border py-3 text-xs font-semibold',
-            d.on ? 'border-accent/40 bg-accent-soft text-fg' : 'border-line text-fg-subtle',
-          )}
-        >
-          {d.day}
-          <span className={cn('font-display text-sm uppercase', d.on ? 'text-accent' : 'text-transparent')}>{d.name || '·'}</span>
-        </li>
-      ))}
-    </ol>
+    <div aria-hidden="true" className="w-full space-y-3">
+      <ol className="grid grid-cols-7 gap-1.5">
+        {WEEK.map((d) => (
+          <li
+            key={d.day}
+            className={cn(
+              'flex aspect-square flex-col items-center justify-center gap-1 rounded-md border text-xs font-semibold',
+              d.on ? 'border-accent/40 bg-accent-soft text-fg' : 'border-line text-fg-subtle',
+            )}
+          >
+            {d.day}
+            <span className={cn('size-1 rounded-full', d.on ? 'bg-accent' : 'bg-transparent')} />
+          </li>
+        ))}
+      </ol>
+      <p className="flex flex-wrap gap-1.5">
+        {WEEK.filter((d) => d.on).map((d) => (
+          <span key={d.day} className="rounded-sm bg-surface-2 px-2 py-1 font-mono text-[11px] text-fg-muted">
+            {d.day} · <span className="text-fg">{d.name}</span>
+          </span>
+        ))}
+      </p>
+    </div>
   )
 }
 

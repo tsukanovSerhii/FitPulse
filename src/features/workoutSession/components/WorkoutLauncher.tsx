@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Play, Zap } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { Button, PageHeader, Select } from '@/components/ui'
+import { Button, LoadingRegion, PageHeader, Select, Skeleton } from '@/components/ui'
 import { dayKeyOf } from '@/features/dashboard/lib/week'
 import { ALL_DAYS, DAY_LABELS, type PlanExercise } from '@/features/workoutPlan/model/types'
 import { cn } from '@/utils/cn'
@@ -11,7 +11,7 @@ const QUICK_WORKOUT_SIZE = 4
 
 export function WorkoutLauncher() {
   const dispatch = useAppDispatch()
-  const { plans, activePlanId } = useAppSelector((state) => state.workoutPlan)
+  const { plans, activePlanId, status } = useAppSelector((state) => state.workoutPlan)
   const exercises = useAppSelector((state) => state.exercises.items)
   const [pickedPlanId, setPickedPlanId] = useState<string | null>(null)
   const [today] = useState(() => dayKeyOf(new Date()))
@@ -48,6 +48,20 @@ export function WorkoutLauncher() {
           onChange={(e) => setPickedPlanId(e.target.value)}
           options={plans.map((p) => ({ value: p.id, label: p.name }))}
         />
+      )}
+
+      {!plan && (status === 'idle' || status === 'loading') && (
+        <LoadingRegion label="Завантаження програми" className="divide-y divide-line rounded-lg border border-line bg-surface">
+          {Array.from({ length: 3 }, (_, i) => (
+            <div key={i} className="flex items-center gap-4 p-4">
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-3.5 w-3/4" />
+              </div>
+              <Skeleton className="size-11 rounded-full" />
+            </div>
+          ))}
+        </LoadingRegion>
       )}
 
       {plan && (

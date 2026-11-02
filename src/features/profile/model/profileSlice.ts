@@ -52,7 +52,8 @@ export const profileSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfile.pending, (state) => {
-        state.status = 'loading'
+        // Refetches keep the loaded profile on screen instead of flashing the skeleton
+        if (state.status !== 'succeeded') state.status = 'loading'
         state.error = null
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
