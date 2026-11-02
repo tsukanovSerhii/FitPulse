@@ -1,6 +1,6 @@
-import { calculateBMI } from '@/utils/bmi'
-import { formatNumber } from '@/utils/formatters'
-import { cn } from '@/utils/cn'
+import { calculateBMI } from '../lib/bmi'
+import { formatNumber } from '@/shared/lib/formatters'
+import { cn } from '@/shared/lib/cn'
 import type { UserProfile } from '../model/types'
 
 const SCALE_MIN = 15

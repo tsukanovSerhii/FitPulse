@@ -1,7 +1,7 @@
 import { useId, useState, type InputHTMLAttributes } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { Field, controlClasses, describedBy } from '@/components/ui'
-import { cn } from '@/utils/cn'
+import { Field, controlClasses, describedBy } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
 import { passwordStrength } from '../lib/validation'
 
 const STRENGTH = [

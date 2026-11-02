@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { ProfileState, UserProfile } from './types'
 import { profileApi } from '../api/profileApi'
-import { INITIAL_PROFILE } from '@/services/mockData/initialProfile'
+import { INITIAL_PROFILE } from '../api/seed'
 
 const initialState: ProfileState = {
   profile: INITIAL_PROFILE,

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Clock } from 'lucide-react'
 import type { WorkoutHistoryLog } from '@/features/progress/model/types'
-import { formatDate, formatDuration, formatNumber } from '@/utils/formatters'
+import { formatDate, formatDuration, formatNumber } from '@/shared/lib/formatters'
 import { DashboardSection } from './DashboardSection'
 
 export function LastWorkoutCard({ log }: { log: WorkoutHistoryLog }) {

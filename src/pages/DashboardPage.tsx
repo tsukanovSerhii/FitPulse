@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { SEO } from '@/components/common/SEO'
-import { Stat, buttonClasses } from '@/components/ui'
+import { SEO } from '@/shared/seo/SEO'
+import { Stat, buttonClasses } from '@/shared/ui'
 import { AdSlot } from '@/features/ads/components/AdSlot'
 import { DashboardSkeleton } from '@/features/dashboard/components/DashboardSkeleton'
 import { LastWorkoutCard } from '@/features/dashboard/components/LastWorkoutCard'
@@ -10,7 +10,7 @@ import { WeekStrip } from '@/features/dashboard/components/WeekStrip'
 import { useDashboardData } from '@/features/dashboard/lib/useDashboardData'
 import { DAY_LABELS } from '@/features/workoutPlan/model/types'
 import { startWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
-import { formatNumber } from '@/utils/formatters'
+import { formatNumber } from '@/shared/lib/formatters'
 
 function greeting(hour: number) {
   if (hour < 12) return 'Доброго ранку'

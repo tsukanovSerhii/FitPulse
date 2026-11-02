@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { updateProfileAsync } from '@/features/profile/model/profileSlice'
-import { INITIAL_PROFILE } from '@/services/mockData/initialProfile'
+import { INITIAL_PROFILE } from '@/features/profile/api/seed'
 import { authApi, AuthError } from '../api/authApi'
 import type { AuthState, AuthUser, LoginData, RegistrationData } from './types'
 

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { confirmAction } from '@/components/ui'
+import { confirmAction } from '@/shared/ui'
 import { startWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
 import {
   addExerciseToDay,

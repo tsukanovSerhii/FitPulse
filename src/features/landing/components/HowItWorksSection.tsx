@@ -1,4 +1,4 @@
-import { PHOTOS } from '@/data/photos'
+import { PHOTOS } from '@/shared/config/photos'
 import { SectionHeader } from './SectionHeader'
 
 const STEPS = [

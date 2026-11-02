@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import { Play } from 'lucide-react'
 import { useAppSelector } from '@/app/hooks'
-import { formatDuration } from '@/utils/formatters'
-import { cn } from '@/utils/cn'
+import { formatDuration } from '@/shared/lib/formatters'
+import { cn } from '@/shared/lib/cn'
 import { NAV_ITEMS, type NavItem } from './navigation'
 
 function TabLink({ item }: { item: NavItem }) {

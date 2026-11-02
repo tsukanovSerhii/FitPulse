@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import type { UserProfile, FitnessGoal, ActivityLevel } from '../model/types'
 import { FITNESS_GOAL_LABELS, ACTIVITY_LEVEL_LABELS } from '../model/types'
-import { Modal } from '@/components/ui'
-import { Input } from '@/components/ui'
-import { Select } from '@/components/ui'
-import { Button } from '@/components/ui'
+import { Modal } from '@/shared/ui'
+import { Input } from '@/shared/ui'
+import { Select } from '@/shared/ui'
+import { Button } from '@/shared/ui'
 
 export interface ProfileEditModalProps {
   isOpen: boolean

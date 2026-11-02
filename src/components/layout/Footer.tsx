@@ -1,4 +1,4 @@
-import { PHOTOS } from '@/data/photos'
+import { PHOTOS } from '@/shared/config/photos'
 
 const currentYear = new Date().getFullYear()
 

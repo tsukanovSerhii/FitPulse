@@ -1,6 +1,6 @@
 import { useId, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
-import { cn } from '@/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import { FAQ } from '../faq'
 import { SectionEyebrow } from './SectionHeader'
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Check } from 'lucide-react'
-import { cn } from '@/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import { AnatomyVisual, ProgressVisual, RestVisual, StepperVisual, WeekVisual } from './FeatureVisuals'
 import { SectionHeader } from './SectionHeader'
 

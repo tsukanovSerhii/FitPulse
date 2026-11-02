@@ -9,9 +9,9 @@ import { StatsGrid } from '@/features/progress/components/StatsGrid'
 import { WorkoutHistoryItem } from '@/features/progress/components/WorkoutHistoryItem'
 import { PRCard } from '@/features/progress/components/PRCard'
 import { HistoryListSkeleton, StatsGridSkeleton } from '@/features/progress/components/ProgressSkeleton'
-import { LoadingRegion, Skeleton } from '@/components/ui'
-import { EmptyState, PageHeader, confirmAction } from '@/components/ui'
-import { SEO } from '@/components/common/SEO'
+import { LoadingRegion, Skeleton } from '@/shared/ui'
+import { EmptyState, PageHeader, confirmAction } from '@/shared/ui'
+import { SEO } from '@/shared/seo/SEO'
 
 export const ProgressPage: React.FC = () => {
   const dispatch = useAppDispatch()

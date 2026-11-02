@@ -1,6 +1,6 @@
 import type { Exercise } from '../model/types'
-import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
-import { INITIAL_EXERCISES } from '@/services/mockData/initialExercises'
+import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { INITIAL_EXERCISES } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 

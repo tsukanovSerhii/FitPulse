@@ -1,7 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAppSelector } from '@/app/hooks'
-import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/services/storage/sessionStorage'
+import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 
 // The return path lives in sessionStorage, so it survives the detour /welcome -> /login -> back.
 export function RequireAuth({ children }: { children: ReactNode }) {

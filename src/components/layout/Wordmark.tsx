@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { cn } from '@/utils/cn'
+import { cn } from '@/shared/lib/cn'
 
 export function Wordmark({ className }: { className?: string }) {
   return (

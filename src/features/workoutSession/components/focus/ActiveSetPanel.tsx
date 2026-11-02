@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Check } from 'lucide-react'
-import { Button, NumberStepper } from '@/components/ui'
-import { cn } from '@/utils/cn'
+import { Button, NumberStepper } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
 
 interface ActiveSetPanelProps {
   setNumber: number

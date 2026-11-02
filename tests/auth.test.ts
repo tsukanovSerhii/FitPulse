@@ -17,8 +17,8 @@ globalThis.window = {
 
 const { authApi } = await import('@/features/auth/api/authApi')
 const { passwordStrength, validateRegistration } = await import('@/features/auth/lib/validation')
-const { validateImageFile } = await import('@/utils/image')
-const { STORAGE_KEYS } = await import('@/services/storage/localStorage')
+const { validateImageFile } = await import('@/shared/lib/image')
+const { STORAGE_KEYS } = await import('@/shared/storage/localStorage')
 
 describe('authApi', () => {
   beforeEach(() => {

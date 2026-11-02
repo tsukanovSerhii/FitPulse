@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react'
-import { Button, IconButton, progressFill } from '@/components/ui'
-import { formatDuration } from '@/utils/formatters'
-import { cn } from '@/utils/cn'
+import { Button, IconButton, progressFill } from '@/shared/ui'
+import { formatDuration } from '@/shared/lib/formatters'
+import { cn } from '@/shared/lib/cn'
 
 export interface ExerciseProgress {
   id: string

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '@/app/hooks'
-import { ThemeCycleButton } from '@/components/ui'
-import { Avatar } from './Avatar'
+import { ThemeCycleButton } from '@/shared/ui'
+import { Avatar } from '@/shared/ui/Avatar'
 import { Wordmark } from './Wordmark'
 
 export function MobileHeader() {

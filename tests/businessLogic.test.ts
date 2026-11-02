@@ -12,7 +12,7 @@ globalThis.window = {
   },
 } as unknown as Window & typeof globalThis
 
-import { STORAGE_KEYS, hasStorageKey } from '@/services/storage/localStorage'
+import { STORAGE_KEYS, hasStorageKey } from '@/shared/storage/localStorage'
 import { plansApi } from '@/features/workoutPlan/api/plansApi'
 import { progressApi, recalculatePersonalRecords } from '@/features/progress/api/progressApi'
 import type { WorkoutHistoryLog } from '@/features/progress/model/types'

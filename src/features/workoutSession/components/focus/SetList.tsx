@@ -1,7 +1,7 @@
 import { Check, RotateCcw } from 'lucide-react'
 import type { PlanExercise } from '@/features/workoutPlan/model/types'
-import { statusStyles } from '@/components/ui'
-import { cn } from '@/utils/cn'
+import { statusStyles } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
 import type { CompletedSet } from '../../model/types'
 
 const formatSet = (reps: number, weight?: number) => `${weight ? `${weight} кг × ` : ''}${reps}`

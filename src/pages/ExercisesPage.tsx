@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useState, type MouseEvent } from 'react'
 import { Dumbbell, Plus } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { SEO } from '@/components/common/SEO'
-import { Button, EmptyState, IconButton, PageHeader } from '@/components/ui'
+import { SEO } from '@/shared/seo/SEO'
+import { Button, EmptyState, IconButton, PageHeader } from '@/shared/ui'
 import { AdSlot } from '@/features/ads/components/AdSlot'
 import { CATALOG_AD_EVERY } from '@/features/ads/model/selection'
 import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
@@ -20,9 +20,9 @@ import {
   toggleFavorite,
 } from '@/features/exercises/model/exercisesSlice'
 import type { Exercise } from '@/features/exercises/model/types'
-import { saveToSession, SESSION_KEYS } from '@/services/storage/sessionStorage'
-import { useSessionState } from '@/services/storage/useSessionState'
-import { injectExerciseSchema } from '@/utils/seo'
+import { saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
+import { useSessionState } from '@/shared/storage/useSessionState'
+import { injectExerciseSchema } from '@/shared/seo/meta'
 
 export function ExercisesPage() {
   const dispatch = useAppDispatch()

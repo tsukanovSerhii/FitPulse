@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react'
 import { DAY_LABELS, DAY_SHORT_LABELS, type DayOfWeek } from '@/features/workoutPlan/model/types'
-import { statusStyles } from '@/components/ui'
-import { cn } from '@/utils/cn'
+import { statusStyles } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
 import { WEEK_DAYS } from '../lib/week'
 import { DashboardSection } from './DashboardSection'
 

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Calendar, Plus, Search } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { SEO } from '@/components/common/SEO'
-import { Button, EmptyState, IconButton, PageHeader, SearchInput } from '@/components/ui'
+import { SEO } from '@/shared/seo/SEO'
+import { Button, EmptyState, IconButton, PageHeader, SearchInput } from '@/shared/ui'
 import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
 import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
@@ -12,8 +12,8 @@ import { usePlanActions } from '@/features/workoutPlan/hooks/usePlanActions'
 import { searchPlans } from '@/features/workoutPlan/lib/search'
 import type { DayOfWeek, WorkoutPlan } from '@/features/workoutPlan/model/types'
 import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
-import { SESSION_KEYS } from '@/services/storage/sessionStorage'
-import { useSessionState } from '@/services/storage/useSessionState'
+import { SESSION_KEYS } from '@/shared/storage/sessionStorage'
+import { useSessionState } from '@/shared/storage/useSessionState'
 
 export function WorkoutPlansPage() {
   const dispatch = useAppDispatch()

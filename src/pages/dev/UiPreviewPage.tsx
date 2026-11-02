@@ -19,7 +19,7 @@ import {
   Stat,
   Textarea,
   ThemeToggle,
-} from '@/components/ui'
+} from '@/shared/ui'
 
 export function UiPreviewPage() {
   const [tab, setTab] = useState<'all' | 'chest' | 'back' | 'legs'>('all')

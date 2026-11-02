@@ -1,5 +1,5 @@
-import { loadFromStorage, removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
-import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/services/storage/sessionStorage'
+import { loadFromStorage, removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { createSalt, hashPassword } from '../lib/password'
 import { normalizeEmail } from '../lib/validation'
 import type { AuthUser, LoginData, RegistrationData, StoredAccount } from '../model/types'

@@ -13,8 +13,8 @@ globalThis.window = {
 } as unknown as Window & typeof globalThis
 
 const { exercisesApi } = await import('@/features/exercises/api/exercisesApi')
-const { INITIAL_EXERCISES } = await import('@/services/mockData/initialExercises')
-const { STORAGE_KEYS } = await import('@/services/storage/localStorage')
+const { INITIAL_EXERCISES } = await import('@/features/exercises/api/seed')
+const { STORAGE_KEYS } = await import('@/shared/storage/localStorage')
 
 const custom = {
   name: 'Моя вправа',

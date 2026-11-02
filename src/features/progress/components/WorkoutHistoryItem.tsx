@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Calendar, Clock, ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import type { WorkoutHistoryLog } from '../model/types'
-import { Card } from '@/components/ui'
-import { Badge } from '@/components/ui'
-import { formatDate, formatDuration } from '@/utils/formatters'
+import { Card } from '@/shared/ui'
+import { Badge } from '@/shared/ui'
+import { formatDate, formatDuration } from '@/shared/lib/formatters'
 
 export interface WorkoutHistoryItemProps {
   log: WorkoutHistoryLog

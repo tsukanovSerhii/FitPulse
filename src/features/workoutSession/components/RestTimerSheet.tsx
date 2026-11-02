@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Pause, Play, Volume2, VolumeX } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { Button, IconButton, ProgressRing } from '@/components/ui'
-import { playTimerBeep } from '@/utils/audio'
-import { formatDuration } from '@/utils/formatters'
+import { Button, IconButton, ProgressRing } from '@/shared/ui'
+import { playTimerBeep } from '@/shared/lib/audio'
+import { formatDuration } from '@/shared/lib/formatters'
 import {
   addRestSeconds,
   skipRestTimer,

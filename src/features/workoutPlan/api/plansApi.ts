@@ -4,8 +4,8 @@ import {
   loadFromStorage,
   saveToStorage,
   STORAGE_KEYS,
-} from '@/services/storage/localStorage'
-import { INITIAL_PLANS } from '@/services/mockData/initialPlans'
+} from '@/shared/storage/localStorage'
+import { INITIAL_PLANS } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 

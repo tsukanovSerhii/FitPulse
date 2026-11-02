@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { buildTimeline, getTechnique, stepAt } from '@/features/exercises/lib/technique'
 import type { Exercise, TechniqueStep } from '@/features/exercises/model/types'
-import { INITIAL_EXERCISES } from '@/services/mockData/initialExercises'
+import { INITIAL_EXERCISES } from '@/features/exercises/api/seed'
 
 const steps: TechniqueStep[] = [
   { title: 'Позиція', text: 'a', frame: 0, seconds: 1.5 },

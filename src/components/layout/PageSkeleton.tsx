@@ -1,4 +1,4 @@
-import { LoadingRegion, Skeleton } from '@/components/ui'
+import { LoadingRegion, Skeleton } from '@/shared/ui'
 
 /** Fallback while a lazy page chunk downloads: a neutral header and content blocks. */
 export function PageSkeleton() {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
+import { saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { getSystemTheme, setThemeMode, systemThemeChanged } from '../model/themeSlice'
 import type { ThemeMode } from '../model/types'
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import type { WorkoutPlan, DayOfWeek, PlanExercise } from '../model/types'
-import { Modal } from '@/components/ui'
-import { Input } from '@/components/ui'
-import { Button } from '@/components/ui'
+import { Modal } from '@/shared/ui'
+import { Input } from '@/shared/ui'
+import { Button } from '@/shared/ui'
 
 export interface PlanEditorModalProps {
   isOpen: boolean

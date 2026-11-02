@@ -2,9 +2,9 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { LogOut, Pencil, RotateCcw } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { SEO } from '@/components/common/SEO'
-import { Avatar } from '@/components/layout/Avatar'
-import { Badge, Button, Card, IconButton, PageHeader, Stat, ThemeToggle, confirmAction } from '@/components/ui'
+import { SEO } from '@/shared/seo/SEO'
+import { Avatar } from '@/shared/ui/Avatar'
+import { Badge, Button, Card, IconButton, PageHeader, Stat, ThemeToggle, confirmAction } from '@/shared/ui'
 import { BMISummary } from '@/features/profile/components/BMISummary'
 import { ProfileEditModal } from '@/features/profile/components/ProfileEditModal'
 import { ProfileSkeleton } from '@/features/profile/components/ProfileSkeleton'
@@ -14,8 +14,8 @@ import { ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS } from '@/features/profile/m
 import { PLAN_NAMES } from '@/features/auth/model/plans'
 import { logout, syncAccount } from '@/features/auth/model/authSlice'
 import { AvatarUploader } from '@/features/profile/components/AvatarUploader'
-import { removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
-import { formatDate, formatNumber } from '@/utils/formatters'
+import { removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { formatDate, formatNumber } from '@/shared/lib/formatters'
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (

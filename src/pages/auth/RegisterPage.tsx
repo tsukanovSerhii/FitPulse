@@ -1,15 +1,15 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { SEO } from '@/components/common/SEO'
-import { Button, Input } from '@/components/ui'
+import { SEO } from '@/shared/seo/SEO'
+import { Button, Input } from '@/shared/ui'
 import { AuthLayout } from '@/features/auth/components/AuthLayout'
 import { PasswordField } from '@/features/auth/components/PasswordField'
 import { validateRegistration, type FieldErrors } from '@/features/auth/lib/validation'
 import { authErrorCleared, registerUser } from '@/features/auth/model/authSlice'
 import type { RegistrationData } from '@/features/auth/model/types'
-import { removeFromSession, SESSION_KEYS } from '@/services/storage/sessionStorage'
-import { useSessionState } from '@/services/storage/useSessionState'
+import { removeFromSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
+import { useSessionState } from '@/shared/storage/useSessionState'
 
 type Form = RegistrationData
 

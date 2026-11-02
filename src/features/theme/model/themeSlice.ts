@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { ResolvedTheme, ThemeMode, ThemeState } from './types'
-import { loadFromStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
+import { loadFromStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
 
 const THEME_MODES: ThemeMode[] = ['light', 'dark', 'system']
 

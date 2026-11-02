@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Check, ChevronLeft, ChevronRight, Info } from 'lucide-react'
-import { Button, IconButton, Modal } from '@/components/ui'
+import { Button, IconButton, Modal } from '@/shared/ui'
 import { TechniquePlayer } from '@/features/exercises/components/technique/TechniquePlayer'
 import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
 import type { WorkoutHistoryLog } from '@/features/progress/model/types'

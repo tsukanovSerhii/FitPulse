@@ -1,6 +1,6 @@
 import { Check, Heart, X } from 'lucide-react'
-import { MuscleMap } from '@/components/common/muscle-map/MuscleMap'
-import { Disclosure, IconButton, Modal } from '@/components/ui'
+import { MuscleMap } from '../muscle-map/MuscleMap'
+import { Disclosure, IconButton, Modal } from '@/shared/ui'
 import { getTechnique } from '../../lib/technique'
 import type { Exercise } from '../../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../../model/types'

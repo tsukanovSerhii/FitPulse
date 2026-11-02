@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Heart, SlidersHorizontal } from 'lucide-react'
-import { Button, IconButton, Modal, SearchInput } from '@/components/ui'
-import { cn } from '@/utils/cn'
+import { Button, IconButton, Modal, SearchInput } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
 import type { Difficulty, Equipment, ExerciseFilters, MuscleGroup } from '../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 

@@ -1,4 +1,4 @@
-import { SEO } from '@/components/common/SEO'
+import { SEO } from '@/shared/seo/SEO'
 import { Footer } from '@/components/layout/Footer'
 import { FAQ_JSON_LD } from '@/features/landing/faq'
 import { FaqSection } from '@/features/landing/components/FaqSection'

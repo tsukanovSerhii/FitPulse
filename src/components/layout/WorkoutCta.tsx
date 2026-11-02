@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import { Play } from 'lucide-react'
 import { useAppSelector } from '@/app/hooks'
-import { buttonClasses } from '@/components/ui'
-import { formatDuration } from '@/utils/formatters'
-import { cn } from '@/utils/cn'
+import { buttonClasses } from '@/shared/ui'
+import { formatDuration } from '@/shared/lib/formatters'
+import { cn } from '@/shared/lib/cn'
 
 export function WorkoutCta({ className }: { className?: string }) {
   const session = useAppSelector((state) => state.workoutSession)

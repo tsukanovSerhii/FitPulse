@@ -6,7 +6,7 @@ import {
   saveToStorage,
   removeFromStorage,
   STORAGE_KEYS,
-} from '@/services/storage/localStorage'
+} from '@/shared/storage/localStorage'
 
 const defaultInitialState: WorkoutSessionState = {
   isActive: false,
