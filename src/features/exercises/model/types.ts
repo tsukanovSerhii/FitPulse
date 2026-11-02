@@ -71,6 +71,23 @@ export interface ExerciseGuide {
   proTips?: string[]
 }
 
+export interface TechniqueStep {
+  title: string
+  text: string
+  /** Which of the two photos shows this moment */
+  frame: 0 | 1
+  /** Duration in the demo loop; the photo cross-fades for this long */
+  seconds: number
+  breathing?: 'inhale' | 'exhale' | 'hold'
+}
+
+export interface ExerciseTechnique {
+  steps: TechniqueStep[]
+  cues: string[]
+  mistakes: string[]
+  advanced?: string[]
+}
+
 export interface Exercise {
   id: string
   name: string
@@ -84,10 +101,12 @@ export interface Exercise {
   defaultSets: number
   defaultReps: number
   defaultRestSeconds: number
-  imageUrl?: string
-  videoUrl?: string
+  /** Start and end photos of the movement */
+  frames?: [string, string]
   animationFrames?: string[]
   calories?: number
+  technique?: ExerciseTechnique
+  /** Legacy shape, still produced by custom exercises */
   guide?: ExerciseGuide
 }
 
