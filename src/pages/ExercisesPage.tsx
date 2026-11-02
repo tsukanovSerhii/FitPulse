@@ -55,15 +55,15 @@ export const ExercisesPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in pb-12">
       <SEO title="Каталог вправ" description="Повний довідник вправ для тренажерного залу та дому. Анатомічна карта м'язів, фази руху та техніка." />
       {/* Page Title & Add Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
+          <h1 className="text-2xl sm:text-4xl font-display font-black text-fg flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-accent-soft border border-accent/20 text-accent flex items-center justify-center shrink-0">
               <Dumbbell className="w-5 h-5 -rotate-45" />
             </div>
             Каталог вправ
           </h1>
-          <p className="text-xs sm:text-sm text-t-3 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-fg-subtle mt-1 font-medium">
             База силових та функціональних вправ з анатомією м'язів, фазами руху та порадами
           </p>
         </div>
@@ -83,8 +83,8 @@ export const ExercisesPage: React.FC = () => {
           onClick={() => setActiveTab('all')}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'all'
-              ? 'bg-emerald-600 text-white shadow-sm border border-emerald-500/30'
-              : 'bg-t-hover text-t-3 hover:text-t-1 hover:bg-t-hover border border-t-d'
+              ? 'bg-accent text-on-accent border border-accent/30'
+              : 'bg-surface-2 text-fg-subtle hover:text-fg hover:bg-surface-2 border border-line'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
@@ -95,11 +95,11 @@ export const ExercisesPage: React.FC = () => {
           onClick={() => setActiveTab('favorites')}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
             activeTab === 'favorites'
-              ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
-              : 'bg-t-hover text-t-3 hover:text-t-1 hover:bg-t-hover border border-t-d'
+              ? 'bg-danger text-on-accent'
+              : 'bg-surface-2 text-fg-subtle hover:text-fg hover:bg-surface-2 border border-line'
           }`}
         >
-          <Heart className={`w-3.5 h-3.5 ${activeTab === 'favorites' ? 'fill-white' : ''}`} />
+          <Heart className={`w-3.5 h-3.5 ${activeTab === 'favorites' ? 'fill-current' : ''}`} />
           Обрані ({favorites.length})
         </button>
       </div>
@@ -115,13 +115,13 @@ export const ExercisesPage: React.FC = () => {
 
       {/* Loading state */}
       {status === 'loading' && items.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-sky-400 border-t-transparent rounded-full mx-auto mb-3" />
+        <div className="text-center py-16 text-fg-muted text-sm">
+          <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-3" />
           Завантаження каталогу вправ...
         </div>
       ) : displayItems.length === 0 ? (
         <EmptyState
-          icon={<Dumbbell className="w-8 h-8 text-sky-400" />}
+          icon={<Dumbbell className="w-8 h-8 text-accent" />}
           title={activeTab === 'favorites' ? 'У вас ще немає обраних вправ' : 'Вправ не знайдено'}
           description={
             activeTab === 'favorites'

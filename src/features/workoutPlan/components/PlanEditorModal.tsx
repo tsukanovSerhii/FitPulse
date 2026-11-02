@@ -72,7 +72,7 @@ export const PlanEditorModal: React.FC<PlanEditorModalProps> = ({
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 bg-rose-500/15 border border-rose-500/30 rounded-xl text-xs text-rose-400">
+          <div className="p-3 bg-danger-soft border border-danger/30 rounded-md text-xs text-danger">
             {error}
           </div>
         )}
@@ -86,7 +86,7 @@ export const PlanEditorModal: React.FC<PlanEditorModalProps> = ({
         />
 
         <div>
-          <label className="text-xs font-semibold text-t-2 block mb-1.5">
+          <label className="text-xs font-semibold text-fg-muted block mb-1.5">
             Опис та цілі програми
           </label>
           <textarea
@@ -94,11 +94,11 @@ export const PlanEditorModal: React.FC<PlanEditorModalProps> = ({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Опишіть для кого підходить план, періодичність відпочинку тощо..."
-            className="w-full px-3.5 py-2.5 rounded-xl bg-t-input border border-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+            className="w-full px-3.5 py-2.5 rounded-md bg-surface-2 border border-line text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-accent/50"
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-line">
           <Button type="button" variant="secondary" onClick={onClose}>
             Скасувати
           </Button>

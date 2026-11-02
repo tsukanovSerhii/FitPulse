@@ -38,26 +38,26 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
   }
 
   return (
-    <div className={`p-4 sm:p-5 rounded-2xl bg-t-page border border-white/[0.06] shadow-xl ${className}`}>
+    <div className={`p-4 sm:p-5 rounded-lg bg-bg border border-line ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/[0.06]">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-line">
         <div>
-          <h4 className="text-xs sm:text-sm font-bold text-t-1 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+          <h4 className="text-xs sm:text-sm font-bold text-fg flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
             Анатомічна карта цільових м'язів
           </h4>
-          <p className="text-[11px] text-slate-400 mt-0.5">
+          <p className="text-[11px] text-fg-muted mt-0.5">
             Розподіл біомеханічного навантаження при правильній техніці
           </p>
         </div>
 
         <div className="flex items-center gap-3 text-[11px]">
-          <span className="flex items-center gap-1.5 text-sky-300 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-sky-400" />
+          <span className="flex items-center gap-1.5 text-accent font-semibold">
+            <span className="w-2 h-2 rounded-full bg-accent" />
             Основний
           </span>
-          <span className="flex items-center gap-1.5 text-cyan-300 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+          <span className="flex items-center gap-1.5 text-accent font-semibold">
+            <span className="w-2 h-2 rounded-full bg-accent" />
             Допоміжний
           </span>
         </div>
@@ -66,8 +66,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
       {/* Visual Anatomy Graphic: Front & Back silhouettes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center justify-center py-1">
         {/* Silhouette Front */}
-        <div className="flex flex-col items-center p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+        <div className="flex flex-col items-center p-3 rounded-md bg-surface/[0.02] border border-line">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-fg-muted mb-2">
             Вигляд спереду (Front View)
           </span>
           <svg viewBox="0 0 160 260" className="w-32 h-52 transition-all filter drop-shadow-md">
@@ -193,8 +193,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
         </div>
 
         {/* Silhouette Back */}
-        <div className="flex flex-col items-center p-3 rounded-xl bg-slate-900/60 border border-slate-800/70">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+        <div className="flex flex-col items-center p-3 rounded-md bg-surface/60 border border-line/70">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-fg-muted mb-2">
             Вигляд ззаду (Back View)
           </span>
           <svg viewBox="0 0 160 260" className="w-36 h-56 transition-all filter drop-shadow-md">
@@ -300,9 +300,9 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
       </div>
 
       {/* Target Breakdown Legend */}
-      <div className="mt-3 pt-3 border-t border-white/[0.06] space-y-2">
+      <div className="mt-3 pt-3 border-t border-line space-y-2">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-400 font-medium">Основний цільовий м'яз (Target):</span>
+          <span className="text-fg-muted font-medium">Основний цільовий м'яз (Target):</span>
           <Badge variant="info" dot size="sm">
             {MUSCLE_GROUP_LABELS[primaryMuscle]} (~80-100% навантаження)
           </Badge>
@@ -310,12 +310,12 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
 
         {secondaryMuscles.length > 0 && (
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400 font-medium">Синергісти / стабілізатори:</span>
+            <span className="text-fg-muted font-medium">Синергісти / стабілізатори:</span>
             <div className="flex flex-wrap gap-1.5 justify-end">
               {secondaryMuscles.map((m) => (
                 <span
                   key={m}
-                  className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20"
+                  className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-accent-soft text-accent border border-accent/20"
                 >
                   {MUSCLE_GROUP_LABELS[m]}
                 </span>

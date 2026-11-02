@@ -84,12 +84,12 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
       <div className="space-y-6">
         {/* Existing exercises in this day */}
         <div>
-          <h4 className="text-sm font-bold text-t-1 mb-3 flex items-center justify-between">
+          <h4 className="text-sm font-bold text-fg mb-3 flex items-center justify-between">
             <span>Вправи на цей день ({dayExercises.length})</span>
           </h4>
 
           {dayExercises.length === 0 ? (
-            <div className="p-4 rounded-xl border border-dashed border-border text-center text-xs text-slate-400 bg-t-input/30">
+            <div className="p-4 rounded-md border border-dashed border-line text-center text-xs text-fg-muted bg-surface-2/30">
               На цей день ще не призначено жодної вправи. Додайте вправу нижче.
             </div>
           ) : (
@@ -99,23 +99,23 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
                 return (
                   <div
                     key={pEx.id}
-                    className="p-3 bg-t-input rounded-xl border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    className="p-3 bg-surface-2 rounded-md border border-line flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-lg bg-sky-500/15 text-sky-400 font-bold text-xs flex items-center justify-center shrink-0 border border-sky-500/20">
+                      <span className="w-6 h-6 rounded-lg bg-accent-soft text-accent font-bold text-xs flex items-center justify-center shrink-0 border border-accent/20">
                         {index + 1}
                       </span>
                       <div>
-                        <h5 className="text-sm font-bold text-t-1">
+                        <h5 className="text-sm font-bold text-fg">
                           {ex ? ex.name : 'Вправа'}
                         </h5>
-                        <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-fg-muted mt-0.5">
                           <span>{pEx.sets} підходи по {pEx.reps} повторень</span>
                           {pEx.weight ? <span>• {pEx.weight} кг</span> : null}
                           <span>• {pEx.restSeconds}с відпочинок</span>
                         </div>
                         {pEx.notes && (
-                          <p className="text-[11px] text-sky-300 italic mt-1">
+                          <p className="text-[11px] text-accent italic mt-1">
                             Нотатка: {pEx.notes}
                           </p>
                         )}
@@ -134,13 +134,13 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
                               weight: e.target.value === '' ? undefined : Number(e.target.value),
                             })
                           }
-                          className="w-14 px-2 py-1 bg-t-card border border-border rounded-lg text-center text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                          className="w-14 px-2 py-1 bg-surface border border-line rounded-lg text-center text-xs text-fg focus:outline-none focus:ring-1 focus:ring-accent"
                         />
                       </div>
 
                       <button
                         onClick={() => onRemoveExercise(plan.id, day, pEx.id)}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                        className="p-1.5 rounded-lg text-fg-muted hover:text-danger hover:bg-danger-soft transition-colors"
                         title="Видалити з дня"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -154,21 +154,21 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
         </div>
 
         {/* Add new exercise form */}
-        <div className="pt-4 border-t border-border">
-          <h4 className="text-sm font-bold text-t-1 mb-3 flex items-center gap-2">
-            <Plus className="w-4 h-4 text-sky-400" />
+        <div className="pt-4 border-t border-line">
+          <h4 className="text-sm font-bold text-fg mb-3 flex items-center gap-2">
+            <Plus className="w-4 h-4 text-accent" />
             Додати вправу до розкладу
           </h4>
 
-          <form onSubmit={handleAdd} className="space-y-3 bg-t-input/40 p-4 rounded-xl border border-border/80">
+          <form onSubmit={handleAdd} className="space-y-3 bg-surface-2/40 p-4 rounded-md border border-line/80">
             <div>
-              <label className="text-xs font-semibold text-t-2 block mb-1">
+              <label className="text-xs font-semibold text-fg-muted block mb-1">
                 Оберіть вправу з каталогу
               </label>
               <select
                 value={selectedExId}
                 onChange={(e) => handleExerciseSelectChange(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-t-input border border-border text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-3.5 py-2.5 rounded-md bg-surface-2 border border-line text-sm text-fg focus:outline-none focus:ring-2 focus:ring-accent"
               >
                 {allExercises.map((e) => (
                   <option key={e.id} value={e.id}>
@@ -231,7 +231,7 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
           </form>
         </div>
 
-        <div className="flex justify-end pt-3 border-t border-border">
+        <div className="flex justify-end pt-3 border-t border-line">
           <Button variant="secondary" onClick={onClose}>
             Готово
           </Button>

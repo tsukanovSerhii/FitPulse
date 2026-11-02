@@ -44,13 +44,13 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   ).length
 
   return (
-    <Card className="flex flex-col justify-between p-6 shadow-xl">
+    <Card className="flex flex-col justify-between p-6">
       <div>
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
           <div>
             <div className="flex items-center gap-2.5 mb-1.5">
-              <h3 className="text-xl font-black text-t-1">{plan.name}</h3>
+              <h3 className="text-xl font-black text-fg">{plan.name}</h3>
               {isActive ? (
                 <Badge variant="success" dot size="sm">
                   Активна програма
@@ -62,7 +62,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
               )}
             </div>
             {plan.description && (
-              <p className="text-xs sm:text-sm text-t-2 leading-relaxed max-w-2xl">
+              <p className="text-xs sm:text-sm text-fg-muted leading-relaxed max-w-2xl">
                 {plan.description}
               </p>
             )}
@@ -81,7 +81,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
             )}
             <button
               onClick={() => onDelete(plan.id)}
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/15 border border-transparent hover:border-rose-200 dark:hover:border-rose-500/30 transition-all cursor-pointer"
+              className="p-2 rounded-md text-fg-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger transition-all cursor-pointer"
               title="Видалити план"
             >
               <Trash2 className="w-4 h-4" />
@@ -98,28 +98,28 @@ export const PlanCard: React.FC<PlanCardProps> = ({
             return (
               <div
                 key={day}
-                className={`p-3.5 rounded-2xl border transition-all ${
+                className={`p-3.5 rounded-lg border transition-all ${
                   hasExercises
-                    ? 'bg-t-subtle border-t-d hover:border-sky-500/30'
-                    : 'bg-t-subtle/50 border-dashed border-t-d/50 opacity-60'
+                    ? 'bg-surface-2 border-line hover:border-accent/30'
+                    : 'bg-surface-2/50 border-dashed border-line/50 opacity-60'
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <span
-                      className={`w-8 h-8 rounded-xl text-xs font-black flex items-center justify-center shrink-0 ${
+                      className={`w-8 h-8 rounded-md text-xs font-black flex items-center justify-center shrink-0 ${
                         hasExercises
-                          ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
-                          : 'bg-t-subtle text-t-3 border border-t-d'
+                          ? 'bg-accent text-on-accent border border-accent/20'
+                          : 'bg-surface-2 text-fg-subtle border border-line'
                       }`}
                     >
                       {DAY_SHORT_LABELS[day]}
                     </span>
                     <div>
-                      <span className="text-sm font-bold text-t-1 block sm:inline">
+                      <span className="text-sm font-bold text-fg block sm:inline">
                         {DAY_LABELS[day]}
                       </span>
-                      <span className="text-xs text-t-3 sm:ml-2">
+                      <span className="text-xs text-fg-subtle sm:ml-2">
                         {hasExercises ? `(${dayExercises.length} вправ)` : '— Відпочинок'}
                       </span>
                     </div>
@@ -131,7 +131,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                         variant="success"
                         size="sm"
                         onClick={() => onStartDayWorkout(plan.id, day)}
-                        icon={<Play className="w-3.5 h-3.5 fill-white" />}
+                        icon={<Play className="w-3.5 h-3.5 fill-current" />}
                         className="text-xs"
                       >
                         Старт
@@ -157,10 +157,10 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                       return (
                         <span
                           key={pEx.id}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-t-input border border-t-d text-xs font-medium text-t-2 shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface-2 border border-line text-xs font-medium text-fg-muted"
                         >
-                          <Dumbbell className="w-3 h-3 text-sky-500 dark:text-sky-400" />
-                          <strong className="text-t-2">{ex ? ex.name : 'Вправа'}:</strong>
+                          <Dumbbell className="w-3 h-3 text-accent" />
+                          <strong className="text-fg-muted">{ex ? ex.name : 'Вправа'}:</strong>
                           <span>
                             {pEx.sets}×{pEx.reps}
                             {pEx.weight ? ` (${pEx.weight} кг)` : ''}
@@ -177,9 +177,9 @@ export const PlanCard: React.FC<PlanCardProps> = ({
       </div>
 
       {/* Summary Footer */}
-      <div className="mt-6 pt-4 border-t border-t-d flex items-center justify-between text-xs text-t-3 font-medium">
-        <span>Тренувальних днів на тиждень: <strong className="text-t-2">{activeDaysCount}</strong></span>
-        <span>Всього вправ у програмі: <strong className="text-t-2">{totalExercises}</strong></span>
+      <div className="mt-6 pt-4 border-t border-line flex items-center justify-between text-xs text-fg-subtle font-medium">
+        <span>Тренувальних днів на тиждень: <strong className="text-fg-muted">{activeDaysCount}</strong></span>
+        <span>Всього вправ у програмі: <strong className="text-fg-muted">{totalExercises}</strong></span>
       </div>
     </Card>
   )

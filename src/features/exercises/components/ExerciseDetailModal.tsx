@@ -78,52 +78,52 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
         </div>
 
         {/* Short description */}
-        <p className="text-xs sm:text-sm text-t-2 leading-relaxed bg-t-subtle p-4 rounded-2xl border border-t-d">
+        <p className="text-xs sm:text-sm text-fg-muted leading-relaxed bg-surface-2 p-4 rounded-lg border border-line">
           {exercise.description}
         </p>
 
         {/* Quick parameters ribbon */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-center">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+          <div className="p-3 bg-surface/80 rounded-md border border-line text-center">
+            <span className="text-[10px] uppercase font-bold text-fg-muted block mb-0.5">
               Підходи
             </span>
-            <span className="text-base font-extrabold text-t-1 flex items-center justify-center gap-1 font-mono">
-              <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
+            <span className="text-base font-extrabold text-fg flex items-center justify-center gap-1 font-mono">
+              <RefreshCw className="w-3.5 h-3.5 text-accent" />
               {exercise.defaultSets} сети
             </span>
           </div>
 
-          <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-center">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+          <div className="p-3 bg-surface/80 rounded-md border border-line text-center">
+            <span className="text-[10px] uppercase font-bold text-fg-muted block mb-0.5">
               Повторення
             </span>
-            <span className="text-base font-extrabold text-t-1 flex items-center justify-center gap-1 font-mono">
-              <Dumbbell className="w-3.5 h-3.5 text-sky-400" />
+            <span className="text-base font-extrabold text-fg flex items-center justify-center gap-1 font-mono">
+              <Dumbbell className="w-3.5 h-3.5 text-accent" />
               {exercise.defaultReps} повт
             </span>
           </div>
 
-          <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-center">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+          <div className="p-3 bg-surface/80 rounded-md border border-line text-center">
+            <span className="text-[10px] uppercase font-bold text-fg-muted block mb-0.5">
               Відпочинок
             </span>
-            <span className="text-base font-extrabold text-t-1 flex items-center justify-center gap-1 font-mono">
-              <Clock className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-base font-extrabold text-fg flex items-center justify-center gap-1 font-mono">
+              <Clock className="w-3.5 h-3.5 text-accent" />
               {exercise.defaultRestSeconds}с
             </span>
           </div>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+        <div className="flex items-center gap-2 border-b border-line pb-2">
           <button
             type="button"
             onClick={() => setActiveTab('technique')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'technique'
-                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
-                : 'text-t-3 hover:text-t-1'
+                ? 'bg-accent-soft text-accent border border-accent/30'
+                : 'text-fg-subtle hover:text-fg'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -133,10 +133,10 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('anatomy')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'anatomy'
-                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
-                : 'text-t-3 hover:text-t-1'
+                ? 'bg-accent-soft text-accent border border-accent/30'
+                : 'text-fg-subtle hover:text-fg'
             }`}
           >
             <Activity className="w-3.5 h-3.5" />
@@ -146,10 +146,10 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('guide')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'guide'
-                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
-                : 'text-t-3 hover:text-t-1'
+                ? 'bg-accent-soft text-accent border border-accent/30'
+                : 'text-fg-subtle hover:text-fg'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -165,17 +165,17 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
 
             {/* Step by step execution */}
             <div>
-              <h4 className="text-sm font-bold text-t-1 mb-3 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <h4 className="text-sm font-bold text-fg mb-3 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-accent" />
                 Покрокова інструкція виконання:
               </h4>
               <div className="space-y-2">
                 {exercise.instructions.map((step) => (
                   <div
                     key={step.step}
-                    className="flex items-start gap-3 p-3 rounded-xl bg-t-subtle border border-t-d text-xs text-t-2 leading-relaxed"
+                    className="flex items-start gap-3 p-3 rounded-md bg-surface-2 border border-line text-xs text-fg-muted leading-relaxed"
                   >
-                    <span className="w-6 h-6 rounded-lg bg-sky-500/15 text-sky-300 border border-sky-500/30 font-bold flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 rounded-lg bg-accent-soft text-accent border border-accent/30 font-bold flex items-center justify-center shrink-0">
                       {step.step}
                     </span>
                     <span className="pt-0.5">{step.description}</span>
@@ -195,8 +195,8 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             />
 
             {exercise.calories && (
-              <div className="flex items-center gap-2 text-xs text-t-2 bg-amber-500/10 border border-amber-500/20 p-3.5 rounded-xl">
-                <Flame className="w-4 h-4 text-amber-400 shrink-0" />
+              <div className="flex items-center gap-2 text-xs text-fg-muted bg-warning-soft border border-warning/20 p-3.5 rounded-md">
+                <Flame className="w-4 h-4 text-warning shrink-0" />
                 <span>
                   Енерговитрати: <strong>~{exercise.calories} ккал/хв</strong> високої інтенсивності.
                 </span>
@@ -209,12 +209,12 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
         {activeTab === 'guide' && (
           <div className="space-y-5 animate-fade-in">
             {/* Common Mistakes to Avoid (Crucial for beginners!) */}
-            <div className="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 space-y-2.5">
-              <h4 className="text-sm font-extrabold text-rose-300 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-rose-400" />
+            <div className="p-4 rounded-lg bg-danger-soft border border-danger/30 space-y-2.5">
+              <h4 className="text-sm font-extrabold text-danger flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-danger" />
                 Типові помилки (чого уникати новачкові):
               </h4>
-              <ul className="space-y-2 text-xs text-t-1">
+              <ul className="space-y-2 text-xs text-fg">
                 {(guide?.commonMistakes || [
                   '❌ Занадто велика вага на шкоду амплітуді та безпеці суглобів.',
                   '❌ Різке скидання ваги замість підконтрольного негативного руху.',
@@ -228,12 +228,12 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             </div>
 
             {/* Beginner Guide */}
-            <div className="p-4 rounded-2xl bg-sky-950/20 border border-sky-500/30 space-y-2.5">
-              <h4 className="text-sm font-extrabold text-sky-300 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-sky-400" />
+            <div className="p-4 rounded-lg bg-accent-soft border border-accent/30 space-y-2.5">
+              <h4 className="text-sm font-extrabold text-accent flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-accent" />
                 Базові поради для початківців (Beginner Guide):
               </h4>
-              <ul className="space-y-2 text-xs text-t-1">
+              <ul className="space-y-2 text-xs text-fg">
                 {(guide?.beginnerTips || [
                   '🔰 Перші 2-3 тижні працюйте з помірною вагою на 10-12 повторень для закріплення зв\'язку «мозок-м\'яз».',
                   '🔰 Робіть розминочні підходи з легким обтяженням перед робочими сетами.',
@@ -247,12 +247,12 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             </div>
 
             {/* Pro Tips for Experienced Gymgoers */}
-            <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 space-y-2.5">
-              <h4 className="text-sm font-extrabold text-amber-300 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-amber-400" />
+            <div className="p-4 rounded-lg bg-warning-soft border border-warning/30 space-y-2.5">
+              <h4 className="text-sm font-extrabold text-warning flex items-center gap-2">
+                <Zap className="w-4 h-4 text-warning" />
                 Професійні тонкощі для досвідчених (Pro Level):
               </h4>
-              <ul className="space-y-2 text-xs text-t-1">
+              <ul className="space-y-2 text-xs text-fg">
                 {(guide?.proTips || [
                   '⚡ Застосовуйте метод «Rest-Pause» або дропсет в останньому підході для максимального рекрутування рухових одиниць.',
                   '⚡ Контролюйте темп 3-0-1-0: 3 секунди опускання дають на 40% більший мікронадрив саркомерів для росту.',
@@ -268,7 +268,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
         )}
 
         {/* Modal Footer */}
-        <div className="flex justify-end pt-4 border-t border-slate-800">
+        <div className="flex justify-end pt-4 border-t border-line">
           <Button variant="secondary" onClick={onClose}>
             Закрити
           </Button>

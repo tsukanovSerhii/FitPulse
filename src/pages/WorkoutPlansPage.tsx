@@ -144,15 +144,15 @@ export const WorkoutPlansPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in pb-12">
       <SEO title="Програми тренувань" description="Створюйте та налаштовуйте тижневі спліти: Push/Pull/Legs, Full Body. Керування підходами, повтореннями та днями відпочинку." />
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-t-d">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
+          <h1 className="text-2xl sm:text-4xl font-display font-black text-fg flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-accent-soft border border-accent/20 text-accent flex items-center justify-center shrink-0">
               <Calendar className="w-5 h-5" />
             </div>
             Програми тренувань
           </h1>
-          <p className="text-xs sm:text-sm text-t-3 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-fg-subtle mt-1 font-medium">
             Спліти та графіки: налаштовуйте підходи, повторення, цільову вагу та час відпочинку
           </p>
         </div>
@@ -168,13 +168,13 @@ export const WorkoutPlansPage: React.FC = () => {
 
       {/* Plans List */}
       {status === 'loading' && plans.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-sky-400 border-t-transparent rounded-full mx-auto mb-3" />
+        <div className="text-center py-16 text-fg-muted text-sm">
+          <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-3" />
           Завантаження програм тренувань...
         </div>
       ) : plans.length === 0 ? (
         <EmptyState
-          icon={<Calendar className="w-8 h-8 text-sky-400" />}
+          icon={<Calendar className="w-8 h-8 text-accent" />}
           title="Немає створених програм"
           description="Створіть свій перший тижневий план тренувань, щоб систематизувати свої заняття."
           action={

@@ -148,14 +148,14 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
 
   return (
     <div
-      className={`rounded-3xl bg-t-card border border-t-d p-5 sm:p-6 shadow-xl shadow-black/40 space-y-4 ${className}`}
+      className={`rounded-lg bg-surface border border-line p-5 sm:p-6 space-y-4 ${className}`}
     >
       {/* Top Header & Tab Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-line">
         {/* Title & View Switcher */}
         <div className="flex items-center gap-2">
           {showTabSwitcher ? (
-            <div className="inline-flex p-1 rounded-2xl bg-t-subtle border border-t-d">
+            <div className="inline-flex p-1 rounded-lg bg-surface-2 border border-line">
               {hasFrames && (
                 <button
                   type="button"
@@ -163,10 +163,10 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                     setActiveTab('photo')
                     setIsPlaying(true)
                   }}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                     activeTab === 'photo'
-                      ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-accent text-on-accent border border-accent/20'
+                      : 'text-fg-muted hover:text-on-accent'
                   }`}
                 >
                   <Eye className="w-3.5 h-3.5" />
@@ -180,10 +180,10 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                   setActiveTab('motion')
                   setIsPlaying(true)
                 }}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'motion'
-                    ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-accent text-on-accent border border-accent/20'
+                    : 'text-fg-muted hover:text-on-accent'
                 }`}
               >
                 <User className="w-3.5 h-3.5" />
@@ -196,10 +196,10 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                   setIsPlaying(false)
                   setActiveTab('anatomy')
                 }}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'anatomy'
-                    ? 'bg-sky-600 text-white shadow-md shadow-sky-950/40 border border-sky-400/20'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-accent text-on-accent border border-accent/20'
+                    : 'text-fg-muted hover:text-on-accent'
                 }`}
               >
                 <Activity className="w-3.5 h-3.5" />
@@ -207,8 +207,8 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-t-1 font-bold text-sm">
-              <Sparkles className="w-4 h-4 text-sky-400" />
+            <div className="flex items-center gap-2 text-fg font-bold text-sm">
+              <Sparkles className="w-4 h-4 text-accent" />
               <span>Правильна техніка виконання</span>
             </div>
           )}
@@ -236,7 +236,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                 setActivePhaseIndex(0)
               }}
               icon={<RotateCcw className="w-3.5 h-3.5" />}
-              className="text-xs text-slate-400 hover:text-white"
+              className="text-xs text-fg-muted hover:text-on-accent"
             >
               Скинути
             </Button>
@@ -248,31 +248,31 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
       {activeTab === 'photo' && hasFrames && (
         <div className="space-y-4 animate-fade-in">
           {/* Main Photo Visualizer */}
-          <div className="relative h-64 sm:h-72 rounded-2xl bg-t-page border border-t-d overflow-hidden flex items-center justify-center p-3">
+          <div className="relative h-64 sm:h-72 rounded-lg bg-bg border border-line overflow-hidden flex items-center justify-center p-3">
             {/* Subtle Gym Spotlight */}
-            <div className="absolute w-56 h-56 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute w-56 h-56 bg-accent-soft rounded-full blur-3xl pointer-events-none" />
 
             {/* Photo keyframe */}
             <img
               src={frames[activeFrameIndex]}
               alt={`${exercise.name} - кадр ${activeFrameIndex + 1}`}
-              className="max-h-full max-w-full object-contain rounded-xl select-none transition-opacity duration-300 shadow-xl"
+              className="max-h-full max-w-full object-contain rounded-md select-none transition-opacity duration-300"
               loading="eager"
             />
 
             {/* Bottom-left Phase Pill */}
-            <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-t-card/90 border border-t-d text-xs backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-              <span className="text-slate-400 font-medium">Кадр {activeFrameIndex + 1} з {frameCount}:</span>
-              <strong className="text-t-1">
+            <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-md bg-surface/90 border border-line text-xs">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span className="text-fg-muted font-medium">Кадр {activeFrameIndex + 1} з {frameCount}:</span>
+              <strong className="text-fg">
                 {frameLabels[activeFrameIndex]?.title || `Фаза ${activeFrameIndex + 1}`}
               </strong>
             </div>
 
             {/* Bottom-right Tempo Pill */}
-            <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-t-card/90 border border-t-d text-xs font-mono text-t-2 backdrop-blur-md">
-              <span className="text-slate-400 font-sans">Темп:</span>
-              <strong className="text-sky-300">{exercise.guide?.tempo || '3-0-1-0'}</strong>
+            <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface/90 border border-line text-xs font-mono text-fg-muted">
+              <span className="text-fg-muted font-sans">Темп:</span>
+              <strong className="text-accent">{exercise.guide?.tempo || '3-0-1-0'}</strong>
             </div>
           </div>
 
@@ -290,52 +290,52 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                     setIsPlaying(false)
                     setActiveFrameIndex(idx)
                   }}
-                  className={`p-3 rounded-2xl text-left border transition-all cursor-pointer ${
+                  className={`p-3 rounded-lg text-left border transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-sky-500/15 border-sky-500/40 text-white font-bold shadow-md shadow-sky-950/30'
-                      : 'bg-t-subtle border-t-d text-t-3 hover:text-t-1 hover:bg-t-hover'
+                      ? 'bg-accent-soft border-accent/40 text-on-accent font-bold'
+                      : 'bg-surface-2 border-line text-fg-subtle hover:text-fg hover:bg-surface-2'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span
                       className={`text-[10px] uppercase font-bold tracking-wider ${
-                        isSelected ? 'text-sky-400' : 'text-slate-500'
+                        isSelected ? 'text-accent' : 'text-fg-subtle'
                       }`}
                     >
                       Крок {idx + 1}
                     </span>
                     {isSelected && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                     )}
                   </div>
-                  <div className="text-xs font-bold text-t-1 mt-0.5 truncate">{info.title}</div>
-                  <p className="text-[11px] text-slate-400 truncate mt-0.5">{info.desc}</p>
+                  <div className="text-xs font-bold text-fg mt-0.5 truncate">{info.title}</div>
+                  <p className="text-[11px] text-fg-muted truncate mt-0.5">{info.desc}</p>
                 </button>
               )
             })}
           </div>
 
           {/* High-Signal Guidance Box */}
-          <div className="p-4 rounded-2xl bg-t-subtle border border-t-d space-y-3">
+          <div className="p-4 rounded-lg bg-surface-2 border border-line space-y-3">
             <div>
-              <h5 className="text-sm font-bold text-t-1 mb-1">{currentPhase.name}</h5>
-              <p className="text-xs text-t-2 leading-relaxed">{currentPhase.instruction}</p>
+              <h5 className="text-sm font-bold text-fg mb-1">{currentPhase.name}</h5>
+              <p className="text-xs text-fg-muted leading-relaxed">{currentPhase.instruction}</p>
             </div>
 
             {/* Coach Cue & Breathing Strip */}
-            <div className="pt-2 border-t border-t-d flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div className="flex items-center gap-1.5 text-t-2">
-                <span className="text-sky-400 font-bold">🧠 Фокус:</span>
+            <div className="pt-2 border-t border-line flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-1.5 text-fg-muted">
+                <span className="text-accent font-bold">🧠 Фокус:</span>
                 <span className="italic font-medium">«{currentPhase.cue}»</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-300 font-semibold text-[11px]">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-accent-soft border border-accent/20 text-accent font-semibold text-[11px]">
                   <Wind className="w-3 h-3" />
                   {breathingBadge.label}
                 </span>
 
-                <span className="hidden sm:inline-block text-[11px] text-slate-400 font-mono">
+                <span className="hidden sm:inline-block text-[11px] text-fg-muted font-mono">
                   {exercise.guide?.tempo || '3-0-1-0'} сек
                 </span>
               </div>
@@ -348,24 +348,24 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
       {activeTab === 'motion' && (
         <div className="space-y-4 animate-fade-in">
           {/* Main Stage: Vector Biomechanical Human Athlete */}
-          <div className="relative h-60 sm:h-64 rounded-2xl bg-t-page border border-t-d overflow-hidden flex items-center justify-center p-3">
+          <div className="relative h-60 sm:h-64 rounded-lg bg-bg border border-line overflow-hidden flex items-center justify-center p-3">
             {/* Ambient center spotlight */}
-            <div className="absolute w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute w-48 h-48 bg-accent-soft rounded-full blur-3xl pointer-events-none" />
 
             {/* The articulated Human Athlete */}
             <AthleteRig pattern={pattern} phaseIndex={activePhaseIndex} />
 
             {/* Bottom-left Phase Pill */}
-            <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-t-card/90 border border-t-d text-xs backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-              <span className="text-slate-400 font-medium">Фаза {activePhaseIndex + 1}:</span>
-              <strong className="text-t-1">{currentPhase.name.split('(')[0]}</strong>
+            <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-md bg-surface/90 border border-line text-xs">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span className="text-fg-muted font-medium">Фаза {activePhaseIndex + 1}:</span>
+              <strong className="text-fg">{currentPhase.name.split('(')[0]}</strong>
             </div>
 
             {/* Bottom-right Tempo Pill */}
-            <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-t-card/90 border border-t-d text-xs font-mono text-t-2 backdrop-blur-md">
-              <span className="text-slate-400 font-sans">Темп:</span>
-              <strong className="text-sky-300">{exercise.guide?.tempo || '3-0-1-0'}</strong>
+            <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface/90 border border-line text-xs font-mono text-fg-muted">
+              <span className="text-fg-muted font-sans">Темп:</span>
+              <strong className="text-accent">{exercise.guide?.tempo || '3-0-1-0'}</strong>
             </div>
           </div>
 
@@ -383,15 +383,15 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                     setIsPlaying(false)
                     setActivePhaseIndex(idx)
                   }}
-                  className={`p-2.5 rounded-2xl text-left border transition-all cursor-pointer ${
+                  className={`p-2.5 rounded-lg text-left border transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-sky-500/15 border-sky-500/40 text-white font-bold shadow-md shadow-sky-950/30'
-                      : 'bg-t-subtle border-t-d text-t-3 hover:text-t-1 hover:bg-t-hover'
+                      ? 'bg-accent-soft border-accent/40 text-on-accent font-bold'
+                      : 'bg-surface-2 border-line text-fg-subtle hover:text-fg hover:bg-surface-2'
                   }`}
                 >
                   <span
                     className={`block text-[10px] uppercase font-bold tracking-wider ${
-                      isActive ? 'text-sky-400' : 'text-slate-500'
+                      isActive ? 'text-accent' : 'text-fg-subtle'
                     }`}
                   >
                     Крок {idx + 1}
@@ -403,26 +403,26 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
           </div>
 
           {/* Single High-Signal Guidance Box */}
-          <div className="p-4 rounded-2xl bg-t-subtle border border-t-d space-y-3">
+          <div className="p-4 rounded-lg bg-surface-2 border border-line space-y-3">
             <div>
-              <h5 className="text-sm font-bold text-t-1 mb-1">{currentPhase.name}</h5>
-              <p className="text-xs text-t-2 leading-relaxed">{currentPhase.instruction}</p>
+              <h5 className="text-sm font-bold text-fg mb-1">{currentPhase.name}</h5>
+              <p className="text-xs text-fg-muted leading-relaxed">{currentPhase.instruction}</p>
             </div>
 
             {/* Coach Cue & Breathing Strip */}
-            <div className="pt-2 border-t border-t-d flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div className="flex items-center gap-1.5 text-t-2">
-                <span className="text-sky-400 font-bold">🧠 Фокус:</span>
+            <div className="pt-2 border-t border-line flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-1.5 text-fg-muted">
+                <span className="text-accent font-bold">🧠 Фокус:</span>
                 <span className="italic font-medium">«{currentPhase.cue}»</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-300 font-semibold text-[11px]">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-accent-soft border border-accent/20 text-accent font-semibold text-[11px]">
                   <Wind className="w-3 h-3" />
                   {breathingBadge.label}
                 </span>
 
-                <span className="hidden sm:inline-block text-[11px] text-slate-400 font-mono">
+                <span className="hidden sm:inline-block text-[11px] text-fg-muted font-mono">
                   {exercise.guide?.tempo || '3-0-1-0'} сек
                 </span>
               </div>

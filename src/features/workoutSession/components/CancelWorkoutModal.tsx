@@ -17,17 +17,17 @@ export const CancelWorkoutModal: React.FC<CancelWorkoutModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="sm" title="Скасування тренування">
       <div className="space-y-4 py-2">
-        <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-200">
-          <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3.5 p-3.5 rounded-lg bg-danger-soft border border-danger/20 text-danger">
+          <AlertTriangle className="w-5 h-5 text-danger shrink-0 mt-0.5" />
           <div className="text-xs leading-relaxed space-y-1">
-            <p className="font-bold text-t-1">Ви впевнені, що бажаєте зупинити сесію?</p>
-            <p className="text-rose-200/90">
+            <p className="font-bold text-fg">Ви впевнені, що бажаєте зупинити сесію?</p>
+            <p className="text-danger/90">
               Поточні записані підходи та таймер буде скинуто. Дані цього тренування не потраплять в аналітику прогресу.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-line">
           <Button
             variant="secondary"
             size="sm"
