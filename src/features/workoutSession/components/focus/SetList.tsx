@@ -1,5 +1,6 @@
 import { Check, RotateCcw } from 'lucide-react'
 import type { PlanExercise } from '@/features/workoutPlan/model/types'
+import { statusStyles } from '@/components/ui'
 import { cn } from '@/utils/cn'
 import type { CompletedSet } from '../../model/types'
 
@@ -15,8 +16,8 @@ export function SetList({ target, done, onUndo }: { target: PlanExercise; done: 
           <li key={i} className={cn('flex h-12 items-center gap-3 px-4 text-sm', isCurrent && 'bg-accent-soft')}>
             <span
               className={cn(
-                'flex size-6 shrink-0 items-center justify-center rounded-full font-mono text-xs',
-                set ? 'bg-accent text-on-accent' : isCurrent ? 'border border-accent text-accent' : 'border border-line text-fg-subtle',
+                'flex size-6 shrink-0 items-center justify-center rounded-full border font-mono text-xs',
+                set ? statusStyles.done : isCurrent ? statusStyles.current : statusStyles.idle,
               )}
             >
               {set ? <Check className="size-3.5" aria-label="виконано" /> : i + 1}

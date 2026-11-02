@@ -62,7 +62,7 @@ export function PlanCard({
                   key={day}
                   className={cn(
                     'h-1.5 w-4 rounded-full',
-                    (plan.schedule[day]?.length || 0) > 0 ? 'bg-accent' : 'bg-line-strong',
+                    (plan.schedule[day]?.length || 0) > 0 ? 'bg-fg-muted' : 'bg-line',
                   )}
                 />
               ))}
@@ -90,7 +90,7 @@ export function PlanCard({
                     <span
                       className={cn(
                         'flex size-9 shrink-0 items-center justify-center rounded-md text-xs font-semibold',
-                        hasExercises ? 'bg-accent-soft text-accent' : 'text-fg-subtle',
+                        hasExercises ? 'bg-surface-2 text-fg' : 'text-fg-subtle',
                       )}
                     >
                       {DAY_SHORT_LABELS[day]}

@@ -39,7 +39,7 @@ export function StepperVisual() {
         </span>
       </div>
       <div className="flex h-12 items-center justify-center gap-2 rounded-md bg-accent text-sm font-semibold uppercase text-on-accent">
-        <Check className="size-4" /> Підхід 3 виконано
+        <Check className="size-4" /> Записати підхід
       </div>
     </div>
   )
