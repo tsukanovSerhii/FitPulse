@@ -1,49 +1,41 @@
-import React, { useEffect, useState } from 'react'
-import { Plus, Dumbbell } from 'lucide-react'
+import { Fragment, useEffect, useState, type MouseEvent } from 'react'
+import { Dumbbell, Plus } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { SEO } from '@/components/common/SEO'
+import { Button, EmptyState, IconButton, PageHeader, Skeleton } from '@/components/ui'
+import { AdSlot } from '@/features/ads/components/AdSlot'
+import { CATALOG_AD_EVERY } from '@/features/ads/model/selection'
+import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
+import { ExerciseCard } from '@/features/exercises/components/ExerciseCard'
+import { ExerciseDetailModal } from '@/features/exercises/components/ExerciseDetailModal'
+import { ExerciseFiltersBar } from '@/features/exercises/components/ExerciseFiltersBar'
 import {
-  fetchExercises,
-  setFilter,
-  resetFilters,
-  setSelectedExercise,
-  clearSelectedExercise,
-  toggleFavorite,
   addCustomExercise,
+  clearSelectedExercise,
+  fetchExercises,
+  resetFilters,
+  setFilter,
+  setSelectedExercise,
+  toggleFavorite,
 } from '@/features/exercises/model/exercisesSlice'
 import type { Exercise } from '@/features/exercises/model/types'
-import { ExerciseCard } from '@/features/exercises/components/ExerciseCard'
-import { ExerciseFiltersBar } from '@/features/exercises/components/ExerciseFiltersBar'
-import { ExerciseDetailModal } from '@/features/exercises/components/ExerciseDetailModal'
-import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
-import { Button, PageHeader, SegmentedControl } from '@/components/ui'
-import { EmptyState } from '@/components/ui'
-import { SEO } from '@/components/common/SEO'
 import { injectExerciseSchema } from '@/utils/seo'
 
-export const ExercisesPage: React.FC = () => {
+export function ExercisesPage() {
   const dispatch = useAppDispatch()
-  const { filteredItems, items, filters, favorites, selectedExercise, status } = useAppSelector(
-    (state) => state.exercises,
-  )
+  const { filteredItems, items, filters, favorites, selectedExercise, status } = useAppSelector((state) => state.exercises)
 
-  const [activeTab, setActiveTab] = useState<'all' | 'favorites'>('all')
+  const [favoritesOnly, setFavoritesOnly] = useState(false)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
   useEffect(() => {
-    
-    if (items.length === 0) {
-      dispatch(fetchExercises())
-    }
+    if (items.length === 0) dispatch(fetchExercises())
   }, [dispatch, items.length])
 
-  // Filter displayed items by tab (all or favorites)
-  const displayItems =
-    activeTab === 'all'
-      ? filteredItems
-      : filteredItems.filter((ex) => favorites.includes(ex.id))
+  const displayItems = favoritesOnly ? filteredItems.filter((ex) => favorites.includes(ex.id)) : filteredItems
 
-  const handleToggleFavorite = (id: string, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation()
+  const handleToggleFavorite = (id: string, e?: MouseEvent) => {
+    e?.stopPropagation()
     dispatch(toggleFavorite(id))
   }
 
@@ -51,87 +43,85 @@ export const ExercisesPage: React.FC = () => {
     await dispatch(addCustomExercise(exerciseData)).unwrap()
   }
 
+  const resetAll = () => {
+    dispatch(resetFilters())
+    setFavoritesOnly(false)
+  }
+
   return (
-    <div className="space-y-6 animate-fade-in pb-12">
-      <SEO title="Каталог вправ" description="Повний довідник вправ для тренажерного залу та дому. Анатомічна карта м'язів, фази руху та техніка." />
+    <div className="space-y-4">
+      <SEO
+        title="Каталог вправ"
+        description="Довідник вправ для залу та дому: анатомія м'язів, фази руху та техніка."
+      />
       <PageHeader
-        index={1}
-        eyebrow="Бібліотека"
-        title={<>Каталог<br />вправ</>}
-        description="База силових та функціональних вправ з анатомією м'язів, фазами руху та порадами"
+        compact
+        title="Вправи"
+        description="Анатомія, фази руху та техніка"
         actions={
-          <Button onClick={() => setIsAddModalOpen(true)} icon={<Plus />}>
-            Додати вправу
-          </Button>
+          <>
+            <IconButton
+              label="Додати власну вправу"
+              icon={<Plus />}
+              onClick={() => setIsAddModalOpen(true)}
+              className="border border-line sm:hidden"
+            />
+            <Button className="hidden sm:inline-flex" onClick={() => setIsAddModalOpen(true)} icon={<Plus />}>
+              Додати вправу
+            </Button>
+          </>
         }
       />
 
-      <SegmentedControl
-        label="Набір вправ"
-        appearance="underline"
-        value={activeTab}
-        onChange={setActiveTab}
-        options={[
-          { value: 'all', label: <>Усі <span className="font-mono text-fg-subtle">{items.length}</span></> },
-          { value: 'favorites', label: <>Обрані <span className="font-mono text-fg-subtle">{favorites.length}</span></> },
-        ]}
-      />
-
-      {/* Filter component */}
       <ExerciseFiltersBar
         filters={filters}
         onChange={(updates) => dispatch(setFilter(updates))}
         onReset={() => dispatch(resetFilters())}
-        totalCount={items.length}
-        filteredCount={displayItems.length}
+        favoritesOnly={favoritesOnly}
+        onFavoritesOnlyChange={setFavoritesOnly}
+        resultCount={displayItems.length}
       />
 
-      {/* Loading state */}
       {status === 'loading' && items.length === 0 ? (
-        <div className="text-center py-16 text-fg-muted text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-3" />
-          Завантаження каталогу вправ...
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+          {Array.from({ length: 6 }, (_, i) => (
+            <Skeleton key={i} className="h-44" />
+          ))}
         </div>
       ) : displayItems.length === 0 ? (
         <EmptyState
-          icon={<Dumbbell className="w-8 h-8 text-accent" />}
-          title={activeTab === 'favorites' ? 'У вас ще немає обраних вправ' : 'Вправ не знайдено'}
+          icon={<Dumbbell />}
+          title={favoritesOnly ? 'Обраних вправ немає' : 'Нічого не знайдено'}
           description={
-            activeTab === 'favorites'
-              ? 'Натисніть на сердечко на будь-якій картці вправи, щоб додати її сюди для швидкого доступу.'
-              : 'Спробуйте змінити пошуковий запит або скинути фільтри.'
+            favoritesOnly
+              ? 'Натисніть на сердечко на картці вправи, щоб додати її сюди.'
+              : 'Змініть запит або скиньте фільтри.'
           }
           action={
-            activeTab === 'favorites' ? (
-              <Button variant="secondary" size="sm" onClick={() => setActiveTab('all')}>
-                Переглянути всі вправи
-              </Button>
-            ) : (
-              <Button variant="outline" size="sm" onClick={() => dispatch(resetFilters())}>
-                Скинути фільтри
-              </Button>
-            )
+            <Button variant="outline" size="sm" onClick={resetAll}>
+              Скинути фільтри
+            </Button>
           }
         />
       ) : (
-        /* Exercise Cards Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {displayItems.map((exercise) => (
-            <ExerciseCard
-              key={exercise.id}
-              exercise={exercise}
-              isFavorite={favorites.includes(exercise.id)}
-              onToggleFavorite={handleToggleFavorite}
-              onSelect={(ex) => {
-                dispatch(setSelectedExercise(ex))
-                injectExerciseSchema(ex.name, ex.description, ex.muscleGroups)
-              }}
-            />
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {displayItems.map((exercise, i) => (
+            <Fragment key={exercise.id}>
+              <ExerciseCard
+                exercise={exercise}
+                isFavorite={favorites.includes(exercise.id)}
+                onToggleFavorite={handleToggleFavorite}
+                onSelect={(ex) => {
+                  dispatch(setSelectedExercise(ex))
+                  injectExerciseSchema(ex.name, ex.description, ex.muscleGroups)
+                }}
+              />
+              {(i + 1) % CATALOG_AD_EVERY === 0 && <AdSlot placement="catalog" />}
+            </Fragment>
           ))}
         </div>
       )}
 
-      {/* Detail Modal */}
       <ExerciseDetailModal
         exercise={selectedExercise}
         isOpen={!!selectedExercise}
@@ -140,12 +130,7 @@ export const ExercisesPage: React.FC = () => {
         onToggleFavorite={(id) => dispatch(toggleFavorite(id))}
       />
 
-      {/* Add Custom Exercise Modal */}
-      <AddExerciseModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSubmit={handleCreateExercise}
-      />
+      <AddExerciseModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSubmit={handleCreateExercise} />
     </div>
   )
 }

@@ -39,13 +39,14 @@ export function EmptyState({ icon, title, description, action, className }: Empt
   )
 }
 
-/** Заголовок сторінки: «/ 01» + великий display-заголовок + опис + дії праворуч. */
+/** Заголовок сторінки. `compact` — для робочих екранів, де важливий контент нижче. */
 export function PageHeader({
   index,
   eyebrow,
   title,
   description,
   actions,
+  compact = false,
   className,
 }: {
   index?: number
@@ -53,8 +54,21 @@ export function PageHeader({
   title: ReactNode
   description?: ReactNode
   actions?: ReactNode
+  compact?: boolean
   className?: string
 }) {
+  if (compact) {
+    return (
+      <header className={cn('flex items-end justify-between gap-4', className)}>
+        <div className="min-w-0">
+          <h1 className="text-3xl leading-[1.12] text-fg sm:text-4xl">{title}</h1>
+          {description && <p className="mt-1 hidden text-sm text-fg-muted sm:block">{description}</p>}
+        </div>
+        {actions && <div className="flex shrink-0 gap-2">{actions}</div>}
+      </header>
+    )
+  }
+
   return (
     <header className={cn('flex flex-col gap-6 border-b border-line pb-8 sm:flex-row sm:items-end sm:justify-between', className)}>
       <div className="min-w-0">

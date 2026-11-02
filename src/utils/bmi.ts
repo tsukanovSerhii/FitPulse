@@ -15,20 +15,20 @@ export function calculateBMI(profile: UserProfile): BMIResult {
   const bmi = Number((profile.weightKg / (heightM * heightM)).toFixed(1))
 
   let category = 'Нормальна вага'
-  let color = 'text-emerald-400'
+  let color = 'text-success'
   let description = 'Ваша вага знаходиться в межах здорового діапазону. Продовжуйте тренування для підтримки форми.'
 
   if (bmi < 18.5) {
     category = 'Недостатня вага'
-    color = 'text-amber-400'
+    color = 'text-warning'
     description = 'Рекомендується скоригувати раціон у бік профіциту калорій та збільшити силові навантаження.'
   } else if (bmi >= 25 && bmi < 30) {
     category = 'Надлишкова вага'
-    color = 'text-amber-400'
+    color = 'text-warning'
     description = 'Невеликий надлишок маси. Рекомендуються регулярні тренування та помірний дефіцит калорій.'
   } else if (bmi >= 30) {
     category = 'Ожиріння'
-    color = 'text-rose-500'
+    color = 'text-danger'
     description = 'Підвищений ризик для здоров\'я. Проконсультуйтеся з лікарем та дотримуйтеся планомірних навантажень.'
   }
 

@@ -136,8 +136,8 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
   const currentPhase = phases[activePhaseIndex] || phases[0]
 
   const breathingBadge = {
-    inhale: { label: 'Вдих 🌬️', desc: 'Наповнення легень при опусканні' },
-    exhale: { label: 'Видих 💨', desc: 'Потужне зусилля на підйомі' },
+    inhale: { label: 'Вдих', desc: 'Наповнення легень при опусканні' },
+    exhale: { label: 'Видих', desc: 'Потужне зусилля на підйомі' },
     hold: { label: 'Затримка ⏸️', desc: 'Стабілізація в піковій точці' },
   }[currentPhase.breathing]
 
@@ -166,7 +166,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                     activeTab === 'photo'
                       ? 'bg-accent text-on-accent border border-accent/20'
-                      : 'text-fg-muted hover:text-on-accent'
+                      : 'text-fg-muted hover:text-fg'
                   }`}
                 >
                   <Eye className="w-3.5 h-3.5" />
@@ -183,7 +183,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'motion'
                     ? 'bg-accent text-on-accent border border-accent/20'
-                    : 'text-fg-muted hover:text-on-accent'
+                    : 'text-fg-muted hover:text-fg'
                 }`}
               >
                 <User className="w-3.5 h-3.5" />
@@ -199,7 +199,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'anatomy'
                     ? 'bg-accent text-on-accent border border-accent/20'
-                    : 'text-fg-muted hover:text-on-accent'
+                    : 'text-fg-muted hover:text-fg'
                 }`}
               >
                 <Activity className="w-3.5 h-3.5" />
@@ -236,7 +236,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                 setActivePhaseIndex(0)
               }}
               icon={<RotateCcw className="w-3.5 h-3.5" />}
-              className="text-xs text-fg-muted hover:text-on-accent"
+              className="text-xs text-fg-muted hover:text-fg"
             >
               Скинути
             </Button>
@@ -325,7 +325,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
             {/* Coach Cue & Breathing Strip */}
             <div className="pt-2 border-t border-line flex flex-wrap items-center justify-between gap-2 text-xs">
               <div className="flex items-center gap-1.5 text-fg-muted">
-                <span className="text-accent font-bold">🧠 Фокус:</span>
+                <span className="text-accent font-bold">Фокус:</span>
                 <span className="italic font-medium">«{currentPhase.cue}»</span>
               </div>
 
@@ -412,7 +412,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
             {/* Coach Cue & Breathing Strip */}
             <div className="pt-2 border-t border-line flex flex-wrap items-center justify-between gap-2 text-xs">
               <div className="flex items-center gap-1.5 text-fg-muted">
-                <span className="text-accent font-bold">🧠 Фокус:</span>
+                <span className="text-accent font-bold">Фокус:</span>
                 <span className="italic font-medium">«{currentPhase.cue}»</span>
               </div>
 

@@ -1,75 +1,71 @@
-import React from 'react'
-import { Activity, Flame, Target } from 'lucide-react'
-import type { UserProfile } from '../model/types'
 import { calculateBMI } from '@/utils/bmi'
-import { Card } from '@/components/ui'
+import { formatNumber } from '@/utils/formatters'
+import { cn } from '@/utils/cn'
+import type { UserProfile } from '../model/types'
 
-export interface BMISummaryProps {
-  profile: UserProfile
-}
+const SCALE_MIN = 15
+const SCALE_MAX = 35
+const ZONES = [
+  { to: 18.5, className: 'bg-warning/60' },
+  { to: 25, className: 'bg-success/70' },
+  { to: 30, className: 'bg-warning/60' },
+  { to: SCALE_MAX, className: 'bg-danger/60' },
+]
 
-export const BMISummary: React.FC<BMISummaryProps> = ({ profile }) => {
+const toPercent = (value: number) => ((Math.min(SCALE_MAX, Math.max(SCALE_MIN, value)) - SCALE_MIN) / (SCALE_MAX - SCALE_MIN)) * 100
+
+export function BMISummary({ profile }: { profile: UserProfile }) {
   const result = calculateBMI(profile)
-  const weightDiff = Number((profile.targetWeightKg - profile.weightKg).toFixed(1))
 
   return (
-    <div className="space-y-4">
-      {/* BMI Main Card */}
-      <Card className="border-line/80 bg-surface/80 p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-lg bg-accent-soft border border-accent/30 text-accent flex items-center justify-center shrink-0">
-              <Activity className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-fg">Індекс маси тіла (ІМТ / BMI)</h3>
-              <p className="text-xs text-fg-muted">Показник відповідності маси тіла та зросту</p>
-            </div>
-          </div>
-          <div className="text-left sm:text-right">
-            <span className="text-3xl sm:text-4xl font-black text-accent font-mono tracking-tight">
-              {result.bmi}
-            </span>
-            <span className={`block text-xs font-bold ${result.color} mt-0.5`}>
-              {result.category}
-            </span>
-          </div>
+    <div className="space-y-5">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="font-mono text-5xl font-semibold text-fg tabular">{formatNumber(result.bmi, 1)}</p>
+          <p className={cn('mt-1 text-sm font-semibold', result.color)}>{result.category}</p>
         </div>
+        <p className="max-w-[16rem] text-right text-xs text-fg-muted">{result.description}</p>
+      </div>
 
-        <p className="text-xs text-fg-muted leading-relaxed bg-surface-2 p-4 rounded-md border border-line mb-5">
-          {result.description}
-        </p>
-
-        {/* Healthy weight range & targets */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="p-4 bg-bg/60 rounded-md border border-line">
-            <span className="text-fg-muted font-semibold block mb-1">Здорова вага (діапазон)</span>
-            <span className="text-base font-black text-fg font-mono">
-              {result.healthyWeightMin} - {result.healthyWeightMax} кг
-            </span>
+      <div className="space-y-2">
+        <div className="relative">
+          <div className="flex h-2 gap-0.5 overflow-hidden rounded-full" aria-hidden="true">
+            {ZONES.map((zone, i) => {
+              const from = i === 0 ? SCALE_MIN : ZONES[i - 1].to
+              return <span key={zone.to} className={zone.className} style={{ width: `${toPercent(zone.to) - toPercent(from)}%` }} />
+            })}
           </div>
-
-          <div className="p-4 bg-bg/60 rounded-md border border-line">
-            <span className="text-fg-muted font-semibold block mb-1 flex items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-accent" />
-              До цільової ваги
-            </span>
-            <span className="text-base font-black text-accent font-mono">
-              {weightDiff > 0 ? `+${weightDiff} кг` : weightDiff < 0 ? `${weightDiff} кг` : 'Досягнуто!'}
-            </span>
-          </div>
-
-          <div className="p-4 bg-bg/60 rounded-md border border-line">
-            <span className="text-fg-muted font-semibold block mb-1 flex items-center gap-1.5">
-              <Flame className="w-3.5 h-3.5 text-warning" />
-              Денна норма калорій
-            </span>
-            <span className="text-base font-black text-warning font-mono">
-              ~{result.dailyCalorieEstimate} ккал
-            </span>
-          </div>
+          <span
+            className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface bg-fg"
+            style={{ left: `${toPercent(result.bmi)}%` }}
+            aria-hidden="true"
+          />
         </div>
-      </Card>
+        <div className="flex justify-between font-mono text-[10px] text-fg-subtle tabular" aria-hidden="true">
+          <span>{SCALE_MIN}</span>
+          <span>18,5</span>
+          <span>25</span>
+          <span>30</span>
+          <span>{SCALE_MAX}</span>
+        </div>
+      </div>
+
+      <dl className="grid grid-cols-2 divide-x divide-line rounded-lg border border-line">
+        <div className="p-4">
+          <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-fg-subtle">Здорова вага</dt>
+          <dd className="mt-1 font-mono text-lg text-fg tabular">
+            {formatNumber(result.healthyWeightMin, 1)}–{formatNumber(result.healthyWeightMax, 1)}
+            <span className="ml-1 text-xs text-fg-subtle">кг</span>
+          </dd>
+        </div>
+        <div className="p-4">
+          <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-fg-subtle">Калорії на день</dt>
+          <dd className="mt-1 font-mono text-lg text-fg tabular">
+            ~{formatNumber(result.dailyCalorieEstimate)}
+            <span className="ml-1 text-xs text-fg-subtle">ккал</span>
+          </dd>
+        </div>
+      </dl>
     </div>
   )
 }

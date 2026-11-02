@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { AppRoutes } from './routes/AppRoutes'
-import { useAppDispatch } from './app/hooks'
+import { useAppDispatch, useAppSelector } from './app/hooks'
 import { fetchExercises } from './features/exercises/model/exercisesSlice'
 import { fetchPlans } from './features/workoutPlan/model/workoutPlanSlice'
 import { fetchProgress } from './features/progress/model/progressSlice'
@@ -23,12 +23,32 @@ const DataInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) 
   return <>{children}</>
 }
 
+function ThemedToaster() {
+  const theme = useAppSelector((state) => state.theme.resolved)
+  return (
+    <Toaster
+      theme={theme}
+      position="top-center"
+      offset={16}
+      toastOptions={{
+        classNames: {
+          toast: '!bg-surface !text-fg !border-line !rounded-lg !shadow-pop',
+          description: '!text-fg-muted',
+          success: '[&_[data-icon]]:!text-success',
+          error: '[&_[data-icon]]:!text-danger',
+          warning: '[&_[data-icon]]:!text-warning',
+        },
+      }}
+    />
+  )
+}
+
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <DataInitializer>
         <AppRoutes />
-        <Toaster richColors position="bottom-right" closeButton />
+        <ThemedToaster />
       </DataInitializer>
     </BrowserRouter>
   )
