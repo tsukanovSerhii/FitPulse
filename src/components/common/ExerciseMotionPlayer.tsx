@@ -166,7 +166,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                     activeTab === 'photo'
                       ? 'bg-accent text-on-accent border border-accent/20'
-                      : 'text-fg-muted hover:text-on-accent'
+                      : 'text-fg-muted hover:text-fg'
                   }`}
                 >
                   <Eye className="w-3.5 h-3.5" />
@@ -183,7 +183,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'motion'
                     ? 'bg-accent text-on-accent border border-accent/20'
-                    : 'text-fg-muted hover:text-on-accent'
+                    : 'text-fg-muted hover:text-fg'
                 }`}
               >
                 <User className="w-3.5 h-3.5" />
@@ -199,7 +199,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'anatomy'
                     ? 'bg-accent text-on-accent border border-accent/20'
-                    : 'text-fg-muted hover:text-on-accent'
+                    : 'text-fg-muted hover:text-fg'
                 }`}
               >
                 <Activity className="w-3.5 h-3.5" />
@@ -236,7 +236,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
                 setActivePhaseIndex(0)
               }}
               icon={<RotateCcw className="w-3.5 h-3.5" />}
-              className="text-xs text-fg-muted hover:text-on-accent"
+              className="text-xs text-fg-muted hover:text-fg"
             >
               Скинути
             </Button>
