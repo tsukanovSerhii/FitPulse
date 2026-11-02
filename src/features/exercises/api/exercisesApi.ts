@@ -4,15 +4,21 @@ import { INITIAL_EXERCISES } from '@/services/mockData/initialExercises'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+// Built-in exercises always come from code so content updates reach every user;
+// storage keeps only the ones the user created.
+const isCustom = (exercise: Exercise) => exercise.id.startsWith('custom-')
+
+function loadCustom(): Exercise[] {
+  const stored = loadFromStorage<Exercise[]>(STORAGE_KEYS.EXERCISES, [])
+  const custom = stored.filter(isCustom)
+  if (custom.length !== stored.length) saveToStorage(STORAGE_KEYS.EXERCISES, custom)
+  return custom
+}
+
 export const exercisesApi = {
   async getExercises(): Promise<Exercise[]> {
     await delay(250)
-    const stored = loadFromStorage<Exercise[]>(STORAGE_KEYS.EXERCISES, INITIAL_EXERCISES)
-    if (!stored || stored.length === 0) {
-      saveToStorage(STORAGE_KEYS.EXERCISES, INITIAL_EXERCISES)
-      return INITIAL_EXERCISES
-    }
-    return stored
+    return [...loadCustom(), ...INITIAL_EXERCISES]
   },
 
   async getFavorites(): Promise<string[]> {
@@ -22,14 +28,8 @@ export const exercisesApi = {
 
   async createExercise(exerciseData: Omit<Exercise, 'id'>): Promise<Exercise> {
     await delay(300)
-    const newExercise: Exercise = {
-      ...exerciseData,
-      id: `custom-${Date.now()}`,
-    }
-
-    const current = loadFromStorage<Exercise[]>(STORAGE_KEYS.EXERCISES, INITIAL_EXERCISES)
-    const updated = [newExercise, ...current]
-    saveToStorage(STORAGE_KEYS.EXERCISES, updated)
+    const newExercise: Exercise = { ...exerciseData, id: `custom-${Date.now()}` }
+    saveToStorage(STORAGE_KEYS.EXERCISES, [newExercise, ...loadCustom()])
     return newExercise
   },
 
