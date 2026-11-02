@@ -1,5 +1,5 @@
 import { AlertTriangle, CheckCircle2, Flame, Zap, type LucideIcon } from 'lucide-react'
-import { MuscleMap } from '@/components/common/MuscleMap'
+import { MuscleMap } from '@/components/common/muscle-map/MuscleMap'
 import { ExerciseMotionPlayer } from '@/components/common/motion-player/ExerciseMotionPlayer'
 import { cn } from '@/utils/cn'
 import type { Exercise } from '../../model/types'

@@ -3,7 +3,7 @@ import { Activity, Eye, Pause, Play, RotateCcw, Sparkles, User } from 'lucide-re
 import { Button, SegmentedControl, type SegmentOption } from '@/components/ui'
 import type { Exercise } from '@/features/exercises/model/types'
 import { AthleteRig } from '../athlete-rig/AthleteRig'
-import { MuscleMap } from '../MuscleMap'
+import { MuscleMap } from '../muscle-map/MuscleMap'
 import { DEFAULT_PHASES, DEFAULT_TEMPO, FRAME_LABELS, getMovementPattern } from './movement'
 import { PhaseDetails, Stage, StepPicker } from './parts'
 import { useAutoAdvance } from './useAutoAdvance'
