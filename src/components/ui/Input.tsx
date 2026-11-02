@@ -1,6 +1,7 @@
 import { useId, type InputHTMLAttributes } from 'react'
 import { cn } from '@/utils/cn'
-import { Field, controlClasses, describedBy } from './Field'
+import { Field } from './Field'
+import { controlClasses, describedBy } from './fieldStyles'
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string

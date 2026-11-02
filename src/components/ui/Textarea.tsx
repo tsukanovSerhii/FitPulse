@@ -1,6 +1,7 @@
 import { useId, type TextareaHTMLAttributes } from 'react'
 import { cn } from '@/utils/cn'
-import { Field, controlClasses, describedBy } from './Field'
+import { Field } from './Field'
+import { controlClasses, describedBy } from './fieldStyles'
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
