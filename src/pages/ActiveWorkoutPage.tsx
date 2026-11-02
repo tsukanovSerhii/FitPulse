@@ -1,3 +1,4 @@
+import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -477,7 +478,7 @@ export const ActiveWorkoutPage: React.FC = () => {
                 </h3>
                 <div className="flex flex-wrap items-center gap-2 mt-2">
                   <Badge variant="primary" dot size="sm">
-                    {currentExerciseData.primaryMuscle}
+                    {MUSCLE_GROUP_LABELS[currentExerciseData.primaryMuscle]}
                   </Badge>
                   <Badge variant="neutral" size="sm">
                     Ціль: {currentPlanExercise.sets}×{currentPlanExercise.reps}

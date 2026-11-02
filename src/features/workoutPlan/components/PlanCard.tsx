@@ -1,5 +1,5 @@
 import React from 'react'
-import { Check, Edit, Trash2, Dumbbell, Play, Plus } from 'lucide-react'
+import { Check, Edit, Trash2, Play, Plus } from 'lucide-react'
 import type { WorkoutPlan, DayOfWeek } from '../model/types'
 import { ALL_DAYS, DAY_SHORT_LABELS, DAY_LABELS } from '../model/types'
 import type { Exercise } from '@/features/exercises/model/types'
@@ -104,8 +104,8 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                     : 'bg-surface-2/50 border-dashed border-line/50 opacity-60'
                 }`}
               >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
                     <span
                       className={`w-8 h-8 rounded-md text-xs font-black flex items-center justify-center shrink-0 ${
                         hasExercises
@@ -125,10 +125,10 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="ml-auto flex items-center gap-2">
                     {hasExercises && (
                       <Button
-                        variant="success"
+                        variant="primary"
                         size="sm"
                         onClick={() => onStartDayWorkout(plan.id, day)}
                         icon={<Play className="w-3.5 h-3.5 fill-current" />}
@@ -151,17 +151,16 @@ export const PlanCard: React.FC<PlanCardProps> = ({
 
                 {/* Day Exercise preview chips */}
                 {hasExercises && (
-                  <div className="mt-3 flex flex-wrap gap-2 pl-11">
+                  <div className="mt-3 flex flex-wrap gap-2 sm:pl-11">
                     {dayExercises.map((pEx) => {
                       const ex = exerciseMap.get(pEx.exerciseId)
                       return (
                         <span
                           key={pEx.id}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface-2 border border-line text-xs font-medium text-fg-muted"
+                          className="inline-flex max-w-full items-center gap-1.5 rounded-sm border border-line px-2.5 py-1 text-xs text-fg-muted"
                         >
-                          <Dumbbell className="w-3 h-3 text-accent" />
-                          <strong className="text-fg-muted">{ex ? ex.name : 'Вправа'}:</strong>
-                          <span>
+                          <span className="truncate font-medium text-fg">{ex ? ex.name : 'Вправа'}</span>
+                          <span className="shrink-0 font-mono tabular text-fg-subtle">
                             {pEx.sets}×{pEx.reps}
                             {pEx.weight ? ` (${pEx.weight} кг)` : ''}
                           </span>

@@ -11,21 +11,21 @@
   --graphite-900: #161618;
   --graphite-850: #1f1f22;
   --graphite-700: #3a3a3f;
-  --graphite-500: #71717a;
+  --graphite-500: #8e8e98;
   --graphite-400: #a1a1aa;
   --graphite-100: #f4f4f5;
 
   --paper-50:  #ffffff;
   --paper-100: #f4f4f2;
   --paper-200: #ecece9;
-  --ink-600:   #7a7a82;
+  --ink-600:   #67676f;
   --ink-700:   #55555c;
   --ink-950:   #111113;
 
   --gold-300: #ecc77f;
   --gold-400: #e2b259;
-  --gold-700: #9a6a12;
-  --gold-800: #7d560e;
+  --gold-700: #865a0b;
+  --gold-800: #6e4908;
 }
 
 /* ============================================================
@@ -44,15 +44,15 @@
 
   --accent:        var(--gold-700);
   --accent-hover:  var(--gold-800);
-  --accent-soft:   rgb(154 106 18 / 0.10);
+  --accent-soft:   rgb(134 90 11 / 0.10);
   --on-accent:     #ffffff;
 
-  --success:      #15803d;
-  --success-soft: rgb(21 128 61 / 0.10);
+  --success:      #166534;
+  --success-soft: rgb(22 101 52 / 0.10);
   --danger:       #b91c1c;
   --danger-soft:  rgb(185 28 28 / 0.08);
-  --warning:      #b45309;
-  --warning-soft: rgb(180 83 9 / 0.10);
+  --warning:      #9a3f0a;
+  --warning-soft: rgb(154 63 10 / 0.10);
   --info:         #1d4ed8;
   --info-soft:    rgb(29 78 216 / 0.08);
 
@@ -205,28 +205,3 @@
     scroll-behavior: auto !important;
   }
 }
-
-/* ============================================================
-   LEGACY ALIASES — TEMPORARY, remove after migrating every
-   component to the new tokens (redesign stage 6)
-   ============================================================ */
-@utility bg-t-page { background-color: var(--bg); }
-@utility bg-t-card { background-color: var(--surface); }
-@utility bg-t-subtle { background-color: var(--surface-2); }
-@utility bg-t-input { background-color: var(--surface-2); }
-@utility bg-t-hover { background-color: var(--line); }
-@utility text-t-1 { color: var(--fg); }
-@utility text-t-2 { color: var(--fg-muted); }
-@utility text-t-3 { color: var(--fg-subtle); }
-@utility text-t-4 { color: var(--fg-subtle); }
-@utility border-t-d { border-color: var(--line); }
-@utility border-t-s { border-color: var(--line-strong); }
-@utility border-t-card { border-color: var(--surface); }
-@utility text-t-accent { color: var(--accent); }
-@utility border-t-accent { border-color: var(--accent); }
-@utility fitness-card { background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg); }
-@utility glass-nav { background: color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--line); }

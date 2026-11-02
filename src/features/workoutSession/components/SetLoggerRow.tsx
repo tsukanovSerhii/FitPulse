@@ -79,11 +79,13 @@ export const SetLoggerRow: React.FC<SetLoggerRowProps> = ({
       </div>
 
       {/* Actual Inputs & Check action */}
-      <div className="flex items-center gap-2.5 self-end sm:self-center">
+      <div className="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:w-auto sm:gap-2.5">
         {/* Weight input */}
-        <div className="flex items-center gap-1 bg-surface-2 px-3 py-2 rounded-md border border-line">
+        <label className="flex h-9 min-w-0 items-center gap-1 rounded-md border border-line bg-surface-2 px-3 focus-within:border-accent">
+          <span className="sr-only">Вага, підхід {setNumber}</span>
           <input
             type="number"
+            inputMode="decimal"
             disabled={isCompleted}
             min={0}
             max={500}
@@ -91,25 +93,27 @@ export const SetLoggerRow: React.FC<SetLoggerRowProps> = ({
             placeholder="0"
             value={weight}
             onChange={(e) => setWeight(e.target.value === '' ? '' : Number(e.target.value))}
-            className="w-12 text-center text-xs font-bold text-fg bg-transparent focus:outline-none"
+            className="w-full min-w-0 bg-transparent text-center font-mono text-sm font-semibold text-fg tabular focus:outline-none sm:w-12"
           />
-          <span className="text-[11px] font-semibold text-fg-subtle">кг</span>
-        </div>
+          <span className="text-[11px] font-semibold text-fg-subtle" aria-hidden="true">кг</span>
+        </label>
 
         {/* Reps input */}
-        <div className="flex items-center gap-1 bg-surface-2 px-3 py-2 rounded-md border border-line">
+        <label className="flex h-9 min-w-0 items-center gap-1 rounded-md border border-line bg-surface-2 px-3 focus-within:border-accent">
+          <span className="sr-only">Повторення, підхід {setNumber}</span>
           <input
             type="number"
+            inputMode="numeric"
             disabled={isCompleted}
             min={1}
             max={200}
             placeholder="0"
             value={reps}
             onChange={(e) => setReps(Number(e.target.value))}
-            className="w-10 text-center text-xs font-bold text-fg bg-transparent focus:outline-none"
+            className="w-full min-w-0 bg-transparent text-center font-mono text-sm font-semibold text-fg tabular focus:outline-none sm:w-10"
           />
-          <span className="text-[11px] font-semibold text-fg-subtle">повт</span>
-        </div>
+          <span className="text-[11px] font-semibold text-fg-subtle" aria-hidden="true">повт</span>
+        </label>
 
         {/* Complete / Undo button */}
         <Button
