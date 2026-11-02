@@ -1,4 +1,4 @@
-import { Calendar, Dumbbell, Home, TrendingUp, User, type LucideIcon } from 'lucide-react'
+import { Calendar, Dumbbell, Home, TrendingUp, type LucideIcon } from 'lucide-react'
 
 export interface NavItem {
   label: string
@@ -11,5 +11,4 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Вправи', path: '/exercises', icon: Dumbbell },
   { label: 'Програми', path: '/plans', icon: Calendar },
   { label: 'Прогрес', path: '/progress', icon: TrendingUp },
-  { label: 'Профіль', path: '/profile', icon: User },
 ]
