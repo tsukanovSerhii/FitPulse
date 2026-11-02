@@ -64,7 +64,7 @@ export function PageHeader({
             {eyebrow && <span className="text-fg-subtle">{eyebrow}</span>}
           </div>
         )}
-        <h1 className="text-5xl text-fg sm:text-6xl lg:text-7xl">{title}</h1>
+        <h1 className="text-5xl leading-[1.12] text-fg sm:text-6xl sm:leading-[1.12] lg:text-7xl lg:leading-[1.12]">{title}</h1>
         {description && <p className="mt-4 max-w-xl text-sm text-fg-muted sm:text-base">{description}</p>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap gap-2">{actions}</div>}

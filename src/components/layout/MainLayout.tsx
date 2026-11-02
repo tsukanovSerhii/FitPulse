@@ -1,25 +1,40 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import { Navbar } from './Navbar'
+import { useEffect } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Footer } from './Footer'
-import { useAppSelector } from '@/app/hooks'
+import { MobileTabBar } from './MobileTabBar'
+import { SideRail } from './SideRail'
+import { Topbar } from './Topbar'
 
-export const MainLayout: React.FC = () => {
-  const themeMode = useAppSelector((state) => state.theme.resolved)
+export function MainLayout() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [pathname])
+
   return (
-    <div className="min-h-screen flex flex-col relative overflow-x-hidden transition-colors duration-200 bg-t-page text-t-1">
-      {/* Background ambient lighting (dark mode only) */}
-      {themeMode === 'dark' && (
-        <div className="fixed -top-40 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-emerald-500/[0.03] rounded-full blur-3xl pointer-events-none -z-10" />
-      )}
+    <div className="flex min-h-dvh bg-bg text-fg">
+      <SideRail />
 
-      <Navbar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-on-accent"
+        >
+          Перейти до змісту
+        </a>
+        <Topbar />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 animate-fade-in relative z-10">
-        <Outlet />
-      </main>
+        <main id="main" className="mx-auto w-full max-w-7xl flex-1 animate-fade-in px-5 py-8 pb-24 sm:px-8 md:pb-12 lg:px-12 lg:py-12">
+          <Outlet />
+        </main>
 
-      <Footer />
+        <Footer />
+        {/* Відступ під мобільний таб-бар */}
+        <div className="h-16 md:hidden" aria-hidden="true" />
+      </div>
+
+      <MobileTabBar />
     </div>
   )
 }

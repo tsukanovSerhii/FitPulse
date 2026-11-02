@@ -1,37 +1,39 @@
-import React from 'react'
-import { Dumbbell, Heart, Code2 } from 'lucide-react'
+import { PHOTOS } from '@/data/photos'
 
 const currentYear = new Date().getFullYear()
 
-export const Footer: React.FC = () => {
+const photoAuthors = Object.values(PHOTOS).reduce<Record<string, string>>((acc, photo) => {
+  acc[photo.author] ??= photo.source
+  return acc
+}, {})
+
+export function Footer() {
   return (
-    <footer className="w-full border-t border-white/[0.06] bg-t-page mt-20 py-10 relative z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-slate-400">
-        <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-xl bg-sky-500 text-white font-black flex items-center justify-center shadow-md shadow-sky-500/20">
-            <Dumbbell className="w-4 h-4 -rotate-45" />
-          </div>
-          <div>
-            <span className="font-heading font-black text-t-1 block tracking-tight">FITPULSE</span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-              Minimalist Fitness Platform
+    <footer className="border-t border-line">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-8 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
+        <span>
+          <span className="font-display text-sm uppercase tracking-wide text-fg">FitPulse</span> © {currentYear}
+        </span>
+        <span>
+          Фото:{' '}
+          {Object.entries(photoAuthors).map(([author, source], i) => (
+            <span key={author}>
+              {i > 0 && ', '}
+              <a href={source} target="_blank" rel="noreferrer" className="underline-offset-2 hover:text-fg hover:underline">
+                {author}
+              </a>
             </span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 flex-wrap justify-center font-bold">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-t-hover text-t-2 border border-t-d text-[11px]">
-            <Code2 className="w-3.5 h-3.5 text-sky-400" /> React 19 + Redux Toolkit
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-t-hover text-t-2 border border-t-d text-[11px]">
-            Tailwind CSS v4 + Vite
-          </span>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-slate-400 font-semibold">
-          <span>FitPulse &copy; {currentYear} • Тренуйся свідомо</span>
-          <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-        </div>
+          ))}{' '}
+          · Wikimedia Commons ·{' '}
+          <a
+            href="https://creativecommons.org/licenses/by/2.0"
+            target="_blank"
+            rel="noreferrer"
+            className="underline-offset-2 hover:text-fg hover:underline"
+          >
+            CC BY 2.0
+          </a>
+        </span>
       </div>
     </footer>
   )
