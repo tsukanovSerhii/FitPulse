@@ -55,19 +55,8 @@ export interface InstructionStep {
   description: string
 }
 
-export interface MovementPhase {
-  name: string
-  instruction: string
-  cue: string
-  breathing: 'inhale' | 'exhale' | 'hold'
-}
-
 export interface ExerciseGuide {
-  tempo?: string
-  breathingAdvice?: string
-  phases?: MovementPhase[]
   commonMistakes?: string[]
-  beginnerTips?: string[]
   proTips?: string[]
 }
 
@@ -104,7 +93,6 @@ export interface Exercise {
   defaultRestSeconds: number
   /** Start and end photos of the movement */
   frames?: [string, string]
-  animationFrames?: string[]
   calories?: number
   technique?: ExerciseTechnique
   /** Legacy shape, still produced by custom exercises */
