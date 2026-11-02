@@ -27,14 +27,14 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
     const status = getMuscleStatus(muscle)
     if (status === 'primary') return 'url(#primaryGlow)'
     if (status === 'secondary') return 'url(#secondaryGlow)'
-    return '#1e293b' // slate-800
+    return 'var(--surface-2)'
   }
 
   const getSvgStroke = (muscle: MuscleGroup) => {
     const status = getMuscleStatus(muscle)
-    if (status === 'primary') return '#38bdf8'
-    if (status === 'secondary') return '#22d3ee'
-    return '#334155'
+    if (status === 'primary') return 'var(--accent)'
+    if (status === 'secondary') return 'color-mix(in srgb, var(--accent) 45%, var(--surface-2))'
+    return 'var(--line-strong)'
   }
 
   return (
@@ -56,8 +56,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
             <span className="w-2 h-2 rounded-full bg-accent" />
             Основний
           </span>
-          <span className="flex items-center gap-1.5 text-accent font-semibold">
-            <span className="w-2 h-2 rounded-full bg-accent" />
+          <span className="flex items-center gap-1.5 text-fg-muted font-semibold">
+            <span className="w-2 h-2 rounded-full bg-accent/45" />
             Допоміжний
           </span>
         </div>
@@ -73,19 +73,19 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
           <svg viewBox="0 0 160 260" className="w-32 h-52 transition-all filter drop-shadow-md">
             <defs>
               <linearGradient id="primaryGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#38bdf8" />
-                <stop offset="100%" stopColor="#0284c7" />
+                <stop offset="0%" stopColor="var(--accent)" />
+                <stop offset="100%" stopColor="var(--accent)" />
               </linearGradient>
               <linearGradient id="secondaryGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#22d3ee" />
-                <stop offset="100%" stopColor="#0891b2" />
+                <stop offset="0%" stopColor="color-mix(in srgb, var(--accent) 45%, var(--surface-2))" />
+                <stop offset="100%" stopColor="color-mix(in srgb, var(--accent) 45%, var(--surface-2))" />
               </linearGradient>
             </defs>
 
             {/* Head */}
-            <circle cx="80" cy="22" r="14" fill="#1e293b" stroke="#334155" strokeWidth="1.5" />
+            <circle cx="80" cy="22" r="14" fill="var(--surface-2)" stroke="var(--line-strong)" strokeWidth="1.5" />
             {/* Neck */}
-            <rect x="74" y="34" width="12" height="10" rx="3" fill="#1e293b" />
+            <rect x="74" y="34" width="12" height="10" rx="3" fill="var(--surface-2)" />
 
             {/* Shoulders (Front) */}
             <path
@@ -132,8 +132,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
             />
 
             {/* Forearms */}
-            <rect x="29" y="100" width="11" height="32" rx="5" fill="#1e293b" stroke="#334155" />
-            <rect x="120" y="100" width="11" height="32" rx="5" fill="#1e293b" stroke="#334155" />
+            <rect x="29" y="100" width="11" height="32" rx="5" fill="var(--surface-2)" stroke="var(--line-strong)" />
+            <rect x="120" y="100" width="11" height="32" rx="5" fill="var(--surface-2)" stroke="var(--line-strong)" />
 
             {/* Abs / Core */}
             <rect
@@ -148,7 +148,7 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
             />
 
             {/* Pelvis / Hip */}
-            <path d="M 58 118 Q 80 128 102 118 L 98 136 Q 80 142 62 136 Z" fill="#1e293b" />
+            <path d="M 58 118 Q 80 128 102 118 L 98 136 Q 80 142 62 136 Z" fill="var(--surface-2)" />
 
             {/* Thighs / Quads (Legs) */}
             <path
@@ -165,8 +165,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
             />
 
             {/* Knees */}
-            <circle cx="64" cy="195" r="5" fill="#1e293b" />
-            <circle cx="96" cy="195" r="5" fill="#1e293b" />
+            <circle cx="64" cy="195" r="5" fill="var(--surface-2)" />
+            <circle cx="96" cy="195" r="5" fill="var(--surface-2)" />
 
             {/* Calves (Front Shin) */}
             <rect
@@ -199,7 +199,7 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
           </span>
           <svg viewBox="0 0 160 260" className="w-36 h-56 transition-all filter drop-shadow-md">
             {/* Head back */}
-            <circle cx="80" cy="22" r="14" fill="#1e293b" stroke="#334155" strokeWidth="1.5" />
+            <circle cx="80" cy="22" r="14" fill="var(--surface-2)" stroke="var(--line-strong)" strokeWidth="1.5" />
             {/* Traps / Upper Back */}
             <path
               d="M 64 36 L 96 36 L 104 54 L 56 54 Z"
@@ -303,7 +303,7 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
       <div className="mt-3 pt-3 border-t border-line space-y-2">
         <div className="flex items-center justify-between text-xs">
           <span className="text-fg-muted font-medium">Основний цільовий м'яз (Target):</span>
-          <Badge variant="info" dot size="sm">
+          <Badge variant="primary" dot size="sm">
             {MUSCLE_GROUP_LABELS[primaryMuscle]} (~80-100% навантаження)
           </Badge>
         </div>
