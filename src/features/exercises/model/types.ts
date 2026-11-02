@@ -55,20 +55,26 @@ export interface InstructionStep {
   description: string
 }
 
-export interface MovementPhase {
-  name: string
-  instruction: string
-  cue: string
-  breathing: 'inhale' | 'exhale' | 'hold'
+export interface ExerciseGuide {
+  commonMistakes?: string[]
+  proTips?: string[]
 }
 
-export interface ExerciseGuide {
-  tempo?: string
-  breathingAdvice?: string
-  phases?: MovementPhase[]
-  commonMistakes?: string[]
-  beginnerTips?: string[]
-  proTips?: string[]
+export interface TechniqueStep {
+  title: string
+  text: string
+  /** Which of the two photos shows this moment */
+  frame: 0 | 1
+  /** Duration in the demo loop; the photo cross-fades for this long */
+  seconds: number
+  breathing?: 'inhale' | 'exhale' | 'hold'
+}
+
+export interface ExerciseTechnique {
+  steps: TechniqueStep[]
+  cues: string[]
+  mistakes: string[]
+  advanced?: string[]
 }
 
 export interface Exercise {
@@ -79,15 +85,17 @@ export interface Exercise {
   difficulty: Difficulty
   equipment: Equipment
   description: string
-  instructions: InstructionStep[]
-  tips: string[]
+  /** Legacy step list, still produced by custom exercises */
+  instructions?: InstructionStep[]
+  tips?: string[]
   defaultSets: number
   defaultReps: number
   defaultRestSeconds: number
-  imageUrl?: string
-  videoUrl?: string
-  animationFrames?: string[]
+  /** Start and end photos of the movement */
+  frames?: [string, string]
   calories?: number
+  technique?: ExerciseTechnique
+  /** Legacy shape, still produced by custom exercises */
   guide?: ExerciseGuide
 }
 

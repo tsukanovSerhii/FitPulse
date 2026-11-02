@@ -9,6 +9,9 @@ export interface ModalProps {
   onClose: () => void
   title?: ReactNode
   eyebrow?: ReactNode
+  subtitle?: ReactNode
+  /** Extra controls placed before the close button */
+  headerActions?: ReactNode
   children: ReactNode
   footer?: ReactNode
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl'
@@ -27,7 +30,7 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 /** Accessible dialog: portal, focus trap, Escape, scroll lock and focus restore. */
-export function Modal({ isOpen, onClose, title, eyebrow, children, footer, maxWidth = 'lg' }: ModalProps) {
+export function Modal({ isOpen, onClose, title, eyebrow, subtitle, headerActions, children, footer, maxWidth = 'lg' }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
   const onCloseRef = useRef(onClose)
   const titleId = useId()
@@ -105,8 +108,12 @@ export function Modal({ isOpen, onClose, title, eyebrow, children, footer, maxWi
                 {title}
               </h2>
             )}
+            {subtitle && <div className="mt-1.5 text-sm text-fg-muted">{subtitle}</div>}
           </div>
-          <IconButton label="Закрити" icon={<X />} size="sm" onClick={onClose} className="-mr-2 shrink-0" />
+          <div className="-mr-2 flex shrink-0 items-center gap-1">
+            {headerActions}
+            <IconButton label="Закрити" icon={<X />} size="sm" onClick={onClose} />
+          </div>
         </div>
 
         <div className="overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
