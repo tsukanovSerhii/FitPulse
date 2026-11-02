@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Calendar, Plus } from 'lucide-react'
+import { Calendar, Plus, Search } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import {
   fetchPlans,
@@ -15,11 +15,11 @@ import {
 import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
 import { startWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
 import type { WorkoutPlan, DayOfWeek, PlanExercise } from '@/features/workoutPlan/model/types'
-import { DAY_LABELS } from '@/features/workoutPlan/model/types'
+import { ALL_DAYS, DAY_LABELS } from '@/features/workoutPlan/model/types'
 import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
 import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorModal'
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
-import { Button, PageHeader, confirmAction } from '@/components/ui'
+import { Button, IconButton, PageHeader, confirmAction } from '@/components/ui'
 import { EmptyState } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 
@@ -30,6 +30,10 @@ export const WorkoutPlansPage: React.FC = () => {
   const { plans, activePlanId, status } = useAppSelector((state) => state.workoutPlan)
   const allExercises = useAppSelector((state) => state.exercises.items)
 
+  const [query, setQuery] = useState('')
+  // undefined — користувач ще нічого не розгортав, тож показуємо активну програму
+  const [expandedId, setExpandedId] = useState<string | null | undefined>(undefined)
+  const openPlanId = expandedId === undefined ? activePlanId : expandedId
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [editingPlan, setEditingPlan] = useState<WorkoutPlan | null>(null)
 
@@ -143,50 +147,86 @@ export const WorkoutPlansPage: React.FC = () => {
     dispatch(updatePlanExercise({ planId, day, exerciseId, updates }))
   }
 
+  const visiblePlans = useMemo(() => {
+    const names = new Map(allExercises.map((e) => [e.id, e.name.toLowerCase()]))
+    const q = query.trim().toLowerCase()
+    const matches = (plan: WorkoutPlan) =>
+      !q ||
+      plan.name.toLowerCase().includes(q) ||
+      plan.description?.toLowerCase().includes(q) ||
+      ALL_DAYS.some((day) => plan.schedule[day]?.some((pEx) => names.get(pEx.exerciseId)?.includes(q)))
+    return plans.filter(matches).sort((a, b) => Number(b.id === activePlanId) - Number(a.id === activePlanId))
+  }, [plans, allExercises, query, activePlanId])
+
   // Get current plan for modal
   const activeModalPlan = dayEditorModal.plan
     ? plans.find((p) => p.id === dayEditorModal.plan?.id) || dayEditorModal.plan
     : null
 
   return (
-    <div className="space-y-6 animate-fade-in pb-12">
-      <SEO title="Програми тренувань" description="Створюйте та налаштовуйте тижневі спліти: Push/Pull/Legs, Full Body. Керування підходами, повтореннями та днями відпочинку." />
+    <div className="space-y-4">
+      <SEO title="Програми тренувань" description="Тижневі спліти: Push/Pull/Legs, Full Body. Підходи, повторення та дні відпочинку." />
       <PageHeader
-        index={2}
-        eyebrow="Розклад"
-        title={<>Програми<br />тренувань</>}
-        description="Спліти та графіки: налаштовуйте підходи, повторення, цільову вагу та час відпочинку"
+        compact
+        title="Програми"
+        description="Тижневі спліти та розклад"
         actions={
-          <Button onClick={handleCreatePlan} icon={<Plus />}>
-            Нова програма
-          </Button>
+          <>
+            <IconButton label="Нова програма" icon={<Plus />} onClick={handleCreatePlan} className="border border-line sm:hidden" />
+            <Button className="hidden sm:inline-flex" onClick={handleCreatePlan} icon={<Plus />}>
+              Нова програма
+            </Button>
+          </>
         }
       />
 
-      {/* Plans List */}
+      {plans.length > 0 && (
+        <label className="relative block">
+          <span className="sr-only">Пошук програми</span>
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" aria-hidden="true" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Пошук за назвою або вправою"
+            className="h-11 w-full rounded-md border border-line bg-surface pl-10 pr-3 text-sm text-fg placeholder:text-fg-subtle focus:border-accent focus:outline-none"
+          />
+        </label>
+      )}
+
       {status === 'loading' && plans.length === 0 ? (
-        <div className="text-center py-16 text-fg-muted text-sm">
-          <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-3" />
-          Завантаження програм тренувань...
-        </div>
+        <p className="py-16 text-center text-sm text-fg-muted">Завантаження програм...</p>
       ) : plans.length === 0 ? (
         <EmptyState
-          icon={<Calendar className="w-8 h-8 text-accent" />}
-          title="Немає створених програм"
-          description="Створіть свій перший тижневий план тренувань, щоб систематизувати свої заняття."
+          icon={<Calendar />}
+          title="Програм ще немає"
+          description="Створіть тижневий план, щоб систематизувати тренування."
           action={
-            <Button variant="primary" onClick={handleCreatePlan} icon={<Plus className="w-4 h-4" />}>
+            <Button onClick={handleCreatePlan} icon={<Plus />}>
               Створити програму
             </Button>
           }
         />
+      ) : visiblePlans.length === 0 ? (
+        <EmptyState
+          icon={<Search />}
+          title="Нічого не знайдено"
+          description={`Немає програм за запитом «${query}».`}
+          action={
+            <Button variant="outline" size="sm" onClick={() => setQuery('')}>
+              Очистити пошук
+            </Button>
+          }
+        />
       ) : (
-        <div className="grid grid-cols-1 gap-6">
-          {plans.map((plan) => (
+        <div className="space-y-3">
+          {visiblePlans.map((plan) => (
             <PlanCard
               key={plan.id}
               plan={plan}
               isActive={plan.id === activePlanId}
+              expanded={openPlanId === plan.id}
+              onToggle={() => setExpandedId(openPlanId === plan.id ? null : plan.id)}
               allExercises={allExercises}
               onSetActive={handleSetActivePlan}
               onEditDay={handleOpenDayEditor}
