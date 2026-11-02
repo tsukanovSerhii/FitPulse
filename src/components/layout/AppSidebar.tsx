@@ -18,7 +18,7 @@ const linkClasses = ({ isActive }: { isActive: boolean }) =>
 
 /** Головна навігація на десктопі (lg+). */
 export function AppSidebar() {
-  const profile = useAppSelector((state) => state.profile.profile)
+  const user = useAppSelector((state) => state.auth.user)
 
   return (
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-line bg-surface lg:flex">
@@ -58,9 +58,9 @@ export function AppSidebar() {
             )
           }
         >
-          <Avatar name={profile.name} src={profile.avatarUrl} className="size-9" />
+          <Avatar seed={user?.avatarSeed ?? 'guest'} name={user?.name} className="size-9" />
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-semibold text-fg">{profile.name || 'Атлет'}</span>
+            <span className="block truncate text-sm font-semibold text-fg">{user?.name || 'Атлет'}</span>
             <span className="block text-xs text-fg-subtle">Профіль</span>
           </span>
           <ChevronRight className="size-4 text-fg-subtle" aria-hidden="true" />
