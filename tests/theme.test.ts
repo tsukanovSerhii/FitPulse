@@ -25,3 +25,11 @@ describe('theme', () => {
     })
   })
 })
+
+describe('formatNumber', () => {
+  it('groups thousands with a narrow no-break space', async () => {
+    const { formatNumber } = await import('@/utils/formatters')
+    expect(formatNumber(12480)).toBe('12\u202f480')
+    expect(formatNumber(1.25, 1)).toBe('1,3')
+  })
+})

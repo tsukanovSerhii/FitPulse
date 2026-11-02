@@ -127,6 +127,9 @@
   --color-info-soft: var(--info-soft);
 
   --color-overlay: var(--overlay);
+  /* Text placed over photos stays light in both themes (photos sit under a dark scrim) */
+  --color-on-photo: #f4f4f5;
+  --color-scrim: rgb(10 10 12);
   --shadow-pop: var(--shadow-pop);
 
   --radius-sm: 4px;

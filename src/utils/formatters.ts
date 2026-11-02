@@ -62,3 +62,11 @@ export function formatWeight(kg?: number): string {
   if (kg === 0) return 'Власна вага'
   return `${kg} кг`
 }
+
+/**
+ * Число з українським групуванням розрядів (напр. "12 480").
+ * Вузький нерозривний пробіл — щоб у моноширинному шрифті не було «дірки».
+ */
+export function formatNumber(value: number, maximumFractionDigits = 0): string {
+  return new Intl.NumberFormat('uk-UA', { maximumFractionDigits }).format(value).replace(/\s/g, '\u202f')
+}
