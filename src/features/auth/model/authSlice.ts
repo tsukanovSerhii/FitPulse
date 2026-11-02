@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { updateProfileAsync } from '@/features/profile/model/profileSlice'
 import { INITIAL_PROFILE } from '@/services/mockData/initialProfile'
 import { authApi, AuthError } from '../api/authApi'
-import type { AuthState, AuthUser, Credentials, RegistrationData } from './types'
+import type { AuthState, AuthUser, LoginData, RegistrationData } from './types'
 
 const errorMessage = (err: unknown) => (err instanceof AuthError ? err.message : 'Щось пішло не так. Спробуйте ще раз')
 
@@ -21,7 +21,7 @@ export const registerUser = createAsyncThunk<AuthUser, RegistrationData, { rejec
   },
 )
 
-export const loginUser = createAsyncThunk<AuthUser, Credentials, { rejectValue: string }>(
+export const loginUser = createAsyncThunk<AuthUser, LoginData, { rejectValue: string }>(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {

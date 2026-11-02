@@ -19,18 +19,24 @@ import {
   toggleFavorite,
 } from '@/features/exercises/model/exercisesSlice'
 import type { Exercise } from '@/features/exercises/model/types'
+import { saveToSession, SESSION_KEYS } from '@/services/storage/sessionStorage'
+import { useSessionState } from '@/services/storage/useSessionState'
 import { injectExerciseSchema } from '@/utils/seo'
 
 export function ExercisesPage() {
   const dispatch = useAppDispatch()
   const { filteredItems, items, filters, favorites, selectedExercise, status } = useAppSelector((state) => state.exercises)
 
-  const [favoritesOnly, setFavoritesOnly] = useState(false)
+  const [favoritesOnly, setFavoritesOnly] = useSessionState(SESSION_KEYS.EXERCISE_FAVORITES_ONLY, false)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
   useEffect(() => {
     if (items.length === 0) dispatch(fetchExercises())
   }, [dispatch, items.length])
+
+  useEffect(() => {
+    saveToSession(SESSION_KEYS.EXERCISE_FILTERS, filters)
+  }, [filters])
 
   const displayItems = favoritesOnly ? filteredItems.filter((ex) => favorites.includes(ex.id)) : filteredItems
 
