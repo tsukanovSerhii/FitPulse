@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { AppSidebar } from './AppSidebar'
 import { Footer } from './Footer'
 import { MobileHeader } from './MobileHeader'
 import { MobileTabBar } from './MobileTabBar'
+import { PageSkeleton } from './PageSkeleton'
 
 export function MainLayout() {
   const { pathname } = useLocation()
@@ -27,7 +28,9 @@ export function MainLayout() {
         <MobileHeader />
 
         <main id="main" className="mx-auto w-full max-w-6xl flex-1 animate-fade-in px-5 py-6 sm:px-8 lg:px-12 lg:py-12">
-          <Outlet />
+          <Suspense fallback={<PageSkeleton />}>
+            <Outlet />
+          </Suspense>
         </main>
 
         <Footer />

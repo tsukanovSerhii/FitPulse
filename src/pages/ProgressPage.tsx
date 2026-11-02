@@ -8,6 +8,8 @@ import { fetchProgress, deleteWorkoutLogAsync } from '@/features/progress/model/
 import { StatsGrid } from '@/features/progress/components/StatsGrid'
 import { WorkoutHistoryItem } from '@/features/progress/components/WorkoutHistoryItem'
 import { PRCard } from '@/features/progress/components/PRCard'
+import { HistoryListSkeleton, StatsGridSkeleton } from '@/features/progress/components/ProgressSkeleton'
+import { LoadingRegion, Skeleton } from '@/components/ui'
 import { EmptyState, PageHeader, confirmAction } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 
@@ -38,6 +40,7 @@ export const ProgressPage: React.FC = () => {
   const justFinished = Boolean((location.state as { justFinished?: boolean } | null)?.justFinished)
 
   const prList = Object.values(personalRecords)
+  const isLoading = (status === 'idle' || status === 'loading') && history.length === 0
 
   return (
     <div className="space-y-8 animate-fade-in pb-12">
@@ -50,7 +53,7 @@ export const ProgressPage: React.FC = () => {
         description="Відстежуйте об'єм навантажень, час у залі та особисті силові максимуми"
       />
 
-      <StatsGrid history={history} personalRecords={personalRecords} />
+      {isLoading ? <StatsGridSkeleton /> : <StatsGrid history={history} personalRecords={personalRecords} />}
 
       <section className="space-y-4">
         <h3 className="text-lg sm:text-xl font-display font-black text-fg flex items-center gap-2">
@@ -58,7 +61,13 @@ export const ProgressPage: React.FC = () => {
           Особисті силові рекорди (Personal Records)
         </h3>
 
-        {prList.length === 0 ? (
+        {isLoading ? (
+          <LoadingRegion label="Завантаження рекордів" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 3 }, (_, i) => (
+              <Skeleton key={i} className="h-20 rounded-lg" />
+            ))}
+          </LoadingRegion>
+        ) : prList.length === 0 ? (
           <EmptyState
             icon={<Trophy className="w-8 h-8 text-warning" />}
             title="Рекордів ще немає"
@@ -81,10 +90,8 @@ export const ProgressPage: React.FC = () => {
           </h3>
         </div>
 
-        {status === 'loading' && history.length === 0 ? (
-          <div className="text-center py-12 text-fg-muted text-sm">
-            Завантаження журналу тренувань...
-          </div>
+        {isLoading ? (
+          <HistoryListSkeleton />
         ) : history.length === 0 ? (
           <EmptyState
             icon={<Dumbbell className="w-8 h-8 text-accent" />}

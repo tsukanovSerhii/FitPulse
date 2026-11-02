@@ -2,13 +2,14 @@ import { Fragment, useEffect, useState, type MouseEvent } from 'react'
 import { Dumbbell, Plus } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SEO } from '@/components/common/SEO'
-import { Button, EmptyState, IconButton, PageHeader, Skeleton } from '@/components/ui'
+import { Button, EmptyState, IconButton, PageHeader } from '@/components/ui'
 import { AdSlot } from '@/features/ads/components/AdSlot'
 import { CATALOG_AD_EVERY } from '@/features/ads/model/selection'
 import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
 import { ExerciseCard } from '@/features/exercises/components/ExerciseCard'
 import { ExerciseDetailModal } from '@/features/exercises/components/detail/ExerciseDetailModal'
 import { ExerciseFiltersBar } from '@/features/exercises/components/ExerciseFiltersBar'
+import { ExerciseGridSkeleton } from '@/features/exercises/components/ExerciseGridSkeleton'
 import {
   addCustomExercise,
   clearSelectedExercise,
@@ -88,12 +89,8 @@ export function ExercisesPage() {
         resultCount={displayItems.length}
       />
 
-      {status === 'loading' && items.length === 0 ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
-          {Array.from({ length: 6 }, (_, i) => (
-            <Skeleton key={i} className="h-44" />
-          ))}
-        </div>
+      {status !== 'succeeded' && status !== 'failed' && items.length === 0 ? (
+        <ExerciseGridSkeleton />
       ) : displayItems.length === 0 ? (
         <EmptyState
           icon={<Dumbbell />}

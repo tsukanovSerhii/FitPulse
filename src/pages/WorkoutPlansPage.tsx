@@ -7,6 +7,7 @@ import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
 import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
 import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorModal'
+import { PlanListSkeleton } from '@/features/workoutPlan/components/PlanListSkeleton'
 import { usePlanActions } from '@/features/workoutPlan/hooks/usePlanActions'
 import { searchPlans } from '@/features/workoutPlan/lib/search'
 import type { DayOfWeek, WorkoutPlan } from '@/features/workoutPlan/model/types'
@@ -58,8 +59,8 @@ export function WorkoutPlansPage() {
 
       {plans.length > 0 && <SearchInput label="Пошук програми" placeholder="Пошук за назвою або вправою" value={query} onChange={setQuery} />}
 
-      {status === 'loading' && plans.length === 0 ? (
-        <p className="py-16 text-center text-sm text-fg-muted">Завантаження програм...</p>
+      {status !== 'succeeded' && status !== 'failed' && plans.length === 0 ? (
+        <PlanListSkeleton />
       ) : plans.length === 0 ? (
         <EmptyState
           icon={<Calendar />}

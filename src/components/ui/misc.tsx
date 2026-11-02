@@ -12,7 +12,37 @@ export function Divider({ vertical = false, className }: { vertical?: boolean; c
 }
 
 export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn('animate-pulse rounded-md bg-surface-2', className)} aria-hidden="true" />
+  return (
+    <div
+      className={cn(
+        'relative overflow-hidden rounded-md bg-surface-2',
+        'after:absolute after:inset-0 after:animate-shimmer after:bg-linear-to-r after:from-transparent after:via-fg/[0.06] after:to-transparent',
+        className,
+      )}
+      aria-hidden="true"
+    />
+  )
+}
+
+/** Text placeholder: the last line is shorter, like a real paragraph. */
+export function SkeletonText({ lines = 2, className }: { lines?: number; className?: string }) {
+  return (
+    <div className={cn('space-y-2', className)} aria-hidden="true">
+      {Array.from({ length: lines }, (_, i) => (
+        <Skeleton key={i} className={cn('h-3.5', i === lines - 1 && lines > 1 ? 'w-3/5' : 'w-full')} />
+      ))}
+    </div>
+  )
+}
+
+/** Wraps skeletons so screen readers hear one "loading" message instead of empty shapes. */
+export function LoadingRegion({ label = 'Завантаження', children, className }: { label?: string; children: ReactNode; className?: string }) {
+  return (
+    <div role="status" aria-busy="true" className={className}>
+      <span className="sr-only">{label}</span>
+      {children}
+    </div>
+  )
 }
 
 export interface EmptyStateProps {
