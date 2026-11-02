@@ -72,7 +72,7 @@ export const RestTimerWidget: React.FC = () => {
       : 0
 
   return (
-    <div className="bg-white dark:bg-[#101522] border border-slate-200 dark:border-sky-500/25 rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-xl backdrop-blur-md mb-6 animate-fade-in">
+    <div className="bg-t-card border border-slate-200 dark:border-sky-500/25 rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-xl backdrop-blur-md mb-6 animate-fade-in">
       <div className="flex items-center justify-between gap-3">
         {/* Left: Compact label + Sound icon toggle */}
         <div className="flex items-center gap-2 sm:gap-2.5">
@@ -81,7 +81,7 @@ export const RestTimerWidget: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white tracking-tight">Відпочинок</span>
+            <span className="text-xs sm:text-sm font-bold text-t-1 tracking-tight">Відпочинок</span>
 
             {!restTimer.isRunning && (
               <span className="text-[10px] text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-300 font-bold dark:bg-amber-500/15 px-1.5 py-0.5 rounded border dark:border-amber-500/30">
@@ -188,7 +188,7 @@ export const RestTimerWidget: React.FC = () => {
       </div>
 
       {/* Slim Progress Bar */}
-      <div className="w-full bg-slate-100 dark:bg-slate-950/90 h-1.5 rounded-full mt-2.5 overflow-hidden border border-slate-200 dark:border-slate-800/60">
+      <div className="w-full bg-slate-100 dark:bg-slate-950/90 h-1.5 rounded-full mt-2.5 overflow-hidden border border-t-d/60">
         <div
           className="bg-gradient-to-r from-sky-500 to-cyan-400 h-full transition-all duration-1000 ease-linear rounded-full shadow-sm"
           style={{ width: `${percent}%` }}

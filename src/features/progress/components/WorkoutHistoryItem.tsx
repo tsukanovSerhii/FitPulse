@@ -22,14 +22,14 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
         {/* Left info */}
         <div>
           <div className="flex items-center gap-2.5 mb-1.5">
-            <h4 className="text-base font-bold text-slate-900 dark:text-white">{log.planName}</h4>
+            <h4 className="text-base font-bold text-t-1">{log.planName}</h4>
             {log.dayLabel && (
               <Badge variant="primary" size="sm">
                 {log.dayLabel}
               </Badge>
             )}
           </div>
-          <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-3 text-xs text-t-3">
             <span className="flex items-center gap-1.5 font-medium">
               <Calendar className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
               {formatDate(log.date)}
@@ -49,14 +49,14 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
               <span className="block font-black text-slate-900 dark:text-slate-100 text-sm font-mono">
                 {log.totalVolumeKg.toLocaleString()} кг
               </span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">{log.totalSets} підходів</span>
+              <span className="text-[11px] text-t-3">{log.totalSets} підходів</span>
             </div>
 
             <div className="text-right hidden sm:block">
               <span className="block font-black text-amber-600 dark:text-amber-400 text-sm font-mono">
                 ~{log.caloriesBurned}
               </span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">ккал</span>
+              <span className="text-[11px] text-t-3">ккал</span>
             </div>
           </div>
 
@@ -81,8 +81,8 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
 
       {/* Accordion detail list */}
       {isOpen && (
-        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800/80 animate-fade-in">
-          <h5 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
+        <div className="mt-4 pt-4 border-t border-t-d animate-fade-in">
+          <h5 className="text-xs font-bold uppercase tracking-wider text-t-3 mb-3">
             Виконані вправи:
           </h5>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
@@ -93,7 +93,7 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
               >
                 <div>
                   <span className="font-bold text-slate-900 dark:text-slate-200 block">{ex.exerciseName}</span>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 block">
+                  <span className="text-[11px] text-t-3 mt-0.5 block">
                     {ex.setsCompleted} підходів • {ex.totalReps} повт
                   </span>
                 </div>

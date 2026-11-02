@@ -149,13 +149,13 @@ export const WorkoutPlansPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/[0.06]">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black text-slate-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0">
               <Calendar className="w-5 h-5" />
             </div>
             Програми тренувань
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-t-3 mt-1 font-medium">
             Спліти та графіки: налаштовуйте підходи, повторення, цільову вагу та час відпочинку
           </p>
         </div>

@@ -138,7 +138,7 @@ export const DashboardPage: React.FC = () => {
 							</span>
 						</div>
 
-						<h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
+						<h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-t-1">
 							Привіт, <span className="text-sky-500">{profile.name}</span>!
 						</h1>
 
@@ -301,7 +301,7 @@ export const DashboardPage: React.FC = () => {
 					className="relative overflow-hidden"
 				>
 					<div className="flex items-center justify-between mb-3">
-						<span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+						<span className="text-[11px] font-black uppercase tracking-wider text-t-3">
 							Тренувань
 						</span>
 						<div className="w-9 h-9 rounded-2xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center">
@@ -325,16 +325,16 @@ export const DashboardPage: React.FC = () => {
 					className="relative overflow-hidden"
 				>
 					<div className="flex items-center justify-between mb-3">
-						<span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+						<span className="text-[11px] font-black uppercase tracking-wider text-t-3">
 							Тоннаж
 						</span>
 						<div className="w-9 h-9 rounded-2xl bg-sky-400/15 border border-sky-400/30 text-sky-400 flex items-center justify-center">
 							<Dumbbell className="w-4 h-4" />
 						</div>
 					</div>
-					<div className="text-3xl sm:text-4xl font-heading font-black text-slate-900 dark:text-white">
+					<div className="text-3xl sm:text-4xl font-heading font-black text-t-1">
 						{totalVolumeTons}{' '}
-						<span className="text-lg font-bold text-slate-500 dark:text-slate-400">т</span>
+						<span className="text-lg font-bold text-t-3">т</span>
 					</div>
 					<div className="flex items-center gap-1.5 mt-2 text-xs text-sky-400 font-bold">
 						<span>{totalVolumeKg.toLocaleString()} кг піднято</span>
@@ -347,14 +347,14 @@ export const DashboardPage: React.FC = () => {
 					className="relative overflow-hidden"
 				>
 					<div className="flex items-center justify-between mb-3">
-						<span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+						<span className="text-[11px] font-black uppercase tracking-wider text-t-3">
 							Рекорди (PR)
 						</span>
 						<div className="w-9 h-9 rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-400 flex items-center justify-center">
 							<Trophy className="w-4 h-4" />
 						</div>
 					</div>
-					<div className="text-3xl sm:text-4xl font-heading font-black text-slate-900 dark:text-white">
+					<div className="text-3xl sm:text-4xl font-heading font-black text-t-1">
 						{totalPrs}
 					</div>
 					<div className="flex items-center gap-1.5 mt-2 text-xs text-amber-400 font-bold">
@@ -368,14 +368,14 @@ export const DashboardPage: React.FC = () => {
 					className="relative overflow-hidden"
 				>
 					<div className="flex items-center justify-between mb-3">
-						<span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+						<span className="text-[11px] font-black uppercase tracking-wider text-t-3">
 							База вправ
 						</span>
 						<div className="w-9 h-9 rounded-2xl bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 flex items-center justify-center">
 							<TrendingUp className="w-4 h-4" />
 						</div>
 					</div>
-					<div className="text-3xl sm:text-4xl font-heading font-black text-slate-900 dark:text-white">
+					<div className="text-3xl sm:text-4xl font-heading font-black text-t-1">
 						{exercisesState.items.length}
 					</div>
 					<div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-400 font-bold">
@@ -392,13 +392,13 @@ export const DashboardPage: React.FC = () => {
 				<div className="lg:col-span-8 space-y-4">
 					<div className="flex items-center justify-between">
 						<div>
-							<h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+							<h2 className="text-xl sm:text-2xl font-black text-t-1 flex items-center gap-2">
 								<Calendar className="w-5 h-5 text-sky-500 dark:text-sky-400" />
 								План на сьогодні ({DAY_LABELS[currentDayKey]})
 							</h2>
-							<p className="text-xs text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
+							<p className="text-xs text-t-3 font-semibold mt-0.5">
 								Програма:{' '}
-								<strong className="text-slate-900 dark:text-white">{activePlan?.name}</strong>
+								<strong className="text-t-1">{activePlan?.name}</strong>
 							</p>
 						</div>
 
@@ -504,7 +504,7 @@ export const DashboardPage: React.FC = () => {
 
 				{/* Side Column: Quick Navigation & Coach Tip */}
 				<div className="lg:col-span-4 space-y-4">
-					<h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+					<h2 className="text-xl sm:text-2xl font-black text-t-1 flex items-center gap-2">
 						<Sparkles className="w-5 h-5 text-sky-500 dark:text-sky-400" />
 						Швидкі дії
 					</h2>

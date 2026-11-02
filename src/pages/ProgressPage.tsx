@@ -35,13 +35,13 @@ export const ProgressPage: React.FC = () => {
     <div className="space-y-8 animate-fade-in pb-12">
       {/* Page Title */}
       <div className="pb-4 border-b border-slate-200 dark:border-white/[0.06]">
-        <h1 className="text-2xl sm:text-4xl font-heading font-black text-slate-900 dark:text-white flex items-center gap-3">
+        <h1 className="text-2xl sm:text-4xl font-heading font-black text-t-1 flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0">
             <TrendingUp className="w-5 h-5" />
           </div>
           Прогрес та аналітика
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+        <p className="text-xs sm:text-sm text-t-3 mt-1 font-medium">
           Відстежуйте об'єм навантажень, час у залі та особисті силові максимуми
         </p>
       </div>
@@ -51,7 +51,7 @@ export const ProgressPage: React.FC = () => {
 
       {/* Personal Records (PRs) */}
       <section className="space-y-4">
-        <h3 className="text-lg sm:text-xl font-heading font-black text-slate-900 dark:text-white flex items-center gap-2">
+        <h3 className="text-lg sm:text-xl font-heading font-black text-t-1 flex items-center gap-2">
           <Trophy className="w-5 h-5 text-amber-500 dark:text-amber-400" />
           Особисті силові рекорди (Personal Records)
         </h3>
@@ -74,7 +74,7 @@ export const ProgressPage: React.FC = () => {
       {/* Workout History */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg sm:text-xl font-heading font-black text-slate-900 dark:text-white flex items-center gap-2">
+          <h3 className="text-lg sm:text-xl font-heading font-black text-t-1 flex items-center gap-2">
             <History className="w-5 h-5 text-sky-500 dark:text-sky-400" />
             Історія завершених занять ({history.length})
           </h3>

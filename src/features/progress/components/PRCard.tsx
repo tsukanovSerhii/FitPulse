@@ -16,8 +16,8 @@ export const PRCard: React.FC<PRCardProps> = ({ pr }) => {
           <Trophy className="w-5 h-5" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-slate-900 dark:text-white">{pr.exerciseName}</h4>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1">
+          <h4 className="text-sm font-bold text-t-1">{pr.exerciseName}</h4>
+          <span className="text-[11px] text-t-3 flex items-center gap-1.5 mt-1">
             <Calendar className="w-3 h-3 text-slate-400" />
             Встановлено: {formatDate(pr.achievedAt)}
           </span>
@@ -28,7 +28,7 @@ export const PRCard: React.FC<PRCardProps> = ({ pr }) => {
         <span className="text-2xl font-black text-amber-600 dark:text-amber-300 font-mono tracking-tight">
           {pr.maxWeightKg} кг
         </span>
-        <span className="block text-[11px] text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
+        <span className="block text-[11px] text-t-3 font-semibold mt-0.5">
           на {pr.maxReps} повт
         </span>
       </div>

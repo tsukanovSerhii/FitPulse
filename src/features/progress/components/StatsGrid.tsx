@@ -21,14 +21,14 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
       {/* 1. Workouts */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-t-3">
             Всього тренувань
           </span>
           <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-600 dark:text-sky-400 flex items-center justify-center">
             <Calendar className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-mono">
+        <div className="text-3xl sm:text-4xl font-black text-t-1 font-mono">
           {totalWorkouts}
         </div>
         <span className="text-xs text-sky-600 dark:text-sky-400 font-semibold mt-2 block">
@@ -39,16 +39,16 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
       {/* 2. Total Volume */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-t-3">
             Піднята вага
           </span>
           <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
             <Dumbbell className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-mono">
+        <div className="text-3xl sm:text-4xl font-black text-t-1 font-mono">
           {(totalVolumeKg / 1000).toFixed(1)}{' '}
-          <span className="text-lg font-bold text-slate-500 dark:text-slate-400">т</span>
+          <span className="text-lg font-bold text-t-3">т</span>
         </div>
         <span className="text-xs text-cyan-600 dark:text-cyan-400 font-semibold mt-2 block">
           {totalVolumeKg.toLocaleString()} кг сумарно
@@ -58,14 +58,14 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
       {/* 3. Time trained */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-t-3">
             Час у залі
           </span>
           <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
             <Clock className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono">
+        <div className="text-2xl sm:text-3xl font-black text-t-1 font-mono">
           {Math.floor(totalSeconds / 3600)}г {Math.round((totalSeconds % 3600) / 60)}хв
         </div>
         <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-2 block">
@@ -76,14 +76,14 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ history, personalRecords }
       {/* 4. Personal Records */}
       <Card hover className="p-5 relative overflow-hidden">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-t-3">
             Рекорди (PR)
           </span>
           <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center">
             <Trophy className="w-4 h-4" />
           </div>
         </div>
-        <div className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-mono">
+        <div className="text-3xl sm:text-4xl font-black text-t-1 font-mono">
           {prCount}
         </div>
         <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-2 block">
