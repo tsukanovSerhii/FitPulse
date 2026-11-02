@@ -48,11 +48,7 @@ export function HeroSection() {
 
       <div className="mx-auto grid min-h-[calc(100dvh-4rem)] max-w-7xl items-center gap-16 px-5 py-16 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
         <div>
-          <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-4 py-1.5 text-sm text-fg-muted">
-            <span className="size-2 rounded-full bg-accent" aria-hidden="true" />
-            Безкоштовний трекер силових тренувань
-          </p>
-          <h1 className="mt-8 text-6xl leading-[0.98] text-fg sm:text-7xl xl:text-8xl">
+          <h1 className="text-6xl leading-[0.98] text-fg sm:text-7xl xl:text-8xl">
             Тренування за планом.
             <br />
             <span className="text-accent">Прогрес у цифрах.</span>

@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react'
-import { Button, IconButton } from '@/components/ui'
+import { Button, IconButton, progressFill } from '@/components/ui'
 import { formatDuration } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
 
@@ -49,7 +49,8 @@ export function FocusHeader({ title, elapsedSeconds, progress, currentIndex, onS
                   i === currentIndex && 'ring-1 ring-accent ring-offset-1 ring-offset-bg',
                 )}
               >
-                <span className="block h-full bg-accent transition-[width] duration-300" style={{ width: `${(item.done / item.total) * 100}%` }} />
+                <span
+                  className={cn('block h-full transition-[width,background-color] duration-300', progressFill(item.done >= item.total))} style={{ width: `${(item.done / item.total) * 100}%` }} />
               </span>
             </button>
           </li>

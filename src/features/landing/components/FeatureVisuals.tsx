@@ -9,26 +9,16 @@ const chestPaint = createMusclePaint('chest', ['chest', 'triceps', 'shoulders'])
 
 export function AnatomyVisual() {
   return (
-    <div aria-hidden="true" className="grid w-full grid-cols-[auto_auto_1fr] items-center gap-4 sm:gap-8">
-      <FrontBody paint={chestPaint} className="h-56 w-28 sm:h-80 sm:w-44" />
-      <BackBody paint={chestPaint} className="h-56 w-28 sm:h-80 sm:w-44" />
-      <ol className="hidden space-y-2 text-sm sm:block">
-        {['Вихідне положення', 'Опускання', 'Пауза', 'Підйом'].map((phase, i) => (
-          <li
-            key={phase}
-            className={cn('rounded-md border px-4 py-3', i === 1 ? 'border-accent/40 bg-accent-soft text-fg' : 'border-line text-fg-subtle')}
-          >
-            <span className="font-mono text-xs text-accent">0{i + 1}</span> {phase}
-          </li>
-        ))}
-      </ol>
+    <div aria-hidden="true" className="flex items-center gap-4 sm:gap-6">
+      <FrontBody paint={chestPaint} className="h-56 w-28 sm:h-72 sm:w-36" />
+      <BackBody paint={chestPaint} className="h-56 w-28 sm:h-72 sm:w-36" />
     </div>
   )
 }
 
 export function StepperVisual() {
   return (
-    <div aria-hidden="true" className="space-y-3">
+    <div aria-hidden="true" className="w-full space-y-3">
       <div className="flex items-center gap-2">
         <span className="flex size-12 items-center justify-center rounded-md bg-surface-2 text-fg">
           <Minus className="size-5" />
@@ -39,7 +29,7 @@ export function StepperVisual() {
         </span>
       </div>
       <div className="flex h-12 items-center justify-center gap-2 rounded-md bg-accent text-sm font-semibold uppercase text-on-accent">
-        <Check className="size-4" /> Підхід 3 виконано
+        <Check className="size-4" /> Записати підхід
       </div>
     </div>
   )
@@ -48,8 +38,8 @@ export function StepperVisual() {
 export function RestVisual() {
   return (
     <div aria-hidden="true" className="flex justify-center">
-      <ProgressRing value={40} label="" size={150} stroke={5}>
-        <span className="font-mono text-4xl font-semibold text-fg">1:12</span>
+      <ProgressRing value={40} label="" size={128} stroke={5}>
+        <span className="font-mono text-3xl font-semibold text-fg">1:12</span>
         <span className="text-[10px] uppercase tracking-[0.16em] text-fg-subtle">відпочинок</span>
       </ProgressRing>
     </div>
@@ -68,12 +58,12 @@ const WEEK = [
 
 export function WeekVisual() {
   return (
-    <ol aria-hidden="true" className="grid grid-cols-7 gap-1.5">
+    <ol aria-hidden="true" className="grid w-full grid-cols-7 gap-1.5">
       {WEEK.map((d) => (
         <li
           key={d.day}
           className={cn(
-            'flex h-24 flex-col items-center justify-between rounded-md border py-3 text-xs font-semibold',
+            'flex h-20 flex-col items-center justify-between rounded-md border py-3 text-xs font-semibold',
             d.on ? 'border-accent/40 bg-accent-soft text-fg' : 'border-line text-fg-subtle',
           )}
         >
@@ -90,7 +80,7 @@ const VOLUME = [42, 55, 48, 63, 58, 71, 80, 76]
 export function ProgressVisual() {
   const max = Math.max(...VOLUME)
   return (
-    <div aria-hidden="true" className="flex h-36 items-end gap-2">
+    <div aria-hidden="true" className="flex h-28 w-full items-end gap-2">
       {VOLUME.map((v, i) => (
         <span
           key={i}

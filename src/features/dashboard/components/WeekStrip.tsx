@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react'
 import { DAY_LABELS, DAY_SHORT_LABELS, type DayOfWeek } from '@/features/workoutPlan/model/types'
+import { statusStyles } from '@/components/ui'
 import { cn } from '@/utils/cn'
 import { WEEK_DAYS } from '../lib/week'
 import { DashboardSection } from './DashboardSection'
@@ -31,10 +32,13 @@ export function WeekStrip({ today, doneDays, isPlanned, plannedCount }: WeekStri
               aria-label={`${DAY_LABELS[day]}: ${done ? 'виконано' : planned ? 'заплановано' : 'відпочинок'}`}
               className={cn(
                 'flex h-14 flex-col items-center justify-center gap-1 rounded-md border text-xs font-semibold sm:h-16',
-                done && 'border-accent bg-accent text-on-accent',
-                !done && planned && 'border-line-strong text-fg',
-                !done && !planned && 'border-line text-fg-subtle',
-                day === today && !done && 'border-accent text-accent',
+                done
+                  ? statusStyles.done
+                  : day === today
+                    ? statusStyles.current
+                    : planned
+                      ? statusStyles.planned
+                      : statusStyles.idle,
               )}
             >
               {DAY_SHORT_LABELS[day]}

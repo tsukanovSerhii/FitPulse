@@ -1,4 +1,5 @@
 import { Check, Minus, Plus } from 'lucide-react'
+import { progressFill, statusStyles } from '@/components/ui'
 
 const SETS = [
   { done: true, label: '70 кг × 8' },
@@ -21,7 +22,7 @@ export function PhoneMockup() {
         <div className="flex gap-1 px-5 pb-4">
           {[100, 66, 0, 0, 0].map((fill, i) => (
             <span key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-line">
-              <span className="block h-full bg-accent" style={{ width: `${fill}%` }} />
+              <span className={`block h-full ${progressFill(fill === 100)}`} style={{ width: `${fill}%` }} />
             </span>
           ))}
         </div>
@@ -34,8 +35,8 @@ export function PhoneMockup() {
             {SETS.map((set, i) => (
               <li key={i} className={`flex items-center gap-2.5 px-3 py-2.5 ${set.done ? '' : 'bg-accent-soft'}`}>
                 <span
-                  className={`flex size-5 items-center justify-center rounded-full font-mono text-[10px] ${
-                    set.done ? 'bg-accent text-on-accent' : 'border border-accent text-accent'
+                  className={`flex size-5 items-center justify-center rounded-full border font-mono text-[10px] ${
+                    set.done ? statusStyles.done : statusStyles.current
                   }`}
                 >
                   {set.done ? <Check className="size-3" /> : i + 1}
@@ -56,7 +57,7 @@ export function PhoneMockup() {
             </span>
           </div>
           <div className="flex h-11 items-center justify-center rounded-md bg-accent text-xs font-semibold uppercase text-on-accent">
-            Підхід 3 виконано
+            Записати підхід 3
           </div>
         </div>
       </div>
