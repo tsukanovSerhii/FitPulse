@@ -61,7 +61,7 @@ export function AppSidebar() {
           <Avatar name={profile.name} src={profile.avatarUrl} className="size-9" />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-semibold text-fg">{profile.name || 'Атлет'}</span>
-            <span className="block text-xs text-fg-subtle">Профіль і налаштування</span>
+            <span className="block text-xs text-fg-subtle">Профіль</span>
           </span>
           <ChevronRight className="size-4 text-fg-subtle" aria-hidden="true" />
         </NavLink>
