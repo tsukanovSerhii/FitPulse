@@ -14,7 +14,7 @@
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0e0e10" />
     <script>
-      // Застосовує тему до першого рендеру, щоб уникнути «блимання»
+      // Apply the theme before first paint to avoid a flash
       try {
         var mode = JSON.parse(localStorage.getItem('fitpulse_theme_v1') || '"system"');
         var dark = mode === 'dark' || (mode !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
