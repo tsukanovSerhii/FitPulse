@@ -1,29 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { User, Edit, RotateCcw, Calendar, Target, Activity } from 'lucide-react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { Pencil, RotateCcw } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import {
-  fetchProfile,
-  updateProfileAsync,
-  resetProfileAsync,
-} from '@/features/profile/model/profileSlice'
-import type { UserProfile } from '@/features/profile/model/types'
-import { FITNESS_GOAL_LABELS, ACTIVITY_LEVEL_LABELS } from '@/features/profile/model/types'
+import { SEO } from '@/components/common/SEO'
+import { Avatar } from '@/components/layout/Avatar'
+import { Badge, Button, Card, IconButton, PageHeader, Stat, ThemeToggle, confirmAction } from '@/components/ui'
 import { BMISummary } from '@/features/profile/components/BMISummary'
 import { ProfileEditModal } from '@/features/profile/components/ProfileEditModal'
-import { Card, PageHeader, confirmAction } from '@/components/ui'
-import { Button } from '@/components/ui'
-import { Badge } from '@/components/ui'
-import { formatDate } from '@/utils/formatters'
-import { STORAGE_KEYS, removeFromStorage, saveToStorage } from '@/services/storage/localStorage'
-import { SEO } from '@/components/common/SEO'
+import { fetchProfile, resetProfileAsync, updateProfileAsync } from '@/features/profile/model/profileSlice'
+import type { UserProfile } from '@/features/profile/model/types'
+import { ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS } from '@/features/profile/model/types'
+import { removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
+import { formatDate, formatNumber } from '@/utils/formatters'
 
-export const ProfilePage: React.FC = () => {
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="space-y-3">
+      <h2 className="font-sans text-xs font-bold tracking-[0.16em] text-fg-muted">{title}</h2>
+      {children}
+    </section>
+  )
+}
+
+export function ProfilePage() {
   const dispatch = useAppDispatch()
   const profile = useAppSelector((state) => state.profile.profile)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   useEffect(() => {
-    
     dispatch(fetchProfile())
   }, [dispatch])
 
@@ -38,134 +41,92 @@ export const ProfilePage: React.FC = () => {
       confirmLabel: 'Скинути',
       destructive: true,
     })
-    if (confirmed) {
-      Object.values(STORAGE_KEYS).forEach((k) => removeFromStorage(k))
-      // Гарантуємо очищення історії та персональних рекордів при скиданні
-      saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, [])
-      saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, {})
-      await dispatch(resetProfileAsync()).unwrap()
-      window.location.reload()
-    }
+    if (!confirmed) return
+    Object.values(STORAGE_KEYS).forEach((k) => removeFromStorage(k))
+    saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, [])
+    saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, {})
+    await dispatch(resetProfileAsync()).unwrap()
+    window.location.reload()
   }
 
+  const weightDelta = Number((profile.targetWeightKg - profile.weightKg).toFixed(1))
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-12">
-      <SEO title="Особистий профіль" description="Антропометрія, цільова вага, рівень навантажень та норми калоражу." />
+    <div className="mx-auto max-w-3xl space-y-8">
+      <SEO title="Профіль" description="Антропометрія, ціль, ІМТ і налаштування." />
+
       <PageHeader
-        index={5}
-        eyebrow="Атлет"
+        compact
         title="Профіль"
-        description="Антропометрія, цільова вага, рівень навантажень та норми калоражу"
         actions={
-          <Button variant="outline" onClick={() => setIsEditModalOpen(true)} icon={<Edit />}>
-            Редагувати
-          </Button>
+          <>
+            <IconButton label="Редагувати профіль" icon={<Pencil />} onClick={() => setIsEditModalOpen(true)} className="border border-line sm:hidden" />
+            <Button variant="outline" className="hidden sm:inline-flex" onClick={() => setIsEditModalOpen(true)} icon={<Pencil />}>
+              Редагувати
+            </Button>
+          </>
         }
       />
 
-      {/* Main Profile Info Card */}
-      <Card className="p-6 sm:p-8">
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {/* Avatar */}
-          <div className="relative">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg overflow-hidden border-2 border-accent/40 shadow-2xl bg-bg">
-              {profile.avatarUrl ? (
-                <img
-                  src={profile.avatarUrl}
-                  alt={profile.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-fg-muted">
-                  <User className="w-12 h-12" />
-                </div>
-              )}
-            </div>
-            <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-accent border-2 border-surface flex items-center justify-center text-xs text-on-accent font-black">
-              ✓
-            </span>
-          </div>
-
-          {/* Details */}
-          <div className="flex-1 text-center sm:text-left space-y-2">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <h2 className="text-2xl font-black text-fg">{profile.name}</h2>
-              <Badge variant="primary" dot size="sm">
+      <Card padding="none">
+        <div className="flex items-center gap-4 p-5 sm:p-6">
+          <Avatar name={profile.name} src={profile.avatarUrl} className="size-16 text-xl" />
+          <div className="min-w-0 flex-1 space-y-1">
+            <p className="truncate text-lg font-semibold text-fg">{profile.name}</p>
+            <p className="truncate text-sm text-fg-subtle">{profile.email}</p>
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <Badge variant="primary" size="sm">
                 {FITNESS_GOAL_LABELS[profile.fitnessGoal]}
               </Badge>
-            </div>
-
-            <p className="text-xs font-semibold text-fg-muted">{profile.email}</p>
-
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2 text-xs text-fg-muted font-medium">
-              <span className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-accent" />
-                У додатку з: {formatDate(profile.joinedDate)}
-              </span>
-              <span>•</span>
-              <span className="flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-accent" />
-                {ACTIVITY_LEVEL_LABELS[profile.activityLevel]}
-              </span>
+              <span className="text-xs text-fg-subtle">з {formatDate(profile.joinedDate)}</span>
             </div>
           </div>
         </div>
-
-        {/* Parameters Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-8 pt-6 border-t border-line">
-          <div className="p-4 bg-surface-2 rounded-lg border border-line text-center">
-            <span className="text-fg-muted text-xs font-bold uppercase tracking-wider block mb-1">Вік</span>
-            <span className="text-xl font-display font-black text-fg">{profile.age} р.</span>
-          </div>
-
-          <div className="p-4 bg-surface-2 rounded-lg border border-line text-center">
-            <span className="text-fg-muted text-xs font-bold uppercase tracking-wider block mb-1">Зріст</span>
-            <span className="text-xl font-display font-black text-fg">{profile.heightCm} см</span>
-          </div>
-
-          <div className="p-4 bg-surface-2 rounded-lg border border-line text-center">
-            <span className="text-fg-muted text-xs font-bold uppercase tracking-wider block mb-1">Поточна вага</span>
-            <span className="text-xl font-display font-black text-fg">
-              {profile.weightKg} кг
-            </span>
-          </div>
-
-          <div className="p-4 bg-surface-2 rounded-lg border border-line text-center">
-            <span className="text-fg-muted text-xs font-bold uppercase tracking-wider block mb-1 flex items-center justify-center gap-1">
-              <Target className="w-3.5 h-3.5 text-accent" />
-              Цільова
-            </span>
-            <span className="text-xl font-display font-black text-accent">
-              {profile.targetWeightKg} кг
-            </span>
-          </div>
+        <div className="grid grid-cols-2 border-t border-line sm:grid-cols-4 [&>*]:border-line [&>*]:p-4 sm:[&>*]:p-5 [&>*:nth-child(odd)]:border-r sm:[&>*:not(:last-child)]:border-r [&>*:nth-child(-n+2)]:border-b sm:[&>*:nth-child(-n+2)]:border-b-0">
+          <Stat label="Вік" value={profile.age} unit="р." />
+          <Stat label="Зріст" value={profile.heightCm} unit="см" />
+          <Stat label="Вага" value={formatNumber(profile.weightKg, 1)} unit="кг" />
+          <Stat
+            label="Ціль"
+            value={formatNumber(profile.targetWeightKg, 1)}
+            unit="кг"
+            accent
+            hint={weightDelta === 0 ? 'досягнуто' : `${weightDelta > 0 ? '+' : ''}${formatNumber(weightDelta, 1)} кг`}
+          />
         </div>
       </Card>
 
-      {/* BMI and Nutrition Calculator */}
-      <BMISummary profile={profile} />
+      <Section title="Індекс маси тіла">
+        <Card>
+          <BMISummary profile={profile} />
+        </Card>
+      </Section>
 
-      {/* Reset zone */}
-      <Card className="border-danger/30 bg-danger-soft p-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <h4 className="text-sm font-bold text-danger">Скинути всі дані трекера</h4>
-            <p className="text-xs text-fg-muted mt-1 font-medium">
-              Повертає початкові вправи, стандартні плани тренувань та очищає історію занять.
-            </p>
+      <Section title="Налаштування">
+        <Card padding="none" className="divide-y divide-line">
+          <div className="flex items-center justify-between gap-4 p-4 sm:px-6">
+            <span className="text-sm text-fg">Тема</span>
+            <ThemeToggle />
           </div>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={handleResetAllData}
-            icon={<RotateCcw className="w-3.5 h-3.5" />}
-          >
-            Скинути до стандартних
+          <div className="flex items-center justify-between gap-4 p-4 sm:px-6">
+            <span className="text-sm text-fg">Активність</span>
+            <span className="text-right text-sm text-fg-muted">{ACTIVITY_LEVEL_LABELS[profile.activityLevel]}</span>
+          </div>
+        </Card>
+      </Section>
+
+      <Section title="Дані">
+        <div className="flex flex-col gap-3 rounded-lg border border-danger/30 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div>
+            <p className="text-sm font-semibold text-fg">Скинути всі дані</p>
+            <p className="text-xs text-fg-subtle">Стандартні вправи й програми, порожній журнал.</p>
+          </div>
+          <Button variant="danger" size="sm" onClick={handleResetAllData} icon={<RotateCcw />}>
+            Скинути
           </Button>
         </div>
-      </Card>
+      </Section>
 
-      {/* Edit Profile Modal */}
       <ProfileEditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
