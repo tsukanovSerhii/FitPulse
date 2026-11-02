@@ -2,7 +2,6 @@ import { useId, useMemo } from 'react'
 import { avatarShapes } from '@/utils/avatar'
 import { cn } from '@/utils/cn'
 
-/** Generated geometric avatar; the seed comes from the user's account. */
 export function Avatar({ seed, name, className }: { seed: string; name?: string; className?: string }) {
   const clipId = useId()
   const s = useMemo(() => avatarShapes(seed), [seed])

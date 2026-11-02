@@ -31,13 +31,12 @@ export const WorkoutPlansPage: React.FC = () => {
   const allExercises = useAppSelector((state) => state.exercises.items)
 
   const [query, setQuery] = useState('')
-  // undefined — користувач ще нічого не розгортав, тож показуємо активну програму
+  // undefined: nothing toggled yet, so the active plan is shown expanded
   const [expandedId, setExpandedId] = useState<string | null | undefined>(undefined)
   const openPlanId = expandedId === undefined ? activePlanId : expandedId
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [editingPlan, setEditingPlan] = useState<WorkoutPlan | null>(null)
 
-  // Day editor state
   const [dayEditorModal, setDayEditorModal] = useState<{
     isOpen: boolean
     plan: WorkoutPlan | null
@@ -158,7 +157,6 @@ export const WorkoutPlansPage: React.FC = () => {
     return plans.filter(matches).sort((a, b) => Number(b.id === activePlanId) - Number(a.id === activePlanId))
   }, [plans, allExercises, query, activePlanId])
 
-  // Get current plan for modal
   const activeModalPlan = dayEditorModal.plan
     ? plans.find((p) => p.id === dayEditorModal.plan?.id) || dayEditorModal.plan
     : null
@@ -237,7 +235,6 @@ export const WorkoutPlansPage: React.FC = () => {
         </div>
       )}
 
-      {/* Plan Metadata Editor Modal */}
       <PlanEditorModal
         isOpen={isEditorOpen}
         onClose={() => setIsEditorOpen(false)}
@@ -245,7 +242,6 @@ export const WorkoutPlansPage: React.FC = () => {
         initialPlan={editingPlan}
       />
 
-      {/* Day Schedule Editor Modal */}
       <AddExerciseToDayModal
         isOpen={dayEditorModal.isOpen}
         onClose={() => setDayEditorModal({ isOpen: false, plan: null, day: null })}

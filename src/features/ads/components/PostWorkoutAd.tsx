@@ -10,7 +10,7 @@ import {
 } from '../model/selection'
 import { AdLabel } from './AdSlot'
 
-/** Шторка з premium-рекламою після збереження тренування; не частіше разу на добу. */
+/** Premium interstitial after a saved workout, at most once a day. */
 export function PostWorkoutAd({ trigger }: { trigger: boolean }) {
   const [ad] = useState(() => pickCampaign(DEMO_CAMPAIGNS, 'post-workout'))
   const [open, setOpen] = useState(false)

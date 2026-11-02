@@ -12,9 +12,6 @@ export interface ExerciseMotionPlayerProps {
   className?: string
 }
 
-/**
- * Resolves the biomechanical movement pattern for the athlete rig.
- */
 function getMovementPattern(exercise: Exercise): MovementPattern {
   const id = exercise.id.toLowerCase()
   if (id.includes('bench-press') || id.includes('incline')) return 'bench_press'
@@ -35,7 +32,6 @@ function getMovementPattern(exercise: Exercise): MovementPattern {
   if (id.includes('swing')) return 'kettlebell_swing'
   if (id.includes('treadmill') || id.includes('cardio') || id.includes('hiit')) return 'cardio_run'
 
-  // Primary muscle fallbacks
   switch (exercise.primaryMuscle) {
     case 'chest':
       return 'bench_press'
@@ -69,11 +65,9 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
   const defaultTab = hasFrames ? (initialTab || 'photo') : 'motion'
   const [activeTab, setActiveTab] = useState<'photo' | 'motion' | 'anatomy'>(defaultTab)
 
-  // Real athlete photographic animation frame state
   const [activeFrameIndex, setActiveFrameIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
 
-  // Rig phase state
   const [activePhaseIndex, setActivePhaseIndex] = useState(0)
 
   const frames = exercise.animationFrames || []
@@ -106,7 +100,6 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
     },
   ]
 
-  // Auto-play photographic frames loop
   useEffect(() => {
     let timer: number | null = null
     if (isPlaying && activeTab === 'photo' && frameCount > 1) {
@@ -119,7 +112,6 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
     }
   }, [isPlaying, activeTab, frameCount])
 
-  // Auto-play rig phase cycle
   useEffect(() => {
     let timer: number | null = null
     if (isPlaying && activeTab === 'motion') {
@@ -150,9 +142,7 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
     <div
       className={`rounded-lg bg-surface border border-line p-5 sm:p-6 space-y-4 ${className}`}
     >
-      {/* Top Header & Tab Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-line">
-        {/* Title & View Switcher */}
         <div className="flex items-center gap-2">
           {showTabSwitcher ? (
             <div className="inline-flex p-1 rounded-lg bg-surface-2 border border-line">
@@ -214,7 +204,6 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
           )}
         </div>
 
-        {/* Playback Controls (photo & motion tabs) */}
         {activeTab !== 'anatomy' && (
           <div className="flex items-center gap-2 self-start sm:self-center">
             <Button
@@ -244,15 +233,11 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
         )}
       </div>
 
-      {/* VIEW 1: REAL ATHLETE PHOTOGRAPHIC MOTION */}
       {activeTab === 'photo' && hasFrames && (
         <div className="space-y-4 animate-fade-in">
-          {/* Main Photo Visualizer */}
           <div className="relative h-64 sm:h-72 rounded-lg bg-bg border border-line overflow-hidden flex items-center justify-center p-3">
-            {/* Subtle Gym Spotlight */}
             <div className="absolute w-56 h-56 bg-accent-soft rounded-full blur-3xl pointer-events-none" />
 
-            {/* Photo keyframe */}
             <img
               src={frames[activeFrameIndex]}
               alt={`${exercise.name} - кадр ${activeFrameIndex + 1}`}
@@ -260,7 +245,6 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
               loading="eager"
             />
 
-            {/* Bottom-left Phase Pill */}
             <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-md bg-surface/90 border border-line text-xs">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
               <span className="text-fg-muted font-medium">Кадр {activeFrameIndex + 1} з {frameCount}:</span>
@@ -269,14 +253,12 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
               </strong>
             </div>
 
-            {/* Bottom-right Tempo Pill */}
             <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface/90 border border-line text-xs font-mono text-fg-muted">
               <span className="text-fg-muted font-sans">Темп:</span>
               <strong className="text-accent">{exercise.guide?.tempo || '3-0-1-0'}</strong>
             </div>
           </div>
 
-          {/* Keyframe step selectors */}
           <div className="grid grid-cols-2 gap-2">
             {frames.map((_, idx) => {
               const isSelected = activeFrameIndex === idx
@@ -315,14 +297,12 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
             })}
           </div>
 
-          {/* High-Signal Guidance Box */}
           <div className="p-4 rounded-lg bg-surface-2 border border-line space-y-3">
             <div>
               <h5 className="text-sm font-bold text-fg mb-1">{currentPhase.name}</h5>
               <p className="text-xs text-fg-muted leading-relaxed">{currentPhase.instruction}</p>
             </div>
 
-            {/* Coach Cue & Breathing Strip */}
             <div className="pt-2 border-t border-line flex flex-wrap items-center justify-between gap-2 text-xs">
               <div className="flex items-center gap-1.5 text-fg-muted">
                 <span className="text-accent font-bold">Фокус:</span>
@@ -344,32 +324,25 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
         </div>
       )}
 
-      {/* VIEW 2: BIOMECHANICAL RIG */}
       {activeTab === 'motion' && (
         <div className="space-y-4 animate-fade-in">
-          {/* Main Stage: Vector Biomechanical Human Athlete */}
           <div className="relative h-60 sm:h-64 rounded-lg bg-bg border border-line overflow-hidden flex items-center justify-center p-3">
-            {/* Ambient center spotlight */}
             <div className="absolute w-48 h-48 bg-accent-soft rounded-full blur-3xl pointer-events-none" />
 
-            {/* The articulated Human Athlete */}
             <AthleteRig pattern={pattern} phaseIndex={activePhaseIndex} />
 
-            {/* Bottom-left Phase Pill */}
             <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-md bg-surface/90 border border-line text-xs">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
               <span className="text-fg-muted font-medium">Фаза {activePhaseIndex + 1}:</span>
               <strong className="text-fg">{currentPhase.name.split('(')[0]}</strong>
             </div>
 
-            {/* Bottom-right Tempo Pill */}
             <div className="absolute bottom-3 right-3 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface/90 border border-line text-xs font-mono text-fg-muted">
               <span className="text-fg-muted font-sans">Темп:</span>
               <strong className="text-accent">{exercise.guide?.tempo || '3-0-1-0'}</strong>
             </div>
           </div>
 
-          {/* Phase Segmented Steps */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {phases.map((p, idx) => {
               const isActive = activePhaseIndex === idx
@@ -402,14 +375,12 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
             })}
           </div>
 
-          {/* Single High-Signal Guidance Box */}
           <div className="p-4 rounded-lg bg-surface-2 border border-line space-y-3">
             <div>
               <h5 className="text-sm font-bold text-fg mb-1">{currentPhase.name}</h5>
               <p className="text-xs text-fg-muted leading-relaxed">{currentPhase.instruction}</p>
             </div>
 
-            {/* Coach Cue & Breathing Strip */}
             <div className="pt-2 border-t border-line flex flex-wrap items-center justify-between gap-2 text-xs">
               <div className="flex items-center gap-1.5 text-fg-muted">
                 <span className="text-accent font-bold">Фокус:</span>
@@ -431,7 +402,6 @@ export const ExerciseMotionPlayer: React.FC<ExerciseMotionPlayerProps> = ({
         </div>
       )}
 
-      {/* VIEW 3: ANATOMY MAP */}
       {activeTab === 'anatomy' && (
         <div className="animate-fade-in">
           <MuscleMap

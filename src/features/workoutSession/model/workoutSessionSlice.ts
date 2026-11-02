@@ -111,7 +111,6 @@ export const workoutSessionSlice = createSlice({
     ) => {
       const { planExerciseId, set, autoStartRest = true, restSeconds = 60 } = action.payload
 
-      // Валідація значень: заборона від'ємних повторень та ваги
       const safeReps = Math.max(1, Math.min(500, Math.round(Number(set.reps)) || 1))
       const safeWeight =
         set.weight !== undefined && set.weight !== null && !isNaN(Number(set.weight))
@@ -174,7 +173,7 @@ export const workoutSessionSlice = createSlice({
     tickWorkoutTimer: (state) => {
       if (state.isActive) {
         state.elapsedSeconds += 1
-        // Періодично зберігаємо сесію (кожні 5 секунд або при оновленні)
+        // persist every 5 seconds instead of on every tick
         if (state.elapsedSeconds % 5 === 0) {
           persistSession(state)
         }
@@ -196,7 +195,6 @@ export const workoutSessionSlice = createSlice({
         if (state.restTimer.remainingSeconds > 1) {
           state.restTimer.remainingSeconds -= 1
         } else {
-          // Завершення відліку: обнуляємо та вимикаємо статус запуску
           state.restTimer.remainingSeconds = 0
           state.restTimer.isRunning = false
         }

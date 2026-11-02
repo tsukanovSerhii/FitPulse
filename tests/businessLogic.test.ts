@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 
-// Mock in-memory localStorage for tests
 const memoryStorage = new Map<string, string>()
 globalThis.window = {
   localStorage: {
@@ -50,7 +49,6 @@ describe('Workout Plans Persistence & Empty State Tests', () => {
     expect(saved.schedule['monday'].length).toBe(1)
     expect(saved.schedule['monday'][0].weight).toBe(85)
 
-    // Verify persisted in storage across reloads
     const reloaded = await plansApi.getPlans()
     const target = reloaded.plans.find((p) => p.id === planToEdit.id)
     expect(target?.schedule['monday'][0].weight).toBe(85)
@@ -62,7 +60,6 @@ describe('Workout Plans Persistence & Empty State Tests', () => {
       await plansApi.deletePlan(p.id)
     }
 
-    // Verify storage has empty array key
     expect(hasStorageKey(STORAGE_KEYS.WORKOUT_PLANS)).toBe(true)
     const reloaded = await plansApi.getPlans()
     expect(reloaded.plans.length).toBe(0)
@@ -125,10 +122,8 @@ describe('Personal Records (PR) & History Recalculation Tests', () => {
   })
 
   it('Deleting a workout recalculates PRs and removes orphaned records', async () => {
-    // 1. Initial state
     await progressApi.getProgressData()
 
-    // 2. Add workout with a 200kg record
     const hugeWorkout: WorkoutHistoryLog = {
       id: 'huge-pr-workout',
       planName: 'Record Day',
@@ -153,10 +148,8 @@ describe('Personal Records (PR) & History Recalculation Tests', () => {
     const saveResult = await progressApi.saveWorkoutLog(hugeWorkout)
     expect(saveResult.personalRecords['ex-bench-press'].maxWeightKg).toBe(200)
 
-    // 3. Delete the 200kg workout
     const deleteResult = await progressApi.deleteWorkoutLog('huge-pr-workout')
 
-    // 4. Assert the 200kg record is gone and recalculated from remaining history
     expect(deleteResult.personalRecords['ex-bench-press']?.maxWeightKg).not.toBe(200)
   })
 

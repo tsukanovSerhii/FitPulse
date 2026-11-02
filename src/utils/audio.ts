@@ -1,7 +1,3 @@
-/**
- * Генератор звукового сигналу за допомогою Web Audio API
- * Не потребує зовнішніх аудіофайлів
- */
 
 let audioCtx: AudioContext | null = null
 
@@ -24,7 +20,6 @@ export function playTimerBeep(): void {
     const ctx = getAudioContext()
     if (!ctx) return
 
-    // Подвійний приємний сигнал закінчення відпочинку
     const playTone = (frequency: number, startTime: number, duration: number) => {
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
@@ -44,8 +39,8 @@ export function playTimerBeep(): void {
     }
 
     const now = ctx.currentTime
-    playTone(880, now, 0.15)        // A5
-    playTone(1174.66, now + 0.2, 0.3) // D6
+    playTone(880, now, 0.15)
+    playTone(1174.66, now + 0.2, 0.3)
   } catch (e) {
     console.warn('[Audio] Помилка відтворення звуку:', e)
   }

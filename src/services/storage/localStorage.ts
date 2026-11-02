@@ -1,6 +1,3 @@
-/**
- * Безпечна робота з localStorage з fallback значеннями
- */
 
 const STORAGE_KEYS = {
   EXERCISES: 'fitpulse_exercises_v1',

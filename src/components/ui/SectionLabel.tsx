@@ -2,15 +2,12 @@ import { type ReactNode } from 'react'
 import { cn } from '@/utils/cn'
 
 export interface SectionLabelProps {
-  /** Порядковий номер секції, рендериться як «/ 01» */
   index?: number
   children: ReactNode
-  /** Довга лінія з акцентним відрізком під підписом */
   rule?: boolean
   className?: string
 }
 
-/** Підпис секції у стилі «/ 01  НАЗВА». */
 export function SectionLabel({ index, children, rule = false, className }: SectionLabelProps) {
   return (
     <div className={cn('flex flex-col gap-3', className)}>

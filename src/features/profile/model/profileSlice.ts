@@ -9,7 +9,6 @@ const initialState: ProfileState = {
   error: null,
 }
 
-// Async Thunks
 export const fetchProfile = createAsyncThunk(
   'profile/fetchProfile',
   async (_, { rejectWithValue }) => {
@@ -52,7 +51,6 @@ export const profileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // fetchProfile
       .addCase(fetchProfile.pending, (state) => {
         state.status = 'loading'
         state.error = null
@@ -65,11 +63,9 @@ export const profileSlice = createSlice({
         state.status = 'failed'
         state.error = (action.payload as string) || 'Помилка завантаження'
       })
-      // updateProfileAsync
       .addCase(updateProfileAsync.fulfilled, (state, action) => {
         state.profile = action.payload
       })
-      // resetProfileAsync
       .addCase(resetProfileAsync.fulfilled, (state, action) => {
         state.profile = action.payload
       })

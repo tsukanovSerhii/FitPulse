@@ -9,16 +9,12 @@ import { INITIAL_HISTORY, INITIAL_PRS } from '@/services/mockData/initialProgres
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-/**
- * Перерахунок персональних рекордів на основі повної актуальної історії тренувань.
- * Це гарантує цілісність аналітики при додаванні та видаленні тренувань.
- */
+/** Rebuilds personal records from the full history so edits and deletions stay consistent. */
 export function recalculatePersonalRecords(
   history: WorkoutHistoryLog[],
 ): Record<string, PersonalRecord> {
   const prs: Record<string, PersonalRecord> = {}
 
-  // Сортуємо тренування хронологічно від найстаріших до найновіших
   const sorted = [...history].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
@@ -46,7 +42,6 @@ export function recalculatePersonalRecords(
             achievedAt: log.date,
           }
         } else if (ex.maxWeightKg === existing.maxWeightKg && reps > existing.maxReps) {
-          // Повторний рекорд на тій же максимальній вазі
           prs[ex.exerciseId] = {
             ...existing,
             maxReps: reps,
@@ -61,7 +56,6 @@ export function recalculatePersonalRecords(
 }
 
 export const progressApi = {
-  // Отримати всю історію та рекорди
   async getProgressData(): Promise<{
     history: WorkoutHistoryLog[]
     personalRecords: Record<string, PersonalRecord>
@@ -69,12 +63,12 @@ export const progressApi = {
     await delay(100)
     let history: WorkoutHistoryLog[]
 
-    // Перший запуск застосунку — ініціалізуємо демо-історією
+    // First run: seed demo history
     if (!hasStorageKey(STORAGE_KEYS.WORKOUT_HISTORY)) {
       history = INITIAL_HISTORY
       saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, INITIAL_HISTORY)
     } else {
-      // Ключ існує — повертаємо збережені дані (навіть якщо це порожній масив [])
+      // Key exists: return stored data even if the user emptied it
       history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
     }
 
@@ -89,7 +83,6 @@ export const progressApi = {
     return { history, personalRecords: prs }
   },
 
-  // Зберегти нове завершене тренування
   async saveWorkoutLog(log: WorkoutHistoryLog): Promise<{
     log: WorkoutHistoryLog
     personalRecords: Record<string, PersonalRecord>
@@ -99,14 +92,12 @@ export const progressApi = {
     const updatedHistory = [log, ...history]
     saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
 
-    // Перераховуємо PRs на основі оновленої історії
     const updatedPrs = recalculatePersonalRecords(updatedHistory)
     saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
 
     return { log, personalRecords: updatedPrs }
   },
 
-  // Видалити запис з історії та оновити рекорди
   async deleteWorkoutLog(logId: string): Promise<{
     deletedId: string
     personalRecords: Record<string, PersonalRecord>
@@ -116,7 +107,6 @@ export const progressApi = {
     const updatedHistory = history.filter((item) => item.id !== logId)
     saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
 
-    // Перераховуємо рекорди за залишковою історією
     const updatedPrs = recalculatePersonalRecords(updatedHistory)
     saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
 

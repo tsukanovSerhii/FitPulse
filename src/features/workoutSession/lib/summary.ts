@@ -3,7 +3,6 @@ import type { WorkoutSessionState } from '../model/types'
 
 const KCAL_PER_MINUTE = 7
 
-/** Перетворює стан сесії на запис журналу. */
 export function buildWorkoutLog(
   session: Pick<WorkoutSessionState, 'exercises' | 'completedSets' | 'elapsedSeconds' | 'planId' | 'dayLabel'>,
   exerciseName: (exerciseId: string) => string,
@@ -60,7 +59,7 @@ export function buildWorkoutLog(
   }
 }
 
-/** «Понеділок (Push / Pull / Legs (3 дні))» → «Понеділок · Push / Pull / Legs» */
+/** "Day (Plan (details))" -> "Day · Plan" */
 export function formatSessionTitle(dayLabel: string | null) {
   if (!dayLabel) return 'Тренування'
   const match = dayLabel.match(/^([^(]+)\s*\((.+)\)\s*$/)

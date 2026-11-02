@@ -25,7 +25,6 @@ export function validateRegistration({ name, email, password }: RegistrationData
   return errors
 }
 
-/** 0–4: length, digits, mixed case, symbols. */
 export function passwordStrength(password: string): number {
   if (!password) return 0
   let score = 0

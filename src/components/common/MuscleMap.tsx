@@ -16,7 +16,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
 }) => {
   const secondaryMuscles = muscleGroups.filter((m) => m !== primaryMuscle)
 
-  // Color helper based on role
   const getMuscleStatus = (muscle: MuscleGroup) => {
     if (muscle === primaryMuscle) return 'primary'
     if (secondaryMuscles.includes(muscle)) return 'secondary'
@@ -39,7 +38,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
 
   return (
     <div className={`p-4 sm:p-5 rounded-lg bg-bg border border-line ${className}`}>
-      {/* Header */}
       <div className="flex items-center justify-between mb-4 pb-3 border-b border-line">
         <div>
           <h4 className="text-xs sm:text-sm font-bold text-fg flex items-center gap-2">
@@ -63,9 +61,7 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
         </div>
       </div>
 
-      {/* Visual Anatomy Graphic: Front & Back silhouettes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center justify-center py-1">
-        {/* Silhouette Front */}
         <div className="flex flex-col items-center p-3 rounded-md bg-surface/[0.02] border border-line">
           <span className="text-[10px] font-bold uppercase tracking-wider text-fg-muted mb-2">
             Вигляд спереду (Front View)
@@ -82,12 +78,9 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               </linearGradient>
             </defs>
 
-            {/* Head */}
             <circle cx="80" cy="22" r="14" fill="var(--surface-2)" stroke="var(--line-strong)" strokeWidth="1.5" />
-            {/* Neck */}
             <rect x="74" y="34" width="12" height="10" rx="3" fill="var(--surface-2)" />
 
-            {/* Shoulders (Front) */}
             <path
               d="M 52 46 C 44 48 38 58 38 66 C 44 66 52 58 54 48 Z"
               fill={getSvgFill('shoulders')}
@@ -101,7 +94,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.2"
             />
 
-            {/* Chest */}
             <path
               d="M 54 48 Q 80 46 106 48 L 102 74 Q 80 82 58 74 Z"
               fill={getSvgFill('chest')}
@@ -109,7 +101,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.5"
             />
 
-            {/* Biceps */}
             <rect
               x="33"
               y="68"
@@ -131,11 +122,9 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.2"
             />
 
-            {/* Forearms */}
             <rect x="29" y="100" width="11" height="32" rx="5" fill="var(--surface-2)" stroke="var(--line-strong)" />
             <rect x="120" y="100" width="11" height="32" rx="5" fill="var(--surface-2)" stroke="var(--line-strong)" />
 
-            {/* Abs / Core */}
             <rect
               x="62"
               y="78"
@@ -147,10 +136,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.5"
             />
 
-            {/* Pelvis / Hip */}
             <path d="M 58 118 Q 80 128 102 118 L 98 136 Q 80 142 62 136 Z" fill="var(--surface-2)" />
 
-            {/* Thighs / Quads (Legs) */}
             <path
               d="M 54 138 Q 76 138 76 190 L 52 188 Q 48 152 54 138 Z"
               fill={getSvgFill('legs')}
@@ -164,11 +151,9 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.5"
             />
 
-            {/* Knees */}
             <circle cx="64" cy="195" r="5" fill="var(--surface-2)" />
             <circle cx="96" cy="195" r="5" fill="var(--surface-2)" />
 
-            {/* Calves (Front Shin) */}
             <rect
               x="57"
               y="204"
@@ -192,15 +177,12 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
           </svg>
         </div>
 
-        {/* Silhouette Back */}
         <div className="flex flex-col items-center p-3 rounded-md bg-surface/60 border border-line/70">
           <span className="text-[10px] font-bold uppercase tracking-wider text-fg-muted mb-2">
             Вигляд ззаду (Back View)
           </span>
           <svg viewBox="0 0 160 260" className="w-36 h-56 transition-all filter drop-shadow-md">
-            {/* Head back */}
             <circle cx="80" cy="22" r="14" fill="var(--surface-2)" stroke="var(--line-strong)" strokeWidth="1.5" />
-            {/* Traps / Upper Back */}
             <path
               d="M 64 36 L 96 36 L 104 54 L 56 54 Z"
               fill={getSvgFill('back')}
@@ -208,7 +190,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.2"
             />
 
-            {/* Shoulders (Rear Delts) */}
             <path
               d="M 52 46 C 44 48 38 58 38 66 C 44 66 52 58 54 48 Z"
               fill={getSvgFill('shoulders')}
@@ -222,7 +203,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.2"
             />
 
-            {/* Triceps */}
             <rect
               x="33"
               y="68"
@@ -244,7 +224,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.2"
             />
 
-            {/* Lats & Lower Back */}
             <path
               d="M 56 54 Q 80 56 104 54 L 94 116 Q 80 118 66 116 Z"
               fill={getSvgFill('back')}
@@ -252,7 +231,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.5"
             />
 
-            {/* Glutes */}
             <path
               d="M 58 118 Q 80 124 102 118 Q 106 144 80 144 Q 54 144 58 118 Z"
               fill={getSvgFill('glutes')}
@@ -260,7 +238,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.5"
             />
 
-            {/* Hamstrings (Legs back) */}
             <path
               d="M 54 144 Q 76 144 76 190 L 52 188 Q 48 152 54 144 Z"
               fill={getSvgFill('legs')}
@@ -274,7 +251,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               strokeWidth="1.5"
             />
 
-            {/* Calves (Back) */}
             <rect
               x="57"
               y="204"
@@ -299,7 +275,6 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
         </div>
       </div>
 
-      {/* Target Breakdown Legend */}
       <div className="mt-3 pt-3 border-t border-line space-y-2">
         <div className="flex items-center justify-between text-xs">
           <span className="text-fg-muted font-medium">Основний цільовий м'яз (Target):</span>

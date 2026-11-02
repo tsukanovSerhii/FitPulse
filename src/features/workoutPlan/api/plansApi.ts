@@ -10,17 +10,16 @@ import { INITIAL_PLANS } from '@/services/mockData/initialPlans'
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const plansApi = {
-  // Отримати всі плани тренувань (GET /api/plans)
   async getPlans(): Promise<{ plans: WorkoutPlan[]; activePlanId: string | null }> {
     await delay(100)
     let plans: WorkoutPlan[]
 
-    // Якщо перший запуск застосунку (ключа немає у сховищі) — ініціалізуємо демо-даними
+    // First run: seed demo plans
     if (!hasStorageKey(STORAGE_KEYS.WORKOUT_PLANS)) {
       plans = INITIAL_PLANS
       saveToStorage(STORAGE_KEYS.WORKOUT_PLANS, INITIAL_PLANS)
     } else {
-      // Якщо ключ існує — повертаємо навіть порожній масив, якщо користувач видалив усі плани
+      // Key exists: keep an empty list if the user deleted every plan
       plans = loadFromStorage<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
     }
 
@@ -39,7 +38,6 @@ export const plansApi = {
     return { plans, activePlanId }
   },
 
-  // Створити або оновити план (POST/PUT /api/plans)
   async savePlan(plan: WorkoutPlan): Promise<WorkoutPlan> {
     await delay(100)
     const current = loadFromStorage<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
@@ -62,7 +60,6 @@ export const plansApi = {
     return cleanPlan
   },
 
-  // Видалити план (DELETE /api/plans/:id)
   async deletePlan(planId: string): Promise<string> {
     await delay(100)
     const current = loadFromStorage<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
@@ -78,7 +75,6 @@ export const plansApi = {
     return planId
   },
 
-  // Встановити активний план
   async setActivePlan(planId: string): Promise<string> {
     await delay(100)
     saveToStorage(STORAGE_KEYS.ACTIVE_PLAN_ID, planId)

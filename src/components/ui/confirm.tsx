@@ -9,10 +9,7 @@ export interface ConfirmOptions {
   destructive?: boolean
 }
 
-/**
- * Замінник window.confirm на базі sonner. Повертає true лише при
- * натисканні кнопки підтвердження; закриття свайпом/таймаутом — false.
- */
+/** Promise-based window.confirm. Resolves true only on the confirm button; dismissing resolves false. */
 export function confirmAction({
   title,
   description,

@@ -8,7 +8,6 @@ export interface ModalProps {
   isOpen: boolean
   onClose: () => void
   title?: ReactNode
-  /** Рядок над заголовком, напр. «/ 02» або категорія */
   eyebrow?: ReactNode
   children: ReactNode
   footer?: ReactNode
@@ -27,7 +26,7 @@ const widths = {
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
-/** Доступний діалог: портал, фокус-пастка, Esc, блокування скролу, повернення фокусу. */
+/** Accessible dialog: portal, focus trap, Escape, scroll lock and focus restore. */
 export function Modal({ isOpen, onClose, title, eyebrow, children, footer, maxWidth = 'lg' }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
   const onCloseRef = useRef(onClose)
@@ -45,7 +44,7 @@ export function Modal({ isOpen, onClose, title, eyebrow, children, footer, maxWi
     document.body.style.overflow = 'hidden'
 
     const focusables = () => Array.from(dialog?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])
-    // Фокус на перший інтерактивний елемент контенту (після кнопки закриття), інакше — на сам діалог
+    // Focus the first control after the close button, falling back to the dialog itself
     const [first, second] = focusables()
     ;(second ?? first ?? dialog)?.focus()
 

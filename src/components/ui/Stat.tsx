@@ -5,7 +5,6 @@ export interface StatProps {
   label: string
   value: ReactNode
   unit?: string
-  /** Додатковий рядок: дельта, ціль, пояснення */
   hint?: ReactNode
   icon?: ReactNode
   accent?: boolean
@@ -13,7 +12,6 @@ export interface StatProps {
   className?: string
 }
 
-/** Метрика: великі моноширинні цифри + підпис. */
 export function Stat({ label, value, unit, hint, icon, accent, size = 'md', className }: StatProps) {
   return (
     <div className={cn('flex min-w-0 flex-col gap-2', className)}>

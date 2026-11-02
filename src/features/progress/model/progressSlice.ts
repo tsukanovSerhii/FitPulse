@@ -9,7 +9,6 @@ const initialState: ProgressState = {
   error: null,
 }
 
-// Async Thunks
 export const fetchProgress = createAsyncThunk(
   'progress/fetchProgress',
   async (_, { rejectWithValue }) => {
@@ -52,7 +51,6 @@ export const progressSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // fetchProgress
       .addCase(fetchProgress.pending, (state) => {
         state.status = 'loading'
         state.error = null
@@ -66,12 +64,10 @@ export const progressSlice = createSlice({
         state.status = 'failed'
         state.error = (action.payload as string) || 'Помилка завантаження прогресу'
       })
-      // logWorkoutAsync
       .addCase(logWorkoutAsync.fulfilled, (state, action) => {
         state.history.unshift(action.payload.log)
         state.personalRecords = action.payload.personalRecords
       })
-      // deleteWorkoutLogAsync
       .addCase(deleteWorkoutLogAsync.fulfilled, (state, action) => {
         state.history = state.history.filter((item) => item.id !== action.payload.deletedId)
         state.personalRecords = action.payload.personalRecords

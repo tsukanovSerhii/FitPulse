@@ -32,7 +32,6 @@ function Chip({ selected, onClick, children }: { selected: boolean; onClick: () 
   )
 }
 
-/** Липка панель: пошук, обране, кнопка фільтрів і рядок груп м'язів. */
 export function ExerciseFiltersBar({
   filters,
   onChange,

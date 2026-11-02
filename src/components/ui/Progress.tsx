@@ -4,7 +4,6 @@ import { cn } from '@/utils/cn'
 const clamp = (value: number) => Math.min(100, Math.max(0, value))
 
 export interface ProgressBarProps {
-  /** 0–100 */
   value: number
   label: string
   tone?: 'accent' | 'success' | 'danger'
@@ -30,7 +29,6 @@ export function ProgressBar({ value, label, tone = 'accent', className }: Progre
 }
 
 export interface ProgressRingProps {
-  /** 0–100 */
   value: number
   label: string
   size?: number

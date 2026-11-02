@@ -44,7 +44,6 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
 
   const dayExercises = plan.schedule[day] || []
 
-  // Map exercise ID to object
   const exerciseMap = new Map<string, Exercise>()
   allExercises.forEach((e) => exerciseMap.set(e.id, e))
 
@@ -82,7 +81,6 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
       maxWidth="xl"
     >
       <div className="space-y-6">
-        {/* Existing exercises in this day */}
         <div>
           <h4 className="text-sm font-bold text-fg mb-3 flex items-center justify-between">
             <span>Вправи на цей день ({dayExercises.length})</span>
@@ -153,7 +151,6 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
           )}
         </div>
 
-        {/* Add new exercise form */}
         <div className="pt-4 border-t border-line">
           <h4 className="text-sm font-bold text-fg mb-3 flex items-center gap-2">
             <Plus className="w-4 h-4 text-accent" />

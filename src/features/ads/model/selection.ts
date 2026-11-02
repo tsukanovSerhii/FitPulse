@@ -2,7 +2,6 @@ import type { AdCampaign, AdPlacement, AdTier } from './types'
 
 export const ADS_ENABLED = import.meta.env.VITE_ADS_ENABLED === 'true'
 
-/** Рівні, допустимі в кожному місці, у порядку пріоритету. */
 export const PLACEMENT_TIERS: Record<AdPlacement, AdTier[]> = {
   dashboard: ['premium'],
   catalog: ['standard', 'premium'],
@@ -10,16 +9,12 @@ export const PLACEMENT_TIERS: Record<AdPlacement, AdTier[]> = {
   'post-workout': ['premium'],
 }
 
-/** Позиція рекламної картки в списку вправ: після кожної N-ї вправи. */
 export const CATALOG_AD_EVERY = 8
 
 export const INTERSTITIAL_COOLDOWN_MS = 24 * 60 * 60 * 1000
 const INTERSTITIAL_KEY = 'fitpulse_ad_interstitial_at'
 
-/**
- * Обирає кампанію найвищого доступного рівня; серед кампаній рівня —
- * зважена ротація. `random` інжектиться для детермінованих тестів.
- */
+/** Picks the highest allowed tier, then a weighted random campaign. `random` is injectable for tests. */
 export function pickCampaign(
   campaigns: AdCampaign[],
   placement: AdPlacement,
@@ -56,6 +51,6 @@ export function markInterstitialShown(now = Date.now()) {
   try {
     localStorage.setItem(INTERSTITIAL_KEY, String(now))
   } catch {
-    // сховище недоступне — частоту не обмежуємо
+    // storage unavailable: skip frequency capping
   }
 }

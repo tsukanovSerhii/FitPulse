@@ -27,7 +27,7 @@ interface ActiveSetProps {
   onDone: (weight: number | undefined, reps: number) => void
 }
 
-/** Поточний підхід: степери ваги й повторів. Ключ компонента скидає чернетку після кожного підходу. */
+/** Current set editor. Its key changes after every set, which resets the draft values. */
 function ActiveSet({ setNumber, initialWeight, initialReps, showWeight, onDone }: ActiveSetProps) {
   const [weight, setWeight] = useState(initialWeight ?? 0)
   const [reps, setReps] = useState(initialReps)

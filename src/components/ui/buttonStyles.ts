@@ -23,7 +23,7 @@ const sizes: Record<ButtonSize, string> = {
   lg: 'h-12 px-6 text-sm uppercase',
 }
 
-/** Класи кнопки — для `<Link>` чи інших елементів, що мають виглядати як кнопка. */
+/** Button classes for links and other elements that should look like a button. */
 export function buttonClasses(variant: ButtonVariant = 'primary', size: ButtonSize = 'md', className?: string) {
   return cn(base, variants[variant], sizes[size], className)
 }

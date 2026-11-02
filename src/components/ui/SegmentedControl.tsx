@@ -4,7 +4,6 @@ import { cn } from '@/utils/cn'
 export interface SegmentOption<T extends string> {
   value: T
   label: ReactNode
-  /** Доступна назва, якщо `label` — лише іконка */
   ariaLabel?: string
 }
 
@@ -12,18 +11,13 @@ export interface SegmentedControlProps<T extends string> {
   options: SegmentOption<T>[]
   value: T
   onChange: (value: T) => void
-  /** Назва групи для скрінрідерів */
   label: string
   size?: 'sm' | 'md'
-  /** `underline` — як навігація в референсі, `pill` — компактний перемикач */
   appearance?: 'pill' | 'underline'
   className?: string
 }
 
-/**
- * Радіогрупа з roving tabindex: стрілки / Home / End переміщують вибір,
- * у фокусі лише активний сегмент.
- */
+/** Radio group with roving tabindex: arrows, Home and End move the selection. */
 export function SegmentedControl<T extends string>({
   options,
   value,

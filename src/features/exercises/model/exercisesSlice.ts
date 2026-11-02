@@ -19,10 +19,8 @@ const initialState: ExercisesState = {
   error: null,
 }
 
-// Допоміжна функція фільтрації
 function applyFilters(items: Exercise[], filters: ExerciseFilters): Exercise[] {
   return items.filter((item) => {
-    // Пошук за назвою або описом
     if (filters.searchQuery.trim()) {
       const q = filters.searchQuery.toLowerCase().trim()
       const matchName = item.name.toLowerCase().includes(q)
@@ -30,18 +28,15 @@ function applyFilters(items: Exercise[], filters: ExerciseFilters): Exercise[] {
       if (!matchName && !matchDesc) return false
     }
 
-    // Фільтр за групою м'язів
     if (filters.muscleGroup !== 'all') {
       const hasMuscle = item.muscleGroups.includes(filters.muscleGroup as MuscleGroup)
       if (!hasMuscle) return false
     }
 
-    // Фільтр за складністю
     if (filters.difficulty !== 'all' && item.difficulty !== filters.difficulty) {
       return false
     }
 
-    // Фільтр за обладнанням
     if (filters.equipment !== 'all' && item.equipment !== filters.equipment) {
       return false
     }
@@ -50,7 +45,6 @@ function applyFilters(items: Exercise[], filters: ExerciseFilters): Exercise[] {
   })
 }
 
-// Async Thunks
 export const fetchExercises = createAsyncThunk(
   'exercises/fetchExercises',
   async (_, { rejectWithValue }) => {
@@ -120,7 +114,6 @@ export const exercisesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // fetchExercises
       .addCase(fetchExercises.pending, (state) => {
         state.status = 'loading'
         state.error = null
@@ -135,12 +128,10 @@ export const exercisesSlice = createSlice({
         state.status = 'failed'
         state.error = (action.payload as string) || 'Помилка завантаження'
       })
-      // addCustomExercise
       .addCase(addCustomExercise.fulfilled, (state, action) => {
         state.items = [action.payload, ...state.items]
         state.filteredItems = applyFilters(state.items, state.filters)
       })
-      // toggleFavorite
       .addCase(toggleFavorite.fulfilled, (state, action) => {
         state.favorites = action.payload
       })

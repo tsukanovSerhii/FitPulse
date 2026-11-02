@@ -20,7 +20,7 @@ import { Button } from '@/components/ui'
 import { MuscleMap } from '@/components/common/MuscleMap'
 import { ExerciseMotionPlayer } from '@/components/common/ExerciseMotionPlayer'
 
-/** Прибирає емодзі-маркер на початку поради (старі дані в localStorage). */
+/** Strips the leading emoji marker from tips saved by older versions. */
 const stripMarker = (text: string) => text.replace(/^(?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\u{FE0F}?\s*)+/u, '')
 
 export interface ExerciseDetailModalProps {
@@ -55,7 +55,6 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={exercise.name} maxWidth="2xl">
       <div className="space-y-6">
-        {/* Top Badges & Actions */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="primary" dot size="sm">
@@ -80,12 +79,10 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
           </Button>
         </div>
 
-        {/* Short description */}
         <p className="text-xs sm:text-sm text-fg-muted leading-relaxed bg-surface-2 p-4 rounded-lg border border-line">
           {exercise.description}
         </p>
 
-        {/* Quick parameters ribbon */}
         <div className="grid grid-cols-3 gap-3">
           <div className="p-3 bg-surface/80 rounded-md border border-line text-center">
             <span className="text-[10px] uppercase font-bold text-fg-muted block mb-0.5">
@@ -118,7 +115,6 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
           </div>
         </div>
 
-        {/* Tab Switcher */}
         <div className="flex items-center gap-2 border-b border-line pb-2">
           <button
             type="button"
@@ -160,13 +156,10 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
           </button>
         </div>
 
-        {/* TAB 1: Technique & Motion Player */}
         {activeTab === 'technique' && (
           <div className="space-y-5 animate-fade-in">
-            {/* Motion Visualizer */}
             <ExerciseMotionPlayer exercise={exercise} showTabSwitcher={false} />
 
-            {/* Step by step execution */}
             <div>
               <h4 className="text-sm font-bold text-fg mb-3 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent" />
@@ -189,7 +182,6 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
           </div>
         )}
 
-        {/* TAB 2: Muscle Anatomy Map */}
         {activeTab === 'anatomy' && (
           <div className="space-y-4 animate-fade-in">
             <MuscleMap
@@ -208,10 +200,8 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
           </div>
         )}
 
-        {/* TAB 3: Beginner vs Pro Guide */}
         {activeTab === 'guide' && (
           <div className="space-y-5 animate-fade-in">
-            {/* Common Mistakes to Avoid (Crucial for beginners!) */}
             <div className="p-4 rounded-lg bg-danger-soft border border-danger/30 space-y-2.5">
               <h4 className="text-sm font-extrabold text-danger flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-danger" />
@@ -230,7 +220,6 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               </ul>
             </div>
 
-            {/* Beginner Guide */}
             <div className="p-4 rounded-lg bg-accent-soft border border-accent/30 space-y-2.5">
               <h4 className="text-sm font-extrabold text-accent flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent" />
@@ -249,7 +238,6 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               </ul>
             </div>
 
-            {/* Pro Tips for Experienced Gymgoers */}
             <div className="p-4 rounded-lg bg-warning-soft border border-warning/30 space-y-2.5">
               <h4 className="text-sm font-extrabold text-warning flex items-center gap-2">
                 <Zap className="w-4 h-4 text-warning" />
@@ -270,7 +258,6 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
           </div>
         )}
 
-        {/* Modal Footer */}
         <div className="flex justify-end pt-4 border-t border-line">
           <Button variant="secondary" onClick={onClose}>
             Закрити

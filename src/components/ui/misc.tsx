@@ -39,7 +39,6 @@ export function EmptyState({ icon, title, description, action, className }: Empt
   )
 }
 
-/** Заголовок сторінки. `compact` — для робочих екранів, де важливий контент нижче. */
 export function PageHeader({
   index,
   eyebrow,

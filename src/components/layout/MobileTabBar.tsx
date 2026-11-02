@@ -24,7 +24,6 @@ function TabLink({ item }: { item: NavItem }) {
   )
 }
 
-/** Нижня навігація для екранів < lg з виділеною центральною кнопкою тренування. */
 export function MobileTabBar() {
   const session = useAppSelector((state) => state.workoutSession)
   const [home, exercises, plans, progress] = NAV_ITEMS

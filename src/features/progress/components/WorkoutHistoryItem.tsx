@@ -19,7 +19,6 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
   return (
     <Card className="p-5 transition-all">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        {/* Left info */}
         <div>
           <div className="flex items-center gap-2.5 mb-1.5">
             <h4 className="text-base font-bold text-fg">{log.planName}</h4>
@@ -42,7 +41,6 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
           </div>
         </div>
 
-        {/* Right metrics */}
         <div className="flex items-center gap-4 self-end sm:self-center">
           <div className="flex items-center gap-4 text-xs">
             <div className="text-right">
@@ -79,7 +77,6 @@ export const WorkoutHistoryItem: React.FC<WorkoutHistoryItemProps> = ({
         </div>
       </div>
 
-      {/* Accordion detail list */}
       {isOpen && (
         <div className="mt-4 pt-4 border-t border-line animate-fade-in">
           <h5 className="text-xs font-bold uppercase tracking-wider text-fg-subtle mb-3">

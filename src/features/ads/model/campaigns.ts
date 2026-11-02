@@ -1,6 +1,5 @@
 import type { AdCampaign } from './types'
 
-/** Демо-кампанії: показують формати, доки немає реальних рекламодавців. */
 export const DEMO_CAMPAIGNS: AdCampaign[] = [
   {
     id: 'demo-premium',

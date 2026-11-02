@@ -12,11 +12,11 @@ export interface WorkoutHistoryLog {
   planId?: string | null
   planName: string
   dayLabel?: string | null
-  date: string                // ISO string
+  date: string
   durationSeconds: number
   totalSets: number
   totalReps: number
-  totalVolumeKg: number       // сумарна піднята вага
+  totalVolumeKg: number
   caloriesBurned: number
   exercises: ExerciseSummary[]
 }
@@ -26,12 +26,12 @@ export interface PersonalRecord {
   exerciseName: string
   maxWeightKg: number
   maxReps: number
-  achievedAt: string          // ISO string
+  achievedAt: string
 }
 
 export interface ProgressState {
   history: WorkoutHistoryLog[]
-  personalRecords: Record<string, PersonalRecord> // key = exerciseId
+  personalRecords: Record<string, PersonalRecord>
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null
 }

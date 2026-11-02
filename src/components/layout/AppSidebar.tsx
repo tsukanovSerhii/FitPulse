@@ -16,7 +16,6 @@ const linkClasses = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'bg-surface-2 text-fg before:opacity-100' : 'text-fg-muted before:opacity-0 hover:bg-surface-2 hover:text-fg',
   )
 
-/** Головна навігація на десктопі (lg+). */
 export function AppSidebar() {
   const user = useAppSelector((state) => state.auth.user)
 

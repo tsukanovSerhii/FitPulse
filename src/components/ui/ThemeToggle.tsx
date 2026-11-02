@@ -10,7 +10,6 @@ const OPTIONS: SegmentOption<ThemeMode>[] = [
   { value: 'system', label: <Monitor />, ariaLabel: 'Як у системі' },
 ]
 
-/** Повний перемикач: світла / темна / системна. */
 export function ThemeToggle({ className }: { className?: string }) {
   const { mode, setMode } = useTheme()
   return <SegmentedControl label="Тема оформлення" options={OPTIONS} value={mode} onChange={setMode} size="sm" className={className} />
@@ -20,7 +19,6 @@ const NEXT: Record<ThemeMode, ThemeMode> = { light: 'dark', dark: 'system', syst
 const ICON = { light: <Sun />, dark: <Moon />, system: <Monitor /> }
 const LABEL = { light: 'Світла тема', dark: 'Темна тема', system: 'Тема як у системі' }
 
-/** Компактна кнопка для вузьких місць: циклічно перемикає режими. */
 export function ThemeCycleButton({ className }: { className?: string }) {
   const { mode, setMode } = useTheme()
   return (
