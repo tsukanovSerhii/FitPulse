@@ -8,13 +8,18 @@ import { PasswordField } from '@/features/auth/components/PasswordField'
 import { validateRegistration, type FieldErrors } from '@/features/auth/lib/validation'
 import { authErrorCleared, registerUser } from '@/features/auth/model/authSlice'
 import type { RegistrationData } from '@/features/auth/model/types'
+import { removeFromSession, SESSION_KEYS } from '@/services/storage/sessionStorage'
+import { useSessionState } from '@/services/storage/useSessionState'
 
 type Form = RegistrationData
 
 export function RegisterPage() {
   const dispatch = useAppDispatch()
   const { status, error } = useAppSelector((state) => state.auth)
-  const [form, setForm] = useState<Form>({ name: '', email: '', password: '' })
+  // Name and email survive a reload within the tab; the password never leaves memory.
+  const [draft, setDraft] = useSessionState(SESSION_KEYS.REGISTER_DRAFT, { name: '', email: '' })
+  const [password, setPassword] = useState('')
+  const form: Form = { ...draft, password }
   const [errors, setErrors] = useState<FieldErrors<Form>>({})
 
   useEffect(() => {
@@ -22,7 +27,8 @@ export function RegisterPage() {
   }, [dispatch])
 
   const update = (field: keyof Form) => (value: string) => {
-    setForm((f) => ({ ...f, [field]: value }))
+    if (field === 'password') setPassword(value)
+    else setDraft((d) => ({ ...d, [field]: value }))
     setErrors((e) => ({ ...e, [field]: undefined }))
   }
 
@@ -30,7 +36,11 @@ export function RegisterPage() {
     event.preventDefault()
     const found = validateRegistration(form)
     setErrors(found)
-    if (Object.keys(found).length === 0) dispatch(registerUser(form))
+    if (Object.keys(found).length > 0) return
+    dispatch(registerUser(form))
+      .unwrap()
+      .then(() => removeFromSession(SESSION_KEYS.REGISTER_DRAFT))
+      .catch(() => {})
   }
 
   return (

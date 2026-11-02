@@ -1,19 +1,31 @@
 import { loadFromStorage, removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
+import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/services/storage/sessionStorage'
 import { createSalt, hashPassword } from '../lib/password'
 import { normalizeEmail } from '../lib/validation'
-import type { AuthUser, Credentials, RegistrationData, StoredAccount } from '../model/types'
+import type { AuthUser, LoginData, RegistrationData, StoredAccount } from '../model/types'
 
 export class AuthError extends Error {}
 
 const loadAccounts = () => loadFromStorage<StoredAccount[]>(STORAGE_KEYS.ACCOUNTS, [])
 const saveAccounts = (accounts: StoredAccount[]) => saveToStorage(STORAGE_KEYS.ACCOUNTS, accounts)
 
+function startSession(userId: string, remember: boolean) {
+  if (remember) {
+    saveToStorage(STORAGE_KEYS.SESSION, userId)
+    removeFromSession(SESSION_KEYS.AUTH_SESSION)
+  } else {
+    saveToSession(SESSION_KEYS.AUTH_SESSION, userId)
+    removeFromStorage(STORAGE_KEYS.SESSION)
+  }
+}
+
 const toUser = ({ passwordHash: _hash, salt: _salt, ...user }: StoredAccount): AuthUser => user
 
 /** Local, storage-backed auth. Swap this module for HTTP calls when a backend exists. */
 export const authApi = {
   currentUser(): AuthUser | null {
-    const userId = loadFromStorage<string | null>(STORAGE_KEYS.SESSION, null)
+    const userId =
+      loadFromSession<string | null>(SESSION_KEYS.AUTH_SESSION, null) ?? loadFromStorage<string | null>(STORAGE_KEYS.SESSION, null)
     const account = userId ? loadAccounts().find((a) => a.id === userId) : undefined
     return account ? toUser(account) : null
   },
@@ -35,21 +47,22 @@ export const authApi = {
       passwordHash: await hashPassword(password, salt),
     }
     saveAccounts([...accounts, account])
-    saveToStorage(STORAGE_KEYS.SESSION, account.id)
+    startSession(account.id, true)
     return toUser(account)
   },
 
-  async login({ email, password }: Credentials): Promise<AuthUser> {
+  async login({ email, password, remember }: LoginData): Promise<AuthUser> {
     const account = loadAccounts().find((a) => a.email === normalizeEmail(email))
     if (!account || (await hashPassword(password, account.salt)) !== account.passwordHash) {
       throw new AuthError('Невірний email або пароль')
     }
-    saveToStorage(STORAGE_KEYS.SESSION, account.id)
+    startSession(account.id, remember)
     return toUser(account)
   },
 
   logout() {
     removeFromStorage(STORAGE_KEYS.SESSION)
+    removeFromSession(SESSION_KEYS.AUTH_SESSION)
   },
 
   updateUser(id: string, changes: Partial<Pick<AuthUser, 'name' | 'email' | 'avatarUrl'>>): AuthUser {

@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { SEO } from '@/components/common/SEO'
-import { Button, Input } from '@/components/ui'
+import { Button, Checkbox, Input } from '@/components/ui'
 import { AuthLayout } from '@/features/auth/components/AuthLayout'
 import { PasswordField } from '@/features/auth/components/PasswordField'
 import { validateLogin, type FieldErrors } from '@/features/auth/lib/validation'
@@ -13,6 +13,7 @@ export function LoginPage() {
   const dispatch = useAppDispatch()
   const { status, error } = useAppSelector((state) => state.auth)
   const [form, setForm] = useState<Credentials>({ email: '', password: '' })
+  const [remember, setRemember] = useState(true)
   const [errors, setErrors] = useState<FieldErrors<Credentials>>({})
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export function LoginPage() {
     event.preventDefault()
     const found = validateLogin(form)
     setErrors(found)
-    if (Object.keys(found).length === 0) dispatch(loginUser(form))
+    if (Object.keys(found).length === 0) dispatch(loginUser({ ...form, remember }))
   }
 
   return (
@@ -67,6 +68,12 @@ export function LoginPage() {
           value={form.password}
           onChange={(e) => update('password')(e.target.value)}
           error={errors.password}
+        />
+        <Checkbox
+          label="Запам'ятати мене"
+          hint="Вимкніть на чужому пристрої: вихід відбудеться після закриття вкладки"
+          checked={remember}
+          onChange={(e) => setRemember(e.target.checked)}
         />
         <Button type="submit" size="lg" className="w-full" isLoading={status === 'loading'}>
           Увійти

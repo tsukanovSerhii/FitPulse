@@ -1,15 +1,18 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
+const memoryStorage = (memory: Map<string, string>) => ({
+  getItem: (k: string) => memory.get(k) ?? null,
+  setItem: (k: string, v: string) => memory.set(k, String(v)),
+  removeItem: (k: string) => memory.delete(k),
+  clear: () => memory.clear(),
+  length: 0,
+  key: () => null,
+})
 const memory = new Map<string, string>()
+const tabMemory = new Map<string, string>()
 globalThis.window = {
-  localStorage: {
-    getItem: (k: string) => memory.get(k) ?? null,
-    setItem: (k: string, v: string) => memory.set(k, String(v)),
-    removeItem: (k: string) => memory.delete(k),
-    clear: () => memory.clear(),
-    length: 0,
-    key: () => null,
-  },
+  localStorage: memoryStorage(memory),
+  sessionStorage: memoryStorage(tabMemory),
 } as unknown as Window & typeof globalThis
 
 const { authApi } = await import('@/features/auth/api/authApi')
@@ -18,7 +21,10 @@ const { validateImageFile } = await import('@/utils/image')
 const { STORAGE_KEYS } = await import('@/services/storage/localStorage')
 
 describe('authApi', () => {
-  beforeEach(() => memory.clear())
+  beforeEach(() => {
+    memory.clear()
+    tabMemory.clear()
+  })
 
   it('registers, stores only a hash and starts a session', async () => {
     const user = await authApi.register({ name: ' Ira ', email: 'Ira@Mail.com', password: 'secret123' })
@@ -36,8 +42,18 @@ describe('authApi', () => {
     await authApi.register({ name: 'Ira', email: 'ira@mail.com', password: 'secret123' })
     authApi.logout()
     expect(authApi.currentUser()).toBeNull()
-    await expect(authApi.login({ email: 'ira@mail.com', password: 'wrong123' })).rejects.toThrow('Невірний')
-    expect((await authApi.login({ email: 'IRA@mail.com', password: 'secret123' })).email).toBe('ira@mail.com')
+    await expect(authApi.login({ email: 'ira@mail.com', password: 'wrong123', remember: true })).rejects.toThrow('Невірний')
+    expect((await authApi.login({ email: 'IRA@mail.com', password: 'secret123', remember: true })).email).toBe('ira@mail.com')
+  })
+
+  it('keeps a not-remembered session in the tab only', async () => {
+    const user = await authApi.register({ name: 'Ira', email: 'ira@mail.com', password: 'secret123' })
+    authApi.logout()
+    await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: false })
+    expect(memory.has(STORAGE_KEYS.SESSION)).toBe(false)
+    expect(authApi.currentUser()?.id).toBe(user.id)
+    tabMemory.clear()
+    expect(authApi.currentUser()).toBeNull()
   })
 })
 
