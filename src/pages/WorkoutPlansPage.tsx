@@ -1,3 +1,4 @@
+import { toast } from 'sonner'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Calendar, Plus } from 'lucide-react'
@@ -18,7 +19,7 @@ import { DAY_LABELS } from '@/features/workoutPlan/model/types'
 import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
 import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorModal'
 import { AddExerciseToDayModal } from '@/features/workoutPlan/components/AddExerciseToDayModal'
-import { Button, PageHeader } from '@/components/ui'
+import { Button, PageHeader, confirmAction } from '@/components/ui'
 import { EmptyState } from '@/components/ui'
 import { SEO } from '@/components/common/SEO'
 
@@ -63,9 +64,16 @@ export const WorkoutPlansPage: React.FC = () => {
   }
 
   const handleDeletePlan = async (planId: string) => {
-    if (window.confirm('Ви дійсно бажаєте видалити цей тренувальний план?')) {
-      await dispatch(deletePlanAsync(planId)).unwrap()
-    }
+    const plan = plans.find((p) => p.id === planId)
+    const confirmed = await confirmAction({
+      title: 'Видалити програму?',
+      description: plan ? `«${plan.name}» буде видалено без можливості відновлення.` : undefined,
+      confirmLabel: 'Видалити',
+      destructive: true,
+    })
+    if (!confirmed) return
+    await dispatch(deletePlanAsync(planId)).unwrap()
+    toast.success('Програму видалено')
   }
 
   const handleSetActivePlan = (planId: string) => {
@@ -88,7 +96,7 @@ export const WorkoutPlansPage: React.FC = () => {
     if (!plan) return
     const exercises = plan.schedule[day] || []
     if (exercises.length === 0) {
-      alert('У цьому дні ще немає вправ. Додайте хоча б одну вправу перед початком.')
+      toast.warning('У цьому дні ще немає вправ', { description: 'Додайте хоча б одну вправу перед початком.' })
       return
     }
 

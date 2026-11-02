@@ -10,7 +10,7 @@ import type { UserProfile } from '@/features/profile/model/types'
 import { FITNESS_GOAL_LABELS, ACTIVITY_LEVEL_LABELS } from '@/features/profile/model/types'
 import { BMISummary } from '@/features/profile/components/BMISummary'
 import { ProfileEditModal } from '@/features/profile/components/ProfileEditModal'
-import { Card, PageHeader } from '@/components/ui'
+import { Card, PageHeader, confirmAction } from '@/components/ui'
 import { Button } from '@/components/ui'
 import { Badge } from '@/components/ui'
 import { formatDate } from '@/utils/formatters'
@@ -32,11 +32,13 @@ export const ProfilePage: React.FC = () => {
   }
 
   const handleResetAllData = async () => {
-    if (
-      window.confirm(
-        'Ви впевнені, що бажаєте скинути всі дані додатку (вправи, плани, журнал та профіль) до стандартних значень?',
-      )
-    ) {
+    const confirmed = await confirmAction({
+      title: 'Скинути всі дані?',
+      description: 'Вправи, програми, журнал і профіль повернуться до стандартних значень.',
+      confirmLabel: 'Скинути',
+      destructive: true,
+    })
+    if (confirmed) {
       Object.values(STORAGE_KEYS).forEach((k) => removeFromStorage(k))
       // Гарантуємо очищення історії та персональних рекордів при скиданні
       saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, [])
