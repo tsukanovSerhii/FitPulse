@@ -96,8 +96,9 @@ export interface Exercise {
   difficulty: Difficulty
   equipment: Equipment
   description: string
-  instructions: InstructionStep[]
-  tips: string[]
+  /** Legacy step list, still produced by custom exercises */
+  instructions?: InstructionStep[]
+  tips?: string[]
   defaultSets: number
   defaultReps: number
   defaultRestSeconds: number

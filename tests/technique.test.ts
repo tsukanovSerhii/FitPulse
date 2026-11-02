@@ -1,6 +1,8 @@
+import { existsSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { buildTimeline, getTechnique, stepAt } from '@/features/exercises/lib/technique'
 import type { Exercise, TechniqueStep } from '@/features/exercises/model/types'
+import { INITIAL_EXERCISES } from '@/services/mockData/initialExercises'
 
 const steps: TechniqueStep[] = [
   { title: 'Позиція', text: 'a', frame: 0, seconds: 1.5 },
@@ -68,5 +70,19 @@ describe('getTechnique', () => {
     expect(technique.cues).toEqual(['Порада'])
     expect(technique.mistakes).toEqual(['Помилка'])
     expect(technique.advanced).toEqual(['Про'])
+  })
+})
+
+describe('built-in exercise content', () => {
+  it.each(INITIAL_EXERCISES.map((e) => [e.id, e] as const))('%s has complete technique and photos', (_, exercise) => {
+    const technique = exercise.technique
+    expect(technique).toBeDefined()
+    expect(technique!.steps.length).toBeGreaterThanOrEqual(3)
+    expect(technique!.steps.length).toBeLessThanOrEqual(4)
+    expect(technique!.steps.every((s) => s.seconds > 0 && s.title && s.text)).toBe(true)
+    expect(technique!.cues).toHaveLength(3)
+    expect(technique!.mistakes).toHaveLength(3)
+    for (const frame of exercise.frames ?? []) expect(existsSync(`public${frame}`)).toBe(true)
+    expect(exercise.frames).toHaveLength(2)
   })
 })

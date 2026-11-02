@@ -12,7 +12,7 @@ export function TechniqueTab({ exercise }: { exercise: Exercise }) {
       <section className="space-y-3">
         <h3 className="font-sans text-sm font-bold normal-case tracking-normal text-fg">Покрокова інструкція</h3>
         <ol className="space-y-2">
-          {exercise.instructions.map((step) => (
+          {(exercise.instructions ?? []).map((step) => (
             <li key={step.step} className="flex items-start gap-3 rounded-md border border-line bg-surface-2 p-3 text-sm text-fg-muted">
               <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-accent-soft font-mono text-xs font-bold text-accent">
                 {step.step}

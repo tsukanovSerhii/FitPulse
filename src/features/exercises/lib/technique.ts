@@ -29,13 +29,13 @@ export function stepAt({ total, starts }: Timeline, time: number): { index: numb
 export function getTechnique(exercise: Exercise): ExerciseTechnique {
   if (exercise.technique) return exercise.technique
   return {
-    steps: exercise.instructions.map((step, i) => ({
+    steps: (exercise.instructions ?? []).map((step, i) => ({
       title: `Крок ${i + 1}`,
       text: step.description,
       frame: 0,
       seconds: 0,
     })),
-    cues: exercise.tips,
+    cues: exercise.tips ?? [],
     mistakes: exercise.guide?.commonMistakes ?? [],
     advanced: exercise.guide?.proTips,
   }
