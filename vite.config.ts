@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -11,6 +12,10 @@ export default defineConfig({
     tailwindcss(),
     serviceWorker(),
   ],
+  test: {
+    include: ['src/**/*.test.{ts,tsx}'],
+    setupFiles: ['src/shared/testing/setup.ts'],
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

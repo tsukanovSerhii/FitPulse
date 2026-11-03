@@ -41,7 +41,7 @@ export function PhoneMockup() {
                 >
                   {set.done ? <Check className="size-3" /> : i + 1}
                 </span>
-                <span className={`font-mono ${set.done ? 'text-fg' : 'text-fg-subtle'}`}>{set.label}</span>
+                <span className={`font-mono ${set.done ? 'text-fg' : 'text-fg-muted'}`}>{set.label}</span>
               </li>
             ))}
           </ul>

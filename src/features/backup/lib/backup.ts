@@ -1,3 +1,4 @@
+import { z } from 'zod/mini'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadUserData, saveUserData, type UserKey } from '@/shared/storage/userStorage'
 import type { WorkoutHistoryLog } from '@/features/progress/model'
@@ -18,7 +19,7 @@ type Section = keyof typeof SECTIONS
 export interface Backup {
   app: 'fitpulse'
   version: 1
-  exportedAt: string
+  exportedAt?: string
   data: Partial<Record<Section, unknown>>
 }
 
@@ -33,6 +34,23 @@ export function createBackup(now = new Date()): Backup {
   return { app: 'fitpulse', version: 1, exportedAt: now.toISOString(), data }
 }
 
+const list = (message: string) => z.optional(z.array(z.unknown(), { error: message }))
+
+const backupSchema = z.object({
+  app: z.literal('fitpulse', { error: 'Це не резервна копія FitPulse' }),
+  version: z.literal(1, { error: 'Непідтримувана версія резервної копії' }),
+  exportedAt: z.optional(z.string()),
+  data: z.object(
+    {
+      history: list('Журнал у файлі пошкоджений'),
+      plans: list('Програми у файлі пошкоджені'),
+      customExercises: list('Власні вправи у файлі пошкоджені'),
+      favorites: list('Обране у файлі пошкоджене'),
+    },
+    { error: 'Це не резервна копія FitPulse' },
+  ),
+})
+
 /** Parses and checks a backup file; throws a readable BackupError when it is not one. */
 export function parseBackup(text: string): Backup {
   let parsed: unknown
@@ -41,14 +59,13 @@ export function parseBackup(text: string): Backup {
   } catch {
     throw new BackupError('Файл не є JSON')
   }
-  const backup = parsed as Partial<Backup> | null
-  if (!backup || backup.app !== 'fitpulse' || typeof backup.data !== 'object' || backup.data === null) {
+  if (typeof parsed !== 'object' || parsed === null || (parsed as { app?: unknown }).app !== 'fitpulse') {
     throw new BackupError('Це не резервна копія FitPulse')
   }
-  if (backup.version !== 1) throw new BackupError('Непідтримувана версія резервної копії')
-  if (backup.data.history !== undefined && !Array.isArray(backup.data.history)) throw new BackupError('Журнал у файлі пошкоджений')
-  if (backup.data.plans !== undefined && !Array.isArray(backup.data.plans)) throw new BackupError('Програми у файлі пошкоджені')
-  return backup as Backup
+  const result = z.safeParse(backupSchema, parsed)
+  if (!result.success) throw new BackupError(result.error.issues[0].message)
+  // Sections not listed in the schema (profile, records, active plan) are passed through as saved
+  return { ...(parsed as Backup), data: { ...(parsed as Backup).data, ...result.data.data } }
 }
 
 export function restoreBackup(backup: Backup) {

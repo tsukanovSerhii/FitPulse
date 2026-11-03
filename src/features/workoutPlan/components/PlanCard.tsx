@@ -126,7 +126,7 @@ export function PlanCard({
             })}
           </ul>
 
-          <div className="flex items-center justify-between gap-2 border-t border-line px-4 py-3 sm:px-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-3 sm:px-5">
             <Button
               variant="ghost"
               size="sm"
@@ -136,7 +136,7 @@ export function PlanCard({
             >
               Видалити
             </Button>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button variant="ghost" size="sm" onClick={onEdit} icon={<Pencil />}>
                 Перейменувати
               </Button>

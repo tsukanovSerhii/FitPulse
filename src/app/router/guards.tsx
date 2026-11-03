@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAppSelector } from '../store/hooks'
 import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
@@ -7,9 +7,12 @@ import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from 
 export function RequireAuth({ children }: { children: ReactNode }) {
   const user = useAppSelector((state) => state.auth.user)
   const { pathname, search } = useLocation()
+  // A user who signs out here is not a guest asking for this page, so nothing is remembered
+  const wasSignedIn = useRef(false)
 
   useEffect(() => {
-    if (user) removeFromSession(SESSION_KEYS.RETURN_TO)
+    if (user) wasSignedIn.current = true
+    if (user || wasSignedIn.current) removeFromSession(SESSION_KEYS.RETURN_TO)
     else if (pathname !== '/') saveToSession(SESSION_KEYS.RETURN_TO, pathname + search)
   }, [user, pathname, search])
 

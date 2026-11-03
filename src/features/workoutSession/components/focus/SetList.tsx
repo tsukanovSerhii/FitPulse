@@ -22,7 +22,7 @@ export function SetList({ target, done, onUndo }: { target: PlanExercise; done: 
             >
               {set ? <Check className="size-3.5" aria-label="виконано" /> : i + 1}
             </span>
-            <span className={cn('flex-1 font-mono tabular', set ? 'text-fg' : 'text-fg-subtle')}>
+            <span className={cn('flex-1 font-mono tabular', set ? 'text-fg' : isCurrent ? 'text-fg-muted' : 'text-fg-subtle')}>
               {set ? formatSet(set.reps, set.weight) : formatSet(target.reps, target.weight)}
             </span>
             {set && i === done.length - 1 && (

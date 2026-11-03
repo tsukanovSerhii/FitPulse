@@ -1,9 +1,11 @@
-import { useMemo, useState, type FormEvent } from 'react'
+import { useMemo } from 'react'
+import { useZodForm } from '@/shared/lib/form'
 import { Plus, Trash2 } from 'lucide-react'
 import type { Exercise } from '@/features/exercises'
 import { Button, IconButton, Input, Modal, Section, Select } from '@/shared/ui'
 import type { DayOfWeek, PlanExercise, WorkoutPlan } from '../model/types'
 import { DAY_LABELS } from '../model/types'
+import { dayExerciseSchema, type DayExerciseForm } from '../lib/schemas'
 
 type ExerciseUpdates = Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>
 
@@ -28,12 +30,14 @@ export function AddExerciseToDayModal({
   onRemoveExercise,
   onUpdateExercise,
 }: AddExerciseToDayModalProps) {
-  const [exerciseId, setExerciseId] = useState(allExercises[0]?.id ?? '')
-  const [sets, setSets] = useState(3)
-  const [reps, setReps] = useState(10)
-  const [weight, setWeight] = useState<number | ''>('')
-  const [restSeconds, setRestSeconds] = useState(60)
-  const [notes, setNotes] = useState('')
+  const { values, errors, set, setValues, handleSubmit } = useZodForm(dayExerciseSchema, {
+    exerciseId: allExercises[0]?.id ?? '',
+    sets: 3,
+    reps: 10,
+    weight: undefined,
+    restSeconds: 60,
+    notes: '',
+  })
 
   const exerciseMap = useMemo(() => new Map(allExercises.map((e) => [e.id, e])), [allExercises])
   const options = useMemo(() => allExercises.map((e) => ({ value: e.id, label: e.name })), [allExercises])
@@ -42,27 +46,17 @@ export function AddExerciseToDayModal({
   const dayExercises = plan.schedule[day] ?? []
 
   const pickExercise = (id: string) => {
-    setExerciseId(id)
     const exercise = exerciseMap.get(id)
-    if (exercise) {
-      setSets(exercise.defaultSets)
-      setReps(exercise.defaultReps)
-      setRestSeconds(exercise.defaultRestSeconds)
-    }
+    setValues((current) =>
+      exercise
+        ? { ...current, exerciseId: id, sets: exercise.defaultSets, reps: exercise.defaultReps, restSeconds: exercise.defaultRestSeconds }
+        : { ...current, exerciseId: id },
+    )
   }
 
-  const handleAdd = (event: FormEvent) => {
-    event.preventDefault()
-    if (!exerciseId) return
-    onAddExercise(plan.id, day, {
-      exerciseId,
-      sets: sets || 3,
-      reps: reps || 10,
-      weight: weight === '' ? undefined : weight,
-      restSeconds: restSeconds || 60,
-      notes: notes.trim() || undefined,
-    })
-    setNotes('')
+  const add = (data: DayExerciseForm) => {
+    onAddExercise(plan.id, day, { ...data, notes: data.notes || undefined })
+    set('notes', '')
   }
 
   return (
@@ -113,11 +107,11 @@ export function AddExerciseToDayModal({
         </Section>
 
         <Section title="Додати вправу">
-          <form onSubmit={handleAdd} className="space-y-4">
-            <Select label="Вправа" value={exerciseId} onChange={(e) => pickExercise(e.target.value)} options={options} />
+          <form onSubmit={handleSubmit(add)} noValidate className="space-y-4">
+            <Select label="Вправа" value={values.exerciseId} onChange={(e) => pickExercise(e.target.value)} options={options} error={errors.exerciseId} />
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <Input label="Підходи" type="number" inputMode="numeric" min={1} max={20} value={sets} onChange={(e) => setSets(Number(e.target.value))} placeholder="3" />
-              <Input label="Повтори" type="number" inputMode="numeric" min={1} max={200} value={reps} onChange={(e) => setReps(Number(e.target.value))} placeholder="10" />
+              <Input label="Підходи" type="number" inputMode="numeric" min={1} max={20} value={values.sets} onChange={(e) => set('sets', Number(e.target.value))} placeholder="3" error={errors.sets} />
+              <Input label="Повтори" type="number" inputMode="numeric" min={1} max={200} value={values.reps} onChange={(e) => set('reps', Number(e.target.value))} placeholder="10" error={errors.reps} />
               <Input
                 label="Вага, кг"
                 type="number"
@@ -125,13 +119,14 @@ export function AddExerciseToDayModal({
                 min={0}
                 max={500}
                 step={0.5}
-                value={weight}
-                onChange={(e) => setWeight(e.target.value === '' ? '' : Number(e.target.value))}
+                value={values.weight ?? ''}
+                onChange={(e) => set('weight', e.target.value === '' ? undefined : Number(e.target.value))}
                 placeholder="Без ваги"
+                error={errors.weight}
               />
-              <Input label="Відпочинок, с" type="number" inputMode="numeric" min={10} max={600} step={5} value={restSeconds} onChange={(e) => setRestSeconds(Number(e.target.value))} placeholder="60" />
+              <Input label="Відпочинок, с" type="number" inputMode="numeric" min={10} max={600} step={5} value={values.restSeconds} onChange={(e) => set('restSeconds', Number(e.target.value))} placeholder="60" error={errors.restSeconds} />
             </div>
-            <Input label="Нотатка" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Напр. пауза внизу 1 с" />
+            <Input label="Нотатка" value={values.notes} onChange={(e) => set('notes', e.target.value)} placeholder="Напр. пауза внизу 1 с" error={errors.notes} />
             <Button type="submit" variant="outline" icon={<Plus />} className="w-full sm:w-auto">
               Додати до дня
             </Button>
