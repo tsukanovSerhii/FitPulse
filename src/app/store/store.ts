@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import exercisesReducer from '@/features/exercises/model/exercisesSlice'
-import workoutPlanReducer from '@/features/workoutPlan/model/workoutPlanSlice'
-import workoutSessionReducer from '@/features/workoutSession/model/workoutSessionSlice'
-import progressReducer from '@/features/progress/model/progressSlice'
-import profileReducer from '@/features/profile/model/profileSlice'
-import themeReducer from '@/features/theme/model/themeSlice'
-import authReducer from '@/features/auth/model/authSlice'
+import { exercisesReducer } from '@/features/exercises/model'
+import { workoutPlanReducer } from '@/features/workoutPlan/model'
+import { workoutSessionReducer } from '@/features/workoutSession/model'
+import { progressReducer } from '@/features/progress/model'
+import { profileReducer } from '@/features/profile/model'
+import { themeReducer } from '@/features/theme/model'
+import { authReducer } from '@/features/auth/model'
 import { listenerMiddleware } from './listeners'
 
 export const store = configureStore({

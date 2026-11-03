@@ -1,4 +1,4 @@
-import type { PlanExercise } from '@/features/workoutPlan/model/types'
+import type { PlanExercise } from '@/features/workoutPlan'
 
 export interface CompletedSet {
   reps: number

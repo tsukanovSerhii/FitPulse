@@ -1,5 +1,5 @@
 import { Check, RotateCcw } from 'lucide-react'
-import type { PlanExercise } from '@/features/workoutPlan/model/types'
+import type { PlanExercise } from '@/features/workoutPlan'
 import { statusStyles } from '@/shared/ui'
 import { cn } from '@/shared/lib/cn'
 import type { CompletedSet } from '../../model/types'

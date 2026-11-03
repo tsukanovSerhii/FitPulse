@@ -1,14 +1,6 @@
 import { SEO } from '@/shared/seo/SEO'
 import { Footer } from '@/app/layout/Footer'
-import { FAQ_JSON_LD } from '@/features/landing/model/faq'
-import { FaqSection } from '@/features/landing/components/FaqSection'
-import { FeaturesSection } from '@/features/landing/components/FeaturesSection'
-import { FinalCta } from '@/features/landing/components/FinalCta'
-import { HeroSection } from '@/features/landing/components/HeroSection'
-import { HowItWorksSection } from '@/features/landing/components/HowItWorksSection'
-import { LandingNav } from '@/features/landing/components/LandingNav'
-import { PricingSection } from '@/features/landing/components/PricingSection'
-import { StatsBand } from '@/features/landing/components/StatsBand'
+import { FAQ_JSON_LD, FaqSection, FeaturesSection, FinalCta, HeroSection, HowItWorksSection, LandingNav, PricingSection, StatsBand } from '@/features/landing'
 
 export function LandingPage() {
   return (

@@ -1,11 +1,9 @@
 import { useMemo } from 'react'
 import { Badge } from '@/shared/ui'
-import type { MuscleGroup } from '../../model/types'
-import { MUSCLE_GROUP_LABELS } from '../../model/types'
+import type { MuscleGroup } from '../model/types'
+import { MUSCLE_GROUP_LABELS } from '../model/types'
 import { cn } from '@/shared/lib/cn'
-import { BackBody } from './BackBody'
-import { FrontBody } from './FrontBody'
-import { createMusclePaint } from './paint'
+import { BackBody, FrontBody, createMusclePaint } from '@/shared/ui/body-map'
 
 export interface MuscleMapProps {
   primaryMuscle: MuscleGroup

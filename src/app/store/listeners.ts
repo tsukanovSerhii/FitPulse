@@ -1,6 +1,6 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { registerUser } from '@/features/auth/model/authSlice'
-import { createProfileFor } from '@/features/profile/model/profileSlice'
+import { registerUser } from '@/features/auth/model'
+import { createProfileFor } from '@/features/profile/model'
 
 // Cross-feature reactions live here so features never import each other in both directions.
 export const listenerMiddleware = createListenerMiddleware()

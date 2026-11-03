@@ -1,7 +1,7 @@
 import { useId, useMemo } from 'react'
 import { Check, ChevronDown, Pencil, Play, Plus, Trash2 } from 'lucide-react'
 import { Badge, Button, IconButton } from '@/shared/ui'
-import type { Exercise } from '@/features/exercises/model/types'
+import type { Exercise } from '@/features/exercises'
 import { cn } from '@/shared/lib/cn'
 import type { DayOfWeek, WorkoutPlan } from '../model/types'
 import { ALL_DAYS, DAY_LABELS, DAY_SHORT_LABELS } from '../model/types'

@@ -3,11 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Button, Checkbox, Input } from '@/shared/ui'
-import { AuthLayout } from '@/features/auth/components/AuthLayout'
-import { PasswordField } from '@/features/auth/components/PasswordField'
-import { validateLogin, type FieldErrors } from '@/features/auth/lib/validation'
-import { authErrorCleared, loginUser } from '@/features/auth/model/authSlice'
-import type { Credentials } from '@/features/auth/model/types'
+import { AuthLayout, PasswordField, validateLogin, type FieldErrors, authErrorCleared, loginUser, type Credentials } from '@/features/auth'
 
 export function LoginPage() {
   const dispatch = useAppDispatch()

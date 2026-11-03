@@ -1,9 +1,9 @@
 import { useEffect, type ReactNode } from 'react'
-import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
-import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
-import { fetchProgress } from '@/features/progress/model/progressSlice'
-import { fetchProfile } from '@/features/profile/model/profileSlice'
-import { useThemeSync } from '@/features/theme/hooks/useTheme'
+import { fetchExercises } from '@/features/exercises/model'
+import { fetchPlans } from '@/features/workoutPlan/model'
+import { fetchProgress } from '@/features/progress/model'
+import { fetchProfile } from '@/features/profile/model'
+import { useThemeSync } from '@/features/theme'
 import { useAppDispatch } from '../store/hooks'
 
 /** Loads app data once and keeps the theme in sync with the system. */

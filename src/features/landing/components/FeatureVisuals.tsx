@@ -1,7 +1,5 @@
 import { Check, Minus, Plus } from 'lucide-react'
-import { BackBody } from '@/features/exercises/components/muscle-map/BackBody'
-import { FrontBody } from '@/features/exercises/components/muscle-map/FrontBody'
-import { createMusclePaint } from '@/features/exercises/components/muscle-map/paint'
+import { BackBody, FrontBody, createMusclePaint } from '@/shared/ui/body-map'
 import { ProgressRing } from '@/shared/ui'
 import { cn } from '@/shared/lib/cn'
 

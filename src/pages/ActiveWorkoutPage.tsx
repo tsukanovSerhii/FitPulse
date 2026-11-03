@@ -4,14 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
-import { fetchExercises } from '@/features/exercises/model/exercisesSlice'
-import { logWorkoutAsync } from '@/features/progress/model/progressSlice'
-import type { WorkoutHistoryLog } from '@/features/progress/model/types'
-import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
-import { SessionSummaryModal } from '@/features/workoutSession/components/SessionSummaryModal'
-import { WorkoutFocusView } from '@/features/workoutSession/components/WorkoutFocusView'
-import { WorkoutLauncher } from '@/features/workoutSession/components/WorkoutLauncher'
-import { finishWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
+import { fetchExercises } from '@/features/exercises'
+import { logWorkoutAsync, type WorkoutHistoryLog } from '@/features/progress'
+import { fetchPlans } from '@/features/workoutPlan'
+import { SessionSummaryModal, WorkoutFocusView, WorkoutLauncher, finishWorkout } from '@/features/workoutSession'
 
 export function ActiveWorkoutPage() {
   const dispatch = useAppDispatch()

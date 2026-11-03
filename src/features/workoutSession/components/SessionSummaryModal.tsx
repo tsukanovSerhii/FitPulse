@@ -1,5 +1,5 @@
 import { Modal, Button, Stat, confirmAction } from '@/shared/ui'
-import type { WorkoutHistoryLog } from '@/features/progress/model/types'
+import type { WorkoutHistoryLog } from '@/features/progress'
 import { formatDuration, formatNumber } from '@/shared/lib/formatters'
 
 export interface SessionSummaryModalProps {

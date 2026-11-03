@@ -1,4 +1,4 @@
-import type { Exercise } from '@/features/exercises/model/types'
+import type { Exercise } from '@/features/exercises'
 import { ALL_DAYS, type WorkoutPlan } from '../model/types'
 
 /** Matches name, description or any scheduled exercise; the active plan always comes first. */

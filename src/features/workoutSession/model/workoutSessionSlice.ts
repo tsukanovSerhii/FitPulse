@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { WorkoutSessionState, CompletedSet } from './types'
-import type { PlanExercise } from '@/features/workoutPlan/model/types'
+import type { PlanExercise } from '@/features/workoutPlan'
 import {
   loadFromStorage,
   saveToStorage,

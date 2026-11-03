@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
-import { DAY_LABELS, type DayOfWeek } from '@/features/workoutPlan/model/types'
+import { DAY_LABELS, type DayOfWeek } from '@/features/workoutPlan'
 import { startWorkout } from '../model/workoutSessionSlice'
 
 /** Starts a workout from one day of a saved plan and opens the workout screen. */

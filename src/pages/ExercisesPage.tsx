@@ -3,23 +3,8 @@ import { Dumbbell, Plus } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Button, EmptyState, IconButton, PageHeader } from '@/shared/ui'
-import { AdSlot } from '@/features/ads/components/AdSlot'
-import { CATALOG_AD_EVERY } from '@/features/ads/model/selection'
-import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
-import { ExerciseCard } from '@/features/exercises/components/ExerciseCard'
-import { ExerciseDetailModal } from '@/features/exercises/components/ExerciseDetailModal'
-import { ExerciseFiltersBar } from '@/features/exercises/components/ExerciseFiltersBar'
-import { ExerciseGridSkeleton } from '@/features/exercises/components/ExerciseGridSkeleton'
-import {
-  addCustomExercise,
-  clearSelectedExercise,
-  fetchExercises,
-  resetFilters,
-  setFilter,
-  setSelectedExercise,
-  toggleFavorite,
-} from '@/features/exercises/model/exercisesSlice'
-import type { Exercise } from '@/features/exercises/model/types'
+import { AdSlot, CATALOG_AD_EVERY } from '@/features/ads'
+import { AddExerciseModal, ExerciseCard, ExerciseDetailModal, ExerciseFiltersBar, ExerciseGridSkeleton, addCustomExercise, clearSelectedExercise, fetchExercises, resetFilters, setFilter, setSelectedExercise, toggleFavorite, type Exercise } from '@/features/exercises'
 import { saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { useSessionState } from '@/shared/storage/useSessionState'
 import { injectExerciseSchema } from '@/shared/seo/meta'

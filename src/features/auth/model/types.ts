@@ -1,4 +1,4 @@
-import type { SubscriptionPlan } from '@/features/subscription/model/types'
+import type { SubscriptionPlan } from '@/features/subscription'
 
 export interface AuthUser {
   id: string

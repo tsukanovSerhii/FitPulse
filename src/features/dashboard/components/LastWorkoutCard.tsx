@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Clock } from 'lucide-react'
-import type { WorkoutHistoryLog } from '@/features/progress/model/types'
+import type { WorkoutHistoryLog } from '@/features/progress'
 import { formatDate, formatDuration, formatNumber } from '@/shared/lib/formatters'
 import { DashboardSection } from './DashboardSection'
 
