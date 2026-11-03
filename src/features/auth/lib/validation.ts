@@ -6,9 +6,7 @@ export type { FieldErrors }
 
 export const MIN_PASSWORD_LENGTH = 8
 
-export function normalizeEmail(email: string) {
-  return email.trim().toLowerCase()
-}
+export { normalizeEmail } from './email'
 
 const email = z.string().check(z.trim(), z.regex(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, 'Вкажіть коректний email'))
 

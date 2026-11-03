@@ -1,7 +1,6 @@
 import type { WorkoutPlan } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { hasUserData, loadUserData, saveUserData } from '@/shared/storage/userStorage'
-import { INITIAL_PLANS } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -12,8 +11,8 @@ export const plansApi = {
 
     // First run: seed demo plans
     if (!hasUserData(STORAGE_KEYS.WORKOUT_PLANS)) {
-      plans = INITIAL_PLANS
-      saveUserData(STORAGE_KEYS.WORKOUT_PLANS, INITIAL_PLANS)
+      plans = (await import('./seed')).INITIAL_PLANS
+      saveUserData(STORAGE_KEYS.WORKOUT_PLANS, plans)
     } else {
       // Key exists: keep an empty list if the user deleted every plan
       plans = loadUserData<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
