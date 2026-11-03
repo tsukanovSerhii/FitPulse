@@ -90,17 +90,30 @@ npm run dev
 
 ```
 src/
-  app/          store
-  components/   дизайн-система, каркас застосунку, спільні віджети
-  features/     модулі: auth, ads, dashboard, exercises, landing, profile,
-                progress, theme, workoutPlan, workoutSession
-  pages/        сторінки
-  routes/       маршрути й захист сторінок
-  services/     робота зі сховищами браузера, демо-дані
-  utils/        допоміжні функції
-tests/          тести
-docs/           скриншоти й матеріали про проєкт
+  app/            збирає застосунок: точка входу, провайдери, store, маршрути, каркас
+  pages/          сторінки, по папці на маршрут
+  features/       модулі за доменом
+    <модуль>/
+      api/        доступ до даних і демо-дані
+      model/      стан: slice, типи, константи
+      components/
+      hooks/
+      lib/        чисті функції
+      index.ts    публічний API модуля
+  shared/         код без прив'язки до домену
+    ui/           дизайн-система
+    lib/          форматування, зображення, звук
+    storage/      localStorage і sessionStorage
+    seo/          мета-теги
+    config/       змінні середовища, фото
+docs/             скриншоти й матеріали про проєкт
 ```
+
+Модулі: `ads`, `auth`, `dashboard`, `exercises`, `landing`, `profile`, `progress`, `subscription`, `theme`, `workoutPlan`, `workoutSession`.
+
+Залежності йдуть в одному напрямку: `app → pages → features → shared`. Модуль використовують лише через його публічний API: `@/features/<модуль>` для компонентів і хуків, `@/features/<модуль>/model` для стану. Код, що завантажується одразу (store, провайдери), імпортує тільки `model`, тож компоненти модулів лишаються в лінивих чанках сторінок. Між модулями немає циклічних залежностей; реакції одного модуля на дії іншого описані в `app/store/listeners.ts`. Ці правила перевіряє lint.
+
+Тести лежать поруч із кодом (`*.test.ts`) і мають окремий `tsconfig.test.json`.
 
 ## Як вносити зміни
 
