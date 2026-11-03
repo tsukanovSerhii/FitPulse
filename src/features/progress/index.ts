@@ -1,3 +1,4 @@
+export { ProgressCharts } from './components/ProgressCharts'
 export { ProgressSummary } from './components/ProgressSummary'
 export { ListSkeleton, SummarySkeleton } from './components/ProgressSkeleton'
 export { RecordList } from './components/RecordList'

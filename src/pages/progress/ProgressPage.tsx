@@ -8,6 +8,7 @@ import {
   deleteWorkoutLogAsync,
   fetchProgress,
   ListSkeleton,
+  ProgressCharts,
   ProgressSummary,
   RecordList,
   SummarySkeleton,
@@ -48,6 +49,8 @@ export function ProgressPage() {
       <PageHeader compact title="Прогрес" description="Журнал тренувань і особисті рекорди" />
 
       {isLoading ? <SummarySkeleton /> : <ProgressSummary history={history} personalRecords={personalRecords} />}
+
+      {!isLoading && history.length > 0 && <ProgressCharts history={history} />}
 
       <Section title="Особисті рекорди">
         {isLoading ? (
