@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { store } from './store/store'
 import './styles/index.css'
 import { App } from './App'
+import { registerServiceWorker } from './pwa/registerServiceWorker'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -12,3 +13,5 @@ createRoot(document.getElementById('root')!).render(
     </Provider>
   </StrictMode>,
 )
+
+registerServiceWorker()
