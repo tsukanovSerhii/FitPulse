@@ -18,8 +18,8 @@ import {
   Skeleton,
   Stat,
   Textarea,
-  ThemeToggle,
 } from '@/shared/ui'
+import { ThemeToggle } from '@/features/theme'
 
 export function UiPreviewPage() {
   const [tab, setTab] = useState<'all' | 'chest' | 'back' | 'legs'>('all')

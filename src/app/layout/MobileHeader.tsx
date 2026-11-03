@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '../store/hooks'
-import { ThemeCycleButton } from '@/shared/ui'
+import { Wordmark } from '@/shared/ui'
+import { ThemeCycleButton } from '@/features/theme'
 import { Avatar } from '@/shared/ui/Avatar'
-import { Wordmark } from './Wordmark'
 
 export function MobileHeader() {
   const user = useAppSelector((state) => state.auth.user)

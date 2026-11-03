@@ -3,6 +3,49 @@
   "plugins": ["react", "typescript", "oxc"],
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+    "react/only-export-components": ["warn", { "allowConstantExport": true }],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@/features/*/**", "!@/features/*/model", "@/features/*/model/**"],
+            "message": "Import a feature through its public API: @/features/<name> or @/features/<name>/model."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/shared/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              { "group": ["@/features/**", "@/pages/**", "@/app/**"], "message": "shared must not depend on features, pages or app." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/features/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@/features/*/**", "!@/features/*/model", "@/features/*/model/**"],
+                "message": "Import a feature through its public API: @/features/<name> or @/features/<name>/model."
+              },
+              { "group": ["@/pages/**", "@/app/**", "!@/app/store/hooks"], "message": "Features must not depend on pages or app (typed store hooks excepted)." }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

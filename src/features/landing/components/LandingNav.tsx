@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '@/app/store/hooks'
-import { Wordmark } from '@/app/layout/Wordmark'
-import { ThemeCycleButton, buttonClasses } from '@/shared/ui'
+import { buttonClasses, Wordmark } from '@/shared/ui'
+import { ThemeCycleButton } from '@/features/theme'
 
 const LINKS = [
   { href: '#features', label: 'Можливості' },

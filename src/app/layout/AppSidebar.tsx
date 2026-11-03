@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import { useAppSelector } from '../store/hooks'
-import { ThemeToggle } from '@/shared/ui'
+import { Wordmark } from '@/shared/ui'
+import { ThemeToggle } from '@/features/theme'
 import { AdSlot } from '@/features/ads'
 import { cn } from '@/shared/lib/cn'
 import { Avatar } from '@/shared/ui/Avatar'
 import { NAV_ITEMS } from './navigation'
 import { WorkoutCta } from './WorkoutCta'
-import { Wordmark } from './Wordmark'
 
 const linkClasses = ({ isActive }: { isActive: boolean }) =>
   cn(

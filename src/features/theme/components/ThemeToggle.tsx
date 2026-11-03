@@ -1,7 +1,7 @@
 import { Monitor, Moon, Sun } from 'lucide-react'
-import { useTheme, type ThemeMode } from '@/features/theme'
-import { SegmentedControl, type SegmentOption } from './SegmentedControl'
-import { IconButton } from './IconButton'
+import { IconButton, SegmentedControl, type SegmentOption } from '@/shared/ui'
+import { useTheme } from '../hooks/useTheme'
+import type { ThemeMode } from '../model/types'
 
 const OPTIONS: SegmentOption<ThemeMode>[] = [
   { value: 'light', label: <Sun />, ariaLabel: 'Світла тема' },
