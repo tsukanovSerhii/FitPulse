@@ -1,5 +1,6 @@
 import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { ErrorBoundary, ErrorScreen } from '@/shared/ui'
 import { AppSidebar } from './AppSidebar'
 import { Footer } from './Footer'
 import { MobileHeader } from './MobileHeader'
@@ -28,9 +29,12 @@ export function MainLayout() {
         <MobileHeader />
 
         <main id="main" className="mx-auto w-full max-w-6xl flex-1 animate-fade-in px-5 py-6 sm:px-8 lg:px-12 lg:py-12">
-          <Suspense fallback={<PageSkeleton />}>
-            <Outlet />
-          </Suspense>
+          {/* A crash inside a page keeps the navigation usable; moving to another route clears it */}
+          <ErrorBoundary resetKey={pathname} fallback={({ error, reset }) => <ErrorScreen error={error} onRetry={reset} />}>
+            <Suspense fallback={<PageSkeleton />}>
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
         </main>
 
         <Footer />
