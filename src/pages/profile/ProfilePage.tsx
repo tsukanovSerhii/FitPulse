@@ -9,6 +9,7 @@ import { ThemeToggle } from '@/features/theme'
 import { BMISummary, ProfileEditModal, ProfileSkeleton, fetchProfile, resetProfileAsync, updateProfileAsync, type UserProfile, ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS, AvatarUploader } from '@/features/profile'
 import { PLAN_NAMES } from '@/features/subscription'
 import { logout, syncAccount } from '@/features/auth'
+import { BackupSection } from '@/features/backup'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { clearUserData, saveUserData } from '@/shared/storage/userStorage'
 import { formatDate, formatNumber } from '@/shared/lib/formatters'
@@ -148,15 +149,18 @@ export function ProfilePage() {
       </Section>
 
       <Section title="Дані">
-        <div className="flex flex-col gap-3 rounded-lg border border-danger/30 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div>
-            <p className="text-sm font-semibold text-fg">Скинути всі дані</p>
-            <p className="text-xs text-fg-subtle">Стандартні вправи й програми, порожній журнал.</p>
+        <Card padding="none" className="divide-y divide-line">
+          <BackupSection />
+          <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div>
+              <p className="text-sm font-semibold text-fg">Скинути всі дані</p>
+              <p className="text-xs text-fg-subtle">Стандартні вправи й програми, порожній журнал.</p>
+            </div>
+            <Button variant="danger" size="sm" onClick={handleResetAllData} icon={<RotateCcw />}>
+              Скинути
+            </Button>
           </div>
-          <Button variant="danger" size="sm" onClick={handleResetAllData} icon={<RotateCcw />}>
-            Скинути
-          </Button>
-        </div>
+        </Card>
       </Section>
 
       <ProfileEditModal
