@@ -95,7 +95,8 @@ export function Modal({ isOpen, onClose, title, eyebrow, subtitle, headerActions
         aria-labelledby={title ? titleId : undefined}
         tabIndex={-1}
         className={cn(
-          'relative flex max-h-[92dvh] w-full animate-rise flex-col overflow-hidden border border-line bg-surface shadow-pop outline-none',
+          // min-w-0: a <select> is as wide as its longest option and would push the dialog past a phone screen
+          'relative flex max-h-[92dvh] w-full min-w-0 animate-rise flex-col overflow-hidden border border-line bg-surface shadow-pop outline-none',
           'rounded-t-lg sm:rounded-lg',
           widths[maxWidth],
         )}
