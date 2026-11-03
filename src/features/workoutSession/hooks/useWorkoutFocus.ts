@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { confirmAction } from '@/shared/ui'
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { buildWorkoutLog } from '../lib/summary'
+import { lastPerformance } from '../lib/strength'
 import {
   cancelWorkout,
   completeSet,
@@ -16,6 +17,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   const dispatch = useAppDispatch()
   const session = useAppSelector((state) => state.workoutSession)
   const exercises = useAppSelector((state) => state.exercises.items)
+  const history = useAppSelector((state) => state.progress.history)
 
   useEffect(() => {
     const id = window.setInterval(() => dispatch(tickWorkoutTimer()), 1000)
@@ -28,6 +30,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   const exercise = planExercise ? exerciseMap.get(planExercise.exerciseId) : undefined
   const doneSets = planExercise ? session.completedSets[planExercise.id] || [] : []
   const lastSet = doneSets[doneSets.length - 1]
+  const previous = useMemo(() => (planExercise ? lastPerformance(history, planExercise.exerciseId) : null), [history, planExercise])
   const exerciseComplete = planExercise ? doneSets.length >= planExercise.sets : false
   const isLastExercise = index === session.exercises.length - 1
 
@@ -113,6 +116,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     exercise,
     doneSets,
     lastSet,
+    previous,
     exerciseComplete,
     isLastExercise,
     progress,
