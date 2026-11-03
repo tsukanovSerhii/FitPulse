@@ -57,7 +57,7 @@ export const CORE: Exercise[] = [
     muscleGroups: ['abs'],
     primaryMuscle: 'abs',
     difficulty: 'beginner',
-    equipment: 'cables',
+    equipment: 'crossover',
     description: 'Скручування з вагою для прямого м’яза живота з прогресією навантаження.',
     defaultSets: 3,
     defaultReps: 15,

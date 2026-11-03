@@ -33,20 +33,27 @@ export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
 
 export type Equipment =
   | 'barbell'
+  | 'ezbar'
   | 'dumbbell'
-  | 'machine'
-  | 'bodyweight'
-  | 'cables'
   | 'kettlebell'
+  | 'smith'
+  | 'machine'
+  | 'cables'
+  | 'crossover'
+  | 'bodyweight'
   | 'bands'
 
+/** Key order is the order of the equipment filter */
 export const EQUIPMENT_LABELS: Record<Equipment, string> = {
   barbell: 'Штанга',
+  ezbar: 'EZ-гриф',
   dumbbell: 'Гантелі',
-  machine: 'Тренажер',
-  bodyweight: 'Без обладнання',
-  cables: 'Блоки',
   kettlebell: 'Гиря',
+  smith: 'Сміт',
+  machine: 'Тренажер',
+  cables: 'Блок',
+  crossover: 'Кросовер',
+  bodyweight: 'Без обладнання',
   bands: 'Гумки',
 }
 
@@ -97,12 +104,24 @@ export interface Exercise {
   technique?: ExerciseTechnique
   /** Legacy shape, still produced by custom exercises */
   guide?: ExerciseGuide
+  /** Membership in a group of variants of one movement, e.g. bench press with a barbell or dumbbells */
+  variant?: ExerciseVariant
+}
+
+export interface ExerciseVariant {
+  group: string
+  groupName: string
+  /** Short name of this variant within the group: "Штанга", "Сміт" */
+  label: string
+  /** Position within the group */
+  order: number
 }
 
 export interface ExerciseFilters {
   muscleGroup: MuscleGroup | 'all'
   difficulty: Difficulty | 'all'
-  equipment: Equipment | 'all'
+  /** Equipment the user has; empty means any */
+  equipment: Equipment[]
   searchQuery: string
 }
 
