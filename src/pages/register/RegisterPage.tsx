@@ -6,6 +6,7 @@ import { Button, Input } from '@/shared/ui'
 import { AuthLayout, PasswordField, validateRegistration, type FieldErrors, authErrorCleared, registerUser, type RegistrationData } from '@/features/auth'
 import { removeFromSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { useSessionState } from '@/shared/storage/useSessionState'
+import { PAGE_META } from '../meta'
 
 type Form = RegistrationData
 
@@ -51,7 +52,7 @@ export function RegisterPage() {
         </>
       }
     >
-      <SEO title="Реєстрація" description="Створіть акаунт FitPulse безкоштовно." />
+      <SEO {...PAGE_META.register} />
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {error && (
           <p role="alert" className="rounded-md border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">
@@ -88,7 +89,17 @@ export function RegisterPage() {
         <Button type="submit" size="lg" className="w-full" isLoading={status === 'loading'}>
           Створити акаунт
         </Button>
-        <p className="text-center text-xs text-fg-subtle">Тариф «Старт» безкоштовний. Картка не потрібна.</p>
+        <p className="text-center text-xs leading-relaxed text-fg-subtle">
+          Тариф «Старт» безкоштовний, картка не потрібна. Реєструючись, ви погоджуєтеся з{' '}
+          <Link to="/terms" className="text-fg-muted underline underline-offset-2 hover:text-fg">
+            Умовами користування
+          </Link>{' '}
+          та{' '}
+          <Link to="/privacy" className="text-fg-muted underline underline-offset-2 hover:text-fg">
+            Політикою конфіденційності
+          </Link>
+          .
+        </p>
       </form>
     </AuthLayout>
   )

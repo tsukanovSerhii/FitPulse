@@ -9,6 +9,8 @@ const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, n
 const LandingPage = page(() => import('@/pages/landing/LandingPage'), 'LandingPage')
 const LoginPage = page(() => import('@/pages/login/LoginPage'), 'LoginPage')
 const RegisterPage = page(() => import('@/pages/register/RegisterPage'), 'RegisterPage')
+const PrivacyPage = page(() => import('@/pages/legal/PrivacyPage'), 'PrivacyPage')
+const TermsPage = page(() => import('@/pages/legal/TermsPage'), 'TermsPage')
 const DashboardPage = page(() => import('@/pages/dashboard/DashboardPage'), 'DashboardPage')
 const ExercisesPage = page(() => import('@/pages/exercises/ExercisesPage'), 'ExercisesPage')
 const WorkoutPlansPage = page(() => import('@/pages/plans/WorkoutPlansPage'), 'WorkoutPlansPage')
@@ -24,6 +26,8 @@ export function AppRoutes() {
     <Suspense fallback={null}>
       <Routes>
         <Route path="welcome" element={<LandingPage />} />
+        <Route path="privacy" element={<PrivacyPage />} />
+        <Route path="terms" element={<TermsPage />} />
         <Route
           path="login"
           element={

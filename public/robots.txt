@@ -2,6 +2,8 @@ User-agent: *
 Allow: /welcome
 Allow: /register
 Allow: /login
+Allow: /privacy
+Allow: /terms
 Disallow: /
 
 Sitemap: https://fit-pulse-beta-opal.vercel.app/sitemap.xml

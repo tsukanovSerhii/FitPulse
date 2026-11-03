@@ -18,6 +18,8 @@ export default defineConfig({
       '/welcome': 'src/pages/landing/LandingPage.tsx',
       '/login': 'src/pages/login/LoginPage.tsx',
       '/register': 'src/pages/register/RegisterPage.tsx',
+      '/privacy': 'src/pages/legal/PrivacyPage.tsx',
+      '/terms': 'src/pages/legal/TermsPage.tsx',
     }),
   ],
   test: {

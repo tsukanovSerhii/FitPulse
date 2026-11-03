@@ -5,7 +5,7 @@ export const SITE_NAME = 'FitPulse'
 export const DEFAULT_OG_IMAGE = '/og-image.jpg'
 
 /** Pages behind login carry personal data and are excluded from indexing. */
-export const PUBLIC_PATHS = ['/welcome', '/login', '/register']
+export const PUBLIC_PATHS = ['/welcome', '/login', '/register', '/privacy', '/terms']
 
 export interface PageMeta {
   title: string
@@ -35,6 +35,8 @@ const link = (rel: string, href: string, hreflang?: string) =>
     { rel, href, ...(hreflang && { hreflang }) },
   )
 
+export const fullTitle = (title: string) => (title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`)
+
 export function absoluteUrl(path: string) {
   return path.startsWith('http') ? path : `${SITE_URL}${path}`
 }
@@ -42,11 +44,11 @@ export function absoluteUrl(path: string) {
 export function updatePageSEO({ title, description, path, image = DEFAULT_OG_IMAGE, noindex = false, jsonLd }: PageMeta) {
   if (typeof document === 'undefined') return
 
-  const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`
+  const pageTitle = fullTitle(title)
   const url = absoluteUrl(path)
   const imageUrl = absoluteUrl(image)
 
-  document.title = fullTitle
+  document.title = pageTitle
   meta('name', 'description', description)
   meta('name', 'robots', noindex ? 'noindex, nofollow' : 'index, follow')
 
@@ -54,12 +56,12 @@ export function updatePageSEO({ title, description, path, image = DEFAULT_OG_IMA
   link('alternate', url, 'uk')
   link('alternate', url, 'x-default')
 
-  meta('property', 'og:title', fullTitle)
+  meta('property', 'og:title', pageTitle)
   meta('property', 'og:description', description)
   meta('property', 'og:url', url)
   meta('property', 'og:image', imageUrl)
 
-  meta('name', 'twitter:title', fullTitle)
+  meta('name', 'twitter:title', pageTitle)
   meta('name', 'twitter:description', description)
   meta('name', 'twitter:image', imageUrl)
 

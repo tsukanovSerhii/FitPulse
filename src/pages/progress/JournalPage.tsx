@@ -19,6 +19,7 @@ import { SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { useSessionState } from '@/shared/storage/useSessionState'
 import { formatHoursMinutes, formatNumber } from '@/shared/lib/formatters'
 import { Button, confirmAction, EmptyState, PageHeader, SearchInput, Select } from '@/shared/ui'
+import { PAGE_META } from '../meta'
 
 const monthTitle = new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' })
 const toMonthKey = (date: Date) => `${date.getFullYear()}-${date.getMonth() + 1}`
@@ -70,7 +71,7 @@ export function JournalPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <SEO title="Журнал тренувань" description="Усі тренування по місяцях: календар, тоннаж, рекорди." />
+      <SEO {...PAGE_META.journal} />
       <PageHeader compact title="Прогрес" description="Журнал тренувань і особисті рекорди" />
       <ProgressTabs />
 

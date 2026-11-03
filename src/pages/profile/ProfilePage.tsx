@@ -33,6 +33,7 @@ import { Avatar } from '@/shared/ui/Avatar'
 import { LogOut, Pencil, RotateCcw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { PAGE_META } from '../meta'
 
 export function ProfilePage() {
 	const dispatch = useAppDispatch()
@@ -86,10 +87,7 @@ export function ProfilePage() {
 
 	return (
 		<div className="mx-auto max-w-3xl space-y-8">
-			<SEO
-				title="Профіль"
-				description="Антропометрія, ціль, ІМТ і налаштування."
-			/>
+			<SEO {...PAGE_META.profile} />
 
 			<PageHeader
 				compact
