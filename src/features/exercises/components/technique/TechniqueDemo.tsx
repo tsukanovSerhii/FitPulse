@@ -1,5 +1,5 @@
 import { Pause, Play } from 'lucide-react'
-import { cn } from '@/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import type { TechniqueStep } from '../../model/types'
 import { BREATHING_LABELS } from './labels'
 

@@ -1,5 +1,5 @@
 import { Check, Minus, Plus } from 'lucide-react'
-import { progressFill, statusStyles } from '@/components/ui'
+import { progressFill, statusStyles } from '@/shared/ui'
 
 const SETS = [
   { done: true, label: '70 кг × 8' },

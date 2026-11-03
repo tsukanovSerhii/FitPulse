@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 import type { Exercise, ExerciseFilters, ExercisesState, MuscleGroup } from './types'
 import { exercisesApi } from '../api/exercisesApi'
-import { loadFromSession, SESSION_KEYS } from '@/services/storage/sessionStorage'
+import { loadFromSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 
 const initialFilters: ExerciseFilters = {
   muscleGroup: 'all',

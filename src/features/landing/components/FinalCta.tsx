@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import { buttonClasses } from '@/components/ui'
-import { PHOTOS } from '@/data/photos'
+import { buttonClasses } from '@/shared/ui'
+import { PHOTOS } from '@/shared/config/photos'
 
 export function FinalCta() {
   return (

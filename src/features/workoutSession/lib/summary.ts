@@ -1,4 +1,4 @@
-import type { ExerciseSummary, WorkoutHistoryLog } from '@/features/progress/model/types'
+import type { ExerciseSummary, WorkoutHistoryLog } from '@/features/progress'
 import type { WorkoutSessionState } from '../model/types'
 
 const KCAL_PER_MINUTE = 7

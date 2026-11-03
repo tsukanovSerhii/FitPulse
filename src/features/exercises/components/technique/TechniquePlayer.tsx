@@ -2,7 +2,7 @@ import type { Exercise } from '../../model/types'
 import { getTechnique } from '../../lib/technique'
 import { StepList } from './StepList'
 import { TechniqueDemo } from './TechniqueDemo'
-import { useDemoLoop } from './useDemoLoop'
+import { useDemoLoop } from '../../hooks/useDemoLoop'
 
 /** Photo demo synced with the step list; exercises without photos get a plain step list. */
 export function TechniquePlayer({ exercise }: { exercise: Exercise }) {

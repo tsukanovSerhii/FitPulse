@@ -1,9 +1,7 @@
 import { Check, Minus, Plus } from 'lucide-react'
-import { BackBody } from '@/components/common/muscle-map/BackBody'
-import { FrontBody } from '@/components/common/muscle-map/FrontBody'
-import { createMusclePaint } from '@/components/common/muscle-map/paint'
-import { ProgressRing } from '@/components/ui'
-import { cn } from '@/utils/cn'
+import { BackBody, FrontBody, createMusclePaint } from '@/shared/ui/body-map'
+import { ProgressRing } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
 
 const chestPaint = createMusclePaint('chest', ['chest', 'triceps', 'shoulders'])
 

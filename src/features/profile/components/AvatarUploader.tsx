@@ -1,12 +1,11 @@
 import { useRef, useState } from 'react'
 import { Camera, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useAppDispatch } from '@/app/hooks'
-import { Avatar } from '@/components/layout/Avatar'
-import { Button, IconButton } from '@/components/ui'
-import { setAvatar } from '@/features/auth/model/authSlice'
-import type { AuthUser } from '@/features/auth/model/types'
-import { toSquareDataUrl, validateImageFile } from '@/utils/image'
+import { useAppDispatch } from '@/app/store/hooks'
+import { Avatar } from '@/shared/ui/Avatar'
+import { Button, IconButton } from '@/shared/ui'
+import { setAvatar, type AuthUser } from '@/features/auth'
+import { toSquareDataUrl, validateImageFile } from '@/shared/lib/image'
 
 export function AvatarUploader({ user, name }: { user: AuthUser; name: string }) {
   const dispatch = useAppDispatch()

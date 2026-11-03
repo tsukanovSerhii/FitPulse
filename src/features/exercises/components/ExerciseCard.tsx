@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react'
 import { Heart } from 'lucide-react'
-import { Badge } from '@/components/ui'
-import { cn } from '@/utils/cn'
+import { Badge } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
 import type { Exercise } from '../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 

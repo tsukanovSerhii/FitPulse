@@ -1,10 +1,9 @@
 import { Play } from 'lucide-react'
-import { Button, Card, ProgressBar } from '@/components/ui'
-import type { Exercise } from '@/features/exercises/model/types'
-import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
-import { DAY_LABELS, type DayOfWeek, type PlanExercise } from '@/features/workoutPlan/model/types'
-import type { WorkoutSessionState } from '@/features/workoutSession/model/types'
-import { formatDuration } from '@/utils/formatters'
+import { Button, Card, ProgressBar } from '@/shared/ui'
+import { type Exercise, MUSCLE_GROUP_LABELS } from '@/features/exercises'
+import { DAY_LABELS, type DayOfWeek, type PlanExercise } from '@/features/workoutPlan'
+import type { WorkoutSessionState } from '@/features/workoutSession'
+import { formatDuration } from '@/shared/lib/formatters'
 
 interface TodayCardProps {
   today: DayOfWeek

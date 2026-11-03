@@ -1,6 +1,6 @@
-import { Modal, Button, Stat, confirmAction } from '@/components/ui'
-import type { WorkoutHistoryLog } from '@/features/progress/model/types'
-import { formatDuration, formatNumber } from '@/utils/formatters'
+import { Modal, Button, Stat, confirmAction } from '@/shared/ui'
+import type { WorkoutHistoryLog } from '@/features/progress'
+import { formatDuration, formatNumber } from '@/shared/lib/formatters'
 
 export interface SessionSummaryModalProps {
   isOpen: boolean

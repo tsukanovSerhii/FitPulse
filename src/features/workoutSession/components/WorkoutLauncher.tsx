@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Play, Zap } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { Button, LoadingRegion, PageHeader, Select, Skeleton } from '@/components/ui'
-import { dayKeyOf } from '@/features/dashboard/lib/week'
-import { ALL_DAYS, DAY_LABELS, type PlanExercise } from '@/features/workoutPlan/model/types'
-import { cn } from '@/utils/cn'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
+import { Button, LoadingRegion, PageHeader, Select, Skeleton } from '@/shared/ui'
+import { dayKeyOf, ALL_DAYS, DAY_LABELS, type PlanExercise } from '@/features/workoutPlan'
+import { cn } from '@/shared/lib/cn'
 import { startWorkout } from '../model/workoutSessionSlice'
 
 const QUICK_WORKOUT_SIZE = 4

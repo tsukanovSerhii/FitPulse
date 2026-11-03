@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import { Check } from 'lucide-react'
-import { Badge, buttonClasses } from '@/components/ui'
-import { SUBSCRIPTION_PLANS } from '@/features/auth/model/plans'
-import { formatNumber } from '@/utils/formatters'
-import { cn } from '@/utils/cn'
+import { Badge, buttonClasses } from '@/shared/ui'
+import { SUBSCRIPTION_PLANS } from '@/features/subscription'
+import { formatNumber } from '@/shared/lib/formatters'
+import { cn } from '@/shared/lib/cn'
 import { SectionHeader } from './SectionHeader'
 
 export function PricingSection() {

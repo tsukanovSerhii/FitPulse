@@ -1,4 +1,4 @@
-import { LoadingRegion, Skeleton, SkeletonText } from '@/components/ui'
+import { LoadingRegion, Skeleton, SkeletonText } from '@/shared/ui'
 
 export function ExerciseGridSkeleton({ count = 6 }: { count?: number }) {
   return (

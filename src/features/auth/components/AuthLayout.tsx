@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import { Wordmark } from '@/components/layout/Wordmark'
-import { ThemeCycleButton } from '@/components/ui'
-import { PHOTOS } from '@/data/photos'
+import { Wordmark } from '@/shared/ui'
+import { ThemeCycleButton } from '@/features/theme'
+import { PHOTOS } from '@/shared/config/photos'
 
 export function AuthLayout({ title, subtitle, children }: { title: string; subtitle: ReactNode; children: ReactNode }) {
   return (

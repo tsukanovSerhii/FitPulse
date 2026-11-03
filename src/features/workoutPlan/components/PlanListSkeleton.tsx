@@ -1,4 +1,4 @@
-import { LoadingRegion, Skeleton } from '@/components/ui'
+import { LoadingRegion, Skeleton } from '@/shared/ui'
 
 export function PlanListSkeleton({ count = 3 }: { count?: number }) {
   return (

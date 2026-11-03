@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { Plus, Trash2 } from 'lucide-react'
 import type { WorkoutPlan, DayOfWeek, PlanExercise } from '../model/types'
 import { DAY_LABELS } from '../model/types'
-import type { Exercise } from '@/features/exercises/model/types'
-import { Modal } from '@/components/ui'
-import { Input } from '@/components/ui'
-import { Button } from '@/components/ui'
+import type { Exercise } from '@/features/exercises'
+import { Modal } from '@/shared/ui'
+import { Input } from '@/shared/ui'
+import { Button } from '@/shared/ui'
 
 export interface AddExerciseToDayModalProps {
   isOpen: boolean

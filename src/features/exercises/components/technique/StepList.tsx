@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import type { TechniqueStep } from '../../model/types'
 
 interface StepListProps {

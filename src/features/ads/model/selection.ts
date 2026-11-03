@@ -1,6 +1,7 @@
+import { env } from '@/shared/config/env'
 import type { AdCampaign, AdPlacement, AdTier } from './types'
 
-export const ADS_ENABLED = import.meta.env.VITE_ADS_ENABLED === 'true'
+export const ADS_ENABLED = env.adsEnabled
 
 export const PLACEMENT_TIERS: Record<AdPlacement, AdTier[]> = {
   dashboard: ['premium'],

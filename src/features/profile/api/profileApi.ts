@@ -1,6 +1,6 @@
 import type { UserProfile } from '../model/types'
-import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '@/services/storage/localStorage'
-import { INITIAL_PROFILE } from '@/services/mockData/initialProfile'
+import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { INITIAL_PROFILE } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 

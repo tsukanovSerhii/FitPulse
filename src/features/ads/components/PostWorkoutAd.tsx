@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Modal } from '@/components/ui'
+import { Modal } from '@/shared/ui'
 import { DEMO_CAMPAIGNS } from '../model/campaigns'
 import {
   ADS_ENABLED,

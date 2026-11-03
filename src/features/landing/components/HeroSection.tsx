@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Check, Trophy } from 'lucide-react'
-import { ProgressRing, buttonClasses } from '@/components/ui'
+import { ProgressRing, buttonClasses } from '@/shared/ui'
 import { PhoneMockup } from './PhoneMockup'
 
 const PERKS = ['Без картки', 'Працює в браузері телефона', 'Світла й темна тема']

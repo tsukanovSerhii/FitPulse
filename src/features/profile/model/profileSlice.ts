@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { ProfileState, UserProfile } from './types'
 import { profileApi } from '../api/profileApi'
-import { INITIAL_PROFILE } from '@/services/mockData/initialProfile'
+import { INITIAL_PROFILE } from '../api/seed'
 
 const initialState: ProfileState = {
   profile: INITIAL_PROFILE,
@@ -32,6 +32,10 @@ export const updateProfileAsync = createAsyncThunk(
     }
   },
 )
+
+/** Fresh profile for a newly registered account. */
+export const createProfileFor = (user: { name: string; email: string; createdAt: string }) =>
+  updateProfileAsync({ ...INITIAL_PROFILE, name: user.name, email: user.email, joinedDate: user.createdAt })
 
 export const resetProfileAsync = createAsyncThunk(
   'profile/resetProfileAsync',

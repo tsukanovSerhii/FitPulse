@@ -1,12 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { WorkoutSessionState, CompletedSet } from './types'
-import type { PlanExercise } from '@/features/workoutPlan/model/types'
+import type { PlanExercise } from '@/features/workoutPlan'
 import {
   loadFromStorage,
   saveToStorage,
   removeFromStorage,
   STORAGE_KEYS,
-} from '@/services/storage/localStorage'
+} from '@/shared/storage/localStorage'
 
 const defaultInitialState: WorkoutSessionState = {
   isActive: false,
