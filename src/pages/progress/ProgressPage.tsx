@@ -17,6 +17,7 @@ import {
 } from '@/features/progress'
 import { SEO } from '@/shared/seo/SEO'
 import { confirmAction, EmptyState, PageHeader, Section } from '@/shared/ui'
+import { PAGE_META } from '../meta'
 
 export function ProgressPage() {
   const dispatch = useAppDispatch()
@@ -46,7 +47,7 @@ export function ProgressPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <PostWorkoutAd trigger={justFinished} />
-      <SEO title="Прогрес" description="Журнал тренувань, тоннаж, час у залі та особисті рекорди." />
+      <SEO {...PAGE_META.progress} />
       <PageHeader compact title="Прогрес" description="Журнал тренувань і особисті рекорди" />
       <ProgressTabs />
 

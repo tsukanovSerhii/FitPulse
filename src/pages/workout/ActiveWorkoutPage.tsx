@@ -8,6 +8,7 @@ import { fetchExercises } from '@/features/exercises'
 import { logWorkoutAsync, type WorkoutHistoryLog } from '@/features/progress'
 import { fetchPlans } from '@/features/workoutPlan'
 import { SessionSummaryModal, WorkoutFocusView, WorkoutLauncher, finishWorkout } from '@/features/workoutSession'
+import { PAGE_META } from '../meta'
 
 export function ActiveWorkoutPage() {
   const dispatch = useAppDispatch()
@@ -38,7 +39,7 @@ export function ActiveWorkoutPage() {
 
   return (
     <>
-      <SEO title={isActive ? 'Активне тренування' : 'Тренування'} description="Фіксація підходів, ваги та таймер відпочинку." />
+      <SEO {...(isActive ? PAGE_META.activeWorkout : PAGE_META.workout)} />
       {/* Portal: the animated <main> creates a stacking context that would trap this fixed layer */}
       {isActive ? createPortal(<WorkoutFocusView onFinish={setSummary} />, document.body) : <WorkoutLauncher />}
       <SessionSummaryModal

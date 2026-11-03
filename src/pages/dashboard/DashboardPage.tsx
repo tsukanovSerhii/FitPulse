@@ -7,6 +7,7 @@ import { DashboardSkeleton, LastWorkoutCard, TodayCard, WeekStrip, useDashboardD
 import { DAY_LABELS } from '@/features/workoutPlan'
 import { startWorkout } from '@/features/workoutSession'
 import { formatNumber } from '@/shared/lib/formatters'
+import { PAGE_META } from '../meta'
 
 function greeting(hour: number) {
   if (hour < 12) return 'Доброго ранку'
@@ -32,7 +33,7 @@ export function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 lg:space-y-8">
-      <SEO title="Головна" description="Тренування на сьогодні, тиждень і прогрес." />
+      <SEO {...PAGE_META.dashboard} />
 
       <header>
         <p className="text-sm text-fg-subtle first-letter:uppercase">

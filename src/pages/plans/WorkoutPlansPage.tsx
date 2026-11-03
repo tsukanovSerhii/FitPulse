@@ -8,6 +8,7 @@ import { AddExerciseToDayModal, PlanCard, PlanEditorModal, PlanListSkeleton, use
 import { useStartPlanDay } from '@/features/workoutSession'
 import { SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { useSessionState } from '@/shared/storage/useSessionState'
+import { PAGE_META } from '../meta'
 
 export function WorkoutPlansPage() {
   const dispatch = useAppDispatch()
@@ -37,7 +38,7 @@ export function WorkoutPlansPage() {
 
   return (
     <div className="space-y-4">
-      <SEO title="Програми тренувань" description="Тижневі спліти: Push/Pull/Legs, Full Body. Підходи, повторення та дні відпочинку." />
+      <SEO {...PAGE_META.plans} />
       <PageHeader
         compact
         title="Програми"

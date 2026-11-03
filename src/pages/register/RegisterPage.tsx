@@ -6,6 +6,7 @@ import { Button, Input } from '@/shared/ui'
 import { AuthLayout, PasswordField, validateRegistration, type FieldErrors, authErrorCleared, registerUser, type RegistrationData } from '@/features/auth'
 import { removeFromSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { useSessionState } from '@/shared/storage/useSessionState'
+import { PAGE_META } from '../meta'
 
 type Form = RegistrationData
 
@@ -51,7 +52,7 @@ export function RegisterPage() {
         </>
       }
     >
-      <SEO title="Реєстрація" description="Створіть акаунт FitPulse безкоштовно." />
+      <SEO {...PAGE_META.register} />
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {error && (
           <p role="alert" className="rounded-md border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">

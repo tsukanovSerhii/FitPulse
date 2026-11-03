@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Button, Checkbox, Input } from '@/shared/ui'
 import { AuthLayout, PasswordField, validateLogin, type FieldErrors, authErrorCleared, loginUser, type Credentials } from '@/features/auth'
+import { PAGE_META } from '../meta'
 
 export function LoginPage() {
   const dispatch = useAppDispatch()
@@ -40,7 +41,7 @@ export function LoginPage() {
         </>
       }
     >
-      <SEO title="Вхід" description="Увійдіть у FitPulse, щоб продовжити тренування." />
+      <SEO {...PAGE_META.login} />
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {error && (
           <p role="alert" className="rounded-md border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">

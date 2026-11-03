@@ -8,6 +8,7 @@ import { AddExerciseModal, ExerciseCard, ExerciseDetailModal, ExerciseFiltersBar
 import { saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { useSessionState } from '@/shared/storage/useSessionState'
 import { injectExerciseSchema } from '@/shared/seo/meta'
+import { PAGE_META } from '../meta'
 
 export function ExercisesPage() {
   const dispatch = useAppDispatch()
@@ -42,10 +43,7 @@ export function ExercisesPage() {
 
   return (
     <div className="space-y-4">
-      <SEO
-        title="Каталог вправ"
-        description="Довідник вправ для залу та дому: анатомія м'язів, фази руху та техніка."
-      />
+      <SEO {...PAGE_META.exercises} />
       <PageHeader
         compact
         title="Вправи"
