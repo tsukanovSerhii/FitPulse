@@ -1,4 +1,4 @@
-export type SubscriptionPlan = 'free' | 'pro' | 'team'
+import type { SubscriptionPlan } from '@/features/subscription/model/types'
 
 export interface AuthUser {
   id: string

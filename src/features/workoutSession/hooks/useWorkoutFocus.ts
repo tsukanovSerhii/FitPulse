@@ -2,14 +2,14 @@ import { useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { confirmAction } from '@/shared/ui'
 import type { WorkoutHistoryLog } from '@/features/progress/model/types'
-import { buildWorkoutLog } from '../../lib/summary'
+import { buildWorkoutLog } from '../lib/summary'
 import {
   cancelWorkout,
   completeSet,
   removeCompletedSet,
   setCurrentExerciseIndex,
   tickWorkoutTimer,
-} from '../../model/workoutSessionSlice'
+} from '../model/workoutSessionSlice'
 
 /** Derived state and actions for the active workout screen. */
 export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {

@@ -1,5 +1,5 @@
 import { Monitor, Moon, Sun } from 'lucide-react'
-import { useTheme } from '@/features/theme/lib/useTheme'
+import { useTheme } from '@/features/theme/hooks/useTheme'
 import type { ThemeMode } from '@/features/theme/model/types'
 import { SegmentedControl, type SegmentOption } from './SegmentedControl'
 import { IconButton } from './IconButton'

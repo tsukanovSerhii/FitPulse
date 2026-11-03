@@ -7,7 +7,7 @@ import { AdSlot } from '@/features/ads/components/AdSlot'
 import { CATALOG_AD_EVERY } from '@/features/ads/model/selection'
 import { AddExerciseModal } from '@/features/exercises/components/AddExerciseModal'
 import { ExerciseCard } from '@/features/exercises/components/ExerciseCard'
-import { ExerciseDetailModal } from '@/features/exercises/components/detail/ExerciseDetailModal'
+import { ExerciseDetailModal } from '@/features/exercises/components/ExerciseDetailModal'
 import { ExerciseFiltersBar } from '@/features/exercises/components/ExerciseFiltersBar'
 import { ExerciseGridSkeleton } from '@/features/exercises/components/ExerciseGridSkeleton'
 import {

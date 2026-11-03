@@ -1,4 +1,4 @@
-import type { DayOfWeek } from '@/features/workoutPlan/model/types'
+import type { DayOfWeek } from '../model/types'
 
 export const WEEK_DAYS: DayOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 

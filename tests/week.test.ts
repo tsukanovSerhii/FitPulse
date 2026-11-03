@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dayKeyOf, nextTrainingDay, startOfWeek } from '@/features/dashboard/lib/week'
+import { dayKeyOf, nextTrainingDay, startOfWeek } from '@/features/workoutPlan/lib/week'
 import { searchPlans } from '@/features/workoutPlan/lib/search'
 
 describe('week helpers', () => {

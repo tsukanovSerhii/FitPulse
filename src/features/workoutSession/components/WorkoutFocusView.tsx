@@ -6,11 +6,11 @@ import { TechniquePlayer } from '@/features/exercises/components/technique/Techn
 import { MUSCLE_GROUP_LABELS } from '@/features/exercises/model/types'
 import type { WorkoutHistoryLog } from '@/features/progress/model/types'
 import { formatSessionTitle } from '../lib/summary'
-import { useWakeLock } from '../lib/useWakeLock'
+import { useWakeLock } from '../hooks/useWakeLock'
 import { ActiveSetPanel } from './focus/ActiveSetPanel'
 import { FocusHeader } from './focus/FocusHeader'
 import { SetList } from './focus/SetList'
-import { useWorkoutFocus } from './focus/useWorkoutFocus'
+import { useWorkoutFocus } from '../hooks/useWorkoutFocus'
 import { RestTimerSheet } from './RestTimerSheet'
 
 export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryLog) => void }) {

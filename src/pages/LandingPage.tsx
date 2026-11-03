@@ -1,6 +1,6 @@
 import { SEO } from '@/shared/seo/SEO'
 import { Footer } from '@/app/layout/Footer'
-import { FAQ_JSON_LD } from '@/features/landing/faq'
+import { FAQ_JSON_LD } from '@/features/landing/model/faq'
 import { FaqSection } from '@/features/landing/components/FaqSection'
 import { FeaturesSection } from '@/features/landing/components/FeaturesSection'
 import { FinalCta } from '@/features/landing/components/FinalCta'

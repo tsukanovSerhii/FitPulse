@@ -7,7 +7,7 @@ import { DashboardSkeleton } from '@/features/dashboard/components/DashboardSkel
 import { LastWorkoutCard } from '@/features/dashboard/components/LastWorkoutCard'
 import { TodayCard } from '@/features/dashboard/components/TodayCard'
 import { WeekStrip } from '@/features/dashboard/components/WeekStrip'
-import { useDashboardData } from '@/features/dashboard/lib/useDashboardData'
+import { useDashboardData } from '@/features/dashboard/hooks/useDashboardData'
 import { DAY_LABELS } from '@/features/workoutPlan/model/types'
 import { startWorkout } from '@/features/workoutSession/model/workoutSessionSlice'
 import { formatNumber } from '@/shared/lib/formatters'

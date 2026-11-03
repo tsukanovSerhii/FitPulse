@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { TechniqueStep } from '../../model/types'
-import { buildTimeline, stepAt } from '../../lib/technique'
+import type { TechniqueStep } from '../model/types'
+import { buildTimeline, stepAt } from '../lib/technique'
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches

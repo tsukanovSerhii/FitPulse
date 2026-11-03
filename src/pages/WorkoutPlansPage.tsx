@@ -9,6 +9,7 @@ import { PlanCard } from '@/features/workoutPlan/components/PlanCard'
 import { PlanEditorModal } from '@/features/workoutPlan/components/PlanEditorModal'
 import { PlanListSkeleton } from '@/features/workoutPlan/components/PlanListSkeleton'
 import { usePlanActions } from '@/features/workoutPlan/hooks/usePlanActions'
+import { useStartPlanDay } from '@/features/workoutSession/hooks/useStartPlanDay'
 import { searchPlans } from '@/features/workoutPlan/lib/search'
 import type { DayOfWeek, WorkoutPlan } from '@/features/workoutPlan/model/types'
 import { fetchPlans } from '@/features/workoutPlan/model/workoutPlanSlice'
@@ -18,6 +19,7 @@ import { useSessionState } from '@/shared/storage/useSessionState'
 export function WorkoutPlansPage() {
   const dispatch = useAppDispatch()
   const actions = usePlanActions()
+  const startPlanDay = useStartPlanDay()
   const { plans, activePlanId, status } = useAppSelector((state) => state.workoutPlan)
   const allExercises = useAppSelector((state) => state.exercises.items)
 
@@ -97,7 +99,7 @@ export function WorkoutPlansPage() {
               onEdit={() => setEditor({ open: true, plan })}
               onEditDay={(planId, day) => setDayEditor({ planId, day })}
               onDelete={actions.remove}
-              onStartDayWorkout={actions.startDay}
+              onStartDayWorkout={startPlanDay}
             />
           ))}
         </div>

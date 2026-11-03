@@ -33,6 +33,10 @@ export const updateProfileAsync = createAsyncThunk(
   },
 )
 
+/** Fresh profile for a newly registered account. */
+export const createProfileFor = (user: { name: string; email: string; createdAt: string }) =>
+  updateProfileAsync({ ...INITIAL_PROFILE, name: user.name, email: user.email, joinedDate: user.createdAt })
+
 export const resetProfileAsync = createAsyncThunk(
   'profile/resetProfileAsync',
   async (_, { rejectWithValue }) => {

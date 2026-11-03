@@ -6,6 +6,7 @@ import progressReducer from '@/features/progress/model/progressSlice'
 import profileReducer from '@/features/profile/model/profileSlice'
 import themeReducer from '@/features/theme/model/themeSlice'
 import authReducer from '@/features/auth/model/authSlice'
+import { listenerMiddleware } from './listeners'
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     theme: themeReducer,
     auth: authReducer,
   },
+  middleware: (getDefault) => getDefault().prepend(listenerMiddleware.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>

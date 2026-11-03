@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
-import { FAQ } from '../faq'
+import { FAQ } from '../model/faq'
 import { SectionEyebrow } from './SectionHeader'
 
 export function FaqSection() {
