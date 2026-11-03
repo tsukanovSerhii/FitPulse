@@ -11,6 +11,9 @@ import { FocusHeader } from './focus/FocusHeader'
 import { SetList } from './focus/SetList'
 import { useWorkoutFocus } from '../hooks/useWorkoutFocus'
 import { RestTimerSheet } from './RestTimerSheet'
+import { formatNumber } from '@/shared/lib/formatters'
+
+const shortDate = new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'short' })
 
 export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryLog) => void }) {
   const navigate = useNavigate()
@@ -50,6 +53,15 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
                 Ціль: {planExercise.sets} × {planExercise.reps}
                 {planExercise.weight ? ` · ${planExercise.weight} кг` : ''} · відпочинок {planExercise.restSeconds} с
               </p>
+              {focus.previous && (
+                <p className="text-sm text-fg-muted">
+                  Минулого разу{' '}
+                  <span className="text-fg-subtle">({shortDate.format(new Date(focus.previous.date))})</span>:{' '}
+                  <span className="font-mono text-fg tabular">
+                    {focus.previous.weightKg ? `${formatNumber(focus.previous.weightKg, 1)} кг × ${focus.previous.reps ?? '?'}` : `${focus.previous.sets} підх.`}
+                  </span>
+                </p>
+              )}
               {planExercise.notes && <p className="border-l-2 border-accent pl-3 text-sm text-fg-muted">{planExercise.notes}</p>}
             </div>
 
@@ -83,10 +95,11 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
                 initialWeight={lastSet?.weight ?? planExercise.weight}
                 initialReps={lastSet?.reps ?? planExercise.reps}
                 showWeight={focus.showWeight}
+                barbell={exercise?.equipment === 'barbell'}
                 onDone={focus.completeCurrentSet}
               />
             ) : focus.isLastExercise ? (
-              <Button size="lg" className="h-14 w-full text-base" onClick={focus.finish} icon={<Check className="!size-5" />}>
+              <Button size="lg" className="h-14 w-full text-base" onClick={focus.finish} icon={<Check className="size-5!" />}>
                 Завершити тренування
               </Button>
             ) : (

@@ -1,16 +1,11 @@
 import type { DayOfWeek } from '../model/types'
 
+export { startOfWeek } from '@/shared/lib/date'
+
 export const WEEK_DAYS: DayOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
 export function dayKeyOf(date: Date): DayOfWeek {
   return WEEK_DAYS[(date.getDay() + 6) % 7]
-}
-
-export function startOfWeek(date: Date): Date {
-  const start = new Date(date)
-  start.setHours(0, 0, 0, 0)
-  start.setDate(start.getDate() - ((date.getDay() + 6) % 7))
-  return start
 }
 
 /** Next day after `today` with planned exercises, wrapping into next week. */

@@ -24,6 +24,7 @@
 
   --gold-300: #ecc77f;
   --gold-400: #e2b259;
+  --gold-500: #b8892f;
   --gold-700: #865a0b;
   --gold-800: #6e4908;
 }
@@ -45,6 +46,8 @@
   --accent:        var(--gold-700);
   --accent-hover:  var(--gold-800);
   --accent-soft:   rgb(134 90 11 / 0.10);
+  /* Chart marks: validated against the chart surface (lightness band, chroma, 3:1 contrast) */
+  --chart-mark:    var(--gold-700);
   --on-accent:     #ffffff;
 
   --success:      #166534;
@@ -76,6 +79,7 @@
   --accent:        var(--gold-400);
   --accent-hover:  var(--gold-300);
   --accent-soft:   rgb(226 178 89 / 0.12);
+  --chart-mark:    var(--gold-500);
   --on-accent:     var(--graphite-950);
 
   --success:      #4ade80;
@@ -115,6 +119,7 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
+  --color-chart-mark: var(--chart-mark);
   --color-on-accent: var(--on-accent);
 
   --color-success: var(--success);
