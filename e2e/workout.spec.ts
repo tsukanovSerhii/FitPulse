@@ -17,6 +17,11 @@ test('a workout is recorded and appears in the journal', async ({ page }) => {
   await page.getByRole('button', { name: 'Зберегти' }).click()
 
   await expect(page).toHaveURL('/progress')
-  const journal = page.getByRole('region', { name: 'Журнал' }).or(page.locator('section', { hasText: 'Журнал' }))
-  await expect(journal.getByText(/Понеділок/).first()).toBeVisible()
+  await page.getByRole('navigation', { name: 'Розділи прогресу' }).getByRole('link', { name: 'Журнал' }).click()
+  await expect(page).toHaveURL('/progress/journal')
+
+  const month = new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(new Date())
+  const group = page.getByRole('region', { name: month })
+  await expect(group.getByText(/Понеділок/).first()).toBeVisible()
+  await expect(group.getByText(/1 трен\./)).toBeVisible()
 })
