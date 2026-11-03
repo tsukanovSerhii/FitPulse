@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
+import { preloadFonts } from './build/preloadFontsPlugin.ts'
+import { preloadRoutes } from './build/preloadRoutePlugin.ts'
 import { serviceWorker } from './build/serviceWorkerPlugin.ts'
 
 // https://vite.dev/config/
@@ -11,6 +13,12 @@ export default defineConfig({
     react(),
     tailwindcss(),
     serviceWorker(),
+    preloadFonts(['oswald-cyrillic-wght', 'manrope-cyrillic-wght']),
+    preloadRoutes({
+      '/welcome': 'src/pages/landing/LandingPage.tsx',
+      '/login': 'src/pages/login/LoginPage.tsx',
+      '/register': 'src/pages/register/RegisterPage.tsx',
+    }),
   ],
   test: {
     include: ['src/**/*.test.{ts,tsx}'],

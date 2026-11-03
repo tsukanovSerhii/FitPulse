@@ -2,14 +2,13 @@ import { lazy, Suspense, type ComponentType } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../layout/MainLayout'
 import { GuestOnly, RequireAuth } from './guards'
-import { LandingPage } from '@/pages/landing/LandingPage'
-import { LoginPage } from '@/pages/login/LoginPage'
-import { RegisterPage } from '@/pages/register/RegisterPage'
-
-// The landing page ships in the main bundle; app pages load on demand after login.
+// Every page is its own chunk, so the entry holds only the shell and the user downloads what they open.
 const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, name: K) =>
   lazy(() => load().then((m) => ({ default: m[name] })))
 
+const LandingPage = page(() => import('@/pages/landing/LandingPage'), 'LandingPage')
+const LoginPage = page(() => import('@/pages/login/LoginPage'), 'LoginPage')
+const RegisterPage = page(() => import('@/pages/register/RegisterPage'), 'RegisterPage')
 const DashboardPage = page(() => import('@/pages/dashboard/DashboardPage'), 'DashboardPage')
 const ExercisesPage = page(() => import('@/pages/exercises/ExercisesPage'), 'ExercisesPage')
 const WorkoutPlansPage = page(() => import('@/pages/plans/WorkoutPlansPage'), 'WorkoutPlansPage')
