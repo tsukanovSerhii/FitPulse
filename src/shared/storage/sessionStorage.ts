@@ -6,6 +6,7 @@ export const SESSION_KEYS = {
   EXERCISE_FILTERS: 'fitpulse_exercise_filters_v1',
   EXERCISE_FAVORITES_ONLY: 'fitpulse_exercise_favorites_only_v1',
   PLANS_VIEW: 'fitpulse_plans_view_v1',
+  JOURNAL_VIEW: 'fitpulse_journal_view_v1',
 } as const
 
 export type SessionKey = (typeof SESSION_KEYS)[keyof typeof SESSION_KEYS]

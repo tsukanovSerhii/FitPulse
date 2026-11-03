@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Dumbbell, Trophy } from 'lucide-react'
+import { Trophy } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { PostWorkoutAd } from '@/features/ads'
@@ -10,9 +10,10 @@ import {
   ListSkeleton,
   ProgressCharts,
   ProgressSummary,
+  ProgressTabs,
+  RecentWorkouts,
   RecordList,
   SummarySkeleton,
-  WorkoutHistoryItem,
 } from '@/features/progress'
 import { SEO } from '@/shared/seo/SEO'
 import { confirmAction, EmptyState, PageHeader, Section } from '@/shared/ui'
@@ -47,6 +48,7 @@ export function ProgressPage() {
       <PostWorkoutAd trigger={justFinished} />
       <SEO title="Прогрес" description="Журнал тренувань, тоннаж, час у залі та особисті рекорди." />
       <PageHeader compact title="Прогрес" description="Журнал тренувань і особисті рекорди" />
+      <ProgressTabs />
 
       {isLoading ? <SummarySkeleton /> : <ProgressSummary history={history} personalRecords={personalRecords} />}
 
@@ -62,19 +64,7 @@ export function ProgressPage() {
         )}
       </Section>
 
-      <Section title="Журнал" aside={<span className="font-mono text-xs text-fg-subtle tabular">{history.length}</span>}>
-        {isLoading ? (
-          <ListSkeleton label="Завантаження журналу" />
-        ) : history.length === 0 ? (
-          <EmptyState icon={<Dumbbell />} title="Журнал порожній" description="Завершіть перше тренування, і воно з'явиться тут." />
-        ) : (
-          <ul className="divide-y divide-line rounded-lg border border-line bg-surface">
-            {history.map((log) => (
-              <WorkoutHistoryItem key={log.id} log={log} onDelete={handleDeleteLog} />
-            ))}
-          </ul>
-        )}
-      </Section>
+      {!isLoading && history.length > 0 && <RecentWorkouts history={history} records={personalRecords} onDelete={handleDeleteLog} />}
     </div>
   )
 }

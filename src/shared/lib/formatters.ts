@@ -52,3 +52,9 @@ export function formatWeight(kg?: number): string {
 export function formatNumber(value: number, maximumFractionDigits = 0): string {
   return new Intl.NumberFormat('uk-UA', { maximumFractionDigits }).format(value).replace(/\s/g, '\u202f')
 }
+
+/** "50 хв" under an hour, "7:30 год" from an hour up. */
+export function formatHoursMinutes(seconds: number): string {
+  const minutes = Math.round(seconds / 60)
+  return minutes < 60 ? `${minutes} хв` : `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, '0')} год`
+}
