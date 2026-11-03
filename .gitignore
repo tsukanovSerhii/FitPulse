@@ -29,3 +29,7 @@ dist-ssr
 
 # Local development plan
 docs/PLAN.md
+
+# Playwright
+test-results/
+playwright-report/
