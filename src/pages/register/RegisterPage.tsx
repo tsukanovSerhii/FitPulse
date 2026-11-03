@@ -89,7 +89,17 @@ export function RegisterPage() {
         <Button type="submit" size="lg" className="w-full" isLoading={status === 'loading'}>
           Створити акаунт
         </Button>
-        <p className="text-center text-xs text-fg-subtle">Тариф «Старт» безкоштовний. Картка не потрібна.</p>
+        <p className="text-center text-xs leading-relaxed text-fg-subtle">
+          Тариф «Старт» безкоштовний, картка не потрібна. Реєструючись, ви погоджуєтеся з{' '}
+          <Link to="/terms" className="text-fg-muted underline underline-offset-2 hover:text-fg">
+            Умовами користування
+          </Link>{' '}
+          та{' '}
+          <Link to="/privacy" className="text-fg-muted underline underline-offset-2 hover:text-fg">
+            Політикою конфіденційності
+          </Link>
+          .
+        </p>
       </form>
     </AuthLayout>
   )

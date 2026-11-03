@@ -5,7 +5,7 @@ export const SITE_NAME = 'FitPulse'
 export const DEFAULT_OG_IMAGE = '/og-image.jpg'
 
 /** Pages behind login carry personal data and are excluded from indexing. */
-export const PUBLIC_PATHS = ['/welcome', '/login', '/register']
+export const PUBLIC_PATHS = ['/welcome', '/login', '/register', '/privacy', '/terms']
 
 export interface PageMeta {
   title: string
