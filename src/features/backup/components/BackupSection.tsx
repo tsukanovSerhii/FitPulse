@@ -28,7 +28,7 @@ export function BackupSection() {
       const backup = parseBackup(await file.text())
       const confirmed = await confirmAction({
         title: 'Відновити з резервної копії?',
-        description: `Копія від ${new Date(backup.exportedAt).toLocaleDateString('uk-UA')}. Поточні дані акаунта буде замінено.`,
+        description: `${backup.exportedAt ? `Копія від ${new Date(backup.exportedAt).toLocaleDateString('uk-UA')}. ` : ''}Поточні дані акаунта буде замінено.`,
         confirmLabel: 'Відновити',
         destructive: true,
       })

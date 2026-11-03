@@ -1,29 +1,37 @@
+import { z } from 'zod/mini'
+import { validate, type FieldErrors } from '@/shared/lib/form'
 import type { Credentials, RegistrationData } from '../model/types'
 
-export type FieldErrors<T> = Partial<Record<keyof T, string>>
+export type { FieldErrors }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 export const MIN_PASSWORD_LENGTH = 8
 
 export function normalizeEmail(email: string) {
   return email.trim().toLowerCase()
 }
 
-export function validateLogin({ email, password }: Credentials): FieldErrors<Credentials> {
-  const errors: FieldErrors<Credentials> = {}
-  if (!EMAIL_RE.test(email.trim())) errors.email = 'Вкажіть коректний email'
-  if (!password) errors.password = 'Вкажіть пароль'
-  return errors
-}
+const email = z.string().check(z.trim(), z.regex(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, 'Вкажіть коректний email'))
 
-export function validateRegistration({ name, email, password }: RegistrationData): FieldErrors<RegistrationData> {
-  const errors: FieldErrors<RegistrationData> = {}
-  if (name.trim().length < 2) errors.name = "Ім'я має містити щонайменше 2 символи"
-  if (!EMAIL_RE.test(email.trim())) errors.email = 'Вкажіть коректний email'
-  if (password.length < MIN_PASSWORD_LENGTH) errors.password = `Щонайменше ${MIN_PASSWORD_LENGTH} символів`
-  else if (!/\d/.test(password) || !/[a-zA-Zа-яА-ЯіІїЇєЄґҐ]/.test(password)) errors.password = 'Додайте літери й цифри'
-  return errors
-}
+export const loginSchema = z.object({
+  email,
+  password: z.string().check(z.minLength(1, 'Вкажіть пароль')),
+})
+
+export const registrationSchema = z.object({
+  name: z.string().check(z.trim(), z.minLength(2, "Ім'я має містити щонайменше 2 символи"), z.maxLength(60, "Ім'я задовге")),
+  email,
+  password: z
+    .string()
+    .check(
+      z.minLength(MIN_PASSWORD_LENGTH, `Щонайменше ${MIN_PASSWORD_LENGTH} символів`),
+      z.refine((value) => /\d/.test(value) && /[a-zA-Zа-яА-ЯіІїЇєЄґҐ]/.test(value), 'Додайте літери й цифри'),
+    ),
+})
+
+export const validateLogin = (values: Credentials): FieldErrors<Credentials> => validate(loginSchema, values).errors
+
+export const validateRegistration = (values: RegistrationData): FieldErrors<RegistrationData> =>
+  validate(registrationSchema, values).errors
 
 export function passwordStrength(password: string): number {
   if (!password) return 0

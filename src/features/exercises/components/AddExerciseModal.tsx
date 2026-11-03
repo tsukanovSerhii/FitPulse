@@ -1,6 +1,8 @@
-import { useId, useState, type FormEvent } from 'react'
+import { useId, useState } from 'react'
+import { useZodForm } from '@/shared/lib/form'
 import { Button, Input, Modal, Select, Textarea } from '@/shared/ui'
-import type { Difficulty, Equipment, Exercise, MuscleGroup } from '../model/types'
+import { customExerciseSchema, type CustomExerciseForm } from '../lib/schema'
+import type { Exercise } from '../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 
 export interface AddExerciseModalProps {
@@ -12,49 +14,49 @@ export interface AddExerciseModalProps {
 const toOptions = (labels: Record<string, string>) => Object.entries(labels).map(([value, label]) => ({ value, label }))
 const lines = (text: string) => text.split('\n').map((line) => line.trim()).filter(Boolean)
 
+function toExercise(data: CustomExerciseForm): Omit<Exercise, 'id'> {
+  return {
+    name: data.name,
+    primaryMuscle: data.primaryMuscle,
+    muscleGroups: [data.primaryMuscle],
+    difficulty: data.difficulty,
+    equipment: data.equipment,
+    description: data.description || 'Власна вправа',
+    defaultSets: data.sets,
+    defaultReps: data.reps,
+    defaultRestSeconds: data.rest,
+    technique: {
+      steps: lines(data.steps).map((text, i) => ({ title: `Крок ${i + 1}`, text, frame: 0, seconds: 0 })),
+      cues: lines(data.cues),
+      mistakes: lines(data.mistakes),
+    },
+  }
+}
+
 export function AddExerciseModal({ isOpen, onClose, onSubmit }: AddExerciseModalProps) {
   const formId = useId()
-  const [name, setName] = useState('')
-  const [primaryMuscle, setPrimaryMuscle] = useState<MuscleGroup>('chest')
-  const [difficulty, setDifficulty] = useState<Difficulty>('beginner')
-  const [equipment, setEquipment] = useState<Equipment>('dumbbell')
-  const [description, setDescription] = useState('')
-  const [sets, setSets] = useState(3)
-  const [reps, setReps] = useState(10)
-  const [rest, setRest] = useState(60)
-  const [stepsText, setStepsText] = useState('')
-  const [cuesText, setCuesText] = useState('')
-  const [mistakesText, setMistakesText] = useState('')
-  const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { values, errors, set, setErrors, handleSubmit } = useZodForm(customExerciseSchema, {
+    name: '',
+    primaryMuscle: 'chest',
+    difficulty: 'beginner',
+    equipment: 'dumbbell',
+    sets: 3,
+    reps: 10,
+    rest: 60,
+    description: '',
+    steps: '',
+    cues: '',
+    mistakes: '',
+  })
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-    if (!name.trim()) {
-      setError('Введіть назву вправи')
-      return
-    }
+  const save = async (data: CustomExerciseForm) => {
     setIsSubmitting(true)
     try {
-      await onSubmit({
-        name: name.trim(),
-        primaryMuscle,
-        muscleGroups: [primaryMuscle],
-        difficulty,
-        equipment,
-        description: description.trim() || 'Власна вправа',
-        defaultSets: sets || 3,
-        defaultReps: reps || 10,
-        defaultRestSeconds: rest || 60,
-        technique: {
-          steps: lines(stepsText).map((text, i) => ({ title: `Крок ${i + 1}`, text, frame: 0, seconds: 0 })),
-          cues: lines(cuesText),
-          mistakes: lines(mistakesText),
-        },
-      })
+      await onSubmit(toExercise(data))
       onClose()
     } catch {
-      setError('Не вдалося зберегти вправу')
+      setErrors({ name: 'Не вдалося зберегти вправу' })
     } finally {
       setIsSubmitting(false)
     }
@@ -77,43 +79,65 @@ export function AddExerciseModal({ isOpen, onClose, onSubmit }: AddExerciseModal
         </>
       }
     >
-      <form id={formId} onSubmit={handleSubmit} noValidate className="space-y-5">
-        <Input
-          label="Назва"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value)
-            setError('')
-          }}
-          placeholder="Напр. Жим Арнольда"
-          error={error}
-          autoFocus
-        />
+      <form id={formId} onSubmit={handleSubmit(save)} noValidate className="space-y-5">
+        <Input label="Назва" value={values.name} onChange={(e) => set('name', e.target.value)} placeholder="Напр. Жим Арнольда" error={errors.name} autoFocus />
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <Select label="М'язи" value={primaryMuscle} onChange={(e) => setPrimaryMuscle(e.target.value as MuscleGroup)} options={toOptions(MUSCLE_GROUP_LABELS)} />
-          <Select label="Рівень" value={difficulty} onChange={(e) => setDifficulty(e.target.value as Difficulty)} options={toOptions(DIFFICULTY_LABELS)} />
-          <Select label="Обладнання" value={equipment} onChange={(e) => setEquipment(e.target.value as Equipment)} options={toOptions(EQUIPMENT_LABELS)} />
+          <Select
+            label="М'язи"
+            value={values.primaryMuscle}
+            onChange={(e) => set('primaryMuscle', e.target.value as CustomExerciseForm['primaryMuscle'])}
+            options={toOptions(MUSCLE_GROUP_LABELS)}
+          />
+          <Select
+            label="Рівень"
+            value={values.difficulty}
+            onChange={(e) => set('difficulty', e.target.value as CustomExerciseForm['difficulty'])}
+            options={toOptions(DIFFICULTY_LABELS)}
+          />
+          <Select
+            label="Обладнання"
+            value={values.equipment}
+            onChange={(e) => set('equipment', e.target.value as CustomExerciseForm['equipment'])}
+            options={toOptions(EQUIPMENT_LABELS)}
+          />
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <Input label="Підходи" type="number" inputMode="numeric" min={1} max={20} value={sets} onChange={(e) => setSets(Number(e.target.value))} placeholder="3" />
-          <Input label="Повтори" type="number" inputMode="numeric" min={1} max={200} value={reps} onChange={(e) => setReps(Number(e.target.value))} placeholder="10" />
-          <Input label="Відпочинок, с" type="number" inputMode="numeric" min={10} max={600} step={5} value={rest} onChange={(e) => setRest(Number(e.target.value))} placeholder="60" />
+          <Input label="Підходи" type="number" inputMode="numeric" value={values.sets} onChange={(e) => set('sets', Number(e.target.value))} placeholder="3" error={errors.sets} />
+          <Input label="Повтори" type="number" inputMode="numeric" value={values.reps} onChange={(e) => set('reps', Number(e.target.value))} placeholder="10" error={errors.reps} />
+          <Input
+            label="Відпочинок, с"
+            type="number"
+            inputMode="numeric"
+            step={5}
+            value={values.rest}
+            onChange={(e) => set('rest', Number(e.target.value))}
+            placeholder="60"
+            error={errors.rest}
+          />
         </div>
 
-        <Textarea label="Опис" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Коротко: що розвиває вправа" rows={2} />
+        <Textarea label="Опис" value={values.description} onChange={(e) => set('description', e.target.value)} placeholder="Коротко: що розвиває вправа" rows={2} error={errors.description} />
         <Textarea
           label="Кроки техніки"
           helperText="Кожен крок з нового рядка"
-          value={stepsText}
-          onChange={(e) => setStepsText(e.target.value)}
+          value={values.steps}
+          onChange={(e) => set('steps', e.target.value)}
           placeholder={'Займіть вихідне положення\nОпустіть вагу на вдиху\nПідніміть на видиху'}
           rows={4}
+          error={errors.steps}
         />
         <div className="grid gap-4 sm:grid-cols-2">
-          <Textarea label="Ключові моменти" helperText="Необов'язково, по рядку" value={cuesText} onChange={(e) => setCuesText(e.target.value)} placeholder="Спина рівна" />
-          <Textarea label="Типові помилки" helperText="Необов'язково, по рядку" value={mistakesText} onChange={(e) => setMistakesText(e.target.value)} placeholder="Ривки корпусом" />
+          <Textarea label="Ключові моменти" helperText="Необов'язково, по рядку" value={values.cues} onChange={(e) => set('cues', e.target.value)} placeholder="Спина рівна" error={errors.cues} />
+          <Textarea
+            label="Типові помилки"
+            helperText="Необов'язково, по рядку"
+            value={values.mistakes}
+            onChange={(e) => set('mistakes', e.target.value)}
+            placeholder="Ривки корпусом"
+            error={errors.mistakes}
+          />
         </div>
       </form>
     </Modal>
