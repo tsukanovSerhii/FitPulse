@@ -1,7 +1,6 @@
 import type { Exercise } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadUserData, saveUserData } from '@/shared/storage/userStorage'
-import { INITIAL_EXERCISES } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -19,6 +18,8 @@ function loadCustom(): Exercise[] {
 export const exercisesApi = {
   async getExercises(): Promise<Exercise[]> {
     await delay(250)
+    // The catalog is the largest piece of data, so it stays out of the entry bundle
+    const { INITIAL_EXERCISES } = await import('./seed')
     return [...loadCustom(), ...INITIAL_EXERCISES]
   },
 

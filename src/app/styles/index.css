@@ -102,9 +102,9 @@
       bg-bg, bg-surface, text-fg-muted, border-line, text-accent …
    ============================================================ */
 @theme inline {
-  --font-display: 'Oswald', 'Arial Narrow', system-ui, sans-serif;
-  --font-sans: 'Manrope', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  --font-display: 'Oswald Variable', 'Arial Narrow', system-ui, sans-serif;
+  --font-sans: 'Manrope Variable', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, monospace;
 
   --color-bg: var(--bg);
   --color-surface: var(--surface);

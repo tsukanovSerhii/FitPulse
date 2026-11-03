@@ -1,7 +1,6 @@
 import type { WorkoutHistoryLog, PersonalRecord } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { hasUserData, loadUserData, saveUserData } from '@/shared/storage/userStorage'
-import { INITIAL_HISTORY, INITIAL_PRS } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -61,8 +60,8 @@ export const progressApi = {
 
     // First run: seed demo history
     if (!hasUserData(STORAGE_KEYS.WORKOUT_HISTORY)) {
-      history = INITIAL_HISTORY
-      saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, INITIAL_HISTORY)
+      history = (await import('./seed')).INITIAL_HISTORY
+      saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, history)
     } else {
       // Key exists: return stored data even if the user emptied it
       history = loadUserData<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
@@ -70,8 +69,8 @@ export const progressApi = {
 
     let prs: Record<string, PersonalRecord>
     if (!hasUserData(STORAGE_KEYS.PERSONAL_RECORDS)) {
-      prs = INITIAL_PRS
-      saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, INITIAL_PRS)
+      prs = (await import('./seed')).INITIAL_PRS
+      saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, prs)
     } else {
       prs = loadUserData<Record<string, PersonalRecord>>(STORAGE_KEYS.PERSONAL_RECORDS, {})
     }
