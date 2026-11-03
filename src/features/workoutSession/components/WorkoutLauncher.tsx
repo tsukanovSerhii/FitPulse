@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Play, Zap } from 'lucide-react'
+import { Dumbbell, Play } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { Button, LoadingRegion, PageHeader, Select, Skeleton } from '@/shared/ui'
 import { dayKeyOf, ALL_DAYS, DAY_LABELS, type PlanExercise } from '@/features/workoutPlan'
 import { cn } from '@/shared/lib/cn'
 import { startWorkout } from '../model/workoutSessionSlice'
-
-const QUICK_WORKOUT_SIZE = 4
+import { FREE_WORKOUT_LABEL } from '../lib/freeWorkout'
 
 export function WorkoutLauncher() {
   const dispatch = useAppDispatch()
@@ -22,23 +21,11 @@ export function WorkoutLauncher() {
   const start = (dayLabel: string, items: PlanExercise[], fromPlanId: string | null) =>
     dispatch(startWorkout({ planId: fromPlanId, dayLabel, exercises: items }))
 
-  const startQuick = () =>
-    start(
-      'Експрес-тренування',
-      exercises.slice(0, QUICK_WORKOUT_SIZE).map((ex, i) => ({
-        id: `quick-${i}`,
-        exerciseId: ex.id,
-        sets: ex.defaultSets,
-        reps: ex.defaultReps,
-        restSeconds: ex.defaultRestSeconds,
-        order: i + 1,
-      })),
-      null,
-    )
+  const startFree = () => dispatch(startWorkout({ planId: null, dayLabel: FREE_WORKOUT_LABEL, exercises: [], mode: 'free' }))
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <PageHeader compact title="Тренування" description="Оберіть день програми або швидкий старт" />
+      <PageHeader compact title="Тренування" description="Оберіть день програми або тренуйтеся вільно" />
 
       {plans.length > 1 && (
         <Select
@@ -104,12 +91,12 @@ export function WorkoutLauncher() {
       <div className="flex items-center justify-between gap-4 rounded-lg border border-dashed border-line-strong p-4">
         <div>
           <p className="flex items-center gap-2 font-semibold text-fg">
-            <Zap className="size-4 text-accent" aria-hidden="true" />
-            Швидкий старт
+            <Dumbbell className="size-4 text-accent" aria-hidden="true" />
+            {FREE_WORKOUT_LABEL}
           </p>
-          <p className="mt-0.5 text-sm text-fg-subtle">{QUICK_WORKOUT_SIZE} базові вправи без розкладу</p>
+          <p className="mt-0.5 text-sm text-fg-subtle">Додавайте вправи по ходу, а потім збережіть як програму</p>
         </div>
-        <Button variant="outline" size="sm" onClick={startQuick} disabled={exercises.length === 0}>
+        <Button variant="outline" size="sm" onClick={startFree} disabled={exercises.length === 0}>
           Почати
         </Button>
       </div>

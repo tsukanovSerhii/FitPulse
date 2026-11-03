@@ -1,17 +1,34 @@
-import { Modal, Button, Stat, confirmAction } from '@/shared/ui'
+import { useState } from 'react'
+import { Modal, Button, Checkbox, Input, Select, Stat, confirmAction } from '@/shared/ui'
 import type { WorkoutHistoryLog } from '@/features/progress'
+import { ALL_DAYS, DAY_LABELS, type DayOfWeek } from '@/features/workoutPlan/model'
 import { formatDuration, formatNumber } from '@/shared/lib/formatters'
+
+export interface SaveAsPlan {
+  name: string
+  day: DayOfWeek
+}
 
 export interface SessionSummaryModalProps {
   isOpen: boolean
   workoutLog: WorkoutHistoryLog | null
-  onSave: () => void
+  /** Offered after a free workout: defaults for saving it as a personal plan */
+  planDefaults?: SaveAsPlan
+  onSave: (asPlan: SaveAsPlan | null) => void
   onDiscard: () => void
   onResume: () => void
 }
 
-export function SessionSummaryModal({ isOpen, workoutLog, onSave, onDiscard, onResume }: SessionSummaryModalProps) {
+const DAY_OPTIONS = ALL_DAYS.map((day) => ({ value: day, label: DAY_LABELS[day] }))
+
+export function SessionSummaryModal({ isOpen, workoutLog, planDefaults, onSave, onDiscard, onResume }: SessionSummaryModalProps) {
+  const [asPlan, setAsPlan] = useState(false)
+  const [name, setName] = useState(planDefaults?.name ?? '')
+  const [day, setDay] = useState<DayOfWeek>(planDefaults?.day ?? 'monday')
+
   if (!workoutLog) return null
+
+  const save = () => onSave(planDefaults && asPlan ? { name: name.trim() || planDefaults.name, day } : null)
 
   const handleDiscard = async () => {
     const ok = await confirmAction({
@@ -35,7 +52,7 @@ export function SessionSummaryModal({ isOpen, workoutLog, onSave, onDiscard, onR
           <Button variant="ghost" onClick={handleDiscard}>
             Не зберігати
           </Button>
-          <Button onClick={onSave}>Зберегти</Button>
+          <Button onClick={save}>Зберегти</Button>
         </>
       }
     >
@@ -57,6 +74,23 @@ export function SessionSummaryModal({ isOpen, workoutLog, onSave, onDiscard, onR
             </li>
           ))}
         </ul>
+
+        {planDefaults && (
+          <div className="space-y-4 rounded-lg border border-line p-4">
+            <Checkbox
+              label="Зберегти як програму"
+              hint="Ці вправи, підходи й вага стануть днем вашої програми, щоб повторити тренування наступного разу."
+              checked={asPlan}
+              onChange={(e) => setAsPlan(e.target.checked)}
+            />
+            {asPlan && (
+              <div className="grid gap-3 sm:grid-cols-[1fr_11rem]">
+                <Input label="Назва програми" value={name} maxLength={60} onChange={(e) => setName(e.target.value)} />
+                <Select label="День" value={day} options={DAY_OPTIONS} onChange={(e) => setDay(e.target.value as DayOfWeek)} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </Modal>
   )

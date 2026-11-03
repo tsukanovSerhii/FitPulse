@@ -1,13 +1,17 @@
 import { useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { confirmAction } from '@/shared/ui'
+import type { Exercise } from '@/features/exercises/model'
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { buildWorkoutLog } from '../lib/summary'
 import { lastPerformance } from '../lib/strength'
+import { freeSessionExercise } from '../lib/freeWorkout'
 import {
+  addSessionExercise,
   cancelWorkout,
   completeSet,
   removeCompletedSet,
+  removeSessionExercise,
   setCurrentExerciseIndex,
   tickWorkoutTimer,
 } from '../model/workoutSessionSlice'
@@ -24,6 +28,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     return () => clearInterval(id)
   }, [dispatch])
 
+  const isFree = session.mode === 'free'
   const exerciseMap = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises])
   const index = session.currentExerciseIndex
   const planExercise = session.exercises[index]
@@ -31,15 +36,19 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   const doneSets = planExercise ? session.completedSets[planExercise.id] || [] : []
   const lastSet = doneSets[doneSets.length - 1]
   const previous = useMemo(() => (planExercise ? lastPerformance(history, planExercise.exerciseId) : null), [history, planExercise])
-  const exerciseComplete = planExercise ? doneSets.length >= planExercise.sets : false
+  // A free workout has no set target: there is always one more set to log
+  const exerciseComplete = planExercise && !isFree ? doneSets.length >= planExercise.sets : false
   const isLastExercise = index === session.exercises.length - 1
+  const target = planExercise && {
+    ...planExercise,
+    ...(isFree && { sets: doneSets.length + 1, reps: lastSet?.reps ?? planExercise.reps, weight: lastSet?.weight ?? planExercise.weight }),
+  }
 
-  const progress = session.exercises.map((e) => ({
-    id: e.id,
-    name: exerciseMap.get(e.exerciseId)?.name ?? '',
-    done: Math.min(e.sets, session.completedSets[e.id]?.length || 0),
-    total: e.sets,
-  }))
+  const progress = session.exercises.map((e) => {
+    const done = session.completedSets[e.id]?.length || 0
+    const total = isFree ? Math.max(1, done) : e.sets
+    return { id: e.id, name: exerciseMap.get(e.exerciseId)?.name ?? '', done: Math.min(total, done), total }
+  })
   const totalSets = progress.reduce((sum, p) => sum + p.total, 0)
   const totalDone = progress.reduce((sum, p) => sum + p.done, 0)
 
@@ -57,7 +66,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
 
   const completeCurrentSet = (weight: number | undefined, reps: number) => {
     if (!planExercise) return
-    const finishesWorkout = isLastExercise && doneSets.length + 1 >= planExercise.sets
+    const finishesWorkout = !isFree && isLastExercise && doneSets.length + 1 >= planExercise.sets
     dispatch(
       completeSet({
         planExerciseId: planExercise.id,
@@ -66,6 +75,16 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
         restSeconds: planExercise.restSeconds,
       }),
     )
+  }
+
+  const addExercise = (picked: Exercise) => {
+    const existing = session.exercises.findIndex((e) => e.exerciseId === picked.id)
+    if (existing >= 0) goTo(existing)
+    else dispatch(addSessionExercise(freeSessionExercise(picked, history)))
+  }
+
+  const removeCurrentExercise = () => {
+    if (planExercise && doneSets.length === 0) dispatch(removeSessionExercise(planExercise.id))
   }
 
   const undoLastSet = () => {
@@ -86,7 +105,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
       if (cancel) dispatch(cancelWorkout())
       return
     }
-    if (totalDone < totalSets) {
+    if (!isFree && totalDone < totalSets) {
       const ok = await confirmAction({
         title: 'Завершити тренування?',
         description: `Виконано ${totalDone} з ${totalSets} підходів.`,
@@ -111,8 +130,10 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
 
   return {
     session,
+    isFree,
     index,
     planExercise,
+    target,
     exercise,
     doneSets,
     lastSet,
@@ -124,6 +145,8 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     showWeight: Boolean(planExercise?.weight) || exercise?.equipment !== 'bodyweight',
     goTo,
     completeCurrentSet,
+    addExercise,
+    removeCurrentExercise,
     undoLastSet,
     finish,
     cancel,

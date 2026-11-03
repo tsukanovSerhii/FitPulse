@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, ChevronLeft, ChevronRight, Info } from 'lucide-react'
-import { Button, IconButton, Modal } from '@/shared/ui'
+import { Check, ChevronLeft, ChevronRight, Dumbbell, Info, Plus, Trash2 } from 'lucide-react'
+import { Button, EmptyState, IconButton, Modal } from '@/shared/ui'
 import { TechniquePlayer, MUSCLE_GROUP_LABELS } from '@/features/exercises'
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { formatSessionTitle } from '../lib/summary'
@@ -11,6 +11,7 @@ import { FocusHeader } from './focus/FocusHeader'
 import { SetList } from './focus/SetList'
 import { useWorkoutFocus } from '../hooks/useWorkoutFocus'
 import { RestTimerSheet } from './RestTimerSheet'
+import { ExercisePicker } from './ExercisePicker'
 import { formatNumber } from '@/shared/lib/formatters'
 
 const shortDate = new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'short' })
@@ -18,8 +19,11 @@ const shortDate = new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'sho
 export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryLog) => void }) {
   const navigate = useNavigate()
   const focus = useWorkoutFocus(onFinish)
-  const { session, index, planExercise, exercise, doneSets, lastSet } = focus
+  const { session, isFree, index, planExercise, target, exercise, doneSets, lastSet } = focus
   const [techniqueOpen, setTechniqueOpen] = useState(false)
+  // A fresh free workout opens straight into choosing the first exercise
+  const [pickerOpen, setPickerOpen] = useState(() => isFree && session.exercises.length === 0)
+  const openPicker = () => setPickerOpen(true)
 
   useWakeLock(session.isActive)
 
@@ -36,7 +40,7 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
       />
 
       <main className="flex-1 overflow-y-auto">
-        {planExercise && exercise ? (
+        {planExercise && target && exercise ? (
           <div className="mx-auto max-w-lg space-y-6 px-5 py-6">
             <div className="space-y-3">
               <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.16em]">
@@ -50,8 +54,9 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
                 <IconButton label="Техніка виконання" icon={<Info />} onClick={() => setTechniqueOpen(true)} className="border border-line" />
               </div>
               <p className="font-mono text-sm text-fg-muted tabular">
-                Ціль: {planExercise.sets} × {planExercise.reps}
-                {planExercise.weight ? ` · ${planExercise.weight} кг` : ''} · відпочинок {planExercise.restSeconds} с
+                {isFree
+                  ? `Підходів: ${doneSets.length} · відпочинок ${planExercise.restSeconds} с`
+                  : `Ціль: ${planExercise.sets} × ${planExercise.reps}${planExercise.weight ? ` · ${planExercise.weight} кг` : ''} · відпочинок ${planExercise.restSeconds} с`}
               </p>
               {focus.previous && (
                 <p className="text-sm text-fg-muted">
@@ -65,7 +70,20 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
               {planExercise.notes && <p className="border-l-2 border-accent pl-3 text-sm text-fg-muted">{planExercise.notes}</p>}
             </div>
 
-            <SetList target={planExercise} done={doneSets} onUndo={focus.undoLastSet} />
+            <SetList target={target} done={doneSets} onUndo={focus.undoLastSet} />
+
+            {isFree && (
+              <div className="flex flex-wrap items-center gap-2">
+                <Button variant="outline" className="flex-1" onClick={openPicker} icon={<Plus />}>
+                  Додати вправу
+                </Button>
+                {doneSets.length === 0 && (
+                  <Button variant="ghost" onClick={focus.removeCurrentExercise} icon={<Trash2 />} className="text-fg-muted hover:text-danger">
+                    Прибрати
+                  </Button>
+                )}
+              </div>
+            )}
 
             <div className="flex items-center justify-between gap-3">
               <Button variant="ghost" size="sm" disabled={index === 0} onClick={() => focus.goTo(index - 1)} icon={<ChevronLeft />}>
@@ -76,6 +94,22 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
               </Button>
             </div>
 
+            <button type="button" onClick={focus.cancel} className="mx-auto block cursor-pointer text-xs font-semibold text-fg-subtle hover:text-danger">
+              Скасувати тренування
+            </button>
+          </div>
+        ) : isFree ? (
+          <div className="mx-auto max-w-lg space-y-6 px-5 py-10">
+            <EmptyState
+              icon={<Dumbbell />}
+              title="Вільне тренування"
+              description="Додавайте вправи по ходу і записуйте кожен підхід. Таймер відпочинку стартує сам."
+              action={
+                <Button onClick={openPicker} icon={<Plus />}>
+                  Додати вправу
+                </Button>
+              }
+            />
             <button type="button" onClick={focus.cancel} className="mx-auto block cursor-pointer text-xs font-semibold text-fg-subtle hover:text-danger">
               Скасувати тренування
             </button>
@@ -112,6 +146,15 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
       )}
 
       <RestTimerSheet nextHint={focus.nextHint} />
+
+      {isFree && (
+        <ExercisePicker
+          isOpen={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          addedIds={new Set(session.exercises.map((e) => e.exerciseId))}
+          onPick={focus.addExercise}
+        />
+      )}
 
       <Modal isOpen={techniqueOpen} onClose={() => setTechniqueOpen(false)} title={exercise?.name} maxWidth="2xl">
         {exercise && <TechniquePlayer exercise={exercise} />}

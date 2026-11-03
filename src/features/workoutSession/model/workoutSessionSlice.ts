@@ -1,11 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { WorkoutSessionState, CompletedSet } from './types'
+import type { WorkoutSessionState, CompletedSet, SessionMode } from './types'
 import type { PlanExercise } from '@/features/workoutPlan'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadUserData, removeUserData, saveUserData } from '@/shared/storage/userStorage'
 
 const defaultInitialState: WorkoutSessionState = {
   isActive: false,
+  mode: 'plan',
   planId: null,
   dayLabel: null,
   currentExerciseIndex: 0,
@@ -53,9 +54,11 @@ export const workoutSessionSlice = createSlice({
         planId: string | null
         dayLabel: string | null
         exercises: PlanExercise[]
+        mode?: SessionMode
       }>,
     ) => {
       state.isActive = true
+      state.mode = action.payload.mode ?? 'plan'
       state.planId = action.payload.planId
       state.dayLabel = action.payload.dayLabel
       state.exercises = action.payload.exercises
@@ -73,6 +76,7 @@ export const workoutSessionSlice = createSlice({
 
     finishWorkout: (state) => {
       state.isActive = false
+      state.mode = 'plan'
       state.planId = null
       state.dayLabel = null
       state.currentExerciseIndex = 0
@@ -86,6 +90,7 @@ export const workoutSessionSlice = createSlice({
 
     cancelWorkout: (state) => {
       state.isActive = false
+      state.mode = 'plan'
       state.planId = null
       state.dayLabel = null
       state.currentExerciseIndex = 0
@@ -132,6 +137,24 @@ export const workoutSessionSlice = createSlice({
           remainingSeconds: restSeconds,
         }
       }
+      persistSession(state)
+    },
+
+    /** Free workout: adds an exercise and makes it the current one. */
+    addSessionExercise: (state, action: PayloadAction<Omit<PlanExercise, 'order'>>) => {
+      state.exercises.push({ ...action.payload, order: state.exercises.length + 1 })
+      state.currentExerciseIndex = state.exercises.length - 1
+      persistSession(state)
+    },
+
+    /** Free workout: drops an exercise added by mistake. Exercises with logged sets stay. */
+    removeSessionExercise: (state, action: PayloadAction<string>) => {
+      const index = state.exercises.findIndex((e) => e.id === action.payload)
+      if (index < 0 || state.completedSets[action.payload]?.length) return
+      state.exercises.splice(index, 1)
+      state.exercises.forEach((e, i) => (e.order = i + 1))
+      delete state.completedSets[action.payload]
+      if (state.currentExerciseIndex >= index) state.currentExerciseIndex = Math.max(0, state.currentExerciseIndex - 1)
       persistSession(state)
     },
 
@@ -272,6 +295,8 @@ export const {
   finishWorkout,
   cancelWorkout,
   completeSet,
+  addSessionExercise,
+  removeSessionExercise,
   removeCompletedSet,
   setCurrentExerciseIndex,
   nextExercise,

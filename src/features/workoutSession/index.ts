@@ -1,5 +1,6 @@
-export { SessionSummaryModal } from './components/SessionSummaryModal'
+export { SessionSummaryModal, type SaveAsPlan } from './components/SessionSummaryModal'
 export { WorkoutFocusView } from './components/WorkoutFocusView'
 export { WorkoutLauncher } from './components/WorkoutLauncher'
 export { useStartPlanDay } from './hooks/useStartPlanDay'
+export { planFromSession } from './lib/freeWorkout'
 export * from './model'

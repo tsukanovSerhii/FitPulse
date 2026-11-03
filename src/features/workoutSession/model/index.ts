@@ -1,2 +1,2 @@
-export type { WorkoutSessionState } from './types'
+export type { SessionMode, WorkoutSessionState } from './types'
 export { default as workoutSessionReducer, finishWorkout, startWorkout } from './workoutSessionSlice'
