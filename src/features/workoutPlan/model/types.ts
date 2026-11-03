@@ -46,9 +46,41 @@ export interface WorkoutPlan {
   id: string
   name: string
   description?: string
+  /** Set when the plan was added from the template library */
+  templateId?: string
   createdAt: string
   updatedAt: string
   schedule: Record<DayOfWeek, PlanExercise[]>
+}
+
+export type TemplateExercise = Omit<PlanExercise, 'id' | 'order'>
+
+export type PlanGoal = 'muscle' | 'strength' | 'fatLoss' | 'general'
+
+export const PLAN_GOAL_LABELS: Record<PlanGoal, string> = {
+  muscle: 'Маса',
+  strength: 'Сила',
+  fatLoss: 'Схуднення',
+  general: 'Загальна форма',
+}
+
+export type PlanLevel = 'beginner' | 'intermediate' | 'advanced'
+
+export const PLAN_LEVEL_LABELS: Record<PlanLevel, string> = {
+  beginner: 'Новачок',
+  intermediate: 'Середній',
+  advanced: 'Просунутий',
+}
+
+export interface PlanTemplate {
+  id: string
+  name: string
+  description: string
+  goal: PlanGoal
+  level: PlanLevel
+  /** Typical session length */
+  minutes: number
+  schedule: Partial<Record<DayOfWeek, TemplateExercise[]>>
 }
 
 export interface WorkoutPlanState {

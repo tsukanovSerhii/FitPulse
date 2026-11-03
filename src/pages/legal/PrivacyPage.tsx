@@ -13,7 +13,7 @@ export function PrivacyPage() {
 
       <LegalSection title="Хто ми">
         <p>
-          FitPulse — некомерційний навчальний проєкт з відкритим кодом. Вихідний код доступний на{' '}
+          FitPulse — незалежний проєкт з відкритим кодом. Вихідний код доступний на{' '}
           <a href="https://github.com/tsukanovSerhii/FitPulse" target="_blank" rel="noreferrer" className={TEXT_LINK}>
             GitHub
           </a>

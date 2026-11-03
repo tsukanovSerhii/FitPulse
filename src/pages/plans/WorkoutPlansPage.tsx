@@ -1,10 +1,22 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Calendar, Plus, Search } from 'lucide-react'
+import { Calendar, LibraryBig, Plus, Search } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Button, EmptyState, IconButton, PageHeader, SearchInput } from '@/shared/ui'
 import { fetchExercises } from '@/features/exercises'
-import { AddExerciseToDayModal, PlanCard, PlanEditorModal, PlanListSkeleton, usePlanActions, searchPlans, type DayOfWeek, type WorkoutPlan, fetchPlans } from '@/features/workoutPlan'
+import {
+  AddExerciseToDayModal,
+  PlanCard,
+  PlanEditorModal,
+  PlanListSkeleton,
+  PlanTemplatesModal,
+  usePlanActions,
+  searchPlans,
+  type DayOfWeek,
+  type PlanTemplate,
+  type WorkoutPlan,
+  fetchPlans,
+} from '@/features/workoutPlan'
 import { useStartPlanDay } from '@/features/workoutSession'
 import { SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { useSessionState } from '@/shared/storage/useSessionState'
@@ -24,6 +36,7 @@ export function WorkoutPlansPage() {
   const setExpandedId = (next: string | null) => setView((v) => ({ ...v, expandedId: next }))
   const [editor, setEditor] = useState<{ open: boolean; plan: WorkoutPlan | null }>({ open: false, plan: null })
   const [dayEditor, setDayEditor] = useState<{ planId: string; day: DayOfWeek } | null>(null)
+  const [templatesOpen, setTemplatesOpen] = useState(false)
 
   useEffect(() => {
     if (plans.length === 0) dispatch(fetchPlans())
@@ -34,7 +47,16 @@ export function WorkoutPlansPage() {
   const visiblePlans = useMemo(() => searchPlans(plans, allExercises, query, activePlanId), [plans, allExercises, query, activePlanId])
   const dayEditorPlan = dayEditor ? (plans.find((p) => p.id === dayEditor.planId) ?? null) : null
 
+  const addedTemplateIds = useMemo(() => new Set(plans.flatMap((p) => (p.templateId ? [p.templateId] : []))), [plans])
+
   const openCreate = () => setEditor({ open: true, plan: null })
+  const openTemplates = () => setTemplatesOpen(true)
+
+  const addFromTemplate = async (template: PlanTemplate) => {
+    const plan = await actions.addFromTemplate(template)
+    setTemplatesOpen(false)
+    setView({ query: '', expandedId: plan.id })
+  }
 
   return (
     <div className="space-y-4">
@@ -45,7 +67,11 @@ export function WorkoutPlansPage() {
         description="Тижневі спліти та розклад"
         actions={
           <>
+            <IconButton label="Готові програми" icon={<LibraryBig />} onClick={openTemplates} className="border border-line sm:hidden" />
             <IconButton label="Нова програма" icon={<Plus />} onClick={openCreate} className="border border-line sm:hidden" />
+            <Button variant="outline" className="hidden sm:inline-flex" onClick={openTemplates} icon={<LibraryBig />}>
+              Готові програми
+            </Button>
             <Button className="hidden sm:inline-flex" onClick={openCreate} icon={<Plus />}>
               Нова програма
             </Button>
@@ -61,11 +87,16 @@ export function WorkoutPlansPage() {
         <EmptyState
           icon={<Calendar />}
           title="Програм ще немає"
-          description="Створіть тижневий план, щоб систематизувати тренування."
+          description="Оберіть готову програму з бібліотеки або складіть власний тижневий план."
           action={
-            <Button onClick={openCreate} icon={<Plus />}>
-              Створити програму
-            </Button>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button onClick={openTemplates} icon={<LibraryBig />}>
+                Готові програми
+              </Button>
+              <Button variant="outline" onClick={openCreate} icon={<Plus />}>
+                Створити власну
+              </Button>
+            </div>
           }
         />
       ) : visiblePlans.length === 0 ? (
@@ -105,6 +136,14 @@ export function WorkoutPlansPage() {
         onClose={() => setEditor({ open: false, plan: null })}
         onSave={actions.save}
         initialPlan={editor.plan}
+      />
+
+      <PlanTemplatesModal
+        isOpen={templatesOpen}
+        onClose={() => setTemplatesOpen(false)}
+        allExercises={allExercises}
+        addedTemplateIds={addedTemplateIds}
+        onAdd={addFromTemplate}
       />
 
       <AddExerciseToDayModal

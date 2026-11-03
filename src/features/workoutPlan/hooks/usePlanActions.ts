@@ -9,7 +9,8 @@ import {
   setActivePlanAsync,
   updatePlanExercise,
 } from '../model/workoutPlanSlice'
-import type { DayOfWeek, PlanExercise, WorkoutPlan } from '../model/types'
+import type { DayOfWeek, PlanExercise, PlanTemplate, WorkoutPlan } from '../model/types'
+import { planFromTemplate } from '../lib/templates'
 
 type ExerciseUpdates = Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>
 
@@ -23,6 +24,14 @@ export function usePlanActions() {
     },
 
     setActive: (planId: string) => dispatch(setActivePlanAsync(planId)),
+
+    addFromTemplate: async (template: PlanTemplate) => {
+      const plan = await dispatch(savePlanAsync(planFromTemplate(template))).unwrap()
+      toast.success(`Програму «${plan.name}» додано`, {
+        action: { label: 'Зробити активною', onClick: () => dispatch(setActivePlanAsync(plan.id)) },
+      })
+      return plan
+    },
 
     remove: async (planId: string) => {
       const plan = plans.find((p) => p.id === planId)

@@ -58,3 +58,16 @@ export function formatHoursMinutes(seconds: number): string {
   const minutes = Math.round(seconds / 60)
   return minutes < 60 ? `${minutes} хв` : `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, '0')} год`
 }
+
+const pluralRules = new Intl.PluralRules('uk-UA')
+
+type PluralForms = [one: string, few: string, many: string]
+
+/** The word form for a count: "день", "дні" or "днів". */
+export function pluralWord(count: number, [one, few, many]: PluralForms): string {
+  const form = pluralRules.select(count)
+  return form === 'one' ? one : form === 'few' ? few : many
+}
+
+/** "1 день", "3 дні", "5 днів". */
+export const plural = (count: number, forms: PluralForms) => `${count} ${pluralWord(count, forms)}`
