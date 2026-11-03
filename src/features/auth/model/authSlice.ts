@@ -65,8 +65,8 @@ export const authSlice = createSlice({
   },
 })
 
-const { loggedOut, userUpdated } = authSlice.actions
-export const { authErrorCleared } = authSlice.actions
+const { userUpdated } = authSlice.actions
+export const { authErrorCleared, loggedOut } = authSlice.actions
 
 export const logout = () => {
   authApi.logout()

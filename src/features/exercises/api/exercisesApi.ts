@@ -1,5 +1,6 @@
 import type { Exercise } from '../model/types'
-import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { loadUserData, saveUserData } from '@/shared/storage/userStorage'
 import { INITIAL_EXERCISES } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -9,9 +10,9 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const isCustom = (exercise: Exercise) => exercise.id.startsWith('custom-')
 
 function loadCustom(): Exercise[] {
-  const stored = loadFromStorage<Exercise[]>(STORAGE_KEYS.EXERCISES, [])
+  const stored = loadUserData<Exercise[]>(STORAGE_KEYS.EXERCISES, [])
   const custom = stored.filter(isCustom)
-  if (custom.length !== stored.length) saveToStorage(STORAGE_KEYS.EXERCISES, custom)
+  if (custom.length !== stored.length) saveUserData(STORAGE_KEYS.EXERCISES, custom)
   return custom
 }
 
@@ -23,19 +24,19 @@ export const exercisesApi = {
 
   async getFavorites(): Promise<string[]> {
     await delay(150)
-    return loadFromStorage<string[]>(STORAGE_KEYS.EXERCISES_FAVORITES, ['ex-bench-press', 'ex-barbell-squat'])
+    return loadUserData<string[]>(STORAGE_KEYS.EXERCISES_FAVORITES, ['ex-bench-press', 'ex-barbell-squat'])
   },
 
   async createExercise(exerciseData: Omit<Exercise, 'id'>): Promise<Exercise> {
     await delay(300)
     const newExercise: Exercise = { ...exerciseData, id: `custom-${Date.now()}` }
-    saveToStorage(STORAGE_KEYS.EXERCISES, [newExercise, ...loadCustom()])
+    saveUserData(STORAGE_KEYS.EXERCISES, [newExercise, ...loadCustom()])
     return newExercise
   },
 
   async saveFavorites(favorites: string[]): Promise<string[]> {
     await delay(150)
-    saveToStorage(STORAGE_KEYS.EXERCISES_FAVORITES, favorites)
+    saveUserData(STORAGE_KEYS.EXERCISES_FAVORITES, favorites)
     return favorites
   },
 }

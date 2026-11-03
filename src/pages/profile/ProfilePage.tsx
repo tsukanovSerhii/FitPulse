@@ -9,7 +9,8 @@ import { ThemeToggle } from '@/features/theme'
 import { BMISummary, ProfileEditModal, ProfileSkeleton, fetchProfile, resetProfileAsync, updateProfileAsync, type UserProfile, ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS, AvatarUploader } from '@/features/profile'
 import { PLAN_NAMES } from '@/features/subscription'
 import { logout, syncAccount } from '@/features/auth'
-import { removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { clearUserData, saveUserData } from '@/shared/storage/userStorage'
 import { formatDate, formatNumber } from '@/shared/lib/formatters'
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -53,12 +54,9 @@ export function ProfilePage() {
       destructive: true,
     })
     if (!confirmed) return
-    const keepKeys: string[] = [STORAGE_KEYS.ACCOUNTS, STORAGE_KEYS.SESSION, STORAGE_KEYS.THEME]
-    Object.values(STORAGE_KEYS)
-      .filter((k) => !keepKeys.includes(k))
-      .forEach((k) => removeFromStorage(k))
-    saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, [])
-    saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, {})
+    clearUserData()
+    saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, [])
+    saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, {})
     await dispatch(resetProfileAsync()).unwrap()
     window.location.reload()
   }

@@ -3,7 +3,7 @@ import { installMemoryStorage } from '@/shared/testing/memoryStorage'
 import type { WorkoutHistoryLog } from '../model/types'
 import { progressApi, recalculatePersonalRecords } from './progressApi'
 
-const { local: memoryStorage } = installMemoryStorage()
+const memoryStorage = installMemoryStorage({ signedIn: true })
 
 describe('Personal Records (PR) & History Recalculation Tests', () => {
   beforeEach(() => {
