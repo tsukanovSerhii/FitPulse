@@ -31,9 +31,13 @@ async function networkFirstPage(request) {
   }
 }
 
+// Hashed build files never change, so anything fetched once is kept for later offline use.
 async function cacheFirst(request) {
   const cached = await caches.match(request)
-  return cached || fetch(request)
+  if (cached) return cached
+  const response = await fetch(request)
+  if (response.ok) (await caches.open(RUNTIME_CACHE)).put(request, response.clone())
+  return response
 }
 
 async function staleWhileRevalidate(request) {
@@ -57,11 +61,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(networkFirstPage(request))
   } else if (url.origin === self.location.origin && url.pathname.startsWith('/assets/')) {
     event.respondWith(cacheFirst(request))
-  } else if (
-    (url.origin === self.location.origin && /^\/(exercises|images|icons)\//.test(url.pathname)) ||
-    url.hostname === 'fonts.googleapis.com' ||
-    url.hostname === 'fonts.gstatic.com'
-  ) {
+  } else if (url.origin === self.location.origin && /^\/(exercises|images|icons)\//.test(url.pathname)) {
     event.respondWith(staleWhileRevalidate(request))
   }
 })
