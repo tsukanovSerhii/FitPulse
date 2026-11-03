@@ -1,23 +1,18 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import { Dumbbell, Home } from 'lucide-react'
-import { Button } from '@/shared/ui'
+import { Home } from 'lucide-react'
+import { SEO } from '@/shared/seo/SEO'
+import { buttonClasses } from '@/shared/ui'
 
-export const NotFoundPage: React.FC = () => {
+export function NotFoundPage() {
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-4">
-      <div className="w-16 h-16 rounded-lg bg-accent-soft text-accent border border-accent/20 flex items-center justify-center mb-4">
-        <Dumbbell className="w-8 h-8" />
-      </div>
-      <h1 className="text-4xl font-black text-fg mb-2">404</h1>
-      <p className="text-base text-fg-muted font-semibold mb-1">Сторінку не знайдено</p>
-      <p className="text-xs text-fg-muted max-w-sm mb-6">
-        Схоже, що ви шукаєте вправу чи сторінку, якої не існує. Поверніться на головну сторінку для продовження занять.
-      </p>
-      <Link to="/">
-        <Button variant="primary" icon={<Home className="w-4 h-4" />}>
-          На головну
-        </Button>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
+      <SEO title="Сторінку не знайдено" description="Такої сторінки у FitPulse немає." />
+      <p className="font-mono text-sm text-accent">404</p>
+      <h1 className="mt-3 text-4xl text-fg sm:text-5xl">Сторінку не знайдено</h1>
+      <p className="mt-3 max-w-md text-fg-muted">Можливо, посилання застаріло або сторінку перенесли.</p>
+      <Link to="/" className={buttonClasses('primary', 'md', 'mt-8')}>
+        <Home className="size-4" aria-hidden="true" />
+        На головну
       </Link>
     </div>
   )

@@ -1,5 +1,5 @@
-export { PRCard } from './components/PRCard'
-export { HistoryListSkeleton, StatsGridSkeleton } from './components/ProgressSkeleton'
-export { StatsGrid } from './components/StatsGrid'
+export { ProgressSummary } from './components/ProgressSummary'
+export { ListSkeleton, SummarySkeleton } from './components/ProgressSkeleton'
+export { RecordList } from './components/RecordList'
 export { WorkoutHistoryItem } from './components/WorkoutHistoryItem'
 export * from './model'

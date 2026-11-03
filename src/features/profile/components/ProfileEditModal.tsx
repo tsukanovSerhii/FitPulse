@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
-import type { UserProfile, FitnessGoal, ActivityLevel } from '../model/types'
-import { FITNESS_GOAL_LABELS, ACTIVITY_LEVEL_LABELS } from '../model/types'
-import { Modal } from '@/shared/ui'
-import { Input } from '@/shared/ui'
-import { Select } from '@/shared/ui'
-import { Button } from '@/shared/ui'
+import { useId, useState, type FormEvent } from 'react'
+import { Button, Input, Modal, Select } from '@/shared/ui'
+import type { ActivityLevel, FitnessGoal, UserProfile } from '../model/types'
+import { ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS } from '../model/types'
 
 export interface ProfileEditModalProps {
   isOpen: boolean
@@ -13,159 +10,95 @@ export interface ProfileEditModalProps {
   onSave: (updated: UserProfile) => Promise<void>
 }
 
-export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
-  isOpen,
-  onClose,
-  profile,
-  onSave,
-}) => {
+const toOptions = (labels: Record<string, string>) => Object.entries(labels).map(([value, label]) => ({ value, label }))
+
+const GENDER_OPTIONS = [
+  { value: 'male', label: 'Чоловіча' },
+  { value: 'female', label: 'Жіноча' },
+  { value: 'other', label: 'Інша' },
+]
+
+export function ProfileEditModal({ isOpen, onClose, profile, onSave }: ProfileEditModalProps) {
+  const formId = useId()
   const [name, setName] = useState(profile.name)
   const [age, setAge] = useState(profile.age)
   const [heightCm, setHeightCm] = useState(profile.heightCm)
   const [weightKg, setWeightKg] = useState(profile.weightKg)
   const [targetWeightKg, setTargetWeightKg] = useState(profile.targetWeightKg)
-  const [gender, setGender] = useState<'male' | 'female' | 'other'>(profile.gender)
+  const [gender, setGender] = useState(profile.gender)
   const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>(profile.fitnessGoal)
   const [activityLevel, setActivityLevel] = useState<ActivityLevel>(profile.activityLevel)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
     if (!name.trim()) {
-      setError('Введіть ім\'я')
+      setError("Введіть ім'я")
       return
     }
-
+    setIsSubmitting(true)
     try {
-      setIsSubmitting(true)
-      setError('')
-
       await onSave({
         ...profile,
         name: name.trim(),
-        age: Number(age) || 20,
-        heightCm: Number(heightCm) || 175,
-        weightKg: Number(weightKg) || 70,
-        targetWeightKg: Number(targetWeightKg) || 70,
+        age: age || profile.age,
+        heightCm: heightCm || profile.heightCm,
+        weightKg: weightKg || profile.weightKg,
+        targetWeightKg: targetWeightKg || profile.targetWeightKg,
         gender,
         fitnessGoal,
         activityLevel,
       })
-
       onClose()
     } catch {
-      setError('Помилка оновлення профілю')
+      setError('Не вдалося зберегти профіль')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const goalOptions = Object.entries(FITNESS_GOAL_LABELS).map(([k, v]) => ({
-    value: k,
-    label: v,
-  }))
-
-  const activityOptions = Object.entries(ACTIVITY_LEVEL_LABELS).map(([k, v]) => ({
-    value: k,
-    label: v,
-  }))
-
-  const genderOptions = [
-    { value: 'male', label: 'Чоловіча' },
-    { value: 'female', label: 'Жіноча' },
-    { value: 'other', label: 'Інше' },
-  ]
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Редагування особистого профілю" maxWidth="md">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="p-3 bg-danger-soft border border-danger/30 rounded-md text-xs text-danger">
-            {error}
-          </div>
-        )}
-
-        <Input
-          label="Ваше ім'я"
-          placeholder="Напр. Олександр"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            label="Вік (років)"
-            placeholder="Напр. 25"
-            type="number"
-            min={12}
-            max={120}
-            value={age}
-            onChange={(e) => setAge(Number(e.target.value))}
-          />
-          <Select
-            label="Стать"
-            value={gender}
-            onChange={(e) => setGender(e.target.value as 'male' | 'female' | 'other')}
-            options={genderOptions}
-          />
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
-          <Input
-            label="Зріст (см)"
-            placeholder="Напр. 178"
-            type="number"
-            min={100}
-            max={250}
-            value={heightCm}
-            onChange={(e) => setHeightCm(Number(e.target.value))}
-          />
-          <Input
-            label="Поточна вага (кг)"
-            placeholder="Напр. 75"
-            type="number"
-            min={30}
-            max={300}
-            step={0.5}
-            value={weightKg}
-            onChange={(e) => setWeightKg(Number(e.target.value))}
-          />
-          <Input
-            label="Цільова вага (кг)"
-            placeholder="Напр. 80"
-            type="number"
-            min={30}
-            max={300}
-            step={0.5}
-            value={targetWeightKg}
-            onChange={(e) => setTargetWeightKg(Number(e.target.value))}
-          />
-        </div>
-
-        <Select
-          label="Головна фітнес-ціль"
-          value={fitnessGoal}
-          onChange={(e) => setFitnessGoal(e.target.value as FitnessGoal)}
-          options={goalOptions}
-        />
-
-        <Select
-          label="Рівень фізичної активності"
-          value={activityLevel}
-          onChange={(e) => setActivityLevel(e.target.value as ActivityLevel)}
-          options={activityOptions}
-        />
-
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-line">
-          <Button type="button" variant="secondary" onClick={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Редагувати профіль"
+      maxWidth="md"
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose}>
             Скасувати
           </Button>
-          <Button type="submit" variant="primary" isLoading={isSubmitting}>
-            Зберегти дані
+          <Button type="submit" form={formId} isLoading={isSubmitting}>
+            Зберегти
           </Button>
+        </>
+      }
+    >
+      <form id={formId} onSubmit={handleSubmit} noValidate className="space-y-5">
+        <div className="grid gap-4 sm:grid-cols-[2fr_1fr_1fr]">
+          <Input
+            label="Ім'я"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value)
+              setError('')
+            }}
+            placeholder="Як до вас звертатися"
+            error={error}
+          />
+          <Input label="Вік" type="number" inputMode="numeric" min={12} max={120} value={age} onChange={(e) => setAge(Number(e.target.value))} placeholder="25" />
+          <Select label="Стать" value={gender} onChange={(e) => setGender(e.target.value as UserProfile['gender'])} options={GENDER_OPTIONS} />
         </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <Input label="Зріст, см" type="number" inputMode="numeric" min={100} max={250} value={heightCm} onChange={(e) => setHeightCm(Number(e.target.value))} placeholder="178" />
+          <Input label="Вага, кг" type="number" inputMode="decimal" min={30} max={300} step={0.5} value={weightKg} onChange={(e) => setWeightKg(Number(e.target.value))} placeholder="75" />
+          <Input label="Ціль, кг" type="number" inputMode="decimal" min={30} max={300} step={0.5} value={targetWeightKg} onChange={(e) => setTargetWeightKg(Number(e.target.value))} placeholder="80" />
+        </div>
+
+        <Select label="Мета" value={fitnessGoal} onChange={(e) => setFitnessGoal(e.target.value as FitnessGoal)} options={toOptions(FITNESS_GOAL_LABELS)} />
+        <Select label="Активність" value={activityLevel} onChange={(e) => setActivityLevel(e.target.value as ActivityLevel)} options={toOptions(ACTIVITY_LEVEL_LABELS)} />
       </form>
     </Modal>
   )

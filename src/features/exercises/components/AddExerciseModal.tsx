@@ -1,11 +1,7 @@
-import React, { useState } from 'react'
-import { Plus } from 'lucide-react'
-import type { Exercise, MuscleGroup, Difficulty, Equipment } from '../model/types'
-import { MUSCLE_GROUP_LABELS, DIFFICULTY_LABELS, EQUIPMENT_LABELS } from '../model/types'
-import { Modal } from '@/shared/ui'
-import { Input } from '@/shared/ui'
-import { Select } from '@/shared/ui'
-import { Button } from '@/shared/ui'
+import { useId, useState, type FormEvent } from 'react'
+import { Button, Input, Modal, Select, Textarea } from '@/shared/ui'
+import type { Difficulty, Equipment, Exercise, MuscleGroup } from '../model/types'
+import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 
 export interface AddExerciseModalProps {
   isOpen: boolean
@@ -13,65 +9,49 @@ export interface AddExerciseModalProps {
   onSubmit: (exercise: Omit<Exercise, 'id'>) => Promise<void>
 }
 
-export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-}) => {
+const toOptions = (labels: Record<string, string>) => Object.entries(labels).map(([value, label]) => ({ value, label }))
+const lines = (text: string) => text.split('\n').map((line) => line.trim()).filter(Boolean)
+
+export function AddExerciseModal({ isOpen, onClose, onSubmit }: AddExerciseModalProps) {
+  const formId = useId()
   const [name, setName] = useState('')
   const [primaryMuscle, setPrimaryMuscle] = useState<MuscleGroup>('chest')
   const [difficulty, setDifficulty] = useState<Difficulty>('beginner')
   const [equipment, setEquipment] = useState<Equipment>('dumbbell')
   const [description, setDescription] = useState('')
-  const [defaultSets, setDefaultSets] = useState(3)
-  const [defaultReps, setDefaultReps] = useState(10)
-  const [defaultRestSeconds, setDefaultRestSeconds] = useState(60)
-  const [instructionsText, setInstructionsText] = useState('')
-  const [tipsText, setTipsText] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [sets, setSets] = useState(3)
+  const [reps, setReps] = useState(10)
+  const [rest, setRest] = useState(60)
+  const [stepsText, setStepsText] = useState('')
+  const [cuesText, setCuesText] = useState('')
+  const [mistakesText, setMistakesText] = useState('')
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
     if (!name.trim()) {
       setError('Введіть назву вправи')
       return
     }
-
+    setIsSubmitting(true)
     try {
-      setIsSubmitting(true)
-      setError('')
-
-      const instructions = instructionsText
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean)
-        .map((desc, idx) => ({ step: idx + 1, description: desc }))
-
-      const tips = tipsText
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean)
-
       await onSubmit({
         name: name.trim(),
         primaryMuscle,
         muscleGroups: [primaryMuscle],
         difficulty,
         equipment,
-        description: description.trim() || 'Користувацька вправа',
-        instructions: instructions.length > 0 ? instructions : [{ step: 1, description: 'Виконайте підхід відповідно до індивідуального плану' }],
-        tips: tips.length > 0 ? tips : ['Слідкуйте за технікою виконання'],
-        defaultSets: Number(defaultSets) || 3,
-        defaultReps: Number(defaultReps) || 10,
-        defaultRestSeconds: Number(defaultRestSeconds) || 60,
-        calories: 6,
+        description: description.trim() || 'Власна вправа',
+        defaultSets: sets || 3,
+        defaultReps: reps || 10,
+        defaultRestSeconds: rest || 60,
+        technique: {
+          steps: lines(stepsText).map((text, i) => ({ title: `Крок ${i + 1}`, text, frame: 0, seconds: 0 })),
+          cues: lines(cuesText),
+          mistakes: lines(mistakesText),
+        },
       })
-
-      setName('')
-      setDescription('')
-      setInstructionsText('')
-      setTipsText('')
       onClose()
     } catch {
       setError('Не вдалося зберегти вправу')
@@ -80,128 +60,60 @@ export const AddExerciseModal: React.FC<AddExerciseModalProps> = ({
     }
   }
 
-  const muscleOptions = Object.entries(MUSCLE_GROUP_LABELS).map(([val, lbl]) => ({
-    value: val,
-    label: lbl,
-  }))
-
-  const difficultyOptions = Object.entries(DIFFICULTY_LABELS).map(([val, lbl]) => ({
-    value: val,
-    label: lbl,
-  }))
-
-  const equipmentOptions = Object.entries(EQUIPMENT_LABELS).map(([val, lbl]) => ({
-    value: val,
-    label: lbl,
-  }))
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Додати нову вправу" maxWidth="lg">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="p-3 bg-danger-soft border border-danger/30 rounded-md text-xs text-danger">
-            {error}
-          </div>
-        )}
-
-        <Input
-          label="Назва вправи *"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Наприклад: Жим Арнольда з гантелями"
-          required
-        />
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Select
-            label="Група м'язів"
-            value={primaryMuscle}
-            onChange={(e) => setPrimaryMuscle(e.target.value as MuscleGroup)}
-            options={muscleOptions}
-          />
-          <Select
-            label="Складність"
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-            options={difficultyOptions}
-          />
-          <Select
-            label="Обладнання"
-            value={equipment}
-            onChange={(e) => setEquipment(e.target.value as Equipment)}
-            options={equipmentOptions}
-          />
-        </div>
-
-        <div>
-          <label className="text-xs font-semibold text-fg-muted block mb-1.5">
-            Короткий опис
-          </label>
-          <textarea
-            rows={2}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Опишіть призначення вправи..."
-            className="w-full px-3.5 py-2.5 rounded-md bg-surface-2 border border-line text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-accent/50"
-          />
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
-          <Input
-            label="Підходи (сети)"
-            placeholder="Напр. 4"
-            type="number"
-            min={1}
-            max={20}
-            value={defaultSets}
-            onChange={(e) => setDefaultSets(Number(e.target.value))}
-          />
-          <Input
-            label="Повторення"
-            placeholder="Напр. 10"
-            type="number"
-            min={1}
-            max={200}
-            value={defaultReps}
-            onChange={(e) => setDefaultReps(Number(e.target.value))}
-          />
-          <Input
-            label="Відпочинок (сек)"
-            placeholder="Напр. 90"
-            type="number"
-            min={10}
-            max={600}
-            step={5}
-            value={defaultRestSeconds}
-            onChange={(e) => setDefaultRestSeconds(Number(e.target.value))}
-          />
-        </div>
-
-        <div>
-          <label className="text-xs font-semibold text-fg-muted block mb-1.5">
-            Покрокова техніка (кожен крок з нового рядка)
-          </label>
-          <textarea
-            rows={3}
-            value={instructionsText}
-            onChange={(e) => setInstructionsText(e.target.value)}
-            placeholder="Крок 1: Займіть початкове положення...&#10;Крок 2: На вдиху опустіться...&#10;Крок 3: На видиху підніміться..."
-            className="w-full px-3.5 py-2.5 rounded-md bg-surface-2 border border-line text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-accent/50"
-          />
-        </div>
-
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-line">
-          <Button type="button" variant="secondary" onClick={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Нова вправа"
+      maxWidth="lg"
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose}>
             Скасувати
           </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            isLoading={isSubmitting}
-            icon={<Plus className="w-4 h-4" />}
-          >
-            Створити вправу
+          <Button type="submit" form={formId} isLoading={isSubmitting}>
+            Створити
           </Button>
+        </>
+      }
+    >
+      <form id={formId} onSubmit={handleSubmit} noValidate className="space-y-5">
+        <Input
+          label="Назва"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value)
+            setError('')
+          }}
+          placeholder="Напр. Жим Арнольда"
+          error={error}
+          autoFocus
+        />
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Select label="М'язи" value={primaryMuscle} onChange={(e) => setPrimaryMuscle(e.target.value as MuscleGroup)} options={toOptions(MUSCLE_GROUP_LABELS)} />
+          <Select label="Рівень" value={difficulty} onChange={(e) => setDifficulty(e.target.value as Difficulty)} options={toOptions(DIFFICULTY_LABELS)} />
+          <Select label="Обладнання" value={equipment} onChange={(e) => setEquipment(e.target.value as Equipment)} options={toOptions(EQUIPMENT_LABELS)} />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <Input label="Підходи" type="number" inputMode="numeric" min={1} max={20} value={sets} onChange={(e) => setSets(Number(e.target.value))} placeholder="3" />
+          <Input label="Повтори" type="number" inputMode="numeric" min={1} max={200} value={reps} onChange={(e) => setReps(Number(e.target.value))} placeholder="10" />
+          <Input label="Відпочинок, с" type="number" inputMode="numeric" min={10} max={600} step={5} value={rest} onChange={(e) => setRest(Number(e.target.value))} placeholder="60" />
+        </div>
+
+        <Textarea label="Опис" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Коротко: що розвиває вправа" rows={2} />
+        <Textarea
+          label="Кроки техніки"
+          helperText="Кожен крок з нового рядка"
+          value={stepsText}
+          onChange={(e) => setStepsText(e.target.value)}
+          placeholder={'Займіть вихідне положення\nОпустіть вагу на вдиху\nПідніміть на видиху'}
+          rows={4}
+        />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Textarea label="Ключові моменти" helperText="Необов'язково, по рядку" value={cuesText} onChange={(e) => setCuesText(e.target.value)} placeholder="Спина рівна" />
+          <Textarea label="Типові помилки" helperText="Необов'язково, по рядку" value={mistakesText} onChange={(e) => setMistakesText(e.target.value)} placeholder="Ривки корпусом" />
         </div>
       </form>
     </Modal>

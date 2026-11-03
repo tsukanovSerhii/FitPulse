@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
-import type { WorkoutPlan, DayOfWeek, PlanExercise } from '../model/types'
-import { Modal } from '@/shared/ui'
-import { Input } from '@/shared/ui'
-import { Button } from '@/shared/ui'
+import { useId, useState, type FormEvent } from 'react'
+import { Button, Input, Modal, Textarea } from '@/shared/ui'
+import { ALL_DAYS, type DayOfWeek, type PlanExercise, type WorkoutPlan } from '../model/types'
 
 export interface PlanEditorModalProps {
   isOpen: boolean
@@ -11,53 +9,35 @@ export interface PlanEditorModalProps {
   initialPlan?: WorkoutPlan | null
 }
 
-const emptySchedule: Record<DayOfWeek, PlanExercise[]> = {
-  monday: [],
-  tuesday: [],
-  wednesday: [],
-  thursday: [],
-  friday: [],
-  saturday: [],
-  sunday: [],
-}
+const emptySchedule = () => Object.fromEntries(ALL_DAYS.map((day) => [day, []])) as unknown as Record<DayOfWeek, PlanExercise[]>
 
-export const PlanEditorModal: React.FC<PlanEditorModalProps> = ({
-  isOpen,
-  onClose,
-  onSave,
-  initialPlan,
-}) => {
-  const [name, setName] = useState(initialPlan?.name || '')
-  const [description, setDescription] = useState(initialPlan?.description || '')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export function PlanEditorModal({ isOpen, onClose, onSave, initialPlan }: PlanEditorModalProps) {
+  const formId = useId()
+  const [name, setName] = useState(initialPlan?.name ?? '')
+  const [description, setDescription] = useState(initialPlan?.description ?? '')
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
     if (!name.trim()) {
-      setError('Введіть назву тренувального плану')
+      setError('Введіть назву програми')
       return
     }
-
+    setIsSubmitting(true)
     try {
-      setIsSubmitting(true)
-      setError('')
-
-      const plan: WorkoutPlan = {
-        id: initialPlan?.id || `plan-${Date.now()}`,
+      const now = new Date().toISOString()
+      await onSave({
+        id: initialPlan?.id ?? `plan-${Date.now()}`,
         name: name.trim(),
         description: description.trim(),
-        createdAt: initialPlan?.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        schedule: initialPlan?.schedule || { ...emptySchedule },
-      }
-
-      await onSave(plan)
-      setName('')
-      setDescription('')
+        createdAt: initialPlan?.createdAt ?? now,
+        updatedAt: now,
+        schedule: initialPlan?.schedule ?? emptySchedule(),
+      })
       onClose()
     } catch {
-      setError('Помилка збереження програми')
+      setError('Не вдалося зберегти програму')
     } finally {
       setIsSubmitting(false)
     }
@@ -67,45 +47,38 @@ export const PlanEditorModal: React.FC<PlanEditorModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={initialPlan ? 'Редагувати програму' : 'Створити нову програму'}
+      title={initialPlan ? 'Редагувати програму' : 'Нова програма'}
       maxWidth="md"
-    >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="p-3 bg-danger-soft border border-danger/30 rounded-md text-xs text-danger">
-            {error}
-          </div>
-        )}
-
-        <Input
-          label="Назва програми *"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Наприклад: Жим / Тяга / Ноги (Профі)"
-          required
-        />
-
-        <div>
-          <label className="text-xs font-semibold text-fg-muted block mb-1.5">
-            Опис та цілі програми
-          </label>
-          <textarea
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Опишіть для кого підходить план, періодичність відпочинку тощо..."
-            className="w-full px-3.5 py-2.5 rounded-md bg-surface-2 border border-line text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-accent/50"
-          />
-        </div>
-
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-line">
-          <Button type="button" variant="secondary" onClick={onClose}>
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose}>
             Скасувати
           </Button>
-          <Button type="submit" variant="primary" isLoading={isSubmitting}>
-            {initialPlan ? 'Зберегти зміни' : 'Створити програму'}
+          <Button type="submit" form={formId} isLoading={isSubmitting}>
+            {initialPlan ? 'Зберегти' : 'Створити'}
           </Button>
-        </div>
+        </>
+      }
+    >
+      <form id={formId} onSubmit={handleSubmit} noValidate className="space-y-5">
+        <Input
+          label="Назва"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value)
+            setError('')
+          }}
+          placeholder="Напр. Push / Pull / Legs"
+          error={error}
+          autoFocus
+        />
+        <Textarea
+          label="Опис"
+          helperText="Необов'язково: для кого програма і скільки днів на тиждень"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Напр. 3 дні на тиждень, середній рівень"
+        />
       </form>
     </Modal>
   )
