@@ -21,6 +21,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Validate deployment config
+        run: node -e "JSON.parse(require('fs').readFileSync('vercel.json', 'utf8'))"
       - run: npm run lint
       - run: npm test
       - name: Type check and production build
