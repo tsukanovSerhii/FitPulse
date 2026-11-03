@@ -2,6 +2,7 @@
 const STORAGE_KEYS = {
   EXERCISES: 'fitpulse_exercises_v1',
   EXERCISES_FAVORITES: 'fitpulse_favorites_v1',
+  MY_EQUIPMENT: 'fitpulse_my_equipment_v1',
   WORKOUT_PLANS: 'fitpulse_plans_v1',
   ACTIVE_PLAN_ID: 'fitpulse_active_plan_id_v1',
   WORKOUT_HISTORY: 'fitpulse_history_v1',

@@ -1,8 +1,9 @@
-import { Check, Heart, X } from 'lucide-react'
+import { Check, ChevronRight, Heart, X } from 'lucide-react'
 import { MuscleMap } from './MuscleMap'
-import { Disclosure, IconButton, Modal } from '@/shared/ui'
+import { Disclosure, IconButton, Modal, SegmentedControl } from '@/shared/ui'
 import { getTechnique } from '../lib/technique'
-import type { Exercise } from '../model/types'
+import { alternativesFor, variantsOf } from '../lib/variants'
+import type { Equipment, Exercise } from '../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 import { TechniquePlayer } from './technique/TechniquePlayer'
 
@@ -12,6 +13,36 @@ export interface ExerciseDetailModalProps {
   onClose: () => void
   isFavorite: boolean
   onToggleFavorite: (id: string) => void
+  /** The whole catalog: source of variants and alternatives */
+  allExercises?: Exercise[]
+  /** Equipment the user has; alternatives keep to it */
+  availableEquipment?: Equipment[]
+  /** Opens another exercise in the same dialog: a variant or an alternative */
+  onSelectExercise?: (exercise: Exercise) => void
+}
+
+export function AlternativeList({ items, onSelect }: { items: Exercise[]; onSelect: (exercise: Exercise) => void }) {
+  return (
+    <ul className="divide-y divide-line rounded-lg border border-line">
+      {items.map((item) => (
+        <li key={item.id}>
+          <button
+            type="button"
+            onClick={() => onSelect(item)}
+            className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-2"
+          >
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-medium text-fg">{item.name}</span>
+              <span className="block text-xs text-fg-subtle">
+                {EQUIPMENT_LABELS[item.equipment]} · {DIFFICULTY_LABELS[item.difficulty]}
+              </span>
+            </span>
+            <ChevronRight className="size-4 shrink-0 text-fg-subtle" aria-hidden="true" />
+          </button>
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 function PointList({ title, items, tone }: { title: string; items: string[]; tone: 'do' | 'avoid' }) {
@@ -31,9 +62,20 @@ function PointList({ title, items, tone }: { title: string; items: string[]; ton
   )
 }
 
-export function ExerciseDetailModal({ exercise, isOpen, onClose, isFavorite, onToggleFavorite }: ExerciseDetailModalProps) {
+export function ExerciseDetailModal({
+  exercise,
+  isOpen,
+  onClose,
+  isFavorite,
+  onToggleFavorite,
+  allExercises = [],
+  availableEquipment,
+  onSelectExercise,
+}: ExerciseDetailModalProps) {
   if (!exercise) return null
   const technique = getTechnique(exercise)
+  const variants = variantsOf(exercise, allExercises)
+  const alternatives = onSelectExercise ? alternativesFor(exercise, allExercises, { available: availableEquipment }) : []
   const meta = [
     DIFFICULTY_LABELS[exercise.difficulty],
     EQUIPMENT_LABELS[exercise.equipment],
@@ -61,13 +103,32 @@ export function ExerciseDetailModal({ exercise, isOpen, onClose, isFavorite, onT
       }
     >
       <div className="space-y-8">
-        <TechniquePlayer exercise={exercise} />
+        {variants.length > 1 && onSelectExercise && (
+          <div className="-mx-1 -mt-2 overflow-x-auto px-1">
+            <SegmentedControl
+              label={`Варіант: ${exercise.variant!.groupName}`}
+              size="sm"
+              options={variants.map((v) => ({ value: v.id, label: v.variant!.label }))}
+              value={exercise.id}
+              onChange={(id) => onSelectExercise(variants.find((v) => v.id === id)!)}
+            />
+          </div>
+        )}
+
+        <TechniquePlayer key={exercise.id} exercise={exercise} />
 
         {(technique.cues.length > 0 || technique.mistakes.length > 0) && (
           <div className="grid gap-6 sm:grid-cols-2">
             {technique.cues.length > 0 && <PointList title="Ключові моменти" items={technique.cues} tone="do" />}
             {technique.mistakes.length > 0 && <PointList title="Типові помилки" items={technique.mistakes} tone="avoid" />}
           </div>
+        )}
+
+        {alternatives.length > 0 && onSelectExercise && (
+          <section className="space-y-3">
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.14em] text-fg-subtle">Замінити на…</h3>
+            <AlternativeList items={alternatives} onSelect={onSelectExercise} />
+          </section>
         )}
 
         <div className="border-b border-line">

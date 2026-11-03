@@ -12,6 +12,7 @@ const SECTIONS = {
   profile: STORAGE_KEYS.USER_PROFILE,
   customExercises: STORAGE_KEYS.EXERCISES,
   favorites: STORAGE_KEYS.EXERCISES_FAVORITES,
+  myEquipment: STORAGE_KEYS.MY_EQUIPMENT,
 } satisfies Record<string, UserKey>
 
 type Section = keyof typeof SECTIONS
@@ -46,6 +47,7 @@ const backupSchema = z.object({
       plans: list('Програми у файлі пошкоджені'),
       customExercises: list('Власні вправи у файлі пошкоджені'),
       favorites: list('Обране у файлі пошкоджене'),
+      myEquipment: list('Обладнання у файлі пошкоджене'),
     },
     { error: 'Це не резервна копія FitPulse' },
   ),

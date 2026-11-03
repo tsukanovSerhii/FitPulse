@@ -16,6 +16,8 @@ export interface ExerciseFiltersBarProps {
   resultCount: number
 }
 
+const toggle = (list: Equipment[], item: Equipment) => (list.includes(item) ? list.filter((e) => e !== item) : [...list, item])
+
 function Chip({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
@@ -41,7 +43,7 @@ export function ExerciseFiltersBar({
   resultCount,
 }: ExerciseFiltersBarProps) {
   const [sheetOpen, setSheetOpen] = useState(false)
-  const extraFilters = Number(filters.difficulty !== 'all') + Number(filters.equipment !== 'all')
+  const extraFilters = Number(filters.difficulty !== 'all') + Number(filters.equipment.length > 0)
   const hasAnyFilter = extraFilters > 0 || filters.muscleGroup !== 'all' || filters.searchQuery !== '' || favoritesOnly
 
   return (
@@ -112,7 +114,7 @@ export function ExerciseFiltersBar({
         maxWidth="md"
         footer={
           <>
-            <Button variant="ghost" onClick={() => onChange({ difficulty: 'all', equipment: 'all' })}>
+            <Button variant="ghost" onClick={() => onChange({ difficulty: 'all', equipment: [] })}>
               Скинути
             </Button>
             <Button onClick={() => setSheetOpen(false)}>Показати {resultCount}</Button>
@@ -134,13 +136,14 @@ export function ExerciseFiltersBar({
             </div>
           </fieldset>
           <fieldset className="space-y-3">
-            <legend className="text-xs font-semibold uppercase tracking-wider text-fg-muted">Обладнання</legend>
+            <legend className="text-xs font-semibold uppercase tracking-wider text-fg-muted">Обладнання у вашому залі</legend>
+            <p className="text-xs text-fg-subtle">Позначте все, що є, і каталог покаже лише доступні вправи. Вибір запам'ятовується.</p>
             <div className="flex flex-wrap gap-2">
-              <Chip selected={filters.equipment === 'all'} onClick={() => onChange({ equipment: 'all' })}>
+              <Chip selected={filters.equipment.length === 0} onClick={() => onChange({ equipment: [] })}>
                 Будь-яке
               </Chip>
               {(Object.keys(EQUIPMENT_LABELS) as Equipment[]).map((eq) => (
-                <Chip key={eq} selected={filters.equipment === eq} onClick={() => onChange({ equipment: eq })}>
+                <Chip key={eq} selected={filters.equipment.includes(eq)} onClick={() => onChange({ equipment: toggle(filters.equipment, eq) })}>
                   {EQUIPMENT_LABELS[eq]}
                 </Chip>
               ))}
