@@ -2,22 +2,22 @@ import { lazy, Suspense, type ComponentType } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../layout/MainLayout'
 import { GuestOnly, RequireAuth } from './guards'
-import { LandingPage } from '@/pages/LandingPage'
-import { LoginPage } from '@/pages/auth/LoginPage'
-import { RegisterPage } from '@/pages/auth/RegisterPage'
+import { LandingPage } from '@/pages/landing/LandingPage'
+import { LoginPage } from '@/pages/login/LoginPage'
+import { RegisterPage } from '@/pages/register/RegisterPage'
 
 // The landing page ships in the main bundle; app pages load on demand after login.
 const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, name: K) =>
   lazy(() => load().then((m) => ({ default: m[name] })))
 
-const DashboardPage = page(() => import('@/pages/DashboardPage'), 'DashboardPage')
-const ExercisesPage = page(() => import('@/pages/ExercisesPage'), 'ExercisesPage')
-const WorkoutPlansPage = page(() => import('@/pages/WorkoutPlansPage'), 'WorkoutPlansPage')
-const ActiveWorkoutPage = page(() => import('@/pages/ActiveWorkoutPage'), 'ActiveWorkoutPage')
-const ProgressPage = page(() => import('@/pages/ProgressPage'), 'ProgressPage')
-const ProfilePage = page(() => import('@/pages/ProfilePage'), 'ProfilePage')
-const NotFoundPage = page(() => import('@/pages/NotFoundPage'), 'NotFoundPage')
-const UiPreviewPage = page(() => import('@/pages/dev/UiPreviewPage'), 'UiPreviewPage')
+const DashboardPage = page(() => import('@/pages/dashboard/DashboardPage'), 'DashboardPage')
+const ExercisesPage = page(() => import('@/pages/exercises/ExercisesPage'), 'ExercisesPage')
+const WorkoutPlansPage = page(() => import('@/pages/plans/WorkoutPlansPage'), 'WorkoutPlansPage')
+const ActiveWorkoutPage = page(() => import('@/pages/workout/ActiveWorkoutPage'), 'ActiveWorkoutPage')
+const ProgressPage = page(() => import('@/pages/progress/ProgressPage'), 'ProgressPage')
+const ProfilePage = page(() => import('@/pages/profile/ProfilePage'), 'ProfilePage')
+const NotFoundPage = page(() => import('@/pages/not-found/NotFoundPage'), 'NotFoundPage')
+const UiPreviewPage = page(() => import('@/pages/ui-kit/UiPreviewPage'), 'UiPreviewPage')
 
 export function AppRoutes() {
   return (
