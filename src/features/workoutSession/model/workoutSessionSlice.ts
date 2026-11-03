@@ -158,6 +158,21 @@ export const workoutSessionSlice = createSlice({
       persistSession(state)
     },
 
+    /** Swaps the exercise of an entry, e.g. when the machine is busy. Only before any set is logged. */
+    replaceSessionExercise: (
+      state,
+      action: PayloadAction<{ id: string; exerciseId: string; weight?: number; reps?: number; restSeconds?: number }>,
+    ) => {
+      const { id, exerciseId, weight, reps, restSeconds } = action.payload
+      const entry = state.exercises.find((e) => e.id === id)
+      if (!entry || state.completedSets[id]?.length) return
+      entry.exerciseId = exerciseId
+      entry.weight = weight
+      if (reps) entry.reps = reps
+      if (restSeconds) entry.restSeconds = restSeconds
+      persistSession(state)
+    },
+
     removeCompletedSet: (
       state,
       action: PayloadAction<{ planExerciseId: string; setIndex: number }>,
@@ -297,6 +312,7 @@ export const {
   completeSet,
   addSessionExercise,
   removeSessionExercise,
+  replaceSessionExercise,
   removeCompletedSet,
   setCurrentExerciseIndex,
   nextExercise,

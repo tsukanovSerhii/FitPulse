@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, ChevronLeft, ChevronRight, Dumbbell, Info, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeftRight, Check, ChevronLeft, ChevronRight, Dumbbell, Info, Plus, Trash2 } from 'lucide-react'
 import { Button, EmptyState, IconButton, Modal } from '@/shared/ui'
 import { TechniquePlayer, MUSCLE_GROUP_LABELS } from '@/features/exercises'
 import type { WorkoutHistoryLog } from '@/features/progress'
@@ -12,6 +12,7 @@ import { SetList } from './focus/SetList'
 import { useWorkoutFocus } from '../hooks/useWorkoutFocus'
 import { RestTimerSheet } from './RestTimerSheet'
 import { ExercisePicker } from './ExercisePicker'
+import { ReplaceExerciseModal } from './ReplaceExerciseModal'
 import { formatNumber } from '@/shared/lib/formatters'
 
 const shortDate = new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'short' })
@@ -24,6 +25,7 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
   // A fresh free workout opens straight into choosing the first exercise
   const [pickerOpen, setPickerOpen] = useState(() => isFree && session.exercises.length === 0)
   const openPicker = () => setPickerOpen(true)
+  const [replaceOpen, setReplaceOpen] = useState(false)
 
   useWakeLock(session.isActive)
 
@@ -51,6 +53,9 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
               </div>
               <div className="flex items-start gap-3">
                 <h1 className="flex-1 text-4xl leading-[1.08] text-fg">{exercise.name}</h1>
+                {doneSets.length === 0 && (
+                  <IconButton label="Замінити вправу" icon={<ArrowLeftRight />} onClick={() => setReplaceOpen(true)} className="border border-line" />
+                )}
                 <IconButton label="Техніка виконання" icon={<Info />} onClick={() => setTechniqueOpen(true)} className="border border-line" />
               </div>
               <p className="font-mono text-sm text-fg-muted tabular">
@@ -154,6 +159,10 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
           addedIds={new Set(session.exercises.map((e) => e.exerciseId))}
           onPick={focus.addExercise}
         />
+      )}
+
+      {exercise && (
+        <ReplaceExerciseModal isOpen={replaceOpen} onClose={() => setReplaceOpen(false)} exercise={exercise} onReplace={focus.replaceCurrentExercise} />
       )}
 
       <Modal isOpen={techniqueOpen} onClose={() => setTechniqueOpen(false)} title={exercise?.name} maxWidth="2xl">

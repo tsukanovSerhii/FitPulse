@@ -12,6 +12,7 @@ import {
   completeSet,
   removeCompletedSet,
   removeSessionExercise,
+  replaceSessionExercise,
   setCurrentExerciseIndex,
   tickWorkoutTimer,
 } from '../model/workoutSessionSlice'
@@ -83,6 +84,20 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     else dispatch(addSessionExercise(freeSessionExercise(picked, history)))
   }
 
+  const replaceCurrentExercise = (picked: Exercise) => {
+    if (!planExercise || doneSets.length > 0) return
+    const last = lastPerformance(history, picked.id)
+    dispatch(
+      replaceSessionExercise({
+        id: planExercise.id,
+        exerciseId: picked.id,
+        weight: last?.weightKg,
+        // A free workout has no planned reps to keep
+        ...(isFree && { reps: last?.reps ?? picked.defaultReps, restSeconds: picked.defaultRestSeconds }),
+      }),
+    )
+  }
+
   const removeCurrentExercise = () => {
     if (planExercise && doneSets.length === 0) dispatch(removeSessionExercise(planExercise.id))
   }
@@ -146,6 +161,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     goTo,
     completeCurrentSet,
     addExercise,
+    replaceCurrentExercise,
     removeCurrentExercise,
     undoLastSet,
     finish,

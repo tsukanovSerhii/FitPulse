@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import reducer, { addSessionExercise, completeSet, finishWorkout, removeSessionExercise, startWorkout } from './workoutSessionSlice'
+import reducer, { addSessionExercise, completeSet, finishWorkout, removeSessionExercise, replaceSessionExercise, startWorkout } from './workoutSessionSlice'
 
 const entry = (id: string) => ({ id, exerciseId: `ex-${id}`, sets: 3, reps: 10, restSeconds: 60 })
 const set = { reps: 8, weight: 50, completedAt: '' }
@@ -31,5 +31,22 @@ describe('free workout session', () => {
 
   it('goes back to plan mode when the workout ends', () => {
     expect(reducer(started, finishWorkout()).mode).toBe('plan')
+  })
+})
+
+describe('replacing an exercise', () => {
+  const plan = reducer(
+    undefined,
+    startWorkout({ planId: 'p', dayLabel: 'Пн', exercises: [{ ...entry('a'), weight: 80, order: 1 }] }),
+  )
+
+  it('swaps the exercise and its weight while the target stays', () => {
+    const state = reducer(plan, replaceSessionExercise({ id: 'a', exerciseId: 'ex-smith', weight: 60 }))
+    expect(state.exercises[0]).toMatchObject({ id: 'a', exerciseId: 'ex-smith', weight: 60, sets: 3, reps: 10 })
+  })
+
+  it('keeps an exercise that already has logged sets', () => {
+    const done = reducer(plan, completeSet({ planExerciseId: 'a', set }))
+    expect(reducer(done, replaceSessionExercise({ id: 'a', exerciseId: 'ex-smith' })).exercises[0].exerciseId).toBe('ex-a')
   })
 })
