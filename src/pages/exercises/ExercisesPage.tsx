@@ -1,10 +1,27 @@
-import { Fragment, useEffect, useState, type MouseEvent } from 'react'
+import { Fragment, useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { Dumbbell, Plus } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Button, EmptyState, IconButton, PageHeader } from '@/shared/ui'
 import { AdSlot, CATALOG_AD_EVERY } from '@/features/ads'
-import { AddExerciseModal, ExerciseCard, ExerciseDetailModal, ExerciseFiltersBar, ExerciseGridSkeleton, addCustomExercise, clearSelectedExercise, fetchExercises, resetFilters, setFilter, setSelectedExercise, toggleFavorite, type Exercise } from '@/features/exercises'
+import {
+  AddExerciseModal,
+  ExerciseCard,
+  ExerciseDetailModal,
+  ExerciseFiltersBar,
+  ExerciseGridSkeleton,
+  addCustomExercise,
+  clearSelectedExercise,
+  collapseVariants,
+  fetchExercises,
+  resetFilters,
+  setFilter,
+  setMyEquipment,
+  setSelectedExercise,
+  toggleFavorite,
+  type Exercise,
+  type ExerciseFilters,
+} from '@/features/exercises'
 import { saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { useSessionState } from '@/shared/storage/useSessionState'
 import { injectExerciseSchema } from '@/shared/seo/meta'
@@ -25,7 +42,21 @@ export function ExercisesPage() {
     saveToSession(SESSION_KEYS.EXERCISE_FILTERS, filters)
   }, [filters])
 
-  const displayItems = favoritesOnly ? filteredItems.filter((ex) => favorites.includes(ex.id)) : filteredItems
+  const entries = useMemo(
+    () => collapseVariants(favoritesOnly ? filteredItems.filter((ex) => favorites.includes(ex.id)) : filteredItems),
+    [filteredItems, favorites, favoritesOnly],
+  )
+
+  const select = (exercise: Exercise) => {
+    dispatch(setSelectedExercise(exercise))
+    injectExerciseSchema(exercise.name, exercise.description, exercise.muscleGroups)
+  }
+
+  // Equipment is the user's gym and is saved to the account; the rest are per-tab filters
+  const changeFilters = ({ equipment, ...rest }: Partial<ExerciseFilters>) => {
+    if (equipment) dispatch(setMyEquipment(equipment))
+    if (Object.keys(rest).length > 0) dispatch(setFilter(rest))
+  }
 
   const handleToggleFavorite = (id: string, e?: MouseEvent) => {
     e?.stopPropagation()
@@ -36,8 +67,13 @@ export function ExercisesPage() {
     await dispatch(addCustomExercise(exerciseData)).unwrap()
   }
 
-  const resetAll = () => {
+  const resetFilterValues = () => {
     dispatch(resetFilters())
+    dispatch(setMyEquipment([]))
+  }
+
+  const resetAll = () => {
+    resetFilterValues()
     setFavoritesOnly(false)
   }
 
@@ -65,16 +101,16 @@ export function ExercisesPage() {
 
       <ExerciseFiltersBar
         filters={filters}
-        onChange={(updates) => dispatch(setFilter(updates))}
-        onReset={() => dispatch(resetFilters())}
+        onChange={changeFilters}
+        onReset={resetFilterValues}
         favoritesOnly={favoritesOnly}
         onFavoritesOnlyChange={setFavoritesOnly}
-        resultCount={displayItems.length}
+        resultCount={entries.reduce((sum, entry) => sum + entry.variants.length, 0)}
       />
 
       {status !== 'succeeded' && status !== 'failed' && items.length === 0 ? (
         <ExerciseGridSkeleton />
-      ) : displayItems.length === 0 ? (
+      ) : entries.length === 0 ? (
         <EmptyState
           icon={<Dumbbell />}
           title={favoritesOnly ? 'Обраних вправ немає' : 'Нічого не знайдено'}
@@ -91,16 +127,14 @@ export function ExercisesPage() {
         />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {displayItems.map((exercise, i) => (
-            <Fragment key={exercise.id}>
+          {entries.map(({ exercise, variants }, i) => (
+            <Fragment key={exercise.variant?.group ?? exercise.id}>
               <ExerciseCard
                 exercise={exercise}
+                variants={variants}
                 isFavorite={favorites.includes(exercise.id)}
                 onToggleFavorite={handleToggleFavorite}
-                onSelect={(ex) => {
-                  dispatch(setSelectedExercise(ex))
-                  injectExerciseSchema(ex.name, ex.description, ex.muscleGroups)
-                }}
+                onSelect={select}
               />
               {(i + 1) % CATALOG_AD_EVERY === 0 && <AdSlot placement="catalog" />}
             </Fragment>
@@ -114,6 +148,9 @@ export function ExercisesPage() {
         onClose={() => dispatch(clearSelectedExercise())}
         isFavorite={selectedExercise ? favorites.includes(selectedExercise.id) : false}
         onToggleFavorite={(id) => dispatch(toggleFavorite(id))}
+        allExercises={items}
+        availableEquipment={filters.equipment}
+        onSelectExercise={select}
       />
 
       <AddExerciseModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSubmit={handleCreateExercise} />

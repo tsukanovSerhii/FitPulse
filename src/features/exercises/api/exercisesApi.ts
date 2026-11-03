@@ -1,4 +1,4 @@
-import type { Exercise } from '../model/types'
+import type { Equipment, Exercise } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadUserData, saveUserData } from '@/shared/storage/userStorage'
 
@@ -33,6 +33,16 @@ export const exercisesApi = {
     const newExercise: Exercise = { ...exerciseData, id: `custom-${Date.now()}` }
     saveUserData(STORAGE_KEYS.EXERCISES, [newExercise, ...loadCustom()])
     return newExercise
+  },
+
+  /** Equipment the user has in their gym; empty means any */
+  async getMyEquipment(): Promise<Equipment[]> {
+    return loadUserData<Equipment[]>(STORAGE_KEYS.MY_EQUIPMENT, [])
+  },
+
+  async saveMyEquipment(equipment: Equipment[]): Promise<Equipment[]> {
+    saveUserData(STORAGE_KEYS.MY_EQUIPMENT, equipment)
+    return equipment
   },
 
   async saveFavorites(favorites: string[]): Promise<string[]> {

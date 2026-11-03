@@ -1,20 +1,23 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
-import type { Exercise, ExerciseFilters, ExercisesState, MuscleGroup } from './types'
+import type { Equipment, Exercise, ExerciseFilters, ExercisesState, MuscleGroup } from './types'
 import { exercisesApi } from '../api/exercisesApi'
 import { loadFromSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 
 const initialFilters: ExerciseFilters = {
   muscleGroup: 'all',
   difficulty: 'all',
-  equipment: 'all',
+  equipment: [],
   searchQuery: '',
 }
+
+// Equipment belongs to the account, so it comes from fetchExercises rather than the tab's saved filters
+const { equipment: _ignored, ...sessionFilters } = loadFromSession<Partial<ExerciseFilters>>(SESSION_KEYS.EXERCISE_FILTERS, {})
 
 const initialState: ExercisesState = {
   items: [],
   filteredItems: [],
   selectedExercise: null,
-  filters: { ...initialFilters, ...loadFromSession<Partial<ExerciseFilters>>(SESSION_KEYS.EXERCISE_FILTERS, {}) },
+  filters: { ...initialFilters, ...sessionFilters },
   favorites: [],
   status: 'idle',
   error: null,
@@ -38,7 +41,7 @@ function applyFilters(items: Exercise[], filters: ExerciseFilters): Exercise[] {
       return false
     }
 
-    if (filters.equipment !== 'all' && item.equipment !== filters.equipment) {
+    if (filters.equipment.length > 0 && !filters.equipment.includes(item.equipment)) {
       return false
     }
 
@@ -50,11 +53,12 @@ export const fetchExercises = createAsyncThunk(
   'exercises/fetchExercises',
   async (_, { rejectWithValue }) => {
     try {
-      const [items, favorites] = await Promise.all([
+      const [items, favorites, equipment] = await Promise.all([
         exercisesApi.getExercises(),
         exercisesApi.getFavorites(),
+        exercisesApi.getMyEquipment(),
       ])
-      return { items, favorites }
+      return { items, favorites, equipment }
     } catch (err) {
       return rejectWithValue((err as Error).message || 'Не вдалося завантажити вправи')
     }
@@ -71,6 +75,10 @@ export const addCustomExercise = createAsyncThunk(
       return rejectWithValue((err as Error).message || 'Помилка створення вправи')
     }
   },
+)
+
+export const setMyEquipment = createAsyncThunk('exercises/setMyEquipment', (equipment: Equipment[]) =>
+  exercisesApi.saveMyEquipment(equipment),
 )
 
 export const toggleFavorite = createAsyncThunk(
@@ -123,6 +131,7 @@ export const exercisesSlice = createSlice({
         state.status = 'succeeded'
         state.items = action.payload.items
         state.favorites = action.payload.favorites
+        state.filters.equipment = action.payload.equipment
         state.filteredItems = applyFilters(action.payload.items, state.filters)
       })
       .addCase(fetchExercises.rejected, (state, action) => {
@@ -131,6 +140,11 @@ export const exercisesSlice = createSlice({
       })
       .addCase(addCustomExercise.fulfilled, (state, action) => {
         state.items = [action.payload, ...state.items]
+        state.filteredItems = applyFilters(state.items, state.filters)
+      })
+      // Applied right away; saving only persists it
+      .addCase(setMyEquipment.pending, (state, action) => {
+        state.filters.equipment = action.meta.arg
         state.filteredItems = applyFilters(state.items, state.filters)
       })
       .addCase(toggleFavorite.fulfilled, (state, action) => {
