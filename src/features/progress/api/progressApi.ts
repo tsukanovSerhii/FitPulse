@@ -1,10 +1,6 @@
 import type { WorkoutHistoryLog, PersonalRecord } from '../model/types'
-import {
-  hasStorageKey,
-  loadFromStorage,
-  saveToStorage,
-  STORAGE_KEYS,
-} from '@/shared/storage/localStorage'
+import { STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { hasUserData, loadUserData, saveUserData } from '@/shared/storage/userStorage'
 import { INITIAL_HISTORY, INITIAL_PRS } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -64,20 +60,20 @@ export const progressApi = {
     let history: WorkoutHistoryLog[]
 
     // First run: seed demo history
-    if (!hasStorageKey(STORAGE_KEYS.WORKOUT_HISTORY)) {
+    if (!hasUserData(STORAGE_KEYS.WORKOUT_HISTORY)) {
       history = INITIAL_HISTORY
-      saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, INITIAL_HISTORY)
+      saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, INITIAL_HISTORY)
     } else {
       // Key exists: return stored data even if the user emptied it
-      history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
+      history = loadUserData<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
     }
 
     let prs: Record<string, PersonalRecord>
-    if (!hasStorageKey(STORAGE_KEYS.PERSONAL_RECORDS)) {
+    if (!hasUserData(STORAGE_KEYS.PERSONAL_RECORDS)) {
       prs = INITIAL_PRS
-      saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, INITIAL_PRS)
+      saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, INITIAL_PRS)
     } else {
-      prs = loadFromStorage<Record<string, PersonalRecord>>(STORAGE_KEYS.PERSONAL_RECORDS, {})
+      prs = loadUserData<Record<string, PersonalRecord>>(STORAGE_KEYS.PERSONAL_RECORDS, {})
     }
 
     return { history, personalRecords: prs }
@@ -88,12 +84,12 @@ export const progressApi = {
     personalRecords: Record<string, PersonalRecord>
   }> {
     await delay(100)
-    const history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
+    const history = loadUserData<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
     const updatedHistory = [log, ...history]
-    saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
+    saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
 
     const updatedPrs = recalculatePersonalRecords(updatedHistory)
-    saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
+    saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
 
     return { log, personalRecords: updatedPrs }
   },
@@ -103,12 +99,12 @@ export const progressApi = {
     personalRecords: Record<string, PersonalRecord>
   }> {
     await delay(100)
-    const history = loadFromStorage<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
+    const history = loadUserData<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
     const updatedHistory = history.filter((item) => item.id !== logId)
-    saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
+    saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
 
     const updatedPrs = recalculatePersonalRecords(updatedHistory)
-    saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
+    saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
 
     return { deletedId: logId, personalRecords: updatedPrs }
   },

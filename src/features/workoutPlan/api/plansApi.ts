@@ -1,10 +1,6 @@
 import type { WorkoutPlan } from '../model/types'
-import {
-  hasStorageKey,
-  loadFromStorage,
-  saveToStorage,
-  STORAGE_KEYS,
-} from '@/shared/storage/localStorage'
+import { STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { hasUserData, loadUserData, saveUserData } from '@/shared/storage/userStorage'
 import { INITIAL_PLANS } from './seed'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -15,23 +11,23 @@ export const plansApi = {
     let plans: WorkoutPlan[]
 
     // First run: seed demo plans
-    if (!hasStorageKey(STORAGE_KEYS.WORKOUT_PLANS)) {
+    if (!hasUserData(STORAGE_KEYS.WORKOUT_PLANS)) {
       plans = INITIAL_PLANS
-      saveToStorage(STORAGE_KEYS.WORKOUT_PLANS, INITIAL_PLANS)
+      saveUserData(STORAGE_KEYS.WORKOUT_PLANS, INITIAL_PLANS)
     } else {
       // Key exists: keep an empty list if the user deleted every plan
-      plans = loadFromStorage<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
+      plans = loadUserData<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
     }
 
     let activePlanId: string | null = null
-    if (!hasStorageKey(STORAGE_KEYS.ACTIVE_PLAN_ID)) {
+    if (!hasUserData(STORAGE_KEYS.ACTIVE_PLAN_ID)) {
       activePlanId = plans.length > 0 ? plans[0].id : null
-      saveToStorage(STORAGE_KEYS.ACTIVE_PLAN_ID, activePlanId)
+      saveUserData(STORAGE_KEYS.ACTIVE_PLAN_ID, activePlanId)
     } else {
-      activePlanId = loadFromStorage<string | null>(STORAGE_KEYS.ACTIVE_PLAN_ID, null)
+      activePlanId = loadUserData<string | null>(STORAGE_KEYS.ACTIVE_PLAN_ID, null)
       if (activePlanId && !plans.some((p) => p.id === activePlanId)) {
         activePlanId = plans.length > 0 ? plans[0].id : null
-        saveToStorage(STORAGE_KEYS.ACTIVE_PLAN_ID, activePlanId)
+        saveUserData(STORAGE_KEYS.ACTIVE_PLAN_ID, activePlanId)
       }
     }
 
@@ -40,7 +36,7 @@ export const plansApi = {
 
   async savePlan(plan: WorkoutPlan): Promise<WorkoutPlan> {
     await delay(100)
-    const current = loadFromStorage<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
+    const current = loadUserData<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
     const index = current.findIndex((p) => p.id === plan.id)
     let updated: WorkoutPlan[]
 
@@ -56,20 +52,20 @@ export const plansApi = {
       updated = [cleanPlan, ...current]
     }
 
-    saveToStorage(STORAGE_KEYS.WORKOUT_PLANS, updated)
+    saveUserData(STORAGE_KEYS.WORKOUT_PLANS, updated)
     return cleanPlan
   },
 
   async deletePlan(planId: string): Promise<string> {
     await delay(100)
-    const current = loadFromStorage<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
+    const current = loadUserData<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
     const updated = current.filter((p) => p.id !== planId)
-    saveToStorage(STORAGE_KEYS.WORKOUT_PLANS, updated)
+    saveUserData(STORAGE_KEYS.WORKOUT_PLANS, updated)
 
-    const activeId = loadFromStorage<string | null>(STORAGE_KEYS.ACTIVE_PLAN_ID, null)
+    const activeId = loadUserData<string | null>(STORAGE_KEYS.ACTIVE_PLAN_ID, null)
     if (activeId === planId) {
       const newActive = updated.length > 0 ? updated[0].id : null
-      saveToStorage(STORAGE_KEYS.ACTIVE_PLAN_ID, newActive)
+      saveUserData(STORAGE_KEYS.ACTIVE_PLAN_ID, newActive)
     }
 
     return planId
@@ -77,7 +73,7 @@ export const plansApi = {
 
   async setActivePlan(planId: string): Promise<string> {
     await delay(100)
-    saveToStorage(STORAGE_KEYS.ACTIVE_PLAN_ID, planId)
+    saveUserData(STORAGE_KEYS.ACTIVE_PLAN_ID, planId)
     return planId
   },
 }

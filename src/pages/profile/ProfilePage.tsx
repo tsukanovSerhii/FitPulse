@@ -1,25 +1,17 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { LogOut, Pencil, RotateCcw } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Avatar } from '@/shared/ui/Avatar'
-import { Badge, Button, Card, IconButton, PageHeader, Stat, confirmAction } from '@/shared/ui'
+import { Badge, Button, Card, IconButton, PageHeader, Section, Stat, confirmAction } from '@/shared/ui'
 import { ThemeToggle } from '@/features/theme'
 import { BMISummary, ProfileEditModal, ProfileSkeleton, fetchProfile, resetProfileAsync, updateProfileAsync, type UserProfile, ACTIVITY_LEVEL_LABELS, FITNESS_GOAL_LABELS, AvatarUploader } from '@/features/profile'
 import { PLAN_NAMES } from '@/features/subscription'
 import { logout, syncAccount } from '@/features/auth'
-import { removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { clearUserData, saveUserData } from '@/shared/storage/userStorage'
 import { formatDate, formatNumber } from '@/shared/lib/formatters'
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="space-y-3">
-      <h2 className="font-sans text-xs font-bold tracking-[0.16em] text-fg-muted">{title}</h2>
-      {children}
-    </section>
-  )
-}
 
 export function ProfilePage() {
   const dispatch = useAppDispatch()
@@ -53,12 +45,9 @@ export function ProfilePage() {
       destructive: true,
     })
     if (!confirmed) return
-    const keepKeys: string[] = [STORAGE_KEYS.ACCOUNTS, STORAGE_KEYS.SESSION, STORAGE_KEYS.THEME]
-    Object.values(STORAGE_KEYS)
-      .filter((k) => !keepKeys.includes(k))
-      .forEach((k) => removeFromStorage(k))
-    saveToStorage(STORAGE_KEYS.WORKOUT_HISTORY, [])
-    saveToStorage(STORAGE_KEYS.PERSONAL_RECORDS, {})
+    clearUserData()
+    saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, [])
+    saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, {})
     await dispatch(resetProfileAsync()).unwrap()
     window.location.reload()
   }

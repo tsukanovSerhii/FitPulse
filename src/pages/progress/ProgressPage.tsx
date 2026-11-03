@@ -1,23 +1,28 @@
-import { toast } from 'sonner'
-import React, { useEffect } from 'react'
-import { Trophy, History, Dumbbell } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
+import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { Dumbbell, Trophy } from 'lucide-react'
+import { toast } from 'sonner'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { PostWorkoutAd } from '@/features/ads'
-import { fetchProgress, deleteWorkoutLogAsync, StatsGrid, WorkoutHistoryItem, PRCard, HistoryListSkeleton, StatsGridSkeleton } from '@/features/progress'
-import { LoadingRegion, Skeleton } from '@/shared/ui'
-import { EmptyState, PageHeader, confirmAction } from '@/shared/ui'
+import {
+  deleteWorkoutLogAsync,
+  fetchProgress,
+  ListSkeleton,
+  ProgressSummary,
+  RecordList,
+  SummarySkeleton,
+  WorkoutHistoryItem,
+} from '@/features/progress'
 import { SEO } from '@/shared/seo/SEO'
+import { confirmAction, EmptyState, PageHeader, Section } from '@/shared/ui'
 
-export const ProgressPage: React.FC = () => {
+export function ProgressPage() {
   const dispatch = useAppDispatch()
+  const location = useLocation()
   const { history, personalRecords, status } = useAppSelector((state) => state.progress)
 
   useEffect(() => {
-    
-    if (history.length === 0) {
-      dispatch(fetchProgress())
-    }
+    if (history.length === 0) dispatch(fetchProgress())
   }, [dispatch, history.length])
 
   const handleDeleteLog = async (id: string) => {
@@ -32,76 +37,41 @@ export const ProgressPage: React.FC = () => {
     toast.success('Запис видалено')
   }
 
-  const location = useLocation()
   const justFinished = Boolean((location.state as { justFinished?: boolean } | null)?.justFinished)
-
-  const prList = Object.values(personalRecords)
+  const records = Object.values(personalRecords)
   const isLoading = (status === 'idle' || status === 'loading') && history.length === 0
 
   return (
-    <div className="space-y-8 animate-fade-in pb-12">
+    <div className="mx-auto max-w-3xl space-y-8">
       <PostWorkoutAd trigger={justFinished} />
-      <SEO title="Прогрес та аналітика" description="Аналітика вашого фітнес-прогресу: сумарний піднятий тоннаж, час у залі, графік занять та особисті рекорди." />
-      <PageHeader
-        index={4}
-        eyebrow="Аналітика"
-        title="Прогрес"
-        description="Відстежуйте об'єм навантажень, час у залі та особисті силові максимуми"
-      />
+      <SEO title="Прогрес" description="Журнал тренувань, тоннаж, час у залі та особисті рекорди." />
+      <PageHeader compact title="Прогрес" description="Журнал тренувань і особисті рекорди" />
 
-      {isLoading ? <StatsGridSkeleton /> : <StatsGrid history={history} personalRecords={personalRecords} />}
+      {isLoading ? <SummarySkeleton /> : <ProgressSummary history={history} personalRecords={personalRecords} />}
 
-      <section className="space-y-4">
-        <h3 className="text-lg sm:text-xl font-display font-black text-fg flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-warning" />
-          Особисті силові рекорди (Personal Records)
-        </h3>
-
+      <Section title="Особисті рекорди">
         {isLoading ? (
-          <LoadingRegion label="Завантаження рекордів" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 3 }, (_, i) => (
-              <Skeleton key={i} className="h-20 rounded-lg" />
-            ))}
-          </LoadingRegion>
-        ) : prList.length === 0 ? (
-          <EmptyState
-            icon={<Trophy className="w-8 h-8 text-warning" />}
-            title="Рекордів ще немає"
-            description="Завершуйте тренування та фіксуйте вагу — рекорди будуть автоматично розраховуватися тут."
-          />
+          <ListSkeleton label="Завантаження рекордів" />
+        ) : records.length === 0 ? (
+          <EmptyState icon={<Trophy />} title="Рекордів ще немає" description="Завершуйте тренування з вагою, і найкращі результати з'являться тут." />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {prList.map((pr) => (
-              <PRCard key={pr.exerciseId} pr={pr} />
-            ))}
-          </div>
+          <RecordList records={records} />
         )}
-      </section>
+      </Section>
 
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg sm:text-xl font-display font-black text-fg flex items-center gap-2">
-            <History className="w-5 h-5 text-accent" />
-            Історія завершених занять ({history.length})
-          </h3>
-        </div>
-
+      <Section title="Журнал" aside={<span className="font-mono text-xs text-fg-subtle tabular">{history.length}</span>}>
         {isLoading ? (
-          <HistoryListSkeleton />
+          <ListSkeleton label="Завантаження журналу" />
         ) : history.length === 0 ? (
-          <EmptyState
-            icon={<Dumbbell className="w-8 h-8 text-accent" />}
-            title="Журнал тренувань порожній"
-            description="Ви ще не зафіксували жодного тренування. Перейдіть до розділу «Тренування» та завершіть першу сесію!"
-          />
+          <EmptyState icon={<Dumbbell />} title="Журнал порожній" description="Завершіть перше тренування, і воно з'явиться тут." />
         ) : (
-          <div className="space-y-3">
+          <ul className="divide-y divide-line rounded-lg border border-line bg-surface">
             {history.map((log) => (
               <WorkoutHistoryItem key={log.id} log={log} onDelete={handleDeleteLog} />
             ))}
-          </div>
+          </ul>
         )}
-      </section>
+      </Section>
     </div>
   )
 }

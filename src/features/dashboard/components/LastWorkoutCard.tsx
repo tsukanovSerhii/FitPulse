@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Clock } from 'lucide-react'
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { formatDate, formatDuration, formatNumber } from '@/shared/lib/formatters'
-import { DashboardSection } from './DashboardSection'
+import { Section } from '@/shared/ui'
 
 export function LastWorkoutCard({ log }: { log: WorkoutHistoryLog }) {
   const metrics = [
@@ -12,7 +12,7 @@ export function LastWorkoutCard({ log }: { log: WorkoutHistoryLog }) {
   ]
 
   return (
-    <DashboardSection
+    <Section
       title="Останнє тренування"
       aside={
         <Link to="/progress" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent-hover">
@@ -39,6 +39,6 @@ export function LastWorkoutCard({ log }: { log: WorkoutHistoryLog }) {
           ))}
         </div>
       </Link>
-    </DashboardSection>
+    </Section>
   )
 }

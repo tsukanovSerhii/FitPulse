@@ -1,12 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { WorkoutSessionState, CompletedSet } from './types'
 import type { PlanExercise } from '@/features/workoutPlan'
-import {
-  loadFromStorage,
-  saveToStorage,
-  removeFromStorage,
-  STORAGE_KEYS,
-} from '@/shared/storage/localStorage'
+import { STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { loadUserData, removeUserData, saveUserData } from '@/shared/storage/userStorage'
 
 const defaultInitialState: WorkoutSessionState = {
   isActive: false,
@@ -25,7 +21,7 @@ const defaultInitialState: WorkoutSessionState = {
 }
 
 function getInitialSession(): WorkoutSessionState {
-  const saved = loadFromStorage<WorkoutSessionState | null>(STORAGE_KEYS.ACTIVE_SESSION, null)
+  const saved = loadUserData<WorkoutSessionState | null>(STORAGE_KEYS.ACTIVE_SESSION, null)
   if (saved && saved.isActive) {
     return {
       ...saved,
@@ -40,15 +36,16 @@ function getInitialSession(): WorkoutSessionState {
 
 function persistSession(state: WorkoutSessionState) {
   if (state.isActive) {
-    saveToStorage(STORAGE_KEYS.ACTIVE_SESSION, state)
+    saveUserData(STORAGE_KEYS.ACTIVE_SESSION, state)
   } else {
-    removeFromStorage(STORAGE_KEYS.ACTIVE_SESSION)
+    removeUserData(STORAGE_KEYS.ACTIVE_SESSION)
   }
 }
 
 export const workoutSessionSlice = createSlice({
   name: 'workoutSession',
-  initialState: getInitialSession(),
+  // Lazy: re-read for the signed-in account whenever the state is reset
+  initialState: getInitialSession,
   reducers: {
     startWorkout: (
       state,

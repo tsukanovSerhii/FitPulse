@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from 'react'
 
-export function DashboardSection({ title, aside, children }: { title: string; aside?: ReactNode; children: ReactNode }) {
+export function Section({ title, aside, children }: { title: string; aside?: ReactNode; children: ReactNode }) {
   const id = useId()
   return (
     <section aria-labelledby={id} className="space-y-3">

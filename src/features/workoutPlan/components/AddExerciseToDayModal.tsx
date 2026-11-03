@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { Plus, Trash2 } from 'lucide-react'
-import type { WorkoutPlan, DayOfWeek, PlanExercise } from '../model/types'
-import { DAY_LABELS } from '../model/types'
 import type { Exercise } from '@/features/exercises'
-import { Modal } from '@/shared/ui'
-import { Input } from '@/shared/ui'
-import { Button } from '@/shared/ui'
+import { Button, IconButton, Input, Modal, Section, Select } from '@/shared/ui'
+import type { DayOfWeek, PlanExercise, WorkoutPlan } from '../model/types'
+import { DAY_LABELS } from '../model/types'
+
+type ExerciseUpdates = Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>
 
 export interface AddExerciseToDayModalProps {
   isOpen: boolean
@@ -15,15 +15,10 @@ export interface AddExerciseToDayModalProps {
   allExercises: Exercise[]
   onAddExercise: (planId: string, day: DayOfWeek, exercise: Omit<PlanExercise, 'id' | 'order'>) => void
   onRemoveExercise: (planId: string, day: DayOfWeek, exerciseId: string) => void
-  onUpdateExercise: (
-    planId: string,
-    day: DayOfWeek,
-    exerciseId: string,
-    updates: Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>,
-  ) => void
+  onUpdateExercise: (planId: string, day: DayOfWeek, exerciseId: string, updates: ExerciseUpdates) => void
 }
 
-export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
+export function AddExerciseToDayModal({
   isOpen,
   onClose,
   plan,
@@ -32,44 +27,41 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
   onAddExercise,
   onRemoveExercise,
   onUpdateExercise,
-}) => {
-  const [selectedExId, setSelectedExId] = useState<string>(allExercises[0]?.id || '')
+}: AddExerciseToDayModalProps) {
+  const [exerciseId, setExerciseId] = useState(allExercises[0]?.id ?? '')
   const [sets, setSets] = useState(3)
   const [reps, setReps] = useState(10)
   const [weight, setWeight] = useState<number | ''>('')
   const [restSeconds, setRestSeconds] = useState(60)
   const [notes, setNotes] = useState('')
 
+  const exerciseMap = useMemo(() => new Map(allExercises.map((e) => [e.id, e])), [allExercises])
+  const options = useMemo(() => allExercises.map((e) => ({ value: e.id, label: e.name })), [allExercises])
+
   if (!plan || !day) return null
+  const dayExercises = plan.schedule[day] ?? []
 
-  const dayExercises = plan.schedule[day] || []
-
-  const exerciseMap = new Map<string, Exercise>()
-  allExercises.forEach((e) => exerciseMap.set(e.id, e))
-
-  const handleExerciseSelectChange = (id: string) => {
-    setSelectedExId(id)
-    const ex = exerciseMap.get(id)
-    if (ex) {
-      setSets(ex.defaultSets)
-      setReps(ex.defaultReps)
-      setRestSeconds(ex.defaultRestSeconds)
+  const pickExercise = (id: string) => {
+    setExerciseId(id)
+    const exercise = exerciseMap.get(id)
+    if (exercise) {
+      setSets(exercise.defaultSets)
+      setReps(exercise.defaultReps)
+      setRestSeconds(exercise.defaultRestSeconds)
     }
   }
 
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!selectedExId) return
-
+  const handleAdd = (event: FormEvent) => {
+    event.preventDefault()
+    if (!exerciseId) return
     onAddExercise(plan.id, day, {
-      exerciseId: selectedExId,
-      sets: Number(sets) || 3,
-      reps: Number(reps) || 10,
-      weight: weight === '' ? undefined : Number(weight),
-      restSeconds: Number(restSeconds) || 60,
+      exerciseId,
+      sets: sets || 3,
+      reps: reps || 10,
+      weight: weight === '' ? undefined : weight,
+      restSeconds: restSeconds || 60,
       notes: notes.trim() || undefined,
     })
-
     setNotes('')
   }
 
@@ -77,165 +69,74 @@ export const AddExerciseToDayModal: React.FC<AddExerciseToDayModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`${plan.name} — ${DAY_LABELS[day]}`}
+      eyebrow={plan.name}
+      title={DAY_LABELS[day]}
       maxWidth="xl"
+      footer={<Button onClick={onClose}>Готово</Button>}
     >
-      <div className="space-y-6">
-        <div>
-          <h4 className="text-sm font-bold text-fg mb-3 flex items-center justify-between">
-            <span>Вправи на цей день ({dayExercises.length})</span>
-          </h4>
-
+      <div className="space-y-8">
+        <Section title="Вправи дня" aside={<span className="font-mono text-xs text-fg-subtle tabular">{dayExercises.length}</span>}>
           {dayExercises.length === 0 ? (
-            <div className="p-4 rounded-md border border-dashed border-line text-center text-xs text-fg-muted bg-surface-2/30">
-              На цей день ще не призначено жодної вправи. Додайте вправу нижче.
-            </div>
+            <p className="rounded-lg border border-dashed border-line px-4 py-6 text-center text-sm text-fg-muted">
+              День відпочинку. Додайте вправу нижче, щоб зробити його тренувальним.
+            </p>
           ) : (
-            <div className="space-y-2.5">
-              {dayExercises.map((pEx, index) => {
-                const ex = exerciseMap.get(pEx.exerciseId)
-                return (
-                  <div
-                    key={pEx.id}
-                    className="p-3 bg-surface-2 rounded-md border border-line flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-lg bg-accent-soft text-accent font-bold text-xs flex items-center justify-center shrink-0 border border-accent/20">
-                        {index + 1}
-                      </span>
-                      <div>
-                        <h5 className="text-sm font-bold text-fg">
-                          {ex ? ex.name : 'Вправа'}
-                        </h5>
-                        <div className="flex items-center gap-2 text-xs text-fg-muted mt-0.5">
-                          <span>{pEx.sets} підходи по {pEx.reps} повторень</span>
-                          {pEx.weight ? <span>• {pEx.weight} кг</span> : null}
-                          <span>• {pEx.restSeconds}с відпочинок</span>
-                        </div>
-                        {pEx.notes && (
-                          <p className="text-[11px] text-accent italic mt-1">
-                            Нотатка: {pEx.notes}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 self-end sm:self-center">
-                      <div className="flex items-center gap-1.5 text-xs">
-                        <input
-                          type="number"
-                          title="Вага (кг)"
-                          placeholder="кг"
-                          value={pEx.weight ?? ''}
-                          onChange={(e) =>
-                            onUpdateExercise(plan.id, day, pEx.id, {
-                              weight: e.target.value === '' ? undefined : Number(e.target.value),
-                            })
-                          }
-                          className="w-14 px-2 py-1 bg-surface border border-line rounded-lg text-center text-xs text-fg focus:outline-none focus:ring-1 focus:ring-accent"
-                        />
-                      </div>
-
-                      <button
-                        onClick={() => onRemoveExercise(plan.id, day, pEx.id)}
-                        className="p-1.5 rounded-lg text-fg-muted hover:text-danger hover:bg-danger-soft transition-colors"
-                        title="Видалити з дня"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            <ol className="divide-y divide-line rounded-lg border border-line">
+              {dayExercises.map((item, index) => (
+                <li key={item.id} className="flex items-center gap-3 px-4 py-3">
+                  <span className="w-5 shrink-0 font-mono text-xs text-fg-subtle">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-semibold text-fg">{exerciseMap.get(item.exerciseId)?.name ?? 'Вправа'}</span>
+                    <span className="block text-xs text-fg-subtle">
+                      {item.sets} × {item.reps} · відпочинок {item.restSeconds} с{item.notes && ` · ${item.notes}`}
+                    </span>
+                  </span>
+                  <label className="flex shrink-0 items-center gap-1.5 text-xs text-fg-subtle">
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min={0}
+                      step={0.5}
+                      aria-label={`Вага для ${exerciseMap.get(item.exerciseId)?.name ?? 'вправи'}, кг`}
+                      placeholder="—"
+                      value={item.weight ?? ''}
+                      onChange={(e) => onUpdateExercise(plan.id, day, item.id, { weight: e.target.value === '' ? undefined : Number(e.target.value) })}
+                      className="h-9 w-16 rounded-md border border-line bg-surface-2 text-center font-mono text-sm text-fg focus:border-accent focus:outline-none"
+                    />
+                    кг
+                  </label>
+                  <IconButton size="sm" label="Прибрати з дня" icon={<Trash2 />} onClick={() => onRemoveExercise(plan.id, day, item.id)} className="hover:text-danger" />
+                </li>
+              ))}
+            </ol>
           )}
-        </div>
+        </Section>
 
-        <div className="pt-4 border-t border-line">
-          <h4 className="text-sm font-bold text-fg mb-3 flex items-center gap-2">
-            <Plus className="w-4 h-4 text-accent" />
-            Додати вправу до розкладу
-          </h4>
-
-          <form onSubmit={handleAdd} className="space-y-3 bg-surface-2/40 p-4 rounded-md border border-line/80">
-            <div>
-              <label className="text-xs font-semibold text-fg-muted block mb-1">
-                Оберіть вправу з каталогу
-              </label>
-              <select
-                value={selectedExId}
-                onChange={(e) => handleExerciseSelectChange(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-md bg-surface-2 border border-line text-sm text-fg focus:outline-none focus:ring-2 focus:ring-accent"
-              >
-                {allExercises.map((e) => (
-                  <option key={e.id} value={e.id}>
-                    {e.name} ({e.primaryMuscle})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <Section title="Додати вправу">
+          <form onSubmit={handleAdd} className="space-y-4">
+            <Select label="Вправа" value={exerciseId} onChange={(e) => pickExercise(e.target.value)} options={options} />
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <Input label="Підходи" type="number" inputMode="numeric" min={1} max={20} value={sets} onChange={(e) => setSets(Number(e.target.value))} placeholder="3" />
+              <Input label="Повтори" type="number" inputMode="numeric" min={1} max={200} value={reps} onChange={(e) => setReps(Number(e.target.value))} placeholder="10" />
               <Input
-                label="Сети"
-                placeholder="Напр. 4"
+                label="Вага, кг"
                 type="number"
-                min={1}
-                max={20}
-                value={sets}
-                onChange={(e) => setSets(Number(e.target.value))}
-              />
-              <Input
-                label="Повторення"
-                placeholder="Напр. 10"
-                type="number"
-                min={1}
-                max={200}
-                value={reps}
-                onChange={(e) => setReps(Number(e.target.value))}
-              />
-              <Input
-                label="Вага (кг, опція)"
-                type="number"
+                inputMode="decimal"
                 min={0}
                 max={500}
                 step={0.5}
                 value={weight}
                 onChange={(e) => setWeight(e.target.value === '' ? '' : Number(e.target.value))}
-                placeholder="напр. 60"
+                placeholder="Без ваги"
               />
-              <Input
-                label="Відпочинок (сек)"
-                placeholder="Напр. 90"
-                type="number"
-                min={10}
-                max={600}
-                step={5}
-                value={restSeconds}
-                onChange={(e) => setRestSeconds(Number(e.target.value))}
-              />
+              <Input label="Відпочинок, с" type="number" inputMode="numeric" min={10} max={600} step={5} value={restSeconds} onChange={(e) => setRestSeconds(Number(e.target.value))} placeholder="60" />
             </div>
-
-            <Input
-              label="Нотатка до виконання (необов'язково)"
-              placeholder="Наприклад: з паузою внизу 1 сек"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            />
-
-            <div className="flex justify-end pt-2">
-              <Button type="submit" variant="primary" size="sm" icon={<Plus className="w-4 h-4" />}>
-                Додати до розкладу
-              </Button>
-            </div>
+            <Input label="Нотатка" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Напр. пауза внизу 1 с" />
+            <Button type="submit" variant="outline" icon={<Plus />} className="w-full sm:w-auto">
+              Додати до дня
+            </Button>
           </form>
-        </div>
-
-        <div className="flex justify-end pt-3 border-t border-line">
-          <Button variant="secondary" onClick={onClose}>
-            Готово
-          </Button>
-        </div>
+        </Section>
       </div>
     </Modal>
   )

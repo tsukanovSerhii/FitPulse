@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { installMemoryStorage } from '@/shared/testing/memoryStorage'
 
-const { local: memory } = installMemoryStorage()
+const storage = installMemoryStorage({ signedIn: true })
+const memory = storage.local
+const KEY = storage.userKey('fitpulse_exercises_v1')
 
 const { exercisesApi } = await import('./exercisesApi')
 const { INITIAL_EXERCISES } = await import('./seed')
-const { STORAGE_KEYS } = await import('@/shared/storage/localStorage')
 
 const custom = {
   name: 'Моя вправа',
@@ -22,17 +23,17 @@ const custom = {
 }
 
 describe('exercisesApi storage', () => {
-  beforeEach(() => memory.clear())
+  beforeEach(() => storage.clear())
 
   it('serves built-in exercises from code without persisting them', async () => {
     const items = await exercisesApi.getExercises()
     expect(items).toEqual(INITIAL_EXERCISES)
-    expect(memory.has(STORAGE_KEYS.EXERCISES)).toBe(false)
+    expect(memory.has(KEY)).toBe(false)
   })
 
   it('persists only custom exercises and lists them first', async () => {
     const created = await exercisesApi.createExercise(custom)
-    expect(JSON.parse(memory.get(STORAGE_KEYS.EXERCISES)!)).toEqual([created])
+    expect(JSON.parse(memory.get(KEY)!)).toEqual([created])
     const items = await exercisesApi.getExercises()
     expect(items[0]).toEqual(created)
     expect(items).toHaveLength(INITIAL_EXERCISES.length + 1)
@@ -40,9 +41,9 @@ describe('exercisesApi storage', () => {
 
   it('drops stale copies of built-in exercises saved by older versions', async () => {
     const stale = { ...INITIAL_EXERCISES[0], name: 'Стара копія' }
-    memory.set(STORAGE_KEYS.EXERCISES, JSON.stringify([stale, { ...custom, id: 'custom-1' }]))
+    memory.set(KEY, JSON.stringify([stale, { ...custom, id: 'custom-1' }]))
     const items = await exercisesApi.getExercises()
     expect(items.find((e) => e.id === stale.id)?.name).toBe(INITIAL_EXERCISES[0].name)
-    expect(JSON.parse(memory.get(STORAGE_KEYS.EXERCISES)!).map((e: { id: string }) => e.id)).toEqual(['custom-1'])
+    expect(JSON.parse(memory.get(KEY)!).map((e: { id: string }) => e.id)).toEqual(['custom-1'])
   })
 })

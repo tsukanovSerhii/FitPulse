@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { installMemoryStorage } from '@/shared/testing/memoryStorage'
-import { STORAGE_KEYS, hasStorageKey } from '@/shared/storage/localStorage'
+import { STORAGE_KEYS } from '@/shared/storage/localStorage'
+import { hasUserData } from '@/shared/storage/userStorage'
 import { plansApi } from './plansApi'
 
-const { local: memoryStorage } = installMemoryStorage()
+const memoryStorage = installMemoryStorage({ signedIn: true })
 
 describe('Workout Plans Persistence & Empty State Tests', () => {
   beforeEach(() => {
@@ -11,11 +12,11 @@ describe('Workout Plans Persistence & Empty State Tests', () => {
   })
 
   it('First launch initializes default plans', async () => {
-    expect(hasStorageKey(STORAGE_KEYS.WORKOUT_PLANS)).toBe(false)
+    expect(hasUserData(STORAGE_KEYS.WORKOUT_PLANS)).toBe(false)
     const { plans, activePlanId } = await plansApi.getPlans()
     expect(plans.length).toBeGreaterThan(0)
     expect(activePlanId).not.toBeNull()
-    expect(hasStorageKey(STORAGE_KEYS.WORKOUT_PLANS)).toBe(true)
+    expect(hasUserData(STORAGE_KEYS.WORKOUT_PLANS)).toBe(true)
   })
 
   it('Saving a plan persists serialized data cleanly', async () => {
@@ -49,7 +50,7 @@ describe('Workout Plans Persistence & Empty State Tests', () => {
       await plansApi.deletePlan(p.id)
     }
 
-    expect(hasStorageKey(STORAGE_KEYS.WORKOUT_PLANS)).toBe(true)
+    expect(hasUserData(STORAGE_KEYS.WORKOUT_PLANS)).toBe(true)
     const reloaded = await plansApi.getPlans()
     expect(reloaded.plans.length).toBe(0)
   })

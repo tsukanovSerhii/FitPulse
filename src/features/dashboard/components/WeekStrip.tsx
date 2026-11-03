@@ -1,8 +1,7 @@
 import { Check } from 'lucide-react'
 import { DAY_LABELS, DAY_SHORT_LABELS, type DayOfWeek, WEEK_DAYS } from '@/features/workoutPlan'
-import { statusStyles } from '@/shared/ui'
+import { statusStyles, Section } from '@/shared/ui'
 import { cn } from '@/shared/lib/cn'
-import { DashboardSection } from './DashboardSection'
 
 interface WeekStripProps {
   today: DayOfWeek
@@ -13,7 +12,7 @@ interface WeekStripProps {
 
 export function WeekStrip({ today, doneDays, isPlanned, plannedCount }: WeekStripProps) {
   return (
-    <DashboardSection
+    <Section
       title="Цей тиждень"
       aside={
         <span className="font-mono text-xs text-fg-subtle tabular">
@@ -50,6 +49,6 @@ export function WeekStrip({ today, doneDays, isPlanned, plannedCount }: WeekStri
           )
         })}
       </ol>
-    </DashboardSection>
+    </Section>
   )
 }
