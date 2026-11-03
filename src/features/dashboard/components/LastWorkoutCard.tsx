@@ -15,12 +15,12 @@ export function LastWorkoutCard({ log }: { log: WorkoutHistoryLog }) {
     <Section
       title="Останнє тренування"
       aside={
-        <Link to="/progress" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent-hover">
+        <Link to="/progress/journal" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent-hover">
           Журнал <ArrowRight className="size-3.5" aria-hidden="true" />
         </Link>
       }
     >
-      <Link to="/progress" className="block rounded-lg border border-line bg-surface p-4 transition-colors hover:border-line-strong sm:p-5">
+      <Link to="/progress/journal" className="block rounded-lg border border-line bg-surface p-4 transition-colors hover:border-line-strong sm:p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="truncate font-semibold text-fg">{log.dayLabel || log.planName}</p>
