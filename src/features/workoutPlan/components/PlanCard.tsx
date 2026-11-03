@@ -3,6 +3,7 @@ import { Check, ChevronDown, Pencil, Play, Plus, Trash2 } from 'lucide-react'
 import { Badge, Button, IconButton } from '@/shared/ui'
 import type { Exercise } from '@/features/exercises'
 import { cn } from '@/shared/lib/cn'
+import { plural } from '@/shared/lib/formatters'
 import type { DayOfWeek, WorkoutPlan } from '../model/types'
 import { ALL_DAYS, DAY_LABELS, DAY_SHORT_LABELS } from '../model/types'
 
@@ -68,7 +69,7 @@ export function PlanCard({
               ))}
             </span>
             <span className="text-xs text-fg-subtle">
-              {trainingDays.length} дні · {totalExercises} вправ
+              {plural(trainingDays.length, ['день', 'дні', 'днів'])} · {plural(totalExercises, ['вправа', 'вправи', 'вправ'])}
             </span>
           </span>
         </span>

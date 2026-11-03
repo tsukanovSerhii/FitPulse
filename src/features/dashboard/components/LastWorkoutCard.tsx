@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Clock } from 'lucide-react'
 import type { WorkoutHistoryLog } from '@/features/progress'
-import { formatDate, formatDuration, formatNumber } from '@/shared/lib/formatters'
+import { formatDate, formatDuration, formatNumber, pluralWord } from '@/shared/lib/formatters'
 import { Section } from '@/shared/ui'
 
 export function LastWorkoutCard({ log }: { log: WorkoutHistoryLog }) {
   const metrics = [
     { value: formatNumber(log.totalVolumeKg), unit: 'кг' },
     { value: log.totalSets, unit: 'підх.' },
-    { value: log.exercises.length, unit: 'вправ' },
+    { value: log.exercises.length, unit: pluralWord(log.exercises.length, ['вправа', 'вправи', 'вправ']) },
   ]
 
   return (
