@@ -25,3 +25,30 @@ test('a workout is recorded and appears in the journal', async ({ page }) => {
   await expect(group.getByText(/Понеділок/).first()).toBeVisible()
   await expect(group.getByText(/1 трен\./)).toBeVisible()
 })
+
+test('a free workout is logged set by set and saved as a plan', async ({ page }) => {
+  await signUp(page)
+  await page.goto('/workout')
+  await page.getByRole('button', { name: 'Почати' }).click()
+
+  for (const name of ['Тяга верхнього блока широким хватом', 'Жим гантелей сидячи']) {
+    const picker = page.getByRole('dialog', { name: 'Додати вправу' })
+    if (!(await picker.isVisible())) await page.getByRole('button', { name: 'Додати вправу' }).click()
+    await picker.getByRole('searchbox').fill(name)
+    await picker.getByRole('button', { name: new RegExp(name) }).click()
+    await expect(page.getByRole('heading', { name })).toBeVisible()
+    await page.getByRole('button', { name: /Підхід 1 виконано/ }).click()
+    await page.getByRole('button', { name: 'Пропустити' }).click()
+  }
+
+  await page.getByRole('button', { name: 'Завершити' }).first().click()
+  const summary = page.getByRole('dialog', { name: 'Чудова робота' })
+  await summary.getByText('Зберегти як програму').click()
+  await summary.getByLabel('Назва програми').fill('Спина й плечі')
+  await summary.getByRole('button', { name: 'Зберегти' }).click()
+
+  await expect(page).toHaveURL('/progress')
+  await page.goto('/plans')
+  await expect(page.getByText('Спина й плечі')).toBeVisible()
+  await expect(page.getByText('1 день · 2 вправи')).toBeVisible()
+})

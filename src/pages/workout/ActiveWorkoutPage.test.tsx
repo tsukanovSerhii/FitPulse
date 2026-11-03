@@ -53,4 +53,36 @@ describe('workout mode', () => {
 
     await waitFor(() => expect(store.getState().workoutSession.isActive).toBe(false))
   })
+
+  it('runs a free workout and saves it as a personal plan', async () => {
+    const user = userEvent.setup()
+    renderPage()
+
+    await user.click(screen.getByRole('button', { name: 'Почати' }))
+    const picker = await screen.findByRole('dialog', { name: 'Додати вправу' })
+    await user.type(within(picker).getByRole('searchbox'), 'Жим штанги лежачи')
+    await user.click(within(picker).getByRole('button', { name: /Жим штанги лежачи/ }))
+
+    expect(await screen.findByRole('heading', { name: 'Жим штанги лежачи' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Підхід 1 виконано/ }))
+    await user.click(screen.getByRole('button', { name: /Підхід 2 виконано/ }))
+    expect(screen.getAllByLabelText('виконано')).toHaveLength(2)
+    // No set target: there is always a next set to log
+    expect(screen.getByRole('button', { name: /Підхід 3 виконано/ })).toBeInTheDocument()
+
+    await user.click(screen.getAllByRole('button', { name: 'Завершити' })[0])
+    const summary = await screen.findByRole('dialog', { name: 'Чудова робота' })
+    await user.click(within(summary).getByRole('checkbox', { name: /Зберегти як програму/ }))
+    const name = within(summary).getByLabelText('Назва програми')
+    await user.clear(name)
+    await user.type(name, 'Мій жим')
+    await user.click(within(summary).getByRole('button', { name: 'Зберегти' }))
+
+    await waitFor(() => expect(store.getState().workoutSession.isActive).toBe(false))
+    const plan = store.getState().workoutPlan.plans.find((p) => p.name === 'Мій жим')
+    expect(plan).toBeDefined()
+    const day = Object.values(plan!.schedule).find((items) => items.length > 0)!
+    expect(day).toHaveLength(1)
+    expect(day[0]).toMatchObject({ exerciseId: 'ex-bench-press', sets: 2 })
+  })
 })
