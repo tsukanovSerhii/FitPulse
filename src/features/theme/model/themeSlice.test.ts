@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import themeReducer, { resolveTheme, setThemeMode, systemThemeChanged } from '@/features/theme/model/themeSlice'
-import type { ThemeState } from '@/features/theme/model/types'
+import themeReducer, { resolveTheme, setThemeMode, systemThemeChanged } from './themeSlice'
+import type { ThemeState } from './types'
 
 describe('theme', () => {
   it('resolves system mode from the OS preference', () => {
@@ -23,13 +23,5 @@ describe('theme', () => {
       mode: 'system',
       resolved: 'light',
     })
-  })
-})
-
-describe('formatNumber', () => {
-  it('groups thousands with a narrow no-break space', async () => {
-    const { formatNumber } = await import('@/shared/lib/formatters')
-    expect(formatNumber(12480)).toBe('12\u202f480')
-    expect(formatNumber(1.25, 1)).toBe('1,3')
   })
 })

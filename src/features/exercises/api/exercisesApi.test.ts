@@ -1,19 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { installMemoryStorage } from '@/shared/testing/memoryStorage'
 
-const memory = new Map<string, string>()
-globalThis.window = {
-  localStorage: {
-    getItem: (k: string) => memory.get(k) ?? null,
-    setItem: (k: string, v: string) => memory.set(k, String(v)),
-    removeItem: (k: string) => memory.delete(k),
-    clear: () => memory.clear(),
-    length: 0,
-    key: () => null,
-  },
-} as unknown as Window & typeof globalThis
+const { local: memory } = installMemoryStorage()
 
-const { exercisesApi } = await import('@/features/exercises/api/exercisesApi')
-const { INITIAL_EXERCISES } = await import('@/features/exercises/api/seed')
+const { exercisesApi } = await import('./exercisesApi')
+const { INITIAL_EXERCISES } = await import('./seed')
 const { STORAGE_KEYS } = await import('@/shared/storage/localStorage')
 
 const custom = {

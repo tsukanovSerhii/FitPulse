@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildWorkoutLog, formatSessionTitle } from '@/features/workoutSession/lib/summary'
+import { buildWorkoutLog, formatSessionTitle } from './summary'
 
 const exercise = (id: string, exerciseId: string) => ({ id, exerciseId, sets: 3, reps: 8, restSeconds: 90, order: 1 })
 const set = (reps: number, weight?: number) => ({ reps, weight, completedAt: '2026-11-02T10:00:00Z' })

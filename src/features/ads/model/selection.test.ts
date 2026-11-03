@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { canShowInterstitial, INTERSTITIAL_COOLDOWN_MS, pickCampaign } from '@/features/ads/model/selection'
-import type { AdCampaign } from '@/features/ads/model/types'
+import { canShowInterstitial, INTERSTITIAL_COOLDOWN_MS, pickCampaign } from './selection'
+import type { AdCampaign } from './types'
 
 const ad = (id: string, tier: AdCampaign['tier'], weight?: number): AdCampaign => ({
   id,
