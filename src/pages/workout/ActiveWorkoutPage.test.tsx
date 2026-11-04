@@ -107,7 +107,7 @@ describe('workout mode', () => {
     await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Скасувати тренування' }))
   })
 
-  it('logs warm-ups before the working sets, outside the target', async () => {
+  it('offers a general warm-up once, before the first exercise', async () => {
     store.dispatch(
       startWorkout({
         planId: null,
@@ -118,17 +118,12 @@ describe('workout mode', () => {
     const user = userEvent.setup()
     renderPage()
 
-    await user.click(await screen.findByRole('button', { name: 'Додати' }))
-    for (let i = 1; i <= 4; i++) {
-      await user.click(screen.getByRole('button', { name: `Розминка ${i} з 4 виконано` }))
-      await user.click(screen.getByRole('button', { name: 'Пропустити' }))
-    }
-    await user.click(screen.getByRole('button', { name: /Підхід 1 виконано/ }))
-
-    const sets = store.getState().workoutSession.completedSets.w
-    expect(sets.map((s) => s.kind ?? 'work')).toEqual(['warmup', 'warmup', 'warmup', 'warmup', 'work'])
-    expect(screen.getAllByLabelText('розминку виконано')).toHaveLength(4)
-    expect(screen.getByRole('button', { name: /Підхід 2 виконано/ })).toBeInTheDocument()
+    const card = await screen.findByRole('region', { name: /Розминка/ })
+    expect(within(card).getByText('Легке кардіо · 3–5 хв')).toBeInTheDocument()
+    await user.click(within(card).getByRole('button', { name: 'Розминку зроблено' }))
+    expect(screen.queryByRole('region', { name: /Розминка/ })).not.toBeInTheDocument()
+    expect(store.getState().workoutSession.warmupDone).toBe(true)
+    expect(screen.queryByText(/розминка/i)).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Скасувати тренування' }))
     await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Скасувати тренування' }))

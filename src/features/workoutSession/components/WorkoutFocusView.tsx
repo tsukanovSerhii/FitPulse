@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Check, ChevronLeft, ChevronRight, Dumbbell, Flame, Info, Link2, Plus, Trash2, TrendingUp } from 'lucide-react'
+import { ArrowLeftRight, Check, ChevronLeft, ChevronRight, Dumbbell, Info, Link2, Plus, Trash2, TrendingUp } from 'lucide-react'
 import { Button, EmptyState, IconButton, Modal } from '@/shared/ui'
 import { TechniquePlayer, MUSCLE_GROUP_LABELS } from '@/features/exercises'
 import type { WorkoutHistoryLog } from '@/features/progress'
@@ -12,6 +12,7 @@ import { SetList } from './focus/SetList'
 import { useWorkoutFocus } from '../hooks/useWorkoutFocus'
 import { RestTimerSheet } from './RestTimerSheet'
 import { ExercisePicker } from './ExercisePicker'
+import { WarmupCard } from './focus/WarmupCard'
 import { ReplaceExerciseModal } from './ReplaceExerciseModal'
 import { formatNumber } from '@/shared/lib/formatters'
 
@@ -42,6 +43,11 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
       />
 
       <main className="flex-1 overflow-y-auto">
+        {focus.showWarmup && (
+          <div className="mx-auto max-w-lg px-5 pt-6">
+            <WarmupCard onDone={focus.endWarmup} />
+          </div>
+        )}
         {planExercise && target && exercise ? (
           <div className="mx-auto max-w-lg space-y-6 px-5 py-6">
             <div className="space-y-3">
@@ -79,43 +85,18 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
                 </p>
               )}
               {focus.suggestion && doneSets.length === 0 && (
-                <p className="flex items-center gap-1.5 text-sm text-fg-muted">
-                  <TrendingUp className="size-4 shrink-0 text-accent" aria-hidden="true" />
-                  Сьогодні:{' '}
-                  <span className="font-mono text-fg tabular">
-                    {focus.suggestion.weight ? `${formatNumber(focus.suggestion.weight, 1)} кг × ` : ''}
-                    {focus.suggestion.reps}
+                <p className="flex items-start gap-1.5 text-sm text-fg-muted">
+                  <TrendingUp className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden="true" />
+                  <span>
+                    <span className="font-semibold text-fg">Порада:</span> {focus.suggestion.text}
                   </span>
-                  <span className="text-fg-subtle">· {focus.suggestion.change}</span>
                 </p>
               )}
               {planExercise.notes && <p className="border-l-2 border-accent pl-3 text-sm text-fg-muted">{planExercise.notes}</p>}
             </div>
 
-            {focus.warmupOffer.length > 0 && (
-              <div className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-line-strong px-4 py-3">
-                <span className="min-w-0 text-sm">
-                  <span className="flex items-center gap-1.5 font-semibold text-fg">
-                    <Flame className="size-4 text-accent" aria-hidden="true" />
-                    Розминка
-                  </span>
-                  <span className="block truncate font-mono text-xs text-fg-subtle tabular">
-                    {focus.warmupOffer.map((s) => `${formatNumber(s.weight, 1)}×${s.reps}`).join(' · ')}
-                  </span>
-                </span>
-                <Button variant="outline" size="sm" onClick={focus.startWarmup}>
-                  Додати
-                </Button>
-              </div>
-            )}
+            <SetList target={target} done={doneSets} onUndo={focus.undoLastSet} />
 
-            <SetList target={target} done={doneSets} warmup={focus.plannedWarmup} warmupDone={focus.warmupDone} onUndo={focus.undoLastSet} />
-
-            {focus.inWarmup && (
-              <button type="button" onClick={focus.skipWarmup} className="-mt-3 cursor-pointer text-xs font-semibold text-fg-subtle hover:text-fg">
-                Пропустити розминку
-              </button>
-            )}
 
             {isFree && (
               <div className="flex flex-wrap items-center gap-2">
@@ -169,11 +150,10 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
           <div className="mx-auto max-w-lg px-5 py-4">
             {!focus.exerciseComplete ? (
               <ActiveSetPanel
-                key={`${planExercise.id}-${focus.allSets.length}-${focus.plannedWarmup.length}`}
+                key={`${planExercise.id}-${focus.allSets.length}`}
                 setNumber={doneSets.length + 1}
-                initialWeight={focus.inWarmup ? focus.plannedWarmup[focus.warmupDone.length].weight : focus.startWeight}
-                initialReps={focus.inWarmup ? focus.plannedWarmup[focus.warmupDone.length].reps : focus.startReps}
-                warmup={focus.inWarmup ? { number: focus.warmupDone.length + 1, total: focus.plannedWarmup.length } : undefined}
+                initialWeight={focus.startWeight}
+                initialReps={focus.startReps}
                 showWeight={focus.showWeight}
                 barbell={exercise?.equipment === 'barbell'}
                 onDone={focus.completeCurrentSet}

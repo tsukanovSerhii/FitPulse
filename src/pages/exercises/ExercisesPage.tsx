@@ -23,9 +23,12 @@ import {
   type ExerciseFilters,
 } from '@/features/exercises'
 import { saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
+import { useIncrementalList } from '@/shared/lib/useIncrementalList'
 import { useSessionState } from '@/shared/storage/useSessionState'
 import { injectExerciseSchema } from '@/shared/seo/meta'
 import { PAGE_META } from '../meta'
+
+const LIST_STEP = 24
 
 export function ExercisesPage() {
   const dispatch = useAppDispatch()
@@ -46,6 +49,9 @@ export function ExercisesPage() {
     () => collapseVariants(favoritesOnly ? filteredItems.filter((ex) => favorites.includes(ex.id)) : filteredItems),
     [filteredItems, favorites, favoritesOnly],
   )
+
+  // Cards render a page at a time as the list scrolls; a filter change starts from the top
+  const { visible, hasMore, showMore, watchEnd, remaining } = useIncrementalList(entries, { step: LIST_STEP, resetKey: entries })
 
   const select = (exercise: Exercise) => {
     dispatch(setSelectedExercise(exercise))
@@ -126,19 +132,28 @@ export function ExercisesPage() {
           }
         />
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {entries.map(({ exercise, variants }, i) => (
-            <Fragment key={exercise.variant?.group ?? exercise.id}>
-              <ExerciseCard
-                exercise={exercise}
-                variants={variants}
-                isFavorite={favorites.includes(exercise.id)}
-                onToggleFavorite={handleToggleFavorite}
-                onSelect={select}
-              />
-              {(i + 1) % CATALOG_AD_EVERY === 0 && <AdSlot placement="catalog" />}
-            </Fragment>
-          ))}
+        <div className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map(({ exercise, variants }, i) => (
+              <Fragment key={exercise.variant?.group ?? exercise.id}>
+                <ExerciseCard
+                  exercise={exercise}
+                  variants={variants}
+                  isFavorite={favorites.includes(exercise.id)}
+                  onToggleFavorite={handleToggleFavorite}
+                  onSelect={select}
+                />
+                {(i + 1) % CATALOG_AD_EVERY === 0 && <AdSlot placement="catalog" />}
+              </Fragment>
+            ))}
+          </div>
+          {hasMore && (
+            <div ref={watchEnd} className="flex justify-center pt-2">
+              <Button variant="outline" size="sm" onClick={showMore}>
+                Показати ще {Math.min(remaining, LIST_STEP)}
+              </Button>
+            </div>
+          )}
         </div>
       )}
 

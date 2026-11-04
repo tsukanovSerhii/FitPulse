@@ -17,8 +17,6 @@ interface ActiveSetPanelProps {
   showWeight: boolean
   /** Barbell lifts also show which plates to load */
   barbell?: boolean
-  /** Warm-up sets are logged without a type or RPE */
-  warmup?: { number: number; total: number }
   onDone: (weight: number | undefined, reps: number, extras: SetExtras) => void
 }
 
@@ -79,7 +77,7 @@ function LoadHints({ weight, reps, barbell }: { weight: number; reps: number; ba
 }
 
 /** Current set editor. Its key changes after every set, which resets the draft values. */
-export function ActiveSetPanel({ setNumber, initialWeight, initialReps, showWeight, barbell = false, warmup, onDone }: ActiveSetPanelProps) {
+export function ActiveSetPanel({ setNumber, initialWeight, initialReps, showWeight, barbell = false, onDone }: ActiveSetPanelProps) {
   const [weight, setWeight] = useState(initialWeight ?? 0)
   const [reps, setReps] = useState(initialReps)
   const [kind, setKind] = useState<SetExtras['kind']>()
@@ -92,8 +90,7 @@ export function ActiveSetPanel({ setNumber, initialWeight, initialReps, showWeig
         <NumberStepper label="Повтори" value={reps} onChange={setReps} step={1} min={1} max={100} />
       </div>
       {showWeight && <LoadHints weight={weight} reps={reps} barbell={barbell} />}
-      {!warmup && (
-        <div className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none]" role="group" aria-label="Тип підходу й RPE">
+      <div className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none]" role="group" aria-label="Тип підходу й RPE">
           {KIND_OPTIONS.map((option) => (
             <Chip key={option.label} selected={kind === option.value} onClick={() => setKind(option.value)}>
               {option.label}
@@ -105,15 +102,14 @@ export function ActiveSetPanel({ setNumber, initialWeight, initialReps, showWeig
               {`RPE ${value}`}
             </Chip>
           ))}
-        </div>
-      )}
+      </div>
       <Button
         size="lg"
         className="h-14 w-full text-base"
         icon={<Check className="size-5!" />}
-        onClick={() => onDone(showWeight ? weight : undefined, reps, warmup ? {} : { kind, rpe })}
+        onClick={() => onDone(showWeight ? weight : undefined, reps, { kind, rpe })}
       >
-        {warmup ? `Розминка ${warmup.number} з ${warmup.total} виконано` : `Підхід ${setNumber} виконано`}
+        Підхід {setNumber} виконано
       </Button>
     </div>
   )
