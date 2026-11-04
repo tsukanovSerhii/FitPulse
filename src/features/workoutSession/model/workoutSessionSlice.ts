@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { WorkoutSessionState, CompletedSet, SessionMode } from './types'
+import type { WorkoutSessionState, CompletedSet, PlannedSet, SessionMode } from './types'
 import type { PlanExercise } from '@/features/workoutPlan'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadUserData, removeUserData, saveUserData } from '@/shared/storage/userStorage'
@@ -96,6 +96,7 @@ export const workoutSessionSlice = createSlice({
       state.exercises = action.payload.exercises
       state.currentExerciseIndex = 0
       state.completedSets = {}
+      state.warmups = {}
       state.startTime = Date.now()
       state.elapsedSeconds = 0
       state.restTimer = { isRunning: false, totalSeconds: 60, remainingSeconds: 0, endsAt: null }
@@ -110,6 +111,7 @@ export const workoutSessionSlice = createSlice({
       state.currentExerciseIndex = 0
       state.exercises = []
       state.completedSets = {}
+      state.warmups = {}
       state.startTime = null
       state.elapsedSeconds = 0
       state.restTimer.isRunning = false
@@ -124,6 +126,7 @@ export const workoutSessionSlice = createSlice({
       state.currentExerciseIndex = 0
       state.exercises = []
       state.completedSets = {}
+      state.warmups = {}
       state.startTime = null
       state.elapsedSeconds = 0
       state.restTimer.isRunning = false
@@ -151,6 +154,8 @@ export const workoutSessionSlice = createSlice({
         reps: safeReps,
         weight: safeWeight,
         completedAt: set.completedAt || new Date().toISOString(),
+        ...(set.kind && { kind: set.kind }),
+        ...(set.rpe && { rpe: Math.max(6, Math.min(10, set.rpe)) }),
       }
 
       if (!state.completedSets[planExerciseId]) {
@@ -192,6 +197,14 @@ export const workoutSessionSlice = createSlice({
       entry.weight = weight
       if (reps) entry.reps = reps
       if (restSeconds) entry.restSeconds = restSeconds
+      persistSession(state)
+    },
+
+    /** Plans warm-up sets before the working sets of an entry; an empty list cancels them. */
+    setWarmup: (state, action: PayloadAction<{ entryId: string; sets: PlannedSet[] }>) => {
+      state.warmups ??= {}
+      if (action.payload.sets.length > 0) state.warmups[action.payload.entryId] = action.payload.sets
+      else delete state.warmups[action.payload.entryId]
       persistSession(state)
     },
 
@@ -329,6 +342,7 @@ export const {
   addSessionExercise,
   removeSessionExercise,
   replaceSessionExercise,
+  setWarmup,
   removeCompletedSet,
   setCurrentExerciseIndex,
   nextExercise,

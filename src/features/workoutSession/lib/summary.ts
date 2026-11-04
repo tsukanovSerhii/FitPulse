@@ -1,5 +1,8 @@
-import type { ExerciseSummary, WorkoutHistoryLog } from '@/features/progress'
-import type { WorkoutSessionState } from '../model/types'
+import type { ExerciseSummary, LoggedSet, WorkoutHistoryLog } from '@/features/progress'
+import type { CompletedSet, WorkoutSessionState } from '../model/types'
+
+/** Sets that count: everything except warm-ups. */
+export const workingSets = (sets: CompletedSet[] = []) => sets.filter((s) => s.kind !== 'warmup')
 
 const KCAL_PER_MINUTE = 7
 
@@ -14,7 +17,7 @@ export function buildWorkoutLog(
   const exercises: ExerciseSummary[] = []
 
   for (const planExercise of session.exercises) {
-    const sets = session.completedSets[planExercise.id] || []
+    const sets = workingSets(session.completedSets[planExercise.id])
     if (sets.length === 0) continue
 
     let reps = 0
@@ -39,6 +42,12 @@ export function buildWorkoutLog(
       totalReps: reps,
       maxWeightKg: maxWeight > 0 ? maxWeight : undefined,
       repsAtMaxWeight: maxWeight > 0 ? repsAtMax : undefined,
+      sets: sets.map(({ reps, weight, kind, rpe }): LoggedSet => ({
+        reps,
+        ...(weight && { weight }),
+        ...(kind && kind !== 'warmup' && { kind }),
+        ...(rpe && { rpe }),
+      })),
     })
   }
 

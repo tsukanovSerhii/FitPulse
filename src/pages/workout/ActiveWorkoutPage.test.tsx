@@ -8,7 +8,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { store } from '@/app/store/store'
 import { fetchExercises } from '@/features/exercises/model'
 import { fetchPlans } from '@/features/workoutPlan/model'
-import { updateTimerSettings } from '@/features/workoutSession'
+import { startWorkout, updateTimerSettings } from '@/features/workoutSession'
 import { ActiveWorkoutPage } from './ActiveWorkoutPage'
 
 const renderPage = () =>
@@ -103,6 +103,61 @@ describe('workout mode', () => {
     expect(store.getState().workoutSession.restTimer.isRunning).toBe(false)
 
     updateTimerSettings({ restMode: 'exercise', autoStart: true })
+    await user.click(screen.getByRole('button', { name: 'Скасувати тренування' }))
+    await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Скасувати тренування' }))
+  })
+
+  it('logs warm-ups before the working sets, outside the target', async () => {
+    store.dispatch(
+      startWorkout({
+        planId: null,
+        dayLabel: 'Тест',
+        exercises: [{ id: 'w', exerciseId: 'ex-deadlift', sets: 2, reps: 5, restSeconds: 90, order: 1, weight: 100 }],
+      }),
+    )
+    const user = userEvent.setup()
+    renderPage()
+
+    await user.click(await screen.findByRole('button', { name: 'Додати' }))
+    for (let i = 1; i <= 4; i++) {
+      await user.click(screen.getByRole('button', { name: `Розминка ${i} з 4 виконано` }))
+      await user.click(screen.getByRole('button', { name: 'Пропустити' }))
+    }
+    await user.click(screen.getByRole('button', { name: /Підхід 1 виконано/ }))
+
+    const sets = store.getState().workoutSession.completedSets.w
+    expect(sets.map((s) => s.kind ?? 'work')).toEqual(['warmup', 'warmup', 'warmup', 'warmup', 'work'])
+    expect(screen.getAllByLabelText('розминку виконано')).toHaveLength(4)
+    expect(screen.getByRole('button', { name: /Підхід 2 виконано/ })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Скасувати тренування' }))
+    await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Скасувати тренування' }))
+  })
+
+  it('runs a superset: next exercise without rest, rest after the round', async () => {
+    store.dispatch(
+      startWorkout({
+        planId: null,
+        dayLabel: 'Тест',
+        exercises: [
+          { id: 'a', exerciseId: 'ex-bench-press', sets: 2, reps: 8, restSeconds: 90, order: 1, group: 'g' },
+          { id: 'b', exerciseId: 'ex-barbell-row', sets: 2, reps: 8, restSeconds: 90, order: 2, group: 'g' },
+        ],
+      }),
+    )
+    const user = userEvent.setup()
+    renderPage()
+
+    expect(await screen.findByText('Суперсет 1/2')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Підхід 1 виконано/ }))
+    expect(await screen.findByRole('heading', { name: 'Тяга штанги в нахилі' })).toBeInTheDocument()
+    expect(store.getState().workoutSession.restTimer.isRunning).toBe(false)
+
+    await user.click(screen.getByRole('button', { name: /Підхід 1 виконано/ }))
+    expect(await screen.findByRole('heading', { name: 'Жим штанги лежачи' })).toBeInTheDocument()
+    expect(store.getState().workoutSession.restTimer.isRunning).toBe(true)
+
+    await user.click(screen.getByRole('button', { name: 'Пропустити' }))
     await user.click(screen.getByRole('button', { name: 'Скасувати тренування' }))
     await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Скасувати тренування' }))
   })

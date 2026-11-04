@@ -105,6 +105,11 @@ export const addExerciseToDay = (payload: { planId: string; day: DayOfWeek; exer
 export const removeExerciseFromDay = (payload: { planId: string; day: DayOfWeek; exerciseId: string }) =>
   removeThunk({ planId: payload.planId, edit: { type: 'remove', day: payload.day, exerciseId: payload.exerciseId } })
 
+const linkThunk = editPlan('linkPlanExercises', 'Помилка створення суперсету')
+
+export const toggleSuperset = (payload: { planId: string; day: DayOfWeek; exerciseId: string }) =>
+  linkThunk({ planId: payload.planId, edit: { type: 'link', ...payload, groupId: `ss-${Date.now().toString(36)}` } })
+
 export const updatePlanExercise = (payload: { planId: string; day: DayOfWeek; exerciseId: string; updates: ExerciseUpdates }) =>
   updateThunk({ planId: payload.planId, edit: { type: 'update', day: payload.day, exerciseId: payload.exerciseId, updates: payload.updates } })
 

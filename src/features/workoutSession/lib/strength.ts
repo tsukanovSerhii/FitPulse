@@ -29,6 +29,7 @@ export interface LastPerformance {
   weightKg?: number
   reps?: number
   sets: number
+  totalReps: number
 }
 
 /** Best set of an exercise in the latest session that included it. */
@@ -37,7 +38,7 @@ export function lastPerformance(history: WorkoutHistoryLog[], exerciseId: string
   for (const log of history) {
     const exercise = log.exercises.find((e) => e.exerciseId === exerciseId)
     if (!exercise || (latest && log.date <= latest.date)) continue
-    latest = { date: log.date, weightKg: exercise.maxWeightKg, reps: exercise.repsAtMaxWeight, sets: exercise.setsCompleted }
+    latest = { date: log.date, weightKg: exercise.maxWeightKg, reps: exercise.repsAtMaxWeight, sets: exercise.setsCompleted, totalReps: exercise.totalReps }
   }
   return latest
 }

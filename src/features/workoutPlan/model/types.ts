@@ -40,6 +40,8 @@ export interface PlanExercise {
   weight?: number
   notes?: string
   order: number
+  /** Exercises with the same group run as a superset: one set of each, then rest */
+  group?: string
 }
 
 export interface WorkoutPlan {

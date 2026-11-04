@@ -7,6 +7,7 @@ import {
   removeExerciseFromDay,
   savePlanAsync,
   setActivePlanAsync,
+  toggleSuperset,
   updatePlanExercise,
 } from '../model/workoutPlanSlice'
 import type { DayOfWeek, PlanExercise, PlanTemplate, WorkoutPlan } from '../model/types'
@@ -58,6 +59,8 @@ export function usePlanActions() {
 
     removeExercise: (planId: string, day: DayOfWeek, exerciseId: string) =>
       dispatch(removeExerciseFromDay({ planId, day, exerciseId })),
+
+    toggleSuperset: (planId: string, day: DayOfWeek, exerciseId: string) => dispatch(toggleSuperset({ planId, day, exerciseId })),
 
     updateExercise: (planId: string, day: DayOfWeek, exerciseId: string, updates: ExerciseUpdates) =>
       dispatch(updatePlanExercise({ planId, day, exerciseId, updates })),

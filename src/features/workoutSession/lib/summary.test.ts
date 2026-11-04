@@ -22,7 +22,19 @@ describe('buildWorkoutLog', () => {
     expect(log.totalReps).toBe(22)
     expect(log.totalVolumeKg).toBe(8 * 60 + 6 * 70 + 8 * 70)
     expect(log.exercises).toEqual([
-      { exerciseId: 'bench', exerciseName: 'BENCH', setsCompleted: 3, totalReps: 22, maxWeightKg: 70, repsAtMaxWeight: 8 },
+      {
+        exerciseId: 'bench',
+        exerciseName: 'BENCH',
+        setsCompleted: 3,
+        totalReps: 22,
+        maxWeightKg: 70,
+        repsAtMaxWeight: 8,
+        sets: [
+          { reps: 8, weight: 60 },
+          { reps: 6, weight: 70 },
+          { reps: 8, weight: 70 },
+        ],
+      },
     ])
     expect(log.caloriesBurned).toBe(50 * 7)
   })
@@ -43,5 +55,33 @@ describe('formatSessionTitle', () => {
     expect(formatSessionTitle('Понеділок (Push / Pull / Legs (3 дні на тиждень))')).toBe('Понеділок · Push / Pull / Legs')
     expect(formatSessionTitle('Експрес тренування')).toBe('Експрес тренування')
     expect(formatSessionTitle(null)).toBe('Тренування')
+  })
+})
+
+describe('warm-up and set types', () => {
+  it('keeps warm-ups out of the log and marks drop and failure sets', () => {
+    const log = buildWorkoutLog(
+      {
+        planId: null,
+        dayLabel: null,
+        elapsedSeconds: 600,
+        exercises: [exercise('a', 'bench')],
+        completedSets: {
+          a: [
+            { ...set(10, 20), kind: 'warmup' as const },
+            { ...set(5, 50), kind: 'warmup' as const },
+            { ...set(8, 80), rpe: 8 },
+            { ...set(10, 60), kind: 'drop' as const },
+          ],
+        },
+      },
+      () => 'Жим',
+    )
+    expect(log.totalSets).toBe(2)
+    expect(log.totalVolumeKg).toBe(8 * 80 + 10 * 60)
+    expect(log.exercises[0].sets).toEqual([
+      { reps: 8, weight: 80, rpe: 8 },
+      { reps: 10, weight: 60, kind: 'drop' },
+    ])
   })
 })
