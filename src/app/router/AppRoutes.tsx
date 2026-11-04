@@ -11,12 +11,16 @@ const LoginPage = page(() => import('@/pages/login/LoginPage'), 'LoginPage')
 const RegisterPage = page(() => import('@/pages/register/RegisterPage'), 'RegisterPage')
 const PrivacyPage = page(() => import('@/pages/legal/PrivacyPage'), 'PrivacyPage')
 const TermsPage = page(() => import('@/pages/legal/TermsPage'), 'TermsPage')
+const CatalogPage = page(() => import('@/pages/public/CatalogPage'), 'CatalogPage')
+const PublicExercisePage = page(() => import('@/pages/public/PublicExercisePage'), 'PublicExercisePage')
+const PublicProgramPage = page(() => import('@/pages/public/PublicProgramPage'), 'PublicProgramPage')
 const DashboardPage = page(() => import('@/pages/dashboard/DashboardPage'), 'DashboardPage')
 const ExercisesPage = page(() => import('@/pages/exercises/ExercisesPage'), 'ExercisesPage')
 const WorkoutPlansPage = page(() => import('@/pages/plans/WorkoutPlansPage'), 'WorkoutPlansPage')
 const ActiveWorkoutPage = page(() => import('@/pages/workout/ActiveWorkoutPage'), 'ActiveWorkoutPage')
 const ProgressPage = page(() => import('@/pages/progress/ProgressPage'), 'ProgressPage')
 const JournalPage = page(() => import('@/pages/progress/JournalPage'), 'JournalPage')
+const ExerciseHistoryPage = page(() => import('@/pages/progress/ExerciseHistoryPage'), 'ExerciseHistoryPage')
 const ProfilePage = page(() => import('@/pages/profile/ProfilePage'), 'ProfilePage')
 const NotFoundPage = page(() => import('@/pages/not-found/NotFoundPage'), 'NotFoundPage')
 const UiPreviewPage = page(() => import('@/pages/ui-kit/UiPreviewPage'), 'UiPreviewPage')
@@ -28,6 +32,9 @@ export function AppRoutes() {
         <Route path="welcome" element={<LandingPage />} />
         <Route path="privacy" element={<PrivacyPage />} />
         <Route path="terms" element={<TermsPage />} />
+        <Route path="catalog" element={<CatalogPage />} />
+        <Route path="exercise/:slug" element={<PublicExercisePage />} />
+        <Route path="program/:slug" element={<PublicProgramPage />} />
         <Route
           path="login"
           element={
@@ -59,6 +66,7 @@ export function AppRoutes() {
           <Route path="workout" element={<ActiveWorkoutPage />} />
           <Route path="progress" element={<ProgressPage />} />
           <Route path="progress/journal" element={<JournalPage />} />
+          <Route path="progress/exercise/:exerciseId" element={<ExerciseHistoryPage />} />
           <Route path="profile" element={<ProfilePage />} />
           {import.meta.env.DEV && <Route path="dev/ui" element={<UiPreviewPage />} />}
           <Route path="404" element={<NotFoundPage />} />

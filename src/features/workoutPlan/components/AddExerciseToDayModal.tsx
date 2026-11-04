@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { useZodForm } from '@/shared/lib/form'
-import { Plus, Trash2 } from 'lucide-react'
+import { Link2, Plus, Trash2, Unlink2 } from 'lucide-react'
 import type { Exercise } from '@/features/exercises'
 import { Button, IconButton, Input, Modal, Section, Select } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
 import type { DayOfWeek, PlanExercise, WorkoutPlan } from '../model/types'
 import { DAY_LABELS } from '../model/types'
 import { dayExerciseSchema, type DayExerciseForm } from '../lib/schemas'
@@ -18,6 +19,8 @@ export interface AddExerciseToDayModalProps {
   onAddExercise: (planId: string, day: DayOfWeek, exercise: Omit<PlanExercise, 'id' | 'order'>) => void
   onRemoveExercise: (planId: string, day: DayOfWeek, exerciseId: string) => void
   onUpdateExercise: (planId: string, day: DayOfWeek, exerciseId: string, updates: ExerciseUpdates) => void
+  /** Joins an exercise with the next one into a superset, or splits them */
+  onToggleSuperset?: (planId: string, day: DayOfWeek, exerciseId: string) => void
 }
 
 export function AddExerciseToDayModal({
@@ -29,6 +32,7 @@ export function AddExerciseToDayModal({
   onAddExercise,
   onRemoveExercise,
   onUpdateExercise,
+  onToggleSuperset,
 }: AddExerciseToDayModalProps) {
   const { values, errors, set, setValues, handleSubmit } = useZodForm(dayExerciseSchema, {
     exerciseId: allExercises[0]?.id ?? '',
@@ -75,9 +79,14 @@ export function AddExerciseToDayModal({
               День відпочинку. Додайте вправу нижче, щоб зробити його тренувальним.
             </p>
           ) : (
-            <ol className="divide-y divide-line rounded-lg border border-line">
-              {dayExercises.map((item, index) => (
-                <li key={item.id} className="flex items-center gap-3 px-4 py-3">
+            <ol className="rounded-lg border border-line">
+              {dayExercises.map((item, index) => {
+                const next = dayExercises[index + 1]
+                const linked = Boolean(item.group && item.group === next?.group)
+                const inGroup = Boolean(item.group)
+                return (
+                <li key={item.id} className={cn(index > 0 && !(inGroup && item.group === dayExercises[index - 1].group) && 'border-t border-line')}>
+                <div className={cn('flex items-center gap-3 px-4 py-3', inGroup && 'border-l-2 border-accent bg-accent-soft/40')}>
                   <span className="w-5 shrink-0 font-mono text-xs text-fg-subtle">{String(index + 1).padStart(2, '0')}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-semibold text-fg">{exerciseMap.get(item.exerciseId)?.name ?? 'Вправа'}</span>
@@ -100,8 +109,22 @@ export function AddExerciseToDayModal({
                     кг
                   </label>
                   <IconButton size="sm" label="Прибрати з дня" icon={<Trash2 />} onClick={() => onRemoveExercise(plan.id, day, item.id)} className="hover:text-danger" />
+                </div>
+                {next && onToggleSuperset && (
+                  <div className={cn('flex justify-center', linked && 'border-l-2 border-accent bg-accent-soft/40')}>
+                    <button
+                      type="button"
+                      onClick={() => onToggleSuperset(plan.id, day, item.id)}
+                      className="-my-2.5 inline-flex cursor-pointer items-center gap-1 rounded-full border border-line bg-surface px-2.5 py-1 text-[11px] font-semibold text-fg-muted hover:text-fg"
+                    >
+                      {linked ? <Unlink2 className="size-3.5" aria-hidden="true" /> : <Link2 className="size-3.5" aria-hidden="true" />}
+                      {linked ? 'Роз’єднати' : 'У суперсет з наступною'}
+                    </button>
+                  </div>
+                )}
                 </li>
-              ))}
+                )
+              })}
             </ol>
           )}
         </Section>

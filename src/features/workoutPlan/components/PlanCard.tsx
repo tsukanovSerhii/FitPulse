@@ -105,7 +105,9 @@ export function PlanCard({
                       </span>
                       <span className="block truncate text-xs text-fg-subtle">
                         {hasExercises
-                          ? dayExercises.map((pEx) => exerciseMap.get(pEx.exerciseId)?.name || 'Вправа').join(', ')
+                          ? dayExercises
+                              .map((pEx, i) => `${i > 0 ? (pEx.group && pEx.group === dayExercises[i - 1].group ? ' + ' : ', ') : ''}${exerciseMap.get(pEx.exerciseId)?.name || 'Вправа'}`)
+                              .join('')
                           : 'Відпочинок'}
                       </span>
                     </span>

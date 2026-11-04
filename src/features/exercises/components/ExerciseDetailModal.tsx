@@ -1,4 +1,5 @@
-import { Check, ChevronRight, Heart, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Check, ChevronRight, Heart, History, X } from 'lucide-react'
 import { MuscleMap } from './MuscleMap'
 import { Disclosure, IconButton, Modal, SegmentedControl } from '@/shared/ui'
 import { getTechnique } from '../lib/technique'
@@ -45,7 +46,7 @@ export function AlternativeList({ items, onSelect }: { items: Exercise[]; onSele
   )
 }
 
-function PointList({ title, items, tone }: { title: string; items: string[]; tone: 'do' | 'avoid' }) {
+export function PointList({ title, items, tone }: { title: string; items: string[]; tone: 'do' | 'avoid' }) {
   const Icon = tone === 'do' ? Check : X
   return (
     <section className="space-y-3">
@@ -122,6 +123,19 @@ export function ExerciseDetailModal({
             {technique.cues.length > 0 && <PointList title="Ключові моменти" items={technique.cues} tone="do" />}
             {technique.mistakes.length > 0 && <PointList title="Типові помилки" items={technique.mistakes} tone="avoid" />}
           </div>
+        )}
+
+        {onSelectExercise && (
+          <Link
+            to={`/progress/exercise/${exercise.id}`}
+            className="flex items-center justify-between gap-3 rounded-lg border border-line px-4 py-3 text-sm font-semibold text-fg transition-colors hover:bg-surface-2"
+          >
+            <span className="flex items-center gap-2">
+              <History className="size-4 text-accent" aria-hidden="true" />
+              Моя історія вправи
+            </span>
+            <ChevronRight className="size-4 text-fg-subtle" aria-hidden="true" />
+          </Link>
         )}
 
         {alternatives.length > 0 && onSelectExercise && (

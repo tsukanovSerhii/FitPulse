@@ -45,7 +45,7 @@ describe('variantsOf', () => {
       'ex-hack-squat',
       'ex-goblet-squat',
     ])
-    expect(variantsOf(byId('ex-plank'), INITIAL_EXERCISES)).toEqual([byId('ex-plank')])
+    expect(variantsOf(byId('ex-face-pull'), INITIAL_EXERCISES)).toEqual([byId('ex-face-pull')])
   })
 })
 

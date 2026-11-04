@@ -1,5 +1,6 @@
 import { useId, useState } from 'react'
-import { ChevronDown, Trash2, Trophy } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ChevronDown, Pencil, Trash2, Trophy } from 'lucide-react'
 import { Button } from '@/shared/ui'
 import { cn } from '@/shared/lib/cn'
 import { formatMinutes, formatNumber } from '@/shared/lib/formatters'
@@ -13,9 +14,10 @@ interface JournalEntryProps {
   records: Set<string>
   highlighted?: boolean
   onDelete: (id: string) => void
+  onEdit?: (log: WorkoutHistoryLog) => void
 }
 
-export function JournalEntry({ log, records, highlighted = false, onDelete }: JournalEntryProps) {
+export function JournalEntry({ log, records, highlighted = false, onDelete, onEdit }: JournalEntryProps) {
   const [open, setOpen] = useState(false)
   const panelId = useId()
   const date = new Date(log.date)
@@ -64,7 +66,9 @@ export function JournalEntry({ log, records, highlighted = false, onDelete }: Jo
               {log.exercises.map((exercise) => (
                 <li key={exercise.exerciseId} className="flex items-baseline justify-between gap-4 text-sm">
                   <span className="flex min-w-0 items-center gap-1.5">
-                    <span className="truncate text-fg">{exercise.exerciseName}</span>
+                    <Link to={`/progress/exercise/${exercise.exerciseId}`} className="truncate text-fg underline-offset-2 hover:text-accent hover:underline">
+                      {exercise.exerciseName}
+                    </Link>
                     {records.has(exercise.exerciseId) && <Trophy className="size-3.5 shrink-0 text-warning" aria-label="рекорд" />}
                   </span>
                   <span className="shrink-0 font-mono text-xs text-fg-muted tabular">
@@ -75,7 +79,12 @@ export function JournalEntry({ log, records, highlighted = false, onDelete }: Jo
               ))}
             </ul>
           )}
-          <div className="mt-3 flex justify-end">
+          <div className="mt-3 flex flex-wrap justify-end gap-2">
+            {onEdit && (
+              <Button variant="ghost" size="sm" icon={<Pencil />} onClick={() => onEdit(log)}>
+                Редагувати
+              </Button>
+            )}
             <Button variant="ghost" size="sm" icon={<Trash2 />} onClick={() => onDelete(log.id)} className="text-danger hover:bg-danger-soft hover:text-danger">
               Видалити запис
             </Button>

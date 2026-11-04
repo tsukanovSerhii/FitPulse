@@ -1,3 +1,10 @@
+export interface LoggedSet {
+  reps: number
+  weight?: number
+  kind?: 'drop' | 'failure'
+  rpe?: number
+}
+
 export interface ExerciseSummary {
   exerciseId: string
   exerciseName: string
@@ -5,6 +12,8 @@ export interface ExerciseSummary {
   totalReps: number
   maxWeightKg?: number
   repsAtMaxWeight?: number
+  /** Working sets in order; missing in workouts logged before sets were kept */
+  sets?: LoggedSet[]
 }
 
 export interface WorkoutHistoryLog {

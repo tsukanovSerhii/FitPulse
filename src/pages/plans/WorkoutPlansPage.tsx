@@ -172,6 +172,7 @@ export function WorkoutPlansPage() {
         onAddExercise={actions.addExercise}
         onRemoveExercise={actions.removeExercise}
         onUpdateExercise={actions.updateExercise}
+        onToggleSuperset={actions.toggleSuperset}
       />
     </div>
   )

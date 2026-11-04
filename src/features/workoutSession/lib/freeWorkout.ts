@@ -1,4 +1,5 @@
-import type { Exercise, MuscleGroup } from '@/features/exercises/model'
+import { searchText, type Exercise, type MuscleGroup } from '@/features/exercises/model'
+import { matchesSearch } from '@/shared/lib/search'
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { ALL_DAYS, type DayOfWeek, type PlanExercise, type WorkoutPlan } from '@/features/workoutPlan/model'
 import type { WorkoutSessionState } from '../model/types'
@@ -20,10 +21,9 @@ const GROUP_MUSCLES: Record<Exclude<PickerGroup, 'all'>, MuscleGroup[]> = {
 
 /** Exercises for the picker: filtered by name and primary muscle, recently done ones first. */
 export function pickerResults(exercises: Exercise[], query: string, group: PickerGroup, recentIds: string[] = []): Exercise[] {
-  const q = query.trim().toLowerCase()
   const rank = new Map(recentIds.map((id, i) => [id, i]))
   return exercises
-    .filter((e) => (group === 'all' || GROUP_MUSCLES[group].includes(e.primaryMuscle)) && (!q || e.name.toLowerCase().includes(q)))
+    .filter((e) => (group === 'all' || GROUP_MUSCLES[group].includes(e.primaryMuscle)) && matchesSearch(searchText(e), query))
     .sort((a, b) => (rank.get(a.id) ?? Infinity) - (rank.get(b.id) ?? Infinity))
 }
 

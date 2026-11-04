@@ -33,6 +33,17 @@ export const logWorkoutAsync = createAsyncThunk(
   },
 )
 
+export const updateWorkoutLogAsync = createAsyncThunk(
+  'progress/updateWorkoutLogAsync',
+  async (log: WorkoutHistoryLog, { rejectWithValue }) => {
+    try {
+      return await progressApi.updateWorkoutLog(log)
+    } catch (err) {
+      return rejectWithValue((err as Error).message || 'Помилка збереження змін')
+    }
+  },
+)
+
 export const deleteWorkoutLogAsync = createAsyncThunk(
   'progress/deleteWorkoutLogAsync',
   async (logId: string, { rejectWithValue }) => {
@@ -66,6 +77,11 @@ export const progressSlice = createSlice({
       })
       .addCase(logWorkoutAsync.fulfilled, (state, action) => {
         state.history.unshift(action.payload.log)
+        state.personalRecords = action.payload.personalRecords
+      })
+      .addCase(updateWorkoutLogAsync.fulfilled, (state, action) => {
+        const index = state.history.findIndex((item) => item.id === action.payload.log.id)
+        if (index >= 0) state.history[index] = action.payload.log
         state.personalRecords = action.payload.personalRecords
       })
       .addCase(deleteWorkoutLogAsync.fulfilled, (state, action) => {

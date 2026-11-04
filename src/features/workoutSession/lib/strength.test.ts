@@ -49,6 +49,7 @@ describe('lastPerformance', () => {
       weightKg: 75,
       reps: 8,
       sets: 4,
+      totalReps: 32,
     })
   })
 

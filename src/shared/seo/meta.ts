@@ -5,7 +5,10 @@ export const SITE_NAME = 'FitPulse'
 export const DEFAULT_OG_IMAGE = '/og-image.jpg'
 
 /** Pages behind login carry personal data and are excluded from indexing. */
-export const PUBLIC_PATHS = ['/welcome', '/login', '/register', '/privacy', '/terms']
+export const PUBLIC_PATHS = ['/welcome', '/login', '/register', '/privacy', '/terms', '/catalog']
+const PUBLIC_PREFIXES = ['/exercise/', '/program/']
+
+export const isPublicPath = (path: string) => PUBLIC_PATHS.includes(path) || PUBLIC_PREFIXES.some((prefix) => path.startsWith(prefix))
 
 export interface PageMeta {
   title: string

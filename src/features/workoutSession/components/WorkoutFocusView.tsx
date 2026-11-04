@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Check, ChevronLeft, ChevronRight, Dumbbell, Info, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeftRight, Check, ChevronLeft, ChevronRight, Dumbbell, Flame, Info, Link2, Plus, Trash2, TrendingUp } from 'lucide-react'
 import { Button, EmptyState, IconButton, Modal } from '@/shared/ui'
 import { TechniquePlayer, MUSCLE_GROUP_LABELS } from '@/features/exercises'
 import type { WorkoutHistoryLog } from '@/features/progress'
@@ -20,7 +20,7 @@ const shortDate = new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'sho
 export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryLog) => void }) {
   const navigate = useNavigate()
   const focus = useWorkoutFocus(onFinish)
-  const { session, isFree, index, planExercise, target, exercise, doneSets, lastSet } = focus
+  const { session, isFree, index, planExercise, target, exercise, doneSets } = focus
   const [techniqueOpen, setTechniqueOpen] = useState(false)
   // A fresh free workout opens straight into choosing the first exercise
   const [pickerOpen, setPickerOpen] = useState(() => isFree && session.exercises.length === 0)
@@ -46,14 +46,20 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
           <div className="mx-auto max-w-lg space-y-6 px-5 py-6">
             <div className="space-y-3">
               <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.16em]">
-                <span className="text-accent">
+                <span className="flex items-center gap-2 text-accent">
                   Вправа {index + 1} / {session.exercises.length}
+                  {focus.superset && (
+                    <span className="inline-flex items-center gap-1 rounded-sm bg-accent-soft px-1.5 py-0.5 text-[10px] tracking-[0.12em]">
+                      <Link2 className="size-3" aria-hidden="true" />
+                      Суперсет {focus.superset.position}/{focus.superset.size}
+                    </span>
+                  )}
                 </span>
                 <span className="text-fg-subtle">{MUSCLE_GROUP_LABELS[exercise.primaryMuscle]}</span>
               </div>
               <div className="flex items-start gap-3">
                 <h1 className="flex-1 text-4xl leading-[1.08] text-fg">{exercise.name}</h1>
-                {doneSets.length === 0 && (
+                {focus.allSets.length === 0 && (
                   <IconButton label="Замінити вправу" icon={<ArrowLeftRight />} onClick={() => setReplaceOpen(true)} className="border border-line" />
                 )}
                 <IconButton label="Техніка виконання" icon={<Info />} onClick={() => setTechniqueOpen(true)} className="border border-line" />
@@ -72,10 +78,44 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
                   </span>
                 </p>
               )}
+              {focus.suggestion && doneSets.length === 0 && (
+                <p className="flex items-center gap-1.5 text-sm text-fg-muted">
+                  <TrendingUp className="size-4 shrink-0 text-accent" aria-hidden="true" />
+                  Сьогодні:{' '}
+                  <span className="font-mono text-fg tabular">
+                    {focus.suggestion.weight ? `${formatNumber(focus.suggestion.weight, 1)} кг × ` : ''}
+                    {focus.suggestion.reps}
+                  </span>
+                  <span className="text-fg-subtle">· {focus.suggestion.change}</span>
+                </p>
+              )}
               {planExercise.notes && <p className="border-l-2 border-accent pl-3 text-sm text-fg-muted">{planExercise.notes}</p>}
             </div>
 
-            <SetList target={target} done={doneSets} onUndo={focus.undoLastSet} />
+            {focus.warmupOffer.length > 0 && (
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-line-strong px-4 py-3">
+                <span className="min-w-0 text-sm">
+                  <span className="flex items-center gap-1.5 font-semibold text-fg">
+                    <Flame className="size-4 text-accent" aria-hidden="true" />
+                    Розминка
+                  </span>
+                  <span className="block truncate font-mono text-xs text-fg-subtle tabular">
+                    {focus.warmupOffer.map((s) => `${formatNumber(s.weight, 1)}×${s.reps}`).join(' · ')}
+                  </span>
+                </span>
+                <Button variant="outline" size="sm" onClick={focus.startWarmup}>
+                  Додати
+                </Button>
+              </div>
+            )}
+
+            <SetList target={target} done={doneSets} warmup={focus.plannedWarmup} warmupDone={focus.warmupDone} onUndo={focus.undoLastSet} />
+
+            {focus.inWarmup && (
+              <button type="button" onClick={focus.skipWarmup} className="-mt-3 cursor-pointer text-xs font-semibold text-fg-subtle hover:text-fg">
+                Пропустити розминку
+              </button>
+            )}
 
             {isFree && (
               <div className="flex flex-wrap items-center gap-2">
@@ -129,10 +169,11 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
           <div className="mx-auto max-w-lg px-5 py-4">
             {!focus.exerciseComplete ? (
               <ActiveSetPanel
-                key={`${planExercise.id}-${doneSets.length}`}
+                key={`${planExercise.id}-${focus.allSets.length}-${focus.plannedWarmup.length}`}
                 setNumber={doneSets.length + 1}
-                initialWeight={lastSet?.weight ?? planExercise.weight}
-                initialReps={lastSet?.reps ?? planExercise.reps}
+                initialWeight={focus.inWarmup ? focus.plannedWarmup[focus.warmupDone.length].weight : focus.startWeight}
+                initialReps={focus.inWarmup ? focus.plannedWarmup[focus.warmupDone.length].reps : focus.startReps}
+                warmup={focus.inWarmup ? { number: focus.warmupDone.length + 1, total: focus.plannedWarmup.length } : undefined}
                 showWeight={focus.showWeight}
                 barbell={exercise?.equipment === 'barbell'}
                 onDone={focus.completeCurrentSet}

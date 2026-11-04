@@ -4,6 +4,9 @@ Allow: /register
 Allow: /login
 Allow: /privacy
 Allow: /terms
+Allow: /catalog
+Allow: /exercise/
+Allow: /program/
 Disallow: /
 
 Sitemap: https://fit-pulse-beta-opal.vercel.app/sitemap.xml

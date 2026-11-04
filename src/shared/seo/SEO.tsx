@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { PUBLIC_PATHS, updatePageSEO, type PageMeta } from './meta'
+import { isPublicPath, updatePageSEO, type PageMeta } from './meta'
 
 type SEOProps = Partial<Omit<PageMeta, 'path'>> & { title: string; description: string }
 
@@ -14,7 +14,7 @@ export function SEO({ title, description, image, noindex, jsonLd }: SEOProps) {
       description,
       path: pathname,
       image,
-      noindex: noindex ?? !PUBLIC_PATHS.includes(pathname),
+      noindex: noindex ?? !isPublicPath(pathname),
       jsonLd,
     })
   }, [title, description, pathname, image, noindex, jsonLd])

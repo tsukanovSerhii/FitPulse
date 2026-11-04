@@ -101,3 +101,30 @@ test('rest settings from the profile apply in a workout and can be changed from 
   await page.getByRole('button', { name: /Підхід 2 виконано/ }).click()
   await expect(rest).toBeHidden()
 })
+
+test('a finished workout can be edited and the exercise history follows', async ({ page }) => {
+  await signUp(page)
+  await page.goto('/workout')
+  await page.getByRole('button', { name: /Понеділок/ }).first().click()
+  await page.getByRole('button', { name: /Підхід 1 виконано/ }).click()
+  await page.getByRole('button', { name: 'Завершити', exact: true }).click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Завершити' }).click()
+  await page.getByRole('dialog', { name: 'Чудова робота' }).getByRole('button', { name: 'Зберегти' }).click()
+  await expect(page).toHaveURL('/progress')
+
+  await page.goto('/progress/journal')
+  // The demo journal has older entries; ours is the one with a single set
+  await page.getByRole('button', { name: /· 1 підх\./ }).click()
+  // Regression: the calendar column once widened the page, and the phone zoomed out so dialogs slid aside
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= (visualViewport?.width ?? innerWidth))).toBe(true)
+  await page.getByRole('button', { name: 'Редагувати' }).click()
+  const editor = page.getByRole('dialog')
+  await editor.getByLabel('Підхід 1: вага').fill('150')
+  await editor.getByRole('button', { name: 'Зберегти' }).click()
+  await expect(page.getByText('Зміни збережено')).toBeVisible()
+
+  await page.getByRole('link', { name: 'Жим штанги лежачи' }).first().click()
+  await expect(page).toHaveURL('/progress/exercise/ex-bench-press')
+  await expect(page.getByRole('heading', { name: 'Жим штанги лежачи' })).toBeVisible()
+  await expect(page.getByText('150', { exact: true }).first()).toBeVisible()
+})

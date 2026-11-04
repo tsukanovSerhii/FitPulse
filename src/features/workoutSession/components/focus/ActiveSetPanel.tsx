@@ -5,6 +5,11 @@ import { cn } from '@/shared/lib/cn'
 import { formatNumber } from '@/shared/lib/formatters'
 import { BAR_KG, estimateOneRepMax, platesPerSide } from '../../lib/strength'
 
+export interface SetExtras {
+  kind?: 'drop' | 'failure'
+  rpe?: number
+}
+
 interface ActiveSetPanelProps {
   setNumber: number
   initialWeight?: number
@@ -12,7 +17,34 @@ interface ActiveSetPanelProps {
   showWeight: boolean
   /** Barbell lifts also show which plates to load */
   barbell?: boolean
-  onDone: (weight: number | undefined, reps: number) => void
+  /** Warm-up sets are logged without a type or RPE */
+  warmup?: { number: number; total: number }
+  onDone: (weight: number | undefined, reps: number, extras: SetExtras) => void
+}
+
+const KIND_OPTIONS = [
+  { value: undefined, label: 'Робочий' },
+  { value: 'drop', label: 'Дроп-сет' },
+  { value: 'failure', label: 'До відмови' },
+] as const
+
+const RPE_OPTIONS = [7, 8, 9, 10]
+
+function Chip({ selected, onClick, label, children }: { selected: boolean; onClick: () => void; label?: string; children: string }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      aria-label={label}
+      onClick={onClick}
+      className={cn(
+        'h-8 shrink-0 cursor-pointer rounded-md border px-2.5 text-xs font-semibold transition-colors',
+        selected ? 'border-fg bg-fg text-bg' : 'border-line text-fg-muted hover:text-fg',
+      )}
+    >
+      {children}
+    </button>
+  )
 }
 
 function LoadHints({ weight, reps, barbell }: { weight: number; reps: number; barbell: boolean }) {
@@ -47,9 +79,11 @@ function LoadHints({ weight, reps, barbell }: { weight: number; reps: number; ba
 }
 
 /** Current set editor. Its key changes after every set, which resets the draft values. */
-export function ActiveSetPanel({ setNumber, initialWeight, initialReps, showWeight, barbell = false, onDone }: ActiveSetPanelProps) {
+export function ActiveSetPanel({ setNumber, initialWeight, initialReps, showWeight, barbell = false, warmup, onDone }: ActiveSetPanelProps) {
   const [weight, setWeight] = useState(initialWeight ?? 0)
   const [reps, setReps] = useState(initialReps)
+  const [kind, setKind] = useState<SetExtras['kind']>()
+  const [rpe, setRpe] = useState<number>()
 
   return (
     <div className="space-y-3">
@@ -58,8 +92,28 @@ export function ActiveSetPanel({ setNumber, initialWeight, initialReps, showWeig
         <NumberStepper label="Повтори" value={reps} onChange={setReps} step={1} min={1} max={100} />
       </div>
       {showWeight && <LoadHints weight={weight} reps={reps} barbell={barbell} />}
-      <Button size="lg" className="h-14 w-full text-base" icon={<Check className="size-5!" />} onClick={() => onDone(showWeight ? weight : undefined, reps)}>
-        Підхід {setNumber} виконано
+      {!warmup && (
+        <div className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none]" role="group" aria-label="Тип підходу й RPE">
+          {KIND_OPTIONS.map((option) => (
+            <Chip key={option.label} selected={kind === option.value} onClick={() => setKind(option.value)}>
+              {option.label}
+            </Chip>
+          ))}
+          <span className="mx-1 h-5 w-px shrink-0 bg-line" aria-hidden="true" />
+          {RPE_OPTIONS.map((value) => (
+            <Chip key={value} label={`RPE ${value}`} selected={rpe === value} onClick={() => setRpe(rpe === value ? undefined : value)}>
+              {`RPE ${value}`}
+            </Chip>
+          ))}
+        </div>
+      )}
+      <Button
+        size="lg"
+        className="h-14 w-full text-base"
+        icon={<Check className="size-5!" />}
+        onClick={() => onDone(showWeight ? weight : undefined, reps, warmup ? {} : { kind, rpe })}
+      >
+        {warmup ? `Розминка ${warmup.number} з ${warmup.total} виконано` : `Підхід ${setNumber} виконано`}
       </Button>
     </div>
   )

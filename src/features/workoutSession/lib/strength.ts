@@ -1,12 +1,6 @@
 import type { WorkoutHistoryLog } from '@/features/progress'
 
-const roundToHalf = (value: number) => Math.round(value * 2) / 2
-
-/** Estimated one-rep max (Epley), rounded to 0.5 kg. */
-export function estimateOneRepMax(weightKg: number, reps: number): number | null {
-  if (weightKg <= 0 || reps <= 0) return null
-  return reps === 1 ? weightKg : roundToHalf(weightKg * (1 + reps / 30))
-}
+export { estimateOneRepMax } from '@/shared/lib/oneRepMax'
 
 export const BAR_KG = 20
 const PLATES_KG = [25, 20, 15, 10, 5, 2.5, 1.25]
@@ -29,6 +23,7 @@ export interface LastPerformance {
   weightKg?: number
   reps?: number
   sets: number
+  totalReps: number
 }
 
 /** Best set of an exercise in the latest session that included it. */
@@ -37,7 +32,7 @@ export function lastPerformance(history: WorkoutHistoryLog[], exerciseId: string
   for (const log of history) {
     const exercise = log.exercises.find((e) => e.exerciseId === exerciseId)
     if (!exercise || (latest && log.date <= latest.date)) continue
-    latest = { date: log.date, weightKg: exercise.maxWeightKg, reps: exercise.repsAtMaxWeight, sets: exercise.setsCompleted }
+    latest = { date: log.date, weightKg: exercise.maxWeightKg, reps: exercise.repsAtMaxWeight, sets: exercise.setsCompleted, totalReps: exercise.totalReps }
   }
   return latest
 }
