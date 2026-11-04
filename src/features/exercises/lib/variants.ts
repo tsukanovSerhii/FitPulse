@@ -68,3 +68,7 @@ export function alternativesFor(exercise: Exercise, all: Exercise[], { limit = 3
   }
   return result
 }
+
+/** Everything an exercise can be found by. */
+export const searchText = (e: Pick<Exercise, 'name' | 'aliases'> & { variant?: Exercise['variant'] }) =>
+  [e.name, e.variant?.groupName, e.aliases].filter(Boolean).join(' ')

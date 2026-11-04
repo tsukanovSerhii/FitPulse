@@ -106,6 +106,8 @@ export interface Exercise {
   guide?: ExerciseGuide
   /** Membership in a group of variants of one movement, e.g. bench press with a barbell or dumbbells */
   variant?: ExerciseVariant
+  /** Other names to search by: slang, Russian, English */
+  aliases?: string
 }
 
 export interface ExerciseVariant {

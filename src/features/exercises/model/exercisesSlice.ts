@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 import type { Equipment, Exercise, ExerciseFilters, ExercisesState, MuscleGroup } from './types'
 import { exercisesApi } from '../api/exercisesApi'
+import { searchText } from '../lib/variants'
+import { matchesSearch } from '@/shared/lib/search'
 import { loadFromSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 
 const initialFilters: ExerciseFilters = {
@@ -25,11 +27,8 @@ const initialState: ExercisesState = {
 
 function applyFilters(items: Exercise[], filters: ExerciseFilters): Exercise[] {
   return items.filter((item) => {
-    if (filters.searchQuery.trim()) {
-      const q = filters.searchQuery.toLowerCase().trim()
-      const matchName = item.name.toLowerCase().includes(q)
-      const matchDesc = item.description.toLowerCase().includes(q)
-      if (!matchName && !matchDesc) return false
+    if (filters.searchQuery.trim() && !matchesSearch(searchText(item), filters.searchQuery) && !matchesSearch(item.description, filters.searchQuery)) {
+      return false
     }
 
     if (filters.muscleGroup !== 'all') {

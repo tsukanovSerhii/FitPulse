@@ -7,6 +7,7 @@ import { CORE } from './catalog/core'
 import { LEGS } from './catalog/legs'
 import { SHOULDERS } from './catalog/shoulders'
 import { VARIANT_GROUPS } from './catalog/variants'
+import { SEARCH_ALIASES } from './catalog/aliases'
 
 const variants = new Map(
   VARIANT_GROUPS.flatMap((group) =>
@@ -16,5 +17,6 @@ const variants = new Map(
 
 export const INITIAL_EXERCISES: Exercise[] = [...CHEST, ...BACK, ...LEGS, ...SHOULDERS, ...ARMS, ...CORE, ...CARDIO].map((exercise) => {
   const variant = variants.get(exercise.id)
-  return variant ? { ...exercise, variant } : exercise
+  const aliases = SEARCH_ALIASES[exercise.id]
+  return { ...exercise, ...(variant && { variant }), ...(aliases && { aliases }) }
 })
