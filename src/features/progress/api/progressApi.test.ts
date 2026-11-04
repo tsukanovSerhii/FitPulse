@@ -102,4 +102,12 @@ describe('Personal Records (PR) & History Recalculation Tests', () => {
     expect(reloaded.history.length).toBe(0)
     expect(Object.keys(reloaded.personalRecords).length).toBe(0)
   })
+
+  it('First launch derives records from the demo journal', async () => {
+    memoryStorage.clear()
+    const { history, personalRecords } = await progressApi.getProgressData()
+    expect(personalRecords).toEqual(recalculatePersonalRecords(history))
+    const benchMax = Math.max(...history.flatMap((log) => log.exercises.filter((e) => e.exerciseId === 'ex-bench-press').map((e) => e.maxWeightKg ?? 0)))
+    expect(personalRecords['ex-bench-press'].maxWeightKg).toBe(benchMax)
+  })
 })

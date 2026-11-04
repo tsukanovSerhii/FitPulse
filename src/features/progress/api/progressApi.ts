@@ -69,7 +69,8 @@ export const progressApi = {
 
     let prs: Record<string, PersonalRecord>
     if (!hasUserData(STORAGE_KEYS.PERSONAL_RECORDS)) {
-      prs = (await import('./seed')).INITIAL_PRS
+      // Derived rather than seeded, so first-run records always match the journal
+      prs = recalculatePersonalRecords(history)
       saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, prs)
     } else {
       prs = loadUserData<Record<string, PersonalRecord>>(STORAGE_KEYS.PERSONAL_RECORDS, {})
