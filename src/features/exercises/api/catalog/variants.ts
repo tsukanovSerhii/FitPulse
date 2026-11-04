@@ -48,6 +48,7 @@ export const VARIANT_GROUPS: VariantGroup[] = [
       ['ex-dumbbell-shoulder-press', 'Гантелі'],
       ['ex-arnold-press', 'Арнольд'],
       ['ex-machine-shoulder-press', 'Тренажер'],
+      ['ex-push-press', 'Швунг'],
     ],
   },
   {
@@ -123,6 +124,7 @@ export const VARIANT_GROUPS: VariantGroup[] = [
       ['ex-calf-raises', 'Стоячи'],
       ['ex-seated-calf-raise', 'Сидячи'],
       ['ex-leg-press-calf-raise', 'У жимі ногами'],
+      ['ex-smith-calf-raise', 'Сміт'],
     ],
   },
   {
@@ -173,6 +175,49 @@ export const VARIANT_GROUPS: VariantGroup[] = [
     variants: [
       ['ex-cable-pushdown', 'Пряма рукоять'],
       ['ex-rope-pushdown', 'Канат'],
+    ],
+  },
+  {
+    id: 'romanian-deadlift',
+    name: 'Румунська тяга',
+    variants: [
+      ['ex-romanian-deadlift', 'Штанга'],
+      ['ex-stiff-leg-dumbbell-deadlift', 'Гантелі'],
+      ['ex-single-leg-deadlift', 'На одній нозі'],
+    ],
+  },
+  {
+    id: 'crunch',
+    name: 'Скручування',
+    variants: [
+      ['ex-crunches', 'Підлога'],
+      ['ex-decline-crunch', 'Похила лава'],
+      ['ex-ab-crunch-machine', 'Тренажер'],
+      ['ex-cable-crunch', 'Блок'],
+    ],
+  },
+  {
+    id: 'dips',
+    name: 'Віджимання на трицепс',
+    variants: [
+      ['ex-dips', 'Бруси'],
+      ['ex-bench-dips', 'Від лави'],
+    ],
+  },
+  {
+    id: 'overhead-triceps',
+    name: 'Розгинання з-за голови',
+    variants: [
+      ['ex-overhead-triceps-extension', 'Блок'],
+      ['ex-dumbbell-overhead-extension', 'Гантеля'],
+    ],
+  },
+  {
+    id: 'plank',
+    name: 'Планка',
+    variants: [
+      ['ex-plank', 'Класична'],
+      ['ex-side-plank', 'Бокова'],
     ],
   },
 ]

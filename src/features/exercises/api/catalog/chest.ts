@@ -352,4 +352,28 @@ export const CHEST: Exercise[] = [
       advanced: ['Легка вага й повільний темп', 'Суперсет з жимом гантелей', 'На похилій лаві — акцент на верх грудей'],
     },
   },
+  {
+    id: 'ex-dumbbell-pullover',
+    name: 'Пуловер з гантеллю',
+    muscleGroups: ['chest', 'back', 'triceps'],
+    primaryMuscle: 'chest',
+    difficulty: 'intermediate',
+    equipment: 'dumbbell',
+    description: 'Перенесення гантелі з-за голови прямими руками: грудні й найширші в розтягненні.',
+    defaultSets: 3,
+    defaultReps: 12,
+    defaultRestSeconds: 60,
+    calories: 4,
+    frames: frames('ex-dumbbell-pullover'),
+    technique: {
+      steps: [
+        { title: 'Позиція', text: 'Лопатки на лаві, гантеля обома руками над грудьми, лікті злегка зігнуті.', frame: 0, seconds: 2, breathing: 'inhale' },
+        { title: 'Опускання', text: 'Ведіть гантелю по дузі за голову до відчуття розтягнення.', frame: 1, seconds: 2.5, breathing: 'inhale' },
+        { title: 'Повернення', text: 'Поверніть гантелю над груди тією самою дугою.', frame: 0, seconds: 1.5, breathing: 'exhale' },
+      ],
+      cues: ['Кут у ліктях не змінюється', 'Таз трохи нижче лави', 'Плавна дуга'],
+      mistakes: ['Згинання рук: вправа стає розгинанням', 'Занадто глибоко з болем у плечах', 'Завелика гантеля'],
+      advanced: ['Поперек лави — більша амплітуда', 'Пауза в розтягненні', 'Поєднуйте з жимом у суперсет'],
+    },
+  },
 ]
