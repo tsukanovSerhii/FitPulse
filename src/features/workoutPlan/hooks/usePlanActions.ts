@@ -11,6 +11,7 @@ import {
 } from '../model/workoutPlanSlice'
 import type { DayOfWeek, PlanExercise, PlanTemplate, WorkoutPlan } from '../model/types'
 import { planFromTemplate } from '../lib/templates'
+import { assignTrainingDays } from '../lib/trainingDays'
 
 type ExerciseUpdates = Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>
 
@@ -25,8 +26,14 @@ export function usePlanActions() {
 
     setActive: (planId: string) => dispatch(setActivePlanAsync(planId)),
 
-    addFromTemplate: async (template: PlanTemplate) => {
-      const plan = await dispatch(savePlanAsync(planFromTemplate(template))).unwrap()
+    /** Moves the plan's sessions onto the weekdays the user trains. */
+    setTrainingDays: async (plan: WorkoutPlan, days: DayOfWeek[]) => {
+      await dispatch(savePlanAsync({ ...plan, schedule: assignTrainingDays(plan.schedule, days) })).unwrap()
+      toast.success('Дні тренувань оновлено')
+    },
+
+    addFromTemplate: async (template: PlanTemplate, days?: DayOfWeek[]) => {
+      const plan = await dispatch(savePlanAsync(planFromTemplate(template, { days }))).unwrap()
       toast.success(`Програму «${plan.name}» додано`, {
         action: { label: 'Зробити активною', onClick: () => dispatch(setActivePlanAsync(plan.id)) },
       })
