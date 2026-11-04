@@ -10,7 +10,6 @@ import {
   PlanEditorModal,
   PlanListSkeleton,
   PlanLibrary,
-  TrainingDaysModal,
   usePlanActions,
   searchPlans,
   type DayOfWeek,
@@ -37,8 +36,6 @@ export function WorkoutPlansPage() {
   const setExpandedId = (next: string | null) => setView((v) => ({ ...v, expandedId: next }))
   const [editor, setEditor] = useState<{ open: boolean; plan: WorkoutPlan | null }>({ open: false, plan: null })
   const [dayEditor, setDayEditor] = useState<{ planId: string; day: DayOfWeek } | null>(null)
-  // Choosing weekdays: for a template before it is added, or for one of the user's plans
-  const [daysFor, setDaysFor] = useState<{ template: PlanTemplate } | { plan: WorkoutPlan } | null>(null)
 
   useEffect(() => {
     if (plans.length === 0) dispatch(fetchPlans())
@@ -54,15 +51,8 @@ export function WorkoutPlansPage() {
   const openCreate = () => setEditor({ open: true, plan: null })
   const openTemplates = () => document.getElementById('library')?.scrollIntoView({ behavior: 'smooth' })
 
-  const confirmDays = async (days: DayOfWeek[]) => {
-    if (!daysFor) return
-    if ('plan' in daysFor) {
-      await actions.setTrainingDays(daysFor.plan, days)
-      setDaysFor(null)
-      return
-    }
-    const plan = await actions.addFromTemplate(daysFor.template, days)
-    setDaysFor(null)
+  const addFromTemplate = async (template: PlanTemplate) => {
+    const plan = await actions.addFromTemplate(template)
     setView({ query: '', expandedId: plan.id })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -131,7 +121,6 @@ export function WorkoutPlansPage() {
               allExercises={allExercises}
               onSetActive={actions.setActive}
               onEdit={() => setEditor({ open: true, plan })}
-              onEditDays={() => setDaysFor({ plan })}
               onEditDay={(planId, day) => setDayEditor({ planId, day })}
               onDelete={actions.remove}
               onStartDayWorkout={startPlanDay}
@@ -140,7 +129,7 @@ export function WorkoutPlansPage() {
         </div>
       )}
 
-      <PlanLibrary allExercises={allExercises} addedTemplateIds={addedTemplateIds} onAdd={(template) => setDaysFor({ template })} />
+      <PlanLibrary allExercises={allExercises} addedTemplateIds={addedTemplateIds} onAdd={addFromTemplate} />
 
       <PlanEditorModal
         key={editor.plan?.id ?? 'new'}
@@ -149,19 +138,6 @@ export function WorkoutPlansPage() {
         onSave={actions.save}
         initialPlan={editor.plan}
       />
-
-      {daysFor && (
-        <TrainingDaysModal
-          key={'plan' in daysFor ? daysFor.plan.id : daysFor.template.id}
-          isOpen
-          onClose={() => setDaysFor(null)}
-          planName={'plan' in daysFor ? daysFor.plan.name : daysFor.template.name}
-          schedule={'plan' in daysFor ? daysFor.plan.schedule : daysFor.template.schedule}
-          allExercises={allExercises}
-          confirmLabel={'plan' in daysFor ? 'Зберегти' : 'Додати програму'}
-          onConfirm={confirmDays}
-        />
-      )}
 
       <AddExerciseToDayModal
         isOpen={dayEditor !== null}
