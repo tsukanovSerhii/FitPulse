@@ -1,12 +1,6 @@
 import type { WorkoutHistoryLog } from '@/features/progress'
 
-const roundToHalf = (value: number) => Math.round(value * 2) / 2
-
-/** Estimated one-rep max (Epley), rounded to 0.5 kg. */
-export function estimateOneRepMax(weightKg: number, reps: number): number | null {
-  if (weightKg <= 0 || reps <= 0) return null
-  return reps === 1 ? weightKg : roundToHalf(weightKg * (1 + reps / 30))
-}
+export { estimateOneRepMax } from '@/shared/lib/oneRepMax'
 
 export const BAR_KG = 20
 const PLATES_KG = [25, 20, 15, 10, 5, 2.5, 1.25]

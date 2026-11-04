@@ -17,6 +17,7 @@ const WorkoutPlansPage = page(() => import('@/pages/plans/WorkoutPlansPage'), 'W
 const ActiveWorkoutPage = page(() => import('@/pages/workout/ActiveWorkoutPage'), 'ActiveWorkoutPage')
 const ProgressPage = page(() => import('@/pages/progress/ProgressPage'), 'ProgressPage')
 const JournalPage = page(() => import('@/pages/progress/JournalPage'), 'JournalPage')
+const ExerciseHistoryPage = page(() => import('@/pages/progress/ExerciseHistoryPage'), 'ExerciseHistoryPage')
 const ProfilePage = page(() => import('@/pages/profile/ProfilePage'), 'ProfilePage')
 const NotFoundPage = page(() => import('@/pages/not-found/NotFoundPage'), 'NotFoundPage')
 const UiPreviewPage = page(() => import('@/pages/ui-kit/UiPreviewPage'), 'UiPreviewPage')
@@ -59,6 +60,7 @@ export function AppRoutes() {
           <Route path="workout" element={<ActiveWorkoutPage />} />
           <Route path="progress" element={<ProgressPage />} />
           <Route path="progress/journal" element={<JournalPage />} />
+          <Route path="progress/exercise/:exerciseId" element={<ExerciseHistoryPage />} />
           <Route path="profile" element={<ProfilePage />} />
           {import.meta.env.DEV && <Route path="dev/ui" element={<UiPreviewPage />} />}
           <Route path="404" element={<NotFoundPage />} />

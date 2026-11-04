@@ -94,6 +94,21 @@ export const progressApi = {
     return { log, personalRecords: updatedPrs }
   },
 
+  async updateWorkoutLog(log: WorkoutHistoryLog): Promise<{
+    log: WorkoutHistoryLog
+    personalRecords: Record<string, PersonalRecord>
+  }> {
+    await delay(100)
+    const history = loadUserData<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
+    const updatedHistory = history.map((item) => (item.id === log.id ? log : item))
+    saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, updatedHistory)
+
+    const updatedPrs = recalculatePersonalRecords(updatedHistory)
+    saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, updatedPrs)
+
+    return { log, personalRecords: updatedPrs }
+  },
+
   async deleteWorkoutLog(logId: string): Promise<{
     deletedId: string
     personalRecords: Record<string, PersonalRecord>

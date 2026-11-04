@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import {
   deleteWorkoutLogAsync,
+  EditWorkoutModal,
   fetchProgress,
   filterJournal,
   groupByMonth,
@@ -12,6 +13,7 @@ import {
   ListSkeleton,
   ProgressTabs,
   recordExerciseIds,
+  updateWorkoutLogAsync,
   type WorkoutHistoryLog,
 } from '@/features/progress'
 import { SEO } from '@/shared/seo/SEO'
@@ -33,6 +35,12 @@ export function JournalPage() {
   const { history, personalRecords, status } = useAppSelector((state) => state.progress)
   const [view, setView] = useSessionState(SESSION_KEYS.JOURNAL_VIEW, { query: '', plan: '', month: '' })
   const [highlighted, setHighlighted] = useState<string | null>(null)
+  const [editing, setEditing] = useState<WorkoutHistoryLog | null>(null)
+
+  const saveEdit = async (log: WorkoutHistoryLog) => {
+    await dispatch(updateWorkoutLogAsync(log)).unwrap()
+    toast.success('Зміни збережено')
+  }
 
   useEffect(() => {
     if (history.length === 0) dispatch(fetchProgress())
@@ -81,7 +89,7 @@ export function JournalPage() {
         <EmptyState icon={<BookOpen />} title="Журнал порожній" description="Завершіть перше тренування, і воно з'явиться тут." />
       ) : (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
-          <div className="space-y-6 lg:order-2 lg:sticky lg:top-6">
+          <div className="min-w-0 space-y-6 lg:order-2 lg:sticky lg:top-6">
             <JournalCalendar
               month={month}
               history={history}
@@ -90,7 +98,7 @@ export function JournalPage() {
             />
           </div>
 
-          <div className="space-y-6 lg:order-1">
+          <div className="min-w-0 space-y-6 lg:order-1">
             <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_12rem]">
               <SearchInput
                 label="Пошук у журналі"
@@ -136,6 +144,7 @@ export function JournalPage() {
                         records={recordExerciseIds(log, personalRecords)}
                         highlighted={highlighted === log.id}
                         onDelete={handleDelete}
+                    onEdit={setEditing}
                       />
                     ))}
                   </ul>
@@ -145,6 +154,7 @@ export function JournalPage() {
           </div>
         </div>
       )}
+      {editing && <EditWorkoutModal key={editing.id} log={editing} onClose={() => setEditing(null)} onSave={saveEdit} />}
     </div>
   )
 }
