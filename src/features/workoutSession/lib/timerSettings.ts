@@ -10,6 +10,8 @@ export interface TimerSettings {
   vibration: boolean
   /** Seconds the −/+ buttons change the rest by */
   step: 15 | 30
+  /** Show the general warm-up before the first exercise */
+  warmupReminder: boolean
 }
 
 export const DEFAULT_TIMER_SETTINGS: TimerSettings = {
@@ -19,6 +21,7 @@ export const DEFAULT_TIMER_SETTINGS: TimerSettings = {
   sound: true,
   vibration: true,
   step: 15,
+  warmupReminder: true,
 }
 
 export const REST_LIMITS = { min: 15, max: 600, step: 15 }

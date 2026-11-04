@@ -1,16 +1,18 @@
 import type { Exercise } from '@/features/exercises/model'
+import { plural } from '@/shared/lib/formatters'
 import type { LastPerformance } from './strength'
 
 export interface Suggestion {
   weight?: number
   reps: number
-  /** Short note for the workout screen: "+2,5 кг" */
-  change: string
+  /** Plain advice for the workout screen: "Спробуйте 82,5 кг × 8 — на 2,5 кг більше, ніж минулого разу" */
+  text: string
   kind: 'weight' | 'reps' | 'repeat'
 }
 
 const roundTo = (value: number, step: number) => Math.round(value / step) * step
 const kg = (value: number) => `${String(value).replace('.', ',')} кг`
+const repsWord = (count: number) => plural(count, ['повтор', 'повтори', 'повторів'])
 
 /** Smallest jump the equipment allows; heavy lower-body and back lifts move faster. */
 export function weightStep(exercise: Pick<Exercise, 'equipment' | 'primaryMuscle'>, weight: number): number {
@@ -24,7 +26,7 @@ export function weightStep(exercise: Pick<Exercise, 'equipment' | 'primaryMuscle
  * - target missed: repeat the weight and finish every rep;
  * - compound lift done: add the smallest weight step;
  * - isolation done: add a rep until two above the target, then add weight and start over;
- * - bodyweight done: add a rep.
+ * - bodyweight (pull-ups, push-ups): add a rep, or finish every rep first.
  */
 export function suggestNext(
   previous: LastPerformance | null,
@@ -36,14 +38,34 @@ export function suggestNext(
   const done = previous.sets >= target.sets && previous.totalReps >= target.sets * target.reps
 
   if (!previous.weightKg) {
-    return done ? { reps: topReps + 1, change: '+1 повтор', kind: 'reps' } : { reps: target.reps, change: 'доберіть усі повтори', kind: 'repeat' }
+    return done
+      ? { reps: topReps + 1, text: `Спробуйте ${repsWord(topReps + 1)} у підході — на один більше, ніж минулого разу.`, kind: 'reps' }
+      : { reps: target.reps, text: `Минулого разу не вийшло всіх повторів. Спробуйте зробити по ${target.reps} у кожному підході.`, kind: 'repeat' }
   }
-  if (!done) return { weight: previous.weightKg, reps: target.reps, change: 'та сама вага', kind: 'repeat' }
+  if (!done) {
+    return {
+      weight: previous.weightKg,
+      reps: target.reps,
+      text: `Залиште ${kg(previous.weightKg)} і доберіть усі ${target.reps} повторів у кожному підході.`,
+      kind: 'repeat',
+    }
+  }
 
   const isolation = exercise.muscleGroups.length <= 1
   if (isolation && topReps < target.reps + 2) {
-    return { weight: previous.weightKg, reps: topReps + 1, change: '+1 повтор', kind: 'reps' }
+    return {
+      weight: previous.weightKg,
+      reps: topReps + 1,
+      text: `Спробуйте ${kg(previous.weightKg)} × ${topReps + 1} — на один повтор більше, ніж минулого разу.`,
+      kind: 'reps',
+    }
   }
   const step = weightStep(exercise, previous.weightKg)
-  return { weight: roundTo(previous.weightKg + step, 0.5), reps: target.reps, change: `+${kg(step)}`, kind: 'weight' }
+  const weight = roundTo(previous.weightKg + step, 0.5)
+  return {
+    weight,
+    reps: target.reps,
+    text: `Минулого разу ви зробили всі повтори. Спробуйте ${kg(weight)} × ${target.reps} — на ${kg(step)} більше.`,
+    kind: 'weight',
+  }
 }

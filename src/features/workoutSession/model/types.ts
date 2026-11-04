@@ -1,6 +1,6 @@
 import type { PlanExercise } from '@/features/workoutPlan'
 
-/** warmup sets stay out of the log, targets and records; drop and failure are working sets */
+/** drop and failure are working sets; warmup only appears in sessions saved by an earlier version */
 export type SetKind = 'warmup' | 'drop' | 'failure'
 
 export interface CompletedSet {
@@ -12,10 +12,6 @@ export interface CompletedSet {
   rpe?: number
 }
 
-export interface PlannedSet {
-  weight: number
-  reps: number
-}
 
 /** plan: exercises and set counts come from a plan day; free: the user adds exercises as they go. */
 export type SessionMode = 'plan' | 'free'
@@ -29,8 +25,8 @@ export interface WorkoutSessionState {
   currentExerciseIndex: number
   exercises: PlanExercise[]
   completedSets: Record<string, CompletedSet[]>
-  /** Warm-up sets the user chose to do before the working sets, per session entry */
-  warmups?: Record<string, PlannedSet[]>
+  /** The general warm-up before the first exercise was done or skipped */
+  warmupDone?: boolean
   startTime: number | null
   elapsedSeconds: number
   restTimer: {

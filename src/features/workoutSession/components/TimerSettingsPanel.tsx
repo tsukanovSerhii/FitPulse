@@ -78,6 +78,13 @@ export function TimerSettingsPanel() {
       <Switch label="Звук наприкінці" checked={settings.sound} onChange={(sound) => updateTimerSettings({ sound })} />
       <Switch label="Вібрація наприкінці" checked={settings.vibration} onChange={(vibration) => updateTimerSettings({ vibration })} />
 
+      <Switch
+        label="Розминка перед тренуванням"
+        hint="Коротка нагадалка на старті: кардіо, суглоби, рухи без ваги"
+        checked={settings.warmupReminder}
+        onChange={(warmupReminder) => updateTimerSettings({ warmupReminder })}
+      />
+
       <Row label="Крок кнопок −/+">
         <SegmentedControl
           label="Крок кнопок"

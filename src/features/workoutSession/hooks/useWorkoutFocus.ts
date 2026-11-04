@@ -8,7 +8,6 @@ import { lastPerformance } from '../lib/strength'
 import { freeSessionExercise } from '../lib/freeWorkout'
 import { restFor, useTimerSettings } from '../lib/timerSettings'
 import { suggestNext } from '../lib/progression'
-import { warmupSets } from '../lib/warmup'
 import { nextInSuperset, supersetPosition } from '../lib/supersets'
 import type { SetExtras } from '../components/focus/ActiveSetPanel'
 import {
@@ -19,7 +18,7 @@ import {
   removeSessionExercise,
   replaceSessionExercise,
   setCurrentExerciseIndex,
-  setWarmup,
+  finishWarmup,
 } from '../model/workoutSessionSlice'
 
 /** Derived state and actions for the active workout screen. */
@@ -37,24 +36,24 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   const exercise = planExercise ? exerciseMap.get(planExercise.exerciseId) : undefined
   const allSets = planExercise ? session.completedSets[planExercise.id] || [] : []
   const doneSets = workingSets(allSets)
-  const warmupDone = allSets.filter((s) => s.kind === 'warmup')
-  const plannedWarmup = (planExercise && session.warmups?.[planExercise.id]) || []
-  const inWarmup = doneSets.length === 0 && warmupDone.length < plannedWarmup.length
   const lastSet = doneSets[doneSets.length - 1]
   const previous = useMemo(() => (planExercise ? lastPerformance(history, planExercise.exerciseId) : null), [history, planExercise])
   const suggestion = !isFree && planExercise && exercise ? suggestNext(previous, planExercise, exercise) : null
   // Working sets start from the progression suggestion, then follow what the user just lifted
   const startWeight = lastSet?.weight ?? suggestion?.weight ?? planExercise?.weight
   const startReps = lastSet?.reps ?? suggestion?.reps ?? planExercise?.reps ?? 10
-  const warmupOffer =
-    planExercise && exercise && allSets.length === 0 && plannedWarmup.length === 0 && startWeight ? warmupSets(startWeight, exercise.equipment) : []
+  const anySetLogged = Object.values(session.completedSets).some((sets) => sets.length > 0)
+  const showWarmup = timerSettings.warmupReminder && !session.warmupDone && !anySetLogged
   const superset = supersetPosition(session.exercises, index)
   // A free workout has no set target: there is always one more set to log
   const exerciseComplete = planExercise && !isFree ? doneSets.length >= planExercise.sets : false
   const isLastExercise = index === session.exercises.length - 1
+  // Upcoming sets show what the next one starts from, so the list and the editor agree
   const target = planExercise && {
     ...planExercise,
-    ...(isFree && { sets: doneSets.length + 1, reps: lastSet?.reps ?? planExercise.reps, weight: lastSet?.weight ?? planExercise.weight }),
+    reps: startReps,
+    weight: startWeight,
+    ...(isFree && { sets: doneSets.length + 1 }),
   }
 
   const progress = session.exercises.map((e) => {
@@ -67,10 +66,6 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
 
   const nextHint = (() => {
     if (!planExercise) return undefined
-    if (inWarmup) {
-      const next = plannedWarmup[warmupDone.length]
-      return `розминка · ${next.weight} кг × ${next.reps}`
-    }
     if (!exerciseComplete) return `підхід ${doneSets.length + 1} · ${startWeight ? `${startWeight} кг × ` : ''}${startReps}`
     const next = session.exercises[index + 1]
     return next ? exerciseMap.get(next.exerciseId)?.name : undefined
@@ -82,19 +77,6 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     if (!planExercise) return
     const completedAt = new Date().toISOString()
     const rest = restFor(timerSettings, planExercise.restSeconds)
-
-    if (inWarmup) {
-      // Warm-ups are light: a short rest is enough
-      dispatch(
-        completeSet({
-          planExerciseId: planExercise.id,
-          set: { reps, weight, completedAt, kind: 'warmup' },
-          autoStartRest: timerSettings.autoStart,
-          restSeconds: Math.min(60, rest),
-        }),
-      )
-      return
-    }
 
     const done = Object.fromEntries(session.exercises.map((e) => [e.id, workingSets(session.completedSets[e.id]).length]))
     done[planExercise.id] += 1
@@ -111,13 +93,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     if (step?.index != null && step.index !== index) goTo(step.index)
   }
 
-  const startWarmup = () => {
-    if (planExercise && warmupOffer.length > 0) dispatch(setWarmup({ entryId: planExercise.id, sets: warmupOffer }))
-  }
-
-  const skipWarmup = () => {
-    if (planExercise) dispatch(setWarmup({ entryId: planExercise.id, sets: [] }))
-  }
+  const endWarmup = () => dispatch(finishWarmup())
 
   const addExercise = (picked: Exercise) => {
     const existing = session.exercises.findIndex((e) => e.exerciseId === picked.id)
@@ -194,10 +170,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     exercise,
     doneSets,
     allSets,
-    warmupDone,
-    plannedWarmup,
-    inWarmup,
-    warmupOffer,
+    showWarmup,
     startWeight,
     startReps,
     suggestion,
@@ -211,8 +184,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
     showWeight: Boolean(planExercise?.weight) || exercise?.equipment !== 'bodyweight',
     goTo,
     completeCurrentSet,
-    startWarmup,
-    skipWarmup,
+    endWarmup,
     addExercise,
     replaceCurrentExercise,
     removeCurrentExercise,
