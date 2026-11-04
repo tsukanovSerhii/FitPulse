@@ -25,16 +25,40 @@ test('a new plan gets an exercise on Monday', async ({ page }) => {
   await expect(page.getByText('1 день · 1 вправа')).toBeVisible()
 })
 
-test('a template from the library becomes an editable plan', async ({ page }) => {
+test('a template goes on the weekdays the user picks', async ({ page }) => {
   await signUp(page)
   await page.goto('/plans')
   const library = page.getByRole('region', { name: /Готові програми/ })
-  await expect(library.getByRole('article')).toHaveCount(10)
+  await expect(library.getByRole('article')).toHaveCount(15)
   await library.getByRole('radio', { name: '6 днів' }).click()
-  await expect(library.getByRole('article')).toHaveCount(1)
-  await library.getByRole('button', { name: 'Додати' }).click()
+  await expect(library.getByRole('article')).toHaveCount(2)
+  await library.getByRole('article').filter({ hasText: 'Push / Pull / Legs на 6 днів' }).getByRole('button', { name: 'Додати' }).click()
+
+  // Template days come preselected: Monday to Saturday. Train Tuesday to Sunday instead
+  const days = page.getByRole('dialog', { name: 'Дні тренувань' })
+  const confirm = days.getByRole('button', { name: 'Додати програму' })
+  await days.getByRole('button', { name: 'Понеділок' }).click()
+  await expect(confirm).toBeDisabled()
+  await days.getByRole('button', { name: 'Неділя' }).click()
+  await confirm.click()
+  await expect(days).toBeHidden()
 
   await expect(page.getByText('Програму «Push / Pull / Legs на 6 днів» додано')).toBeVisible()
   await expect(page.getByText('6 днів · 36 вправ')).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Почати тренування: субота' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Почати тренування: неділя' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Додати вправи на понеділок' })).toBeVisible()
+})
+
+test('the training days of a plan can be changed later', async ({ page }) => {
+  await signUp(page)
+  await page.goto('/plans')
+  await page.getByRole('button', { name: 'Дні тренувань' }).first().click()
+
+  const days = page.getByRole('dialog', { name: 'Дні тренувань' })
+  for (const day of ['Понеділок', 'Середа', "П'ятниця"]) await days.getByRole('button', { name: day }).click()
+  for (const day of ['Вівторок', 'Четвер', 'Субота']) await days.getByRole('button', { name: day }).click()
+  await days.getByRole('button', { name: 'Зберегти' }).click()
+
+  await expect(page.getByText('Дні тренувань оновлено')).toBeVisible()
+  for (const day of ['вівторок', 'четвер', 'субота']) await expect(page.getByRole('button', { name: `Почати тренування: ${day}` })).toBeVisible()
 })
