@@ -9,8 +9,8 @@
       {
         "patterns": [
           {
-            "group": ["@/features/*/**", "!@/features/*/model", "@/features/*/model/**"],
-            "message": "Import a feature through its public API: @/features/<name> or @/features/<name>/model."
+            "group": ["@/features/*/**", "!@/features/*/model", "!@/features/*/catalog", "@/features/*/model/**"],
+            "message": "Import a feature through its public API: @/features/<name>, @/features/<name>/model or @/features/<name>/catalog."
           }
         ]
       }
@@ -38,8 +38,8 @@
           {
             "patterns": [
               {
-                "group": ["@/features/*/**", "!@/features/*/model", "@/features/*/model/**"],
-                "message": "Import a feature through its public API: @/features/<name> or @/features/<name>/model."
+                "group": ["@/features/*/**", "!@/features/*/model", "!@/features/*/catalog", "@/features/*/model/**"],
+                "message": "Import a feature through its public API: @/features/<name>, @/features/<name>/model or @/features/<name>/catalog."
               },
               { "group": ["@/pages/**", "@/app/**", "!@/app/store/hooks"], "message": "Features must not depend on pages or app (typed store hooks excepted)." }
             ]

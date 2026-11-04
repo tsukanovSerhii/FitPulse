@@ -46,7 +46,7 @@ export function AlternativeList({ items, onSelect }: { items: Exercise[]; onSele
   )
 }
 
-function PointList({ title, items, tone }: { title: string; items: string[]; tone: 'do' | 'avoid' }) {
+export function PointList({ title, items, tone }: { title: string; items: string[]; tone: 'do' | 'avoid' }) {
   const Icon = tone === 'do' ? Check : X
   return (
     <section className="space-y-3">

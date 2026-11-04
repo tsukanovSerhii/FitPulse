@@ -1,6 +1,7 @@
 export { AddExerciseModal } from './components/AddExerciseModal'
 export { ExerciseCard } from './components/ExerciseCard'
-export { AlternativeList, ExerciseDetailModal } from './components/ExerciseDetailModal'
+export { AlternativeList, ExerciseDetailModal, PointList } from './components/ExerciseDetailModal'
+export { MuscleMap } from './components/MuscleMap'
 export { ExerciseFiltersBar } from './components/ExerciseFiltersBar'
 export { ExerciseGridSkeleton } from './components/ExerciseGridSkeleton'
 export { BackBody } from '@/shared/ui/body-map/BackBody'

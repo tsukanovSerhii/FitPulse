@@ -16,6 +16,9 @@ export function Footer() {
           <span>
             <span className="font-display text-sm uppercase tracking-wide text-fg">FitPulse</span> © {currentYear}
           </span>
+          <Link to="/catalog" className="underline-offset-2 hover:text-fg hover:underline">
+            Каталог вправ
+          </Link>
           <Link to="/privacy" className="underline-offset-2 hover:text-fg hover:underline">
             Конфіденційність
           </Link>

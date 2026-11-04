@@ -11,6 +11,9 @@ const LoginPage = page(() => import('@/pages/login/LoginPage'), 'LoginPage')
 const RegisterPage = page(() => import('@/pages/register/RegisterPage'), 'RegisterPage')
 const PrivacyPage = page(() => import('@/pages/legal/PrivacyPage'), 'PrivacyPage')
 const TermsPage = page(() => import('@/pages/legal/TermsPage'), 'TermsPage')
+const CatalogPage = page(() => import('@/pages/public/CatalogPage'), 'CatalogPage')
+const PublicExercisePage = page(() => import('@/pages/public/PublicExercisePage'), 'PublicExercisePage')
+const PublicProgramPage = page(() => import('@/pages/public/PublicProgramPage'), 'PublicProgramPage')
 const DashboardPage = page(() => import('@/pages/dashboard/DashboardPage'), 'DashboardPage')
 const ExercisesPage = page(() => import('@/pages/exercises/ExercisesPage'), 'ExercisesPage')
 const WorkoutPlansPage = page(() => import('@/pages/plans/WorkoutPlansPage'), 'WorkoutPlansPage')
@@ -29,6 +32,9 @@ export function AppRoutes() {
         <Route path="welcome" element={<LandingPage />} />
         <Route path="privacy" element={<PrivacyPage />} />
         <Route path="terms" element={<TermsPage />} />
+        <Route path="catalog" element={<CatalogPage />} />
+        <Route path="exercise/:slug" element={<PublicExercisePage />} />
+        <Route path="program/:slug" element={<PublicProgramPage />} />
         <Route
           path="login"
           element={
