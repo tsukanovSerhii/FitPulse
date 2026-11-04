@@ -24,5 +24,9 @@ export interface WorkoutSessionState {
     isRunning: boolean
     totalSeconds: number
     remainingSeconds: number
+    /** Wall-clock end of a running rest, in ms; null while paused or stopped. Missing in older saved sessions */
+    endsAt?: number | null
+    /** When the last rest ran out on its own (not skipped), in ms; drives the end signal */
+    endedAt?: number
   }
 }

@@ -1,31 +1,22 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Pause, Play, Volume2, VolumeX } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { Button, IconButton, ProgressRing } from '@/shared/ui'
-import { playTimerBeep } from '@/shared/lib/audio'
+import { isTimerSoundEnabled, TIMER_SOUND_KEY } from '@/shared/lib/audio'
 import { formatDuration } from '@/shared/lib/formatters'
 import {
   addRestSeconds,
   skipRestTimer,
   subtractRestSeconds,
-  tickRestTimer,
   toggleRestTimer,
 } from '../model/workoutSessionSlice'
 
-const SOUND_KEY = 'fitpulse_sound_enabled'
-
 function useSoundPreference() {
-  const [enabled, setEnabled] = useState(() => {
-    try {
-      return localStorage.getItem(SOUND_KEY) !== 'false'
-    } catch {
-      return true
-    }
-  })
+  const [enabled, setEnabled] = useState(isTimerSoundEnabled)
   const toggle = () =>
     setEnabled((prev) => {
       try {
-        localStorage.setItem(SOUND_KEY, String(!prev))
+        localStorage.setItem(TIMER_SOUND_KEY, String(!prev))
       } catch {
         // without storage the preference lasts until reload
       }
@@ -37,22 +28,8 @@ function useSoundPreference() {
 export function RestTimerSheet({ nextHint }: { nextHint?: string }) {
   const dispatch = useAppDispatch()
   const timer = useAppSelector((state) => state.workoutSession.restTimer)
+  // Ticking and the end signal live in useSessionClock, so they keep going when this sheet is not shown
   const [soundEnabled, toggleSound] = useSoundPreference()
-  const prevRemaining = useRef(timer.remainingSeconds)
-
-  useEffect(() => {
-    if (!timer.isRunning || timer.remainingSeconds <= 0) return
-    const id = window.setInterval(() => dispatch(tickRestTimer()), 1000)
-    return () => clearInterval(id)
-  }, [timer.isRunning, timer.remainingSeconds, dispatch])
-
-  useEffect(() => {
-    if (prevRemaining.current > 0 && timer.remainingSeconds === 0) {
-      if (soundEnabled) playTimerBeep()
-      navigator.vibrate?.([200, 100, 200])
-    }
-    prevRemaining.current = timer.remainingSeconds
-  }, [timer.remainingSeconds, soundEnabled])
 
   if (timer.remainingSeconds <= 0) return null
 

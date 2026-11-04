@@ -18,21 +18,53 @@ const defaultInitialState: WorkoutSessionState = {
     isRunning: false,
     totalSeconds: 60,
     remainingSeconds: 0,
+    endsAt: null,
   },
+}
+
+/*
+ * Timers follow the wall clock: the workout keeps its start time and a running rest its end time,
+ * and each tick only recomputes the seconds from them. A phone with the screen off pauses or slows
+ * page timers, so counting ticks used to freeze both clocks until the screen came back.
+ */
+const secondsSince = (start: number, now: number) => Math.max(0, Math.floor((now - start) / 1000))
+const secondsUntil = (end: number, now: number) => Math.max(0, Math.ceil((end - now) / 1000))
+
+type RestTimer = WorkoutSessionState['restTimer']
+
+function runRest(timer: RestTimer, seconds: number, now: number) {
+  timer.isRunning = true
+  timer.totalSeconds = seconds
+  timer.remainingSeconds = seconds
+  timer.endsAt = now + seconds * 1000
+}
+
+/** Brings remainingSeconds up to date with the wall clock and stops a rest that has run out. */
+function syncRest(timer: RestTimer, now: number) {
+  if (!timer.isRunning) return
+  // Sessions saved before endsAt existed continue from the seconds they had left
+  timer.endsAt ??= now + timer.remainingSeconds * 1000
+  timer.remainingSeconds = secondsUntil(timer.endsAt, now)
+  if (timer.remainingSeconds === 0) {
+    timer.isRunning = false
+    timer.endedAt = timer.endsAt
+    timer.endsAt = null
+  }
 }
 
 function getInitialSession(): WorkoutSessionState {
   const saved = loadUserData<WorkoutSessionState | null>(STORAGE_KEYS.ACTIVE_SESSION, null)
-  if (saved && saved.isActive) {
-    return {
-      ...saved,
-      restTimer: {
-        ...saved.restTimer,
-        isRunning: false,
-      },
-    }
+  if (!saved || !saved.isActive) return defaultInitialState
+  const now = Date.now()
+  const restTimer = { ...saved.restTimer }
+  // A rest saved without an end time cannot know how long the app was closed, so it waits paused
+  if (restTimer.isRunning && restTimer.endsAt) syncRest(restTimer, now)
+  else restTimer.isRunning = false
+  return {
+    ...saved,
+    elapsedSeconds: saved.startTime ? secondsSince(saved.startTime, now) : saved.elapsedSeconds,
+    restTimer,
   }
-  return defaultInitialState
 }
 
 function persistSession(state: WorkoutSessionState) {
@@ -66,11 +98,7 @@ export const workoutSessionSlice = createSlice({
       state.completedSets = {}
       state.startTime = Date.now()
       state.elapsedSeconds = 0
-      state.restTimer = {
-        isRunning: false,
-        totalSeconds: 60,
-        remainingSeconds: 0,
-      }
+      state.restTimer = { isRunning: false, totalSeconds: 60, remainingSeconds: 0, endsAt: null }
       persistSession(state)
     },
 
@@ -130,13 +158,7 @@ export const workoutSessionSlice = createSlice({
       }
       state.completedSets[planExerciseId].push(cleanSet)
 
-      if (autoStartRest) {
-        state.restTimer = {
-          isRunning: true,
-          totalSeconds: restSeconds,
-          remainingSeconds: restSeconds,
-        }
-      }
+      if (autoStartRest) runRest(state.restTimer, restSeconds, Date.now())
       persistSession(state)
     },
 
@@ -206,100 +228,94 @@ export const workoutSessionSlice = createSlice({
     },
 
     tickWorkoutTimer: (state) => {
-      if (state.isActive) {
-        state.elapsedSeconds += 1
-        // persist every 5 seconds instead of on every tick
-        if (state.elapsedSeconds % 5 === 0) {
-          persistSession(state)
-        }
-      }
+      if (state.isActive && state.startTime) state.elapsedSeconds = secondsSince(state.startTime, Date.now())
     },
 
     startRestTimer: (state, action: PayloadAction<number | undefined>) => {
-      const seconds = action.payload || 60
-      state.restTimer = {
-        isRunning: true,
-        totalSeconds: seconds,
-        remainingSeconds: seconds,
-      }
+      runRest(state.restTimer, action.payload || 60, Date.now())
       persistSession(state)
     },
 
     tickRestTimer: (state) => {
-      if (state.restTimer.isRunning) {
-        if (state.restTimer.remainingSeconds > 1) {
-          state.restTimer.remainingSeconds -= 1
-        } else {
-          state.restTimer.remainingSeconds = 0
-          state.restTimer.isRunning = false
-        }
-      }
-      persistSession(state)
+      const wasRunning = state.restTimer.isRunning
+      syncRest(state.restTimer, Date.now())
+      // The end time is already saved; only a finished rest changes what a reload should see
+      if (wasRunning && !state.restTimer.isRunning) persistSession(state)
     },
 
     setRestDuration: (state, action: PayloadAction<number>) => {
       const seconds = Math.max(60, action.payload)
-      state.restTimer.totalSeconds = seconds
-      state.restTimer.remainingSeconds = seconds
-      state.restTimer.isRunning = false
+      state.restTimer = { isRunning: false, totalSeconds: seconds, remainingSeconds: seconds, endsAt: null }
       persistSession(state)
     },
 
     pauseRestTimer: (state) => {
+      syncRest(state.restTimer, Date.now())
       state.restTimer.isRunning = false
+      state.restTimer.endsAt = null
       persistSession(state)
     },
 
     resumeRestTimer: (state) => {
-      if (state.restTimer.remainingSeconds > 0) {
-        state.restTimer.isRunning = true
+      const timer = state.restTimer
+      if (!timer.isRunning && timer.remainingSeconds > 0) {
+        timer.isRunning = true
+        timer.endsAt = Date.now() + timer.remainingSeconds * 1000
       }
       persistSession(state)
     },
 
     toggleRestTimer: (state) => {
-      if (state.restTimer.remainingSeconds > 0) {
-        state.restTimer.isRunning = !state.restTimer.isRunning
+      const now = Date.now()
+      syncRest(state.restTimer, now)
+      const timer = state.restTimer
+      if (timer.isRunning) {
+        timer.isRunning = false
+        timer.endsAt = null
+      } else if (timer.remainingSeconds > 0) {
+        timer.isRunning = true
+        timer.endsAt = now + timer.remainingSeconds * 1000
       }
       persistSession(state)
     },
 
     addRestSeconds: (state, action: PayloadAction<number>) => {
       const delta = action.payload || 30
-      if (state.restTimer.remainingSeconds > 0) {
-        state.restTimer.remainingSeconds += delta
-        state.restTimer.totalSeconds = Math.max(
-          state.restTimer.totalSeconds,
-          state.restTimer.remainingSeconds,
-        )
+      const timer = state.restTimer
+      const now = Date.now()
+      syncRest(timer, now)
+      if (timer.remainingSeconds > 0) {
+        timer.remainingSeconds += delta
+        timer.totalSeconds = Math.max(timer.totalSeconds, timer.remainingSeconds)
+        if (timer.isRunning) timer.endsAt = now + timer.remainingSeconds * 1000
       } else {
         const seconds = Math.max(60, delta)
-        state.restTimer.totalSeconds = seconds
-        state.restTimer.remainingSeconds = seconds
-        state.restTimer.isRunning = false
+        state.restTimer = { isRunning: false, totalSeconds: seconds, remainingSeconds: seconds, endsAt: null }
       }
       persistSession(state)
     },
 
     subtractRestSeconds: (state, action: PayloadAction<number>) => {
       const delta = action.payload || 30
-      if (state.restTimer.remainingSeconds > 60) {
-        state.restTimer.remainingSeconds = Math.max(60, state.restTimer.remainingSeconds - delta)
-      } else if (state.restTimer.remainingSeconds > delta) {
-        state.restTimer.remainingSeconds -= delta
+      const timer = state.restTimer
+      const now = Date.now()
+      syncRest(timer, now)
+      if (timer.remainingSeconds > 60) {
+        timer.remainingSeconds = Math.max(60, timer.remainingSeconds - delta)
+      } else if (timer.remainingSeconds > delta) {
+        timer.remainingSeconds -= delta
       } else {
-        state.restTimer.remainingSeconds = Math.max(30, state.restTimer.remainingSeconds - delta)
+        timer.remainingSeconds = Math.max(30, timer.remainingSeconds - delta)
       }
-      state.restTimer.totalSeconds = Math.max(
-        state.restTimer.totalSeconds,
-        state.restTimer.remainingSeconds,
-      )
+      timer.totalSeconds = Math.max(timer.totalSeconds, timer.remainingSeconds)
+      if (timer.isRunning) timer.endsAt = now + timer.remainingSeconds * 1000
       persistSession(state)
     },
 
     skipRestTimer: (state) => {
       state.restTimer.isRunning = false
       state.restTimer.remainingSeconds = 0
+      state.restTimer.endsAt = null
       persistSession(state)
     },
   },
