@@ -36,3 +36,12 @@ test('an exercise is swapped during a workout before any set', async ({ page }) 
   await page.getByRole('button', { name: 'Пропустити' }).click()
   await expect(page.getByRole('button', { name: 'Замінити вправу' })).toBeHidden()
 })
+
+test('the catalog renders cards a page at a time while scrolling', async ({ page }) => {
+  await signUp(page)
+  await page.goto('/exercises')
+  const cards = page.getByRole('article')
+  await expect(cards).toHaveCount(24)
+  await page.getByRole('button', { name: /^Показати ще/ }).scrollIntoViewIfNeeded()
+  await expect.poll(() => cards.count()).toBeGreaterThan(24)
+})
