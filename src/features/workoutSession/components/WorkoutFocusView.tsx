@@ -60,8 +60,8 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
               </div>
               <p className="font-mono text-sm text-fg-muted tabular">
                 {isFree
-                  ? `Підходів: ${doneSets.length} · відпочинок ${planExercise.restSeconds} с`
-                  : `Ціль: ${planExercise.sets} × ${planExercise.reps}${planExercise.weight ? ` · ${planExercise.weight} кг` : ''} · відпочинок ${planExercise.restSeconds} с`}
+                  ? `Підходів: ${doneSets.length} · відпочинок ${focus.restSeconds} с`
+                  : `Ціль: ${planExercise.sets} × ${planExercise.reps}${planExercise.weight ? ` · ${planExercise.weight} кг` : ''} · відпочинок ${focus.restSeconds} с`}
               </p>
               {focus.previous && (
                 <p className="text-sm text-fg-muted">

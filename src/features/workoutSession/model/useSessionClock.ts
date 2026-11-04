@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
-import { isTimerSoundEnabled, playTimerBeep } from '@/shared/lib/audio'
+import { playTimerBeep } from '@/shared/lib/audio'
+import { getTimerSettings } from '../lib/timerSettings'
 import { tickRestTimer, tickWorkoutTimer } from './workoutSessionSlice'
 
 /**
@@ -35,8 +36,9 @@ export function useSessionClock() {
   // A rest that ran out signals once, also when it ended while the screen was off; skipping stays silent
   useEffect(() => {
     if (endedAt && endedAt !== signalled.current) {
-      if (isTimerSoundEnabled()) playTimerBeep()
-      navigator.vibrate?.([200, 100, 200])
+      const { sound, vibration } = getTimerSettings()
+      if (sound) playTimerBeep()
+      if (vibration) navigator.vibrate?.([200, 100, 200])
     }
     signalled.current = endedAt
   }, [endedAt])

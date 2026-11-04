@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Pause, Play, Volume2, VolumeX } from 'lucide-react'
+import { Pause, Play, Settings2, Volume2, VolumeX } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
-import { Button, IconButton, ProgressRing } from '@/shared/ui'
-import { isTimerSoundEnabled, TIMER_SOUND_KEY } from '@/shared/lib/audio'
+import { Button, IconButton, Modal, ProgressRing } from '@/shared/ui'
+import { updateTimerSettings, useTimerSettings } from '../lib/timerSettings'
+import { TimerSettingsPanel } from './TimerSettingsPanel'
 import { formatDuration } from '@/shared/lib/formatters'
 import {
   addRestSeconds,
@@ -11,25 +12,12 @@ import {
   toggleRestTimer,
 } from '../model/workoutSessionSlice'
 
-function useSoundPreference() {
-  const [enabled, setEnabled] = useState(isTimerSoundEnabled)
-  const toggle = () =>
-    setEnabled((prev) => {
-      try {
-        localStorage.setItem(TIMER_SOUND_KEY, String(!prev))
-      } catch {
-        // without storage the preference lasts until reload
-      }
-      return !prev
-    })
-  return [enabled, toggle] as const
-}
-
 export function RestTimerSheet({ nextHint }: { nextHint?: string }) {
   const dispatch = useAppDispatch()
   const timer = useAppSelector((state) => state.workoutSession.restTimer)
   // Ticking and the end signal live in useSessionClock, so they keep going when this sheet is not shown
-  const [soundEnabled, toggleSound] = useSoundPreference()
+  const settings = useTimerSettings()
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   if (timer.remainingSeconds <= 0) return null
 
@@ -43,22 +31,25 @@ export function RestTimerSheet({ nextHint }: { nextHint?: string }) {
       <div className="mx-auto max-w-lg space-y-5 px-5 pb-5 pt-4">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">Відпочинок</span>
-          <IconButton
-            size="sm"
-            label={soundEnabled ? 'Вимкнути звук' : 'Увімкнути звук'}
-            icon={soundEnabled ? <Volume2 /> : <VolumeX />}
-            onClick={toggleSound}
-          />
+          <span className="flex items-center gap-1">
+            <IconButton
+              size="sm"
+              label={settings.sound ? 'Вимкнути звук' : 'Увімкнути звук'}
+              icon={settings.sound ? <Volume2 /> : <VolumeX />}
+              onClick={() => updateTimerSettings({ sound: !settings.sound })}
+            />
+            <IconButton size="sm" label="Налаштування таймера" icon={<Settings2 />} onClick={() => setSettingsOpen(true)} />
+          </span>
         </div>
 
         <div className="flex items-center justify-center gap-6">
           <button
             type="button"
-            onClick={() => dispatch(subtractRestSeconds(15))}
+            onClick={() => dispatch(subtractRestSeconds(settings.step))}
             className="flex size-14 cursor-pointer items-center justify-center rounded-full bg-surface-2 font-mono text-sm font-semibold text-fg active:bg-line-strong"
-            aria-label="Мінус 15 секунд"
+            aria-label={`Мінус ${settings.step} секунд`}
           >
-            −15
+            −{settings.step}
           </button>
           <ProgressRing value={percent} label="Залишок відпочинку" size={150} stroke={5}>
             <span className="font-mono text-4xl font-semibold text-fg tabular" aria-live="off">
@@ -75,11 +66,11 @@ export function RestTimerSheet({ nextHint }: { nextHint?: string }) {
           </ProgressRing>
           <button
             type="button"
-            onClick={() => dispatch(addRestSeconds(15))}
+            onClick={() => dispatch(addRestSeconds(settings.step))}
             className="flex size-14 cursor-pointer items-center justify-center rounded-full bg-surface-2 font-mono text-sm font-semibold text-fg active:bg-line-strong"
-            aria-label="Плюс 15 секунд"
+            aria-label={`Плюс ${settings.step} секунд`}
           >
-            +15
+            +{settings.step}
           </button>
         </div>
 
@@ -89,6 +80,12 @@ export function RestTimerSheet({ nextHint }: { nextHint?: string }) {
           Пропустити
         </Button>
       </div>
+
+      <Modal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} title="Таймер відпочинку" maxWidth="md">
+        <div className="-mx-5 -my-5 sm:-mx-6">
+          <TimerSettingsPanel />
+        </div>
+      </Modal>
     </section>
   )
 }

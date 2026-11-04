@@ -1,4 +1,6 @@
 export { SessionSummaryModal, type SaveAsPlan } from './components/SessionSummaryModal'
+export { TimerSettingsPanel } from './components/TimerSettingsPanel'
+export { updateTimerSettings } from './lib/timerSettings'
 export { WorkoutFocusView } from './components/WorkoutFocusView'
 export { WorkoutLauncher } from './components/WorkoutLauncher'
 export { useStartPlanDay } from './hooks/useStartPlanDay'

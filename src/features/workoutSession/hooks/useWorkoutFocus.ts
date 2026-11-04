@@ -6,6 +6,7 @@ import type { WorkoutHistoryLog } from '@/features/progress'
 import { buildWorkoutLog } from '../lib/summary'
 import { lastPerformance } from '../lib/strength'
 import { freeSessionExercise } from '../lib/freeWorkout'
+import { restFor, useTimerSettings } from '../lib/timerSettings'
 import {
   addSessionExercise,
   cancelWorkout,
@@ -24,6 +25,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   const history = useAppSelector((state) => state.progress.history)
 
   const isFree = session.mode === 'free'
+  const timerSettings = useTimerSettings()
   const exerciseMap = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises])
   const index = session.currentExerciseIndex
   const planExercise = session.exercises[index]
@@ -66,8 +68,8 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
       completeSet({
         planExerciseId: planExercise.id,
         set: { reps, weight, completedAt: new Date().toISOString() },
-        autoStartRest: !finishesWorkout,
-        restSeconds: planExercise.restSeconds,
+        autoStartRest: !finishesWorkout && timerSettings.autoStart,
+        restSeconds: restFor(timerSettings, planExercise.restSeconds),
       }),
     )
   }
@@ -140,6 +142,7 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   return {
     session,
     isFree,
+    restSeconds: planExercise ? restFor(timerSettings, planExercise.restSeconds) : 0,
     index,
     planExercise,
     target,
