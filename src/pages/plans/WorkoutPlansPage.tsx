@@ -9,7 +9,7 @@ import {
   PlanCard,
   PlanEditorModal,
   PlanListSkeleton,
-  PlanTemplatesModal,
+  PlanLibrary,
   TrainingDaysModal,
   usePlanActions,
   searchPlans,
@@ -37,7 +37,6 @@ export function WorkoutPlansPage() {
   const setExpandedId = (next: string | null) => setView((v) => ({ ...v, expandedId: next }))
   const [editor, setEditor] = useState<{ open: boolean; plan: WorkoutPlan | null }>({ open: false, plan: null })
   const [dayEditor, setDayEditor] = useState<{ planId: string; day: DayOfWeek } | null>(null)
-  const [templatesOpen, setTemplatesOpen] = useState(false)
   // Choosing weekdays: for a template before it is added, or for one of the user's plans
   const [daysFor, setDaysFor] = useState<{ template: PlanTemplate } | { plan: WorkoutPlan } | null>(null)
 
@@ -53,7 +52,7 @@ export function WorkoutPlansPage() {
   const addedTemplateIds = useMemo(() => new Set(plans.flatMap((p) => (p.templateId ? [p.templateId] : []))), [plans])
 
   const openCreate = () => setEditor({ open: true, plan: null })
-  const openTemplates = () => setTemplatesOpen(true)
+  const openTemplates = () => document.getElementById('library')?.scrollIntoView({ behavior: 'smooth' })
 
   const confirmDays = async (days: DayOfWeek[]) => {
     if (!daysFor) return
@@ -64,8 +63,8 @@ export function WorkoutPlansPage() {
     }
     const plan = await actions.addFromTemplate(daysFor.template, days)
     setDaysFor(null)
-    setTemplatesOpen(false)
     setView({ query: '', expandedId: plan.id })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -141,20 +140,14 @@ export function WorkoutPlansPage() {
         </div>
       )}
 
+      <PlanLibrary allExercises={allExercises} addedTemplateIds={addedTemplateIds} onAdd={(template) => setDaysFor({ template })} />
+
       <PlanEditorModal
         key={editor.plan?.id ?? 'new'}
         isOpen={editor.open}
         onClose={() => setEditor({ open: false, plan: null })}
         onSave={actions.save}
         initialPlan={editor.plan}
-      />
-
-      <PlanTemplatesModal
-        isOpen={templatesOpen}
-        onClose={() => setTemplatesOpen(false)}
-        allExercises={allExercises}
-        addedTemplateIds={addedTemplateIds}
-        onAdd={(template) => setDaysFor({ template })}
       />
 
       {daysFor && (

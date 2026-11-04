@@ -28,9 +28,8 @@ test('a new plan gets an exercise on Monday', async ({ page }) => {
 test('a template goes on the weekdays the user picks', async ({ page }) => {
   await signUp(page)
   await page.goto('/plans')
-  await page.getByRole('button', { name: 'Готові програми' }).first().click()
-
-  const library = page.getByRole('dialog', { name: 'Готові програми' })
+  const library = page.getByRole('region', { name: /Готові програми/ })
+  await expect(library.getByRole('article')).toHaveCount(15)
   await library.getByRole('radio', { name: '6 днів' }).click()
   await expect(library.getByRole('article')).toHaveCount(2)
   await library.getByRole('article').filter({ hasText: 'Push / Pull / Legs на 6 днів' }).getByRole('button', { name: 'Додати' }).click()
@@ -42,7 +41,7 @@ test('a template goes on the weekdays the user picks', async ({ page }) => {
   await expect(confirm).toBeDisabled()
   await days.getByRole('button', { name: 'Неділя' }).click()
   await confirm.click()
-  await expect(library).toBeHidden()
+  await expect(days).toBeHidden()
 
   await expect(page.getByText('Програму «Push / Pull / Legs на 6 днів» додано')).toBeVisible()
   await expect(page.getByText('6 днів · 36 вправ')).toBeVisible()
