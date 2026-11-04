@@ -9,7 +9,7 @@ import {
   PlanCard,
   PlanEditorModal,
   PlanListSkeleton,
-  PlanTemplatesModal,
+  PlanLibrary,
   usePlanActions,
   searchPlans,
   type DayOfWeek,
@@ -36,7 +36,6 @@ export function WorkoutPlansPage() {
   const setExpandedId = (next: string | null) => setView((v) => ({ ...v, expandedId: next }))
   const [editor, setEditor] = useState<{ open: boolean; plan: WorkoutPlan | null }>({ open: false, plan: null })
   const [dayEditor, setDayEditor] = useState<{ planId: string; day: DayOfWeek } | null>(null)
-  const [templatesOpen, setTemplatesOpen] = useState(false)
 
   useEffect(() => {
     if (plans.length === 0) dispatch(fetchPlans())
@@ -50,12 +49,12 @@ export function WorkoutPlansPage() {
   const addedTemplateIds = useMemo(() => new Set(plans.flatMap((p) => (p.templateId ? [p.templateId] : []))), [plans])
 
   const openCreate = () => setEditor({ open: true, plan: null })
-  const openTemplates = () => setTemplatesOpen(true)
+  const openTemplates = () => document.getElementById('library')?.scrollIntoView({ behavior: 'smooth' })
 
   const addFromTemplate = async (template: PlanTemplate) => {
     const plan = await actions.addFromTemplate(template)
-    setTemplatesOpen(false)
     setView({ query: '', expandedId: plan.id })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -130,20 +129,14 @@ export function WorkoutPlansPage() {
         </div>
       )}
 
+      <PlanLibrary allExercises={allExercises} addedTemplateIds={addedTemplateIds} onAdd={addFromTemplate} />
+
       <PlanEditorModal
         key={editor.plan?.id ?? 'new'}
         isOpen={editor.open}
         onClose={() => setEditor({ open: false, plan: null })}
         onSave={actions.save}
         initialPlan={editor.plan}
-      />
-
-      <PlanTemplatesModal
-        isOpen={templatesOpen}
-        onClose={() => setTemplatesOpen(false)}
-        allExercises={allExercises}
-        addedTemplateIds={addedTemplateIds}
-        onAdd={addFromTemplate}
       />
 
       <AddExerciseToDayModal
