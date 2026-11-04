@@ -90,6 +90,54 @@ const legsB = [
   ex('ex-cable-crunch', 3, 15, 60),
 ]
 
+const upperB = [
+  ex('ex-incline-barbell-press', 4, 8, 120),
+  ex('ex-t-bar-row', 4, 8, 120),
+  ex('ex-seated-barbell-press', 3, 10, 90),
+  ex('ex-close-grip-pulldown', 3, 10, 90),
+  ex('ex-cable-lateral-raise', 3, 15, 60),
+  ex('ex-ez-bar-curl', 3, 10, 60),
+  ex('ex-triceps-kickback', 3, 12, 60),
+]
+
+const lowerB = [
+  ex('ex-trap-bar-deadlift', 4, 6, 150),
+  ex('ex-smith-squat', 3, 10, 120),
+  ex('ex-barbell-lunge', 3, 10, 90, 'Повтори на кожну ногу'),
+  ex('ex-seated-leg-curl', 3, 12, 60),
+  ex('ex-hip-abduction', 3, 15, 60),
+  ex('ex-leg-press-calf-raise', 4, 15, 60),
+]
+
+const chestBack = [
+  ex('ex-bench-press', 4, 8, 120),
+  ex('ex-pull-ups', 4, 8, 120),
+  ex('ex-incline-dumbbell-press', 3, 10, 90),
+  ex('ex-barbell-row', 3, 10, 90),
+  ex('ex-dumbbell-fly', 3, 12, 60),
+  ex('ex-lat-pulldown', 3, 12, 60),
+]
+
+const shouldersArms = [
+  ex('ex-overhead-press', 4, 8, 120),
+  ex('ex-lateral-raises', 4, 15, 60),
+  ex('ex-rear-delt-fly', 3, 15, 60),
+  ex('ex-barbell-curl', 3, 10, 60),
+  ex('ex-skull-crusher', 3, 10, 60),
+  ex('ex-hammer-curl', 3, 12, 60),
+  ex('ex-rope-pushdown', 3, 12, 60),
+]
+
+const legsAbs = [
+  ex('ex-barbell-squat', 4, 8, 150),
+  ex('ex-romanian-deadlift', 3, 10, 120),
+  ex('ex-leg-press', 3, 12, 120),
+  ex('ex-lying-leg-curl', 3, 12, 60),
+  ex('ex-calf-raises', 4, 15, 60),
+  ex('ex-cable-crunch', 3, 15, 60),
+  ex('ex-hanging-leg-raise', 3, 12, 60),
+]
+
 export const PLAN_TEMPLATES: PlanTemplate[] = [
   {
     id: 'tpl-full-body-ab',
@@ -343,5 +391,142 @@ export const PLAN_TEMPLATES: PlanTemplate[] = [
     level: 'advanced',
     minutes: 70,
     schedule: { monday: push, tuesday: pull, wednesday: legs, thursday: pushB, friday: pullB, saturday: legsB },
+  },
+  {
+    id: 'tpl-classic-split-3',
+    name: 'Класичний спліт на 3 дні',
+    description: 'Груди з трицепсом, спина з біцепсом, ноги з плечима. Кожен день — дві групи м’язів, які добре працюють разом.',
+    goal: 'muscle',
+    level: 'intermediate',
+    minutes: 75,
+    schedule: {
+      monday: [
+        ex('ex-bench-press', 4, 8, 120, 'Груди й трицепс'),
+        ex('ex-incline-dumbbell-press', 3, 10, 90),
+        ex('ex-cable-crossover', 3, 12, 60),
+        ex('ex-dips', 3, 10, 90),
+        ex('ex-rope-pushdown', 3, 12, 60),
+        ex('ex-skull-crusher', 3, 10, 60),
+      ],
+      wednesday: [
+        ex('ex-deadlift', 3, 5, 180, 'Спина й біцепс'),
+        ex('ex-lat-pulldown', 4, 10, 90),
+        ex('ex-seated-cable-row', 3, 10, 90),
+        ex('ex-one-arm-dumbbell-row', 3, 10, 60),
+        ex('ex-ez-bar-curl', 3, 10, 60),
+        ex('ex-hammer-curl', 3, 12, 60),
+      ],
+      friday: [
+        ex('ex-barbell-squat', 4, 8, 150, 'Ноги й плечі'),
+        ex('ex-leg-press', 3, 12, 120),
+        ex('ex-romanian-deadlift', 3, 10, 120),
+        ex('ex-seated-leg-curl', 3, 12, 60),
+        ex('ex-dumbbell-shoulder-press', 3, 10, 90),
+        ex('ex-lateral-raises', 4, 15, 60),
+        ex('ex-calf-raises', 4, 15, 60),
+      ],
+    },
+  },
+  {
+    id: 'tpl-split-4',
+    name: 'Спліт на 4 дні',
+    description: 'Груди з трицепсом, спина з біцепсом, ноги, плечі з пресом. Більше вправ на групу, ніж у триденному спліті, і повне відновлення.',
+    goal: 'muscle',
+    level: 'intermediate',
+    minutes: 65,
+    schedule: {
+      monday: [
+        ex('ex-bench-press', 4, 8, 120, 'Груди й трицепс'),
+        ex('ex-smith-incline-press', 3, 10, 90),
+        ex('ex-dumbbell-fly', 3, 12, 60),
+        ex('ex-close-grip-bench-press', 3, 8, 90),
+        ex('ex-rope-pushdown', 3, 12, 60),
+      ],
+      tuesday: [
+        ex('ex-pull-ups', 4, 8, 120, 'Спина й біцепс'),
+        ex('ex-barbell-row', 4, 8, 120),
+        ex('ex-close-grip-pulldown', 3, 10, 90),
+        ex('ex-straight-arm-pulldown', 3, 12, 60),
+        ex('ex-barbell-curl', 3, 10, 60),
+        ex('ex-incline-dumbbell-curl', 3, 10, 60),
+      ],
+      thursday: [
+        ex('ex-barbell-squat', 4, 6, 180, 'Ноги'),
+        ex('ex-hack-squat', 3, 10, 120),
+        ex('ex-romanian-deadlift', 3, 10, 120),
+        ex('ex-leg-extension', 3, 12, 60),
+        ex('ex-lying-leg-curl', 3, 12, 60),
+        ex('ex-seated-calf-raise', 4, 15, 60),
+      ],
+      friday: [
+        ex('ex-overhead-press', 4, 6, 150, 'Плечі й прес'),
+        ex('ex-arnold-press', 3, 10, 90),
+        ex('ex-cable-lateral-raise', 3, 15, 60),
+        ex('ex-reverse-pec-deck', 3, 15, 60),
+        ex('ex-dumbbell-shrug', 3, 12, 60),
+        ex('ex-cable-crunch', 3, 15, 60),
+        ex('ex-hanging-leg-raise', 3, 12, 60),
+      ],
+    },
+  },
+  {
+    id: 'tpl-phul',
+    name: 'PHUL: сила й маса на 4 дні',
+    description: 'Два силових дні (верх і низ) з важкою вагою й малими повторами та два об’ємних дні для росту м’язів. Для тих, хто хоче і сили, і форми.',
+    goal: 'strength',
+    level: 'intermediate',
+    minutes: 70,
+    schedule: {
+      monday: [
+        ex('ex-bench-press', 4, 5, 180, 'Силовий верх'),
+        ex('ex-barbell-row', 4, 5, 150),
+        ex('ex-overhead-press', 3, 6, 150),
+        ex('ex-lat-pulldown', 3, 8, 90),
+        ex('ex-barbell-curl', 3, 8, 60),
+        ex('ex-close-grip-bench-press', 3, 8, 90),
+      ],
+      tuesday: [
+        ex('ex-barbell-squat', 4, 5, 180, 'Силовий низ'),
+        ex('ex-deadlift', 3, 5, 180),
+        ex('ex-leg-press', 3, 10, 120),
+        ex('ex-lying-leg-curl', 3, 10, 60),
+        ex('ex-calf-raises', 4, 10, 60),
+      ],
+      thursday: [
+        ex('ex-incline-dumbbell-press', 4, 10, 90, 'Об’ємний верх'),
+        ex('ex-cable-crossover', 3, 12, 60),
+        ex('ex-seated-cable-row', 4, 10, 90),
+        ex('ex-one-arm-dumbbell-row', 3, 12, 60),
+        ex('ex-lateral-raises', 3, 15, 60),
+        ex('ex-cable-curl', 3, 12, 60),
+        ex('ex-rope-pushdown', 3, 12, 60),
+      ],
+      friday: [
+        ex('ex-front-squat', 3, 8, 150, 'Об’ємний низ'),
+        ex('ex-walking-lunge', 3, 12, 90, 'Повтори на кожну ногу'),
+        ex('ex-leg-extension', 3, 15, 60),
+        ex('ex-seated-leg-curl', 3, 15, 60),
+        ex('ex-hip-thrust', 3, 10, 90),
+        ex('ex-seated-calf-raise', 4, 15, 60),
+      ],
+    },
+  },
+  {
+    id: 'tpl-ppl-ul-5',
+    name: 'PPL + Верх / Низ на 5 днів',
+    description: 'Три дні Push / Pull / Legs і ще два — верх і низ тіла. Кожна група двічі на тиждень з різними вправами.',
+    goal: 'muscle',
+    level: 'advanced',
+    minutes: 70,
+    schedule: { monday: push, tuesday: pull, wednesday: legs, friday: upperB, saturday: lowerB },
+  },
+  {
+    id: 'tpl-arnold-split',
+    name: 'Спліт Арнольда на 6 днів',
+    description: 'Груди зі спиною, плечі з руками, ноги з пресом — і так двічі на тиждень. Великий обсяг і частота для досвідчених.',
+    goal: 'muscle',
+    level: 'advanced',
+    minutes: 80,
+    schedule: { monday: chestBack, tuesday: shouldersArms, wednesday: legsAbs, thursday: chestBack, friday: shouldersArms, saturday: legsAbs },
   },
 ]

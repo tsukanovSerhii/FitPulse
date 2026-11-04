@@ -18,7 +18,7 @@ describe('plan templates', () => {
 
   it('filters by days per week and goal', () => {
     const byDays = filterTemplates(PLAN_TEMPLATES, { days: '6+', goal: 'all' })
-    expect(byDays.map((t) => t.id)).toEqual(['tpl-ppl-6'])
+    expect(byDays.map((t) => t.id)).toEqual(['tpl-ppl-6', 'tpl-arnold-split'])
     const strength = filterTemplates(PLAN_TEMPLATES, { days: 'all', goal: 'strength' })
     expect(strength.every((t) => t.goal === 'strength')).toBe(true)
     expect(filterTemplates(PLAN_TEMPLATES, { days: 'all', goal: 'all' })).toHaveLength(PLAN_TEMPLATES.length)
@@ -30,7 +30,7 @@ describe('planFromTemplate', () => {
   const now = new Date('2026-11-03T10:00:00.000Z')
 
   it('copies the schedule with fresh ids and order', () => {
-    const plan = planFromTemplate(template, now)
+    const plan = planFromTemplate(template, { now })
     expect(plan).toMatchObject({ id: `plan-${now.getTime()}`, templateId: template.id, name: template.name, createdAt: now.toISOString() })
     expect(Object.keys(plan.schedule)).toEqual(ALL_DAYS)
     expect(plan.schedule.tuesday).toEqual([])
@@ -39,8 +39,15 @@ describe('planFromTemplate', () => {
   })
 
   it('does not share exercise objects with the template', () => {
-    const plan = planFromTemplate(template, now)
+    const plan = planFromTemplate(template, { now })
     plan.schedule.monday[0].sets = 99
     expect(template.schedule.monday![0].sets).toBe(5)
+  })
+
+  it('puts the sessions on the days the user picked', () => {
+    const plan = planFromTemplate(template, { now, days: ['tuesday', 'thursday', 'sunday'] })
+    expect(ALL_DAYS.filter((d) => plan.schedule[d].length > 0)).toEqual(['tuesday', 'thursday', 'sunday'])
+    expect(plan.schedule.sunday.map((e) => e.exerciseId)).toEqual(template.schedule.friday!.map((e) => e.exerciseId))
+    expect(plan.schedule.tuesday[0].id).toBe(`tuesday-1-${now.getTime()}`)
   })
 })
