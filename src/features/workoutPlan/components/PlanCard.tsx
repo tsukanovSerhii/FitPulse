@@ -1,5 +1,5 @@
 import { useId, useMemo } from 'react'
-import { Check, ChevronDown, Pencil, Play, Plus, Trash2 } from 'lucide-react'
+import { CalendarDays, Check, ChevronDown, Pencil, Play, Plus, Trash2 } from 'lucide-react'
 import { Badge, Button, IconButton } from '@/shared/ui'
 import type { Exercise } from '@/features/exercises'
 import { cn } from '@/shared/lib/cn'
@@ -15,6 +15,8 @@ export interface PlanCardProps {
   allExercises: Exercise[]
   onSetActive: (planId: string) => void
   onEdit: () => void
+  /** Opens the choice of weekdays the plan's sessions go on */
+  onEditDays?: () => void
   onEditDay: (planId: string, day: DayOfWeek) => void
   onDelete: (planId: string) => void
   onStartDayWorkout: (planId: string, day: DayOfWeek) => void
@@ -28,6 +30,7 @@ export function PlanCard({
   allExercises,
   onSetActive,
   onEdit,
+  onEditDays,
   onEditDay,
   onDelete,
   onStartDayWorkout,
@@ -138,6 +141,11 @@ export function PlanCard({
               Видалити
             </Button>
             <div className="flex flex-wrap items-center gap-2">
+              {onEditDays && trainingDays.length > 0 && (
+                <Button variant="ghost" size="sm" onClick={onEditDays} icon={<CalendarDays />}>
+                  Дні тренувань
+                </Button>
+              )}
               <Button variant="ghost" size="sm" onClick={onEdit} icon={<Pencil />}>
                 Перейменувати
               </Button>

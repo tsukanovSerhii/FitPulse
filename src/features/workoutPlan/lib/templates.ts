@@ -1,3 +1,4 @@
+import { assignTrainingDays } from './trainingDays'
 import { ALL_DAYS, type DayOfWeek, type PlanGoal, type PlanTemplate, type WorkoutPlan } from '../model/types'
 
 export type DaysFilter = 'all' | '2-3' | '4-5' | '6+'
@@ -26,14 +27,18 @@ export function filterTemplates(templates: PlanTemplate[], { days, goal }: Templ
   })
 }
 
-/** A new user plan with its own ids, so editing it never touches the template. */
-export function planFromTemplate(template: PlanTemplate, now = new Date()): WorkoutPlan {
+/**
+ * A new user plan with its own ids, so editing it never touches the template.
+ * With `days`, the sessions go on the weekdays the user trains instead of the template's own.
+ */
+export function planFromTemplate(template: PlanTemplate, { days, now = new Date() }: { days?: DayOfWeek[]; now?: Date } = {}): WorkoutPlan {
   const stamp = now.getTime()
   const iso = now.toISOString()
+  const week = days ? assignTrainingDays(template.schedule, days) : template.schedule
   const schedule = Object.fromEntries(
     ALL_DAYS.map((day) => [
       day,
-      (template.schedule[day] ?? []).map((exercise, i) => ({ ...exercise, id: `${day}-${i + 1}-${stamp}`, order: i + 1 })),
+      (week[day] ?? []).map((exercise, i) => ({ ...exercise, id: `${day}-${i + 1}-${stamp}`, order: i + 1 })),
     ]),
   ) as WorkoutPlan['schedule']
 
