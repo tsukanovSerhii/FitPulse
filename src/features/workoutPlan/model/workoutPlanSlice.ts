@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
+import { createAction, createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 import type { WorkoutPlan, WorkoutPlanState, DayOfWeek, PlanExercise } from './types'
 import { plansApi } from '../api/plansApi'
+import { applyPlanEdit, type ExerciseUpdates, type PlanEdit } from '../lib/planEdits'
 
 const initialState: WorkoutPlanState = {
   plans: [],
@@ -26,8 +27,7 @@ export const savePlanAsync = createAsyncThunk(
   'workoutPlan/savePlanAsync',
   async (plan: WorkoutPlan, { rejectWithValue }) => {
     try {
-      const saved = await plansApi.savePlan(plan)
-      return saved
+      return await enqueueSave(() => plansApi.savePlan(plan))
     } catch (err) {
       return rejectWithValue((err as Error).message || 'Помилка збереження плану')
     }
@@ -58,96 +58,55 @@ export const setActivePlanAsync = createAsyncThunk(
   },
 )
 
-export const addExerciseToDay = createAsyncThunk(
-  'workoutPlan/addExerciseToDay',
-  async (
-    payload: { planId: string; day: DayOfWeek; exercise: Omit<PlanExercise, 'id' | 'order'> },
-    { getState, rejectWithValue },
-  ) => {
+// Plan edits change Redux right away and on the latest state; storage writes then run one at a time,
+// each saving the plan as it is when the write starts. Two quick edits can no longer overwrite each other.
+export const planEdited = createAction<{ planId: string; edit: PlanEdit }>('workoutPlan/planEdited')
+
+let saveQueue: Promise<unknown> = Promise.resolve()
+
+function enqueueSave<T>(save: () => Promise<T>): Promise<T> {
+  const run = saveQueue.catch(() => undefined).then(save)
+  saveQueue = run
+  return run
+}
+
+const findPlan = (state: unknown, planId: string) =>
+  (state as { workoutPlan: WorkoutPlanState }).workoutPlan.plans.find((p) => p.id === planId)
+
+function editPlan(type: string, failure: string) {
+  return createAsyncThunk(`workoutPlan/${type}`, async (payload: { planId: string; edit: PlanEdit }, { dispatch, getState, rejectWithValue }) => {
+    if (!findPlan(getState(), payload.planId)) return rejectWithValue('План не знайдено')
+    dispatch(planEdited(payload))
     try {
-      const state = getState() as { workoutPlan: WorkoutPlanState }
-      const plan = state.workoutPlan.plans.find((p) => p.id === payload.planId)
-      if (!plan) return rejectWithValue('План не знайдено')
-
-      const cleanPlan: WorkoutPlan = JSON.parse(JSON.stringify(plan))
-      if (!cleanPlan.schedule[payload.day]) {
-        cleanPlan.schedule[payload.day] = []
-      }
-      const order = cleanPlan.schedule[payload.day].length + 1
-      const newPlanExercise: PlanExercise = {
-        ...payload.exercise,
-        id: `plan-ex-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        order,
-      }
-      cleanPlan.schedule[payload.day].push(newPlanExercise)
-      cleanPlan.updatedAt = new Date().toISOString()
-
-      const saved = await plansApi.savePlan(cleanPlan)
-      return saved
-    } catch (err) {
-      return rejectWithValue((err as Error).message || 'Помилка додавання вправи')
-    }
-  },
-)
-
-export const removeExerciseFromDay = createAsyncThunk(
-  'workoutPlan/removeExerciseFromDay',
-  async (
-    payload: { planId: string; day: DayOfWeek; exerciseId: string },
-    { getState, rejectWithValue },
-  ) => {
-    try {
-      const state = getState() as { workoutPlan: WorkoutPlanState }
-      const plan = state.workoutPlan.plans.find((p) => p.id === payload.planId)
-      if (!plan || !plan.schedule[payload.day]) return rejectWithValue('План не знайдено')
-
-      const cleanPlan: WorkoutPlan = JSON.parse(JSON.stringify(plan))
-      cleanPlan.schedule[payload.day] = cleanPlan.schedule[payload.day].filter(
-        (ex) => ex.id !== payload.exerciseId,
-      )
-      cleanPlan.schedule[payload.day].forEach((ex, idx) => {
-        ex.order = idx + 1
+      await enqueueSave(async () => {
+        const plan = findPlan(getState(), payload.planId)
+        if (plan) await plansApi.savePlan(plan)
       })
-      cleanPlan.updatedAt = new Date().toISOString()
-
-      const saved = await plansApi.savePlan(cleanPlan)
-      return saved
     } catch (err) {
-      return rejectWithValue((err as Error).message || 'Помилка видалення вправи')
+      return rejectWithValue((err as Error).message || failure)
     }
-  },
-)
+  })
+}
 
-export const updatePlanExercise = createAsyncThunk(
-  'workoutPlan/updatePlanExercise',
-  async (
-    payload: {
-      planId: string
-      day: DayOfWeek
-      exerciseId: string
-      updates: Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>
+const addThunk = editPlan('addExerciseToDay', 'Помилка додавання вправи')
+const removeThunk = editPlan('removeExerciseFromDay', 'Помилка видалення вправи')
+const updateThunk = editPlan('updatePlanExercise', 'Помилка оновлення вправи')
+
+export const addExerciseToDay = (payload: { planId: string; day: DayOfWeek; exercise: Omit<PlanExercise, 'id' | 'order'> }) =>
+  addThunk({
+    planId: payload.planId,
+    edit: {
+      type: 'add',
+      day: payload.day,
+      exercise: { ...payload.exercise, id: `plan-ex-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, order: 0 },
     },
-    { getState, rejectWithValue },
-  ) => {
-    try {
-      const state = getState() as { workoutPlan: WorkoutPlanState }
-      const plan = state.workoutPlan.plans.find((p) => p.id === payload.planId)
-      if (!plan || !plan.schedule[payload.day]) return rejectWithValue('План не знайдено')
+  })
 
-      const cleanPlan: WorkoutPlan = JSON.parse(JSON.stringify(plan))
-      const ex = cleanPlan.schedule[payload.day].find((item) => item.id === payload.exerciseId)
-      if (ex) {
-        Object.assign(ex, payload.updates)
-        cleanPlan.updatedAt = new Date().toISOString()
-      }
+export const removeExerciseFromDay = (payload: { planId: string; day: DayOfWeek; exerciseId: string }) =>
+  removeThunk({ planId: payload.planId, edit: { type: 'remove', day: payload.day, exerciseId: payload.exerciseId } })
 
-      const saved = await plansApi.savePlan(cleanPlan)
-      return saved
-    } catch (err) {
-      return rejectWithValue((err as Error).message || 'Помилка оновлення вправи')
-    }
-  },
-)
+export const updatePlanExercise = (payload: { planId: string; day: DayOfWeek; exerciseId: string; updates: ExerciseUpdates }) =>
+  updateThunk({ planId: payload.planId, edit: { type: 'update', day: payload.day, exerciseId: payload.exerciseId, updates: payload.updates } })
 
 export const workoutPlanSlice = createSlice({
   name: 'workoutPlan',
@@ -192,23 +151,9 @@ export const workoutPlanSlice = createSlice({
       .addCase(setActivePlanAsync.fulfilled, (state, action) => {
         state.activePlanId = action.payload
       })
-      .addCase(addExerciseToDay.fulfilled, (state, action) => {
-        const index = state.plans.findIndex((p) => p.id === action.payload.id)
-        if (index >= 0) {
-          state.plans[index] = action.payload
-        }
-      })
-      .addCase(removeExerciseFromDay.fulfilled, (state, action) => {
-        const index = state.plans.findIndex((p) => p.id === action.payload.id)
-        if (index >= 0) {
-          state.plans[index] = action.payload
-        }
-      })
-      .addCase(updatePlanExercise.fulfilled, (state, action) => {
-        const index = state.plans.findIndex((p) => p.id === action.payload.id)
-        if (index >= 0) {
-          state.plans[index] = action.payload
-        }
+      .addCase(planEdited, (state, { payload }) => {
+        const plan = state.plans.find((p) => p.id === payload.planId)
+        if (plan) applyPlanEdit(plan, payload.edit)
       })
   },
 })
