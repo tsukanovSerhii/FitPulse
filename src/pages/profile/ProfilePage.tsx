@@ -15,6 +15,7 @@ import {
 } from '@/features/profile'
 import { PLAN_NAMES } from '@/features/subscription'
 import { ThemeToggle } from '@/features/theme'
+import { TimerSettingsPanel } from '@/features/workoutSession'
 import { formatDate, formatNumber } from '@/shared/lib/formatters'
 import { SEO } from '@/shared/seo/SEO'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
@@ -202,6 +203,12 @@ export function ProfilePage() {
 							{ACTIVITY_LEVEL_LABELS[profile.activityLevel]}
 						</span>
 					</div>
+				</Card>
+			</Section>
+
+			<Section title="Таймер відпочинку">
+				<Card padding="none">
+					<TimerSettingsPanel />
 				</Card>
 			</Section>
 

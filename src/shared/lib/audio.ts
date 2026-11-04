@@ -1,15 +1,4 @@
 
-export const TIMER_SOUND_KEY = 'fitpulse_sound_enabled'
-
-/** Whether the rest timer may beep; on unless the user turned it off. */
-export function isTimerSoundEnabled(): boolean {
-  try {
-    return localStorage.getItem(TIMER_SOUND_KEY) !== 'false'
-  } catch {
-    return true
-  }
-}
-
 let audioCtx: AudioContext | null = null
 
 function getAudioContext(): AudioContext | null {

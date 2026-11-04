@@ -8,6 +8,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { store } from '@/app/store/store'
 import { fetchExercises } from '@/features/exercises/model'
 import { fetchPlans } from '@/features/workoutPlan/model'
+import { updateTimerSettings } from '@/features/workoutSession'
 import { ActiveWorkoutPage } from './ActiveWorkoutPage'
 
 const renderPage = () =>
@@ -84,5 +85,25 @@ describe('workout mode', () => {
     const day = Object.values(plan!.schedule).find((items) => items.length > 0)!
     expect(day).toHaveLength(1)
     expect(day[0]).toMatchObject({ exerciseId: 'ex-bench-press', sets: 2 })
+  })
+
+  it('uses the rest time and auto start from the timer settings', async () => {
+    updateTimerSettings({ restMode: 'fixed', fixedSeconds: 45 })
+    const user = userEvent.setup()
+    renderPage()
+
+    await user.click(screen.getAllByRole('button', { name: /Понеділок/ })[0])
+    expect(await screen.findByText(/відпочинок 45 с/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Підхід 1 виконано/ }))
+    expect(store.getState().workoutSession.restTimer).toMatchObject({ isRunning: true, totalSeconds: 45 })
+
+    updateTimerSettings({ autoStart: false })
+    await user.click(screen.getByRole('button', { name: 'Пропустити' }))
+    await user.click(screen.getByRole('button', { name: /Підхід 2 виконано/ }))
+    expect(store.getState().workoutSession.restTimer.isRunning).toBe(false)
+
+    updateTimerSettings({ restMode: 'exercise', autoStart: true })
+    await user.click(screen.getByRole('button', { name: 'Скасувати тренування' }))
+    await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Скасувати тренування' }))
   })
 })

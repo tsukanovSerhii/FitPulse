@@ -76,3 +76,28 @@ test('timers keep counting while the screen is off', async ({ page }) => {
   await page.clock.runFor(1000)
   await expect(page.getByRole('link', { name: /Тренування триває, 03:0\d/ })).toBeVisible()
 })
+
+test('rest settings from the profile apply in a workout and can be changed from the timer', async ({ page }) => {
+  await signUp(page)
+  await page.goto('/profile')
+  const timer = page.getByRole('region', { name: 'Таймер відпочинку' })
+  await timer.getByRole('radio', { name: 'Свій' }).click()
+  for (let i = 0; i < 2; i++) await timer.getByRole('button', { name: /мінус 15/ }).click()
+
+  await page.goto('/workout')
+  await page.getByRole('button', { name: /Понеділок/ }).first().click()
+  await page.getByRole('button', { name: /Підхід 1 виконано/ }).click()
+  const rest = page.getByRole('region', { name: 'Відпочинок' })
+  await expect(rest).toContainText(/01:0\d/)
+
+  await rest.getByRole('button', { name: 'Налаштування таймера' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Таймер відпочинку' })
+  await dialog.getByRole('radio', { name: '30 с' }).click()
+  await dialog.getByRole('switch', { name: 'Запускати автоматично' }).click()
+  await page.keyboard.press('Escape')
+  await expect(rest.getByRole('button', { name: 'Плюс 30 секунд' })).toBeVisible()
+
+  await rest.getByRole('button', { name: 'Пропустити' }).click()
+  await page.getByRole('button', { name: /Підхід 2 виконано/ }).click()
+  await expect(rest).toBeHidden()
+})
