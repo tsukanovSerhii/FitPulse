@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Check, Clock, Plus } from 'lucide-react'
-import { Badge, Button, Disclosure, Modal, SegmentedControl, Skeleton } from '@/shared/ui'
+import { Badge, Button, Disclosure, SegmentedControl, Skeleton } from '@/shared/ui'
 import type { Exercise } from '@/features/exercises'
 import { cn } from '@/shared/lib/cn'
 import { plural } from '@/shared/lib/formatters'
 import { filterTemplates, templateDays, type DaysFilter } from '../lib/templates'
 import { ALL_DAYS, DAY_SHORT_LABELS, PLAN_GOAL_LABELS, PLAN_LEVEL_LABELS, type PlanGoal, type PlanTemplate } from '../model/types'
 
-export interface PlanTemplatesModalProps {
-  isOpen: boolean
-  onClose: () => void
+export interface PlanLibraryProps {
   allExercises: Exercise[]
   /** Template ids the user already has a plan from */
   addedTemplateIds: Set<string>
@@ -33,58 +31,56 @@ const GOAL_OPTIONS: { value: PlanGoal | 'all'; label: string }[] = [
   { value: 'general', label: 'Загальна' },
 ]
 
-export function PlanTemplatesModal({ isOpen, onClose, allExercises, addedTemplateIds, onAdd }: PlanTemplatesModalProps) {
+/** Ready-made programs shown below the user's own plans. */
+export function PlanLibrary({ allExercises, addedTemplateIds, onAdd }: PlanLibraryProps) {
   const [templates, setTemplates] = useState<PlanTemplate[] | null>(null)
   const [days, setDays] = useState<DaysFilter>('all')
   const [goal, setGoal] = useState<PlanGoal | 'all'>('all')
 
-  // The library is only needed once the dialog opens
+  // Kept out of the page chunk; loads right after the page renders
   useEffect(() => {
-    if (!isOpen || templates) return
     import('../api/templates').then((module) => setTemplates(module.PLAN_TEMPLATES))
-  }, [isOpen, templates])
+  }, [])
 
   const names = useMemo(() => new Map(allExercises.map((e) => [e.id, e.name])), [allExercises])
   const visible = templates ? filterTemplates(templates, { days, goal }) : []
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      maxWidth="2xl"
-      eyebrow="Бібліотека"
-      title="Готові програми"
-      subtitle="Додайте програму до своїх і змінюйте її як завгодно: шаблон залишиться незмінним."
-    >
-      <div className="space-y-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-          <SegmentedControl label="Днів на тиждень" size="sm" options={DAY_OPTIONS} value={days} onChange={setDays} className="self-start" />
-          <div className="-mx-1 overflow-x-auto px-1">
-            <SegmentedControl label="Ціль" size="sm" options={GOAL_OPTIONS} value={goal} onChange={setGoal} />
-          </div>
-        </div>
-
-        {!templates ? (
-          <div className="space-y-3" aria-busy="true" aria-label="Завантаження програм">
-            {[0, 1, 2].map((i) => (
-              <Skeleton key={i} className="h-36 w-full rounded-lg" />
-            ))}
-          </div>
-        ) : visible.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-line px-4 py-8 text-center text-sm text-fg-muted">
-            Немає програм з такими умовами. Спробуйте інший фільтр.
-          </p>
-        ) : (
-          <ul className="space-y-3">
-            {visible.map((template) => (
-              <li key={template.id}>
-                <TemplateCard template={template} names={names} added={addedTemplateIds.has(template.id)} onAdd={() => onAdd(template)} />
-              </li>
-            ))}
-          </ul>
-        )}
+    <section id="library" aria-labelledby="library-title" className="scroll-mt-20 space-y-4 pt-4">
+      <div>
+        <h2 id="library-title" className="text-2xl text-fg">
+          Готові програми{templates && <span className="ml-2 font-mono text-base text-fg-subtle tabular-nums">{templates.length}</span>}
+        </h2>
+        <p className="mt-1 text-sm text-fg-muted">Додайте програму до своїх і змінюйте її як завгодно: шаблон залишиться незмінним.</p>
       </div>
-    </Modal>
+
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+        <SegmentedControl label="Днів на тиждень" size="sm" options={DAY_OPTIONS} value={days} onChange={setDays} className="self-start" />
+        <div className="-mx-1 overflow-x-auto px-1">
+          <SegmentedControl label="Ціль" size="sm" options={GOAL_OPTIONS} value={goal} onChange={setGoal} />
+        </div>
+      </div>
+
+      {!templates ? (
+        <div className="grid gap-3 lg:grid-cols-2" aria-busy="true" aria-label="Завантаження програм">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-56 w-full rounded-lg" />
+          ))}
+        </div>
+      ) : visible.length === 0 ? (
+        <p className="rounded-lg border border-dashed border-line px-4 py-8 text-center text-sm text-fg-muted">
+          Немає програм з такими умовами. Спробуйте інший фільтр.
+        </p>
+      ) : (
+        <ul className="grid items-start gap-3 lg:grid-cols-2">
+          {visible.map((template) => (
+            <li key={template.id}>
+              <TemplateCard template={template} names={names} added={addedTemplateIds.has(template.id)} onAdd={() => onAdd(template)} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   )
 }
 
@@ -107,7 +103,7 @@ function TemplateCard({ template, names, added, onAdd }: { template: PlanTemplat
           </div>
         </div>
         <Button size="sm" variant={added ? 'ghost' : 'primary'} icon={added ? <Check /> : <Plus />} onClick={onAdd} className="shrink-0">
-          {added ? 'Ще раз' : 'Додати'}
+          {added ? 'Додати ще раз' : 'Додати'}
         </Button>
       </div>
 
