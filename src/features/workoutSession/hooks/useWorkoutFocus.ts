@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { confirmAction } from '@/shared/ui'
 import type { Exercise } from '@/features/exercises/model'
@@ -14,7 +14,6 @@ import {
   removeSessionExercise,
   replaceSessionExercise,
   setCurrentExerciseIndex,
-  tickWorkoutTimer,
 } from '../model/workoutSessionSlice'
 
 /** Derived state and actions for the active workout screen. */
@@ -23,11 +22,6 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   const session = useAppSelector((state) => state.workoutSession)
   const exercises = useAppSelector((state) => state.exercises.items)
   const history = useAppSelector((state) => state.progress.history)
-
-  useEffect(() => {
-    const id = window.setInterval(() => dispatch(tickWorkoutTimer()), 1000)
-    return () => clearInterval(id)
-  }, [dispatch])
 
   const isFree = session.mode === 'free'
   const exerciseMap = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises])

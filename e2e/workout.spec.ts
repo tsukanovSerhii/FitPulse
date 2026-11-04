@@ -52,3 +52,27 @@ test('a free workout is logged set by set and saved as a plan', async ({ page })
   await expect(page.getByText('Спина й плечі')).toBeVisible()
   await expect(page.getByText('1 день · 2 вправи')).toBeVisible()
 })
+
+test('timers keep counting while the screen is off', async ({ page }) => {
+  // Page timers stop firing while the clock jumps, as on a phone with the screen off
+  await page.clock.install()
+  await signUp(page)
+  await page.goto('/workout')
+  await page.getByRole('button', { name: /Понеділок/ }).first().click()
+  await page.getByRole('button', { name: /Підхід 1 виконано/ }).click()
+
+  const rest = page.getByRole('region', { name: 'Відпочинок' })
+  await expect(rest).toContainText('01:30')
+
+  const now = await page.evaluate(() => Date.now())
+  await page.clock.setSystemTime(now + 60_000)
+  await page.clock.runFor(1000)
+  await expect(rest).toContainText('00:29')
+  await expect(page.getByRole('banner').getByText(/^01:0\d$/)).toBeVisible()
+
+  // Minimised, the workout keeps time in the tab bar too
+  await page.getByRole('button', { name: 'Згорнути тренування' }).click()
+  await page.clock.setSystemTime(now + 180_000)
+  await page.clock.runFor(1000)
+  await expect(page.getByRole('link', { name: /Тренування триває, 03:0\d/ })).toBeVisible()
+})

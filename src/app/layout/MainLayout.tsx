@@ -1,6 +1,7 @@
 import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { ErrorBoundary, ErrorScreen } from '@/shared/ui'
+import { useSessionClock } from '@/features/workoutSession/model'
 import { AppSidebar } from './AppSidebar'
 import { Footer } from './Footer'
 import { MobileHeader } from './MobileHeader'
@@ -9,6 +10,7 @@ import { PageSkeleton } from './PageSkeleton'
 
 export function MainLayout() {
   const { pathname } = useLocation()
+  useSessionClock()
 
   useEffect(() => {
     window.scrollTo({ top: 0 })
