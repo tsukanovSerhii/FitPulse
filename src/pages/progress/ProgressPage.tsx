@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Trophy } from 'lucide-react'
 import { toast } from 'sonner'
@@ -8,6 +8,7 @@ import {
   deleteWorkoutLogAsync,
   fetchProgress,
   ListSkeleton,
+  PeriodSummaryCard,
   ProgressCharts,
   ProgressSummary,
   ProgressTabs,
@@ -23,6 +24,7 @@ export function ProgressPage() {
   const dispatch = useAppDispatch()
   const location = useLocation()
   const { history, personalRecords, status } = useAppSelector((state) => state.progress)
+  const [now] = useState(() => new Date())
 
   useEffect(() => {
     if (history.length === 0) dispatch(fetchProgress())
@@ -52,6 +54,8 @@ export function ProgressPage() {
       <ProgressTabs />
 
       {isLoading ? <SummarySkeleton /> : <ProgressSummary history={history} personalRecords={personalRecords} />}
+
+      {!isLoading && history.length > 0 && <PeriodSummaryCard history={history} now={now} />}
 
       {!isLoading && history.length > 0 && <ProgressCharts history={history} />}
 

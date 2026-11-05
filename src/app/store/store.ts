@@ -4,6 +4,7 @@ import { workoutPlanReducer } from '@/features/workoutPlan/model'
 import { workoutSessionReducer } from '@/features/workoutSession/model'
 import { progressReducer } from '@/features/progress/model'
 import { profileReducer } from '@/features/profile/model'
+import { bodyReducer } from '@/features/body/model'
 import { themeReducer } from '@/features/theme/model'
 import { authReducer, loggedOut, loginUser, registerUser } from '@/features/auth/model'
 import { listenerMiddleware } from './listeners'
@@ -14,6 +15,7 @@ const appReducer = combineReducers({
   workoutSession: workoutSessionReducer,
   progress: progressReducer,
   profile: profileReducer,
+  body: bodyReducer,
   theme: themeReducer,
   auth: authReducer,
 })
@@ -21,7 +23,7 @@ const appReducer = combineReducers({
 export type RootState = ReturnType<typeof appReducer>
 
 /** Slices that hold one account's data; theme and auth survive a change of user. */
-const USER_SLICES = ['exercises', 'workoutPlan', 'workoutSession', 'progress', 'profile'] as const
+const USER_SLICES = ['exercises', 'workoutPlan', 'workoutSession', 'progress', 'profile', 'body'] as const
 
 const isUserChange = isAnyOf(loggedOut, loginUser.fulfilled, registerUser.fulfilled)
 
