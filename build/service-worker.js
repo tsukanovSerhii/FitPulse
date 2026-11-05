@@ -17,6 +17,17 @@ self.addEventListener('activate', (event) => {
   )
 })
 
+// Tapping the rest notification brings the workout back
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      const open = list.find((client) => 'focus' in client)
+      return open ? open.focus() : self.clients.openWindow('/workout')
+    }),
+  )
+})
+
 // The page asks a waiting worker to take over when the user accepts the update.
 self.addEventListener('message', (event) => {
   if (event.data === 'skip-waiting') self.skipWaiting()
