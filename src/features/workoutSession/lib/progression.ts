@@ -69,3 +69,12 @@ export function suggestNext(
     kind: 'weight',
   }
 }
+
+/** In a light week: about 60 % of last time and an easy target, with no push for progress. */
+export function deloadSuggestion(previous: LastPerformance | null, target: { reps: number }): Suggestion {
+  if (previous?.weightKg) {
+    const weight = Math.max(2.5, roundTo(previous.weightKg * 0.6, 2.5))
+    return { weight, reps: target.reps, text: `Легкий тиждень: ${kg(weight)} × ${target.reps}, приблизно 60 % від минулого разу. Без відмови.`, kind: 'repeat' }
+  }
+  return { reps: target.reps, text: 'Легкий тиждень: робіть підходи з запасом 3–4 повтори, без відмови.', kind: 'repeat' }
+}

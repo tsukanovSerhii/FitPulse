@@ -50,12 +50,26 @@ export interface WorkoutPlan {
   description?: string
   /** Set when the plan was added from the template library */
   templateId?: string
+  /** Periodized plans: phases of the cycle and the week it started */
+  cycle?: { startDate: string; phases: CyclePhase[] }
+  /** A light week switched on by hand lasts until this moment */
+  deloadUntil?: string
   createdAt: string
   updatedAt: string
   schedule: Record<DayOfWeek, PlanExercise[]>
 }
 
 export type TemplateExercise = Omit<PlanExercise, 'id' | 'order'>
+
+/** One stage of a periodized cycle: its sets and reps replace the plan's for every exercise */
+export interface CyclePhase {
+  name: string
+  weeks: number
+  sets?: number
+  reps?: number
+  /** A light week: fewer sets, about 60 % of the usual weight */
+  deload?: boolean
+}
 
 export type PlanGoal = 'muscle' | 'strength' | 'fatLoss' | 'general'
 
@@ -83,6 +97,10 @@ export interface PlanTemplate {
   /** Typical session length */
   minutes: number
   schedule: Partial<Record<DayOfWeek, TemplateExercise[]>>
+  /** Needs only what fits at home: dumbbells, a bench, a pull-up bar or nothing */
+  home?: boolean
+  /** Periodized program: the phases it runs through */
+  cycle?: CyclePhase[]
 }
 
 export interface WorkoutPlanState {

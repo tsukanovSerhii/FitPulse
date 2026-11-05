@@ -6,6 +6,7 @@ export type DaysFilter = 'all' | '2-3' | '4-5' | '6+'
 export interface TemplateFilters {
   days: DaysFilter
   goal: PlanGoal | 'all'
+  place?: 'all' | 'gym' | 'home'
 }
 
 export const templateDays = (template: PlanTemplate): DayOfWeek[] =>
@@ -17,9 +18,10 @@ const DAY_RANGES: Record<Exclude<DaysFilter, 'all'>, [number, number]> = {
   '6+': [6, 7],
 }
 
-export function filterTemplates(templates: PlanTemplate[], { days, goal }: TemplateFilters): PlanTemplate[] {
+export function filterTemplates(templates: PlanTemplate[], { days, goal, place = 'all' }: TemplateFilters): PlanTemplate[] {
   return templates.filter((template) => {
     if (goal !== 'all' && template.goal !== goal) return false
+    if (place !== 'all' && Boolean(template.home) !== (place === 'home')) return false
     if (days === 'all') return true
     const count = templateDays(template).length
     const [min, max] = DAY_RANGES[days]
@@ -47,6 +49,7 @@ export function planFromTemplate(template: PlanTemplate, { days, now = new Date(
     templateId: template.id,
     name: template.name,
     description: template.description,
+    ...(template.cycle && { cycle: { startDate: iso, phases: template.cycle } }),
     createdAt: iso,
     updatedAt: iso,
     schedule,

@@ -7,7 +7,7 @@ import { buildWorkoutLog, workingSets } from '../lib/summary'
 import { lastPerformance } from '../lib/strength'
 import { freeSessionExercise } from '../lib/freeWorkout'
 import { restFor, useTimerSettings } from '../lib/timerSettings'
-import { suggestNext } from '../lib/progression'
+import { deloadSuggestion, suggestNext } from '../lib/progression'
 import { nextInSuperset, supersetPosition } from '../lib/supersets'
 import type { SetExtras } from '../components/focus/ActiveSetPanel'
 import {
@@ -38,7 +38,8 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   const doneSets = workingSets(allSets)
   const lastSet = doneSets[doneSets.length - 1]
   const previous = useMemo(() => (planExercise ? lastPerformance(history, planExercise.exerciseId) : null), [history, planExercise])
-  const suggestion = !isFree && planExercise && exercise ? suggestNext(previous, planExercise, exercise) : null
+  const suggestion =
+    !isFree && planExercise && exercise ? (session.deload ? deloadSuggestion(previous, planExercise) : suggestNext(previous, planExercise, exercise)) : null
   // Working sets start from the progression suggestion, then follow what the user just lifted
   const startWeight = lastSet?.weight ?? suggestion?.weight ?? planExercise?.weight
   const startReps = lastSet?.reps ?? suggestion?.reps ?? planExercise?.reps ?? 10

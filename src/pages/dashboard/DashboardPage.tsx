@@ -1,11 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
+import { useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Stat, buttonClasses } from '@/shared/ui'
 import { AdSlot } from '@/features/ads'
 import { DashboardSkeleton, LastWorkoutCard, TodayCard, WeekStrip, useDashboardData } from '@/features/dashboard'
-import { DAY_LABELS } from '@/features/workoutPlan'
-import { startWorkout } from '@/features/workoutSession'
+import { useStartPlanDay } from '@/features/workoutSession'
 import { formatNumber } from '@/shared/lib/formatters'
 import { PAGE_META } from '../meta'
 
@@ -16,8 +15,8 @@ function greeting(hour: number) {
 }
 
 export function DashboardPage() {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const startPlanDay = useStartPlanDay()
   const userName = useAppSelector((state) => state.auth.user?.name ?? state.profile.profile.name)
   const data = useDashboardData()
   const { now, today, session, activePlan, todayExercises } = data
@@ -25,10 +24,8 @@ export function DashboardPage() {
   const isLoading = (plansStatus === 'idle' || plansStatus === 'loading') && !activePlan
 
   const handleStart = () => {
-    if (!session.isActive && todayExercises.length > 0 && activePlan) {
-      dispatch(startWorkout({ planId: activePlan.id, dayLabel: `${DAY_LABELS[today]} (${activePlan.name})`, exercises: todayExercises }))
-    }
-    navigate('/workout')
+    if (!session.isActive && todayExercises.length > 0 && activePlan) startPlanDay(activePlan.id, today)
+    else navigate('/workout')
   }
 
   return (

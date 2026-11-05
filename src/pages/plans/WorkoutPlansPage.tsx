@@ -132,6 +132,7 @@ export function WorkoutPlansPage() {
               onSetActive={actions.setActive}
               onEdit={() => setEditor({ open: true, plan })}
               onEditDays={() => setDaysFor({ plan })}
+              onToggleDeload={() => actions.toggleDeload(plan)}
               onEditDay={(planId, day) => setDayEditor({ planId, day })}
               onDelete={actions.remove}
               onStartDayWorkout={startPlanDay}

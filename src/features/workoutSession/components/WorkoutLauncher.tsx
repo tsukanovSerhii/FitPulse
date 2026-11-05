@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react'
 import { Dumbbell, Play } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { Button, LoadingRegion, PageHeader, Select, Skeleton } from '@/shared/ui'
-import { dayKeyOf, ALL_DAYS, DAY_LABELS, type PlanExercise } from '@/features/workoutPlan'
+import { dayKeyOf, ALL_DAYS, DAY_LABELS } from '@/features/workoutPlan'
 import { cn } from '@/shared/lib/cn'
 import { startWorkout } from '../model/workoutSessionSlice'
+import { useStartPlanDay } from '../hooks/useStartPlanDay'
 import { FREE_WORKOUT_LABEL } from '../lib/freeWorkout'
 
 export function WorkoutLauncher() {
@@ -18,8 +19,7 @@ export function WorkoutLauncher() {
   const plan = plans.find((p) => p.id === planId)
   const exerciseNames = useMemo(() => new Map(exercises.map((e) => [e.id, e.name])), [exercises])
 
-  const start = (dayLabel: string, items: PlanExercise[], fromPlanId: string | null) =>
-    dispatch(startWorkout({ planId: fromPlanId, dayLabel, exercises: items }))
+  const startPlanDay = useStartPlanDay()
 
   const startFree = () => dispatch(startWorkout({ planId: null, dayLabel: FREE_WORKOUT_LABEL, exercises: [], mode: 'free' }))
 
@@ -60,7 +60,7 @@ export function WorkoutLauncher() {
               <li key={day}>
                 <button
                   type="button"
-                  onClick={() => start(`${DAY_LABELS[day]} (${plan.name})`, items, plan.id)}
+                  onClick={() => startPlanDay(plan.id, day)}
                   className="flex w-full cursor-pointer items-center gap-4 p-4 text-left transition-colors hover:bg-surface-2"
                 >
                   <span className="min-w-0 flex-1">
