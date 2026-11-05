@@ -39,6 +39,8 @@ export interface PersonalRecord {
 }
 
 export interface ProgressState {
+  /** Workouts per week the user aims for */
+  weeklyGoal: number
   history: WorkoutHistoryLog[]
   personalRecords: Record<string, PersonalRecord>
   status: 'idle' | 'loading' | 'succeeded' | 'failed'

@@ -133,6 +133,8 @@ export interface ExercisesState {
   selectedExercise: Exercise | null
   filters: ExerciseFilters
   favorites: string[]
+  /** The user's notes per exercise id */
+  notes: Record<string, string>
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null
 }

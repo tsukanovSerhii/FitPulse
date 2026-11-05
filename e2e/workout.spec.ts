@@ -128,3 +128,12 @@ test('a finished workout can be edited and the exercise history follows', async 
   await expect(page.getByRole('heading', { name: 'Жим штанги лежачи' })).toBeVisible()
   await expect(page.getByText('150', { exact: true }).first()).toBeVisible()
 })
+
+test('the last workout can be repeated from the dashboard', async ({ page }) => {
+  await signUp(page)
+  await page.goto('/')
+  await expect(page.getByRole('region', { name: 'Ціль тижня' })).toBeVisible()
+  await page.getByRole('button', { name: 'Повторити це тренування' }).click()
+  await expect(page).toHaveURL('/workout')
+  await expect(page.getByRole('button', { name: /Підхід 1 виконано/ })).toBeVisible()
+})

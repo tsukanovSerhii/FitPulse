@@ -1,10 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useAppSelector } from '@/app/store/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Stat, buttonClasses } from '@/shared/ui'
 import { AdSlot } from '@/features/ads'
-import { DashboardSkeleton, LastWorkoutCard, TodayCard, WeekStrip, useDashboardData } from '@/features/dashboard'
-import { useStartPlanDay } from '@/features/workoutSession'
+import { DashboardSkeleton, LastWorkoutCard, TodayCard, WeekStrip, WeeklyGoalCard, useDashboardData } from '@/features/dashboard'
+import { setWeeklyGoal, weeklyGoalStats } from '@/features/progress/model'
+import { useRepeatWorkout, useStartPlanDay } from '@/features/workoutSession'
 import { formatNumber } from '@/shared/lib/formatters'
 import { PAGE_META } from '../meta'
 
@@ -17,6 +18,10 @@ function greeting(hour: number) {
 export function DashboardPage() {
   const navigate = useNavigate()
   const startPlanDay = useStartPlanDay()
+  const repeat = useRepeatWorkout()
+  const dispatch = useAppDispatch()
+  const history = useAppSelector((state) => state.progress.history)
+  const weeklyGoal = useAppSelector((state) => state.progress.weeklyGoal)
   const userName = useAppSelector((state) => state.auth.user?.name ?? state.profile.profile.name)
   const data = useDashboardData()
   const { now, today, session, activePlan, todayExercises } = data
@@ -57,6 +62,8 @@ export function DashboardPage() {
 
           <AdSlot placement="dashboard" />
 
+          <WeeklyGoalCard stats={weeklyGoalStats(history, weeklyGoal, now)} onChangeGoal={(goal) => dispatch(setWeeklyGoal(goal))} />
+
           <WeekStrip today={today} doneDays={data.doneDays} isPlanned={data.isPlanned} plannedCount={data.plannedThisWeek} />
 
           <section aria-label="Підсумки" className="grid grid-cols-3 divide-x divide-line rounded-lg border border-line bg-surface">
@@ -65,7 +72,7 @@ export function DashboardPage() {
             <Stat className="p-4 sm:p-5" label="Рекорди" value={data.recordsCount} hint="усього" accent />
           </section>
 
-          {data.lastLog && <LastWorkoutCard log={data.lastLog} />}
+          {data.lastLog && <LastWorkoutCard log={data.lastLog} onRepeat={session.isActive ? undefined : () => repeat(data.lastLog!)} />}
 
           {!activePlan && (
             <Link to="/plans" className={buttonClasses('outline', 'md', 'w-full')}>

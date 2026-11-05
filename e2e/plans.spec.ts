@@ -29,7 +29,7 @@ test('a template goes on the weekdays the user picks', async ({ page }) => {
   await signUp(page)
   await page.goto('/plans')
   const library = page.getByRole('region', { name: /Готові програми/ })
-  await expect(library.getByRole('article')).toHaveCount(15)
+  await expect(library.getByRole('article')).toHaveCount(19)
   await library.getByRole('radio', { name: '6 днів' }).click()
   await expect(library.getByRole('article')).toHaveCount(2)
   await library.getByRole('article').filter({ hasText: 'Push / Pull / Legs на 6 днів' }).getByRole('button', { name: 'Додати' }).click()

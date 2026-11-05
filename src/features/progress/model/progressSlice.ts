@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { ProgressState, WorkoutHistoryLog } from './types'
-import { progressApi } from '../api/progressApi'
+import { DEFAULT_WEEKLY_GOAL, progressApi } from '../api/progressApi'
 
 const initialState: ProgressState = {
+  weeklyGoal: DEFAULT_WEEKLY_GOAL,
   history: [],
   personalRecords: {},
   status: 'idle',
@@ -13,8 +14,8 @@ export const fetchProgress = createAsyncThunk(
   'progress/fetchProgress',
   async (_, { rejectWithValue }) => {
     try {
-      const data = await progressApi.getProgressData()
-      return data
+      const [data, weeklyGoal] = await Promise.all([progressApi.getProgressData(), progressApi.getWeeklyGoal()])
+      return { ...data, weeklyGoal }
     } catch (err) {
       return rejectWithValue((err as Error).message || 'Не вдалося завантажити прогрес')
     }
@@ -32,6 +33,8 @@ export const logWorkoutAsync = createAsyncThunk(
     }
   },
 )
+
+export const setWeeklyGoal = createAsyncThunk('progress/setWeeklyGoal', (goal: number) => progressApi.saveWeeklyGoal(goal))
 
 export const updateWorkoutLogAsync = createAsyncThunk(
   'progress/updateWorkoutLogAsync',
@@ -70,6 +73,7 @@ export const progressSlice = createSlice({
         state.status = 'succeeded'
         state.history = action.payload.history
         state.personalRecords = action.payload.personalRecords
+        state.weeklyGoal = action.payload.weeklyGoal
       })
       .addCase(fetchProgress.rejected, (state, action) => {
         state.status = 'failed'
@@ -78,6 +82,9 @@ export const progressSlice = createSlice({
       .addCase(logWorkoutAsync.fulfilled, (state, action) => {
         state.history.unshift(action.payload.log)
         state.personalRecords = action.payload.personalRecords
+      })
+      .addCase(setWeeklyGoal.pending, (state, action) => {
+        state.weeklyGoal = action.meta.arg
       })
       .addCase(updateWorkoutLogAsync.fulfilled, (state, action) => {
         const index = state.history.findIndex((item) => item.id === action.payload.log.id)

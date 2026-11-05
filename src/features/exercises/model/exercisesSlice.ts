@@ -21,6 +21,7 @@ const initialState: ExercisesState = {
   selectedExercise: null,
   filters: { ...initialFilters, ...sessionFilters },
   favorites: [],
+  notes: {},
   status: 'idle',
   error: null,
 }
@@ -52,12 +53,13 @@ export const fetchExercises = createAsyncThunk(
   'exercises/fetchExercises',
   async (_, { rejectWithValue }) => {
     try {
-      const [items, favorites, equipment] = await Promise.all([
+      const [items, favorites, equipment, notes] = await Promise.all([
         exercisesApi.getExercises(),
         exercisesApi.getFavorites(),
         exercisesApi.getMyEquipment(),
+        exercisesApi.getNotes(),
       ])
-      return { items, favorites, equipment }
+      return { items, favorites, equipment, notes }
     } catch (err) {
       return rejectWithValue((err as Error).message || 'Не вдалося завантажити вправи')
     }
@@ -78,6 +80,10 @@ export const addCustomExercise = createAsyncThunk(
 
 export const setMyEquipment = createAsyncThunk('exercises/setMyEquipment', (equipment: Equipment[]) =>
   exercisesApi.saveMyEquipment(equipment),
+)
+
+export const saveExerciseNote = createAsyncThunk('exercises/saveExerciseNote', ({ exerciseId, text }: { exerciseId: string; text: string }) =>
+  exercisesApi.saveNote(exerciseId, text),
 )
 
 export const toggleFavorite = createAsyncThunk(
@@ -131,6 +137,7 @@ export const exercisesSlice = createSlice({
         state.items = action.payload.items
         state.favorites = action.payload.favorites
         state.filters.equipment = action.payload.equipment
+        state.notes = action.payload.notes
         state.filteredItems = applyFilters(action.payload.items, state.filters)
       })
       .addCase(fetchExercises.rejected, (state, action) => {
@@ -145,6 +152,9 @@ export const exercisesSlice = createSlice({
       .addCase(setMyEquipment.pending, (state, action) => {
         state.filters.equipment = action.meta.arg
         state.filteredItems = applyFilters(state.items, state.filters)
+      })
+      .addCase(saveExerciseNote.fulfilled, (state, action) => {
+        state.notes = action.payload
       })
       .addCase(toggleFavorite.fulfilled, (state, action) => {
         state.favorites = action.payload

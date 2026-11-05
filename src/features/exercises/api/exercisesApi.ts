@@ -45,6 +45,19 @@ export const exercisesApi = {
     return equipment
   },
 
+  /** The user's own notes per exercise: seat position, grip, anything to remember */
+  async getNotes(): Promise<Record<string, string>> {
+    return loadUserData<Record<string, string>>(STORAGE_KEYS.EXERCISE_NOTES, {})
+  },
+
+  async saveNote(exerciseId: string, text: string): Promise<Record<string, string>> {
+    const notes = { ...loadUserData<Record<string, string>>(STORAGE_KEYS.EXERCISE_NOTES, {}) }
+    if (text.trim()) notes[exerciseId] = text.trim()
+    else delete notes[exerciseId]
+    saveUserData(STORAGE_KEYS.EXERCISE_NOTES, notes)
+    return notes
+  },
+
   async saveFavorites(favorites: string[]): Promise<string[]> {
     await delay(150)
     saveUserData(STORAGE_KEYS.EXERCISES_FAVORITES, favorites)

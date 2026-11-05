@@ -7,6 +7,7 @@ import { alternativesFor, variantsOf } from '../lib/variants'
 import type { Equipment, Exercise } from '../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 import { TechniquePlayer } from './technique/TechniquePlayer'
+import { ExerciseNote } from './ExerciseNote'
 
 export interface ExerciseDetailModalProps {
   exercise: Exercise | null
@@ -124,6 +125,8 @@ export function ExerciseDetailModal({
             {technique.mistakes.length > 0 && <PointList title="Типові помилки" items={technique.mistakes} tone="avoid" />}
           </div>
         )}
+
+        {onSelectExercise && <ExerciseNote key={exercise.id} exerciseId={exercise.id} />}
 
         {onSelectExercise && (
           <Link

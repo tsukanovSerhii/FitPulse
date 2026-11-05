@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Clock } from 'lucide-react'
+import { ArrowRight, Clock, RotateCcw } from 'lucide-react'
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { formatDate, formatDuration, formatNumber, pluralWord } from '@/shared/lib/formatters'
-import { Section } from '@/shared/ui'
+import { Button, Section } from '@/shared/ui'
 
-export function LastWorkoutCard({ log }: { log: WorkoutHistoryLog }) {
+export function LastWorkoutCard({ log, onRepeat }: { log: WorkoutHistoryLog; onRepeat?: () => void }) {
   const metrics = [
     { value: formatNumber(log.totalVolumeKg), unit: 'кг' },
     { value: log.totalSets, unit: 'підх.' },
@@ -39,6 +39,11 @@ export function LastWorkoutCard({ log }: { log: WorkoutHistoryLog }) {
           ))}
         </div>
       </Link>
+      {onRepeat && log.exercises.length > 0 && (
+        <Button variant="outline" className="mt-3 w-full" icon={<RotateCcw />} onClick={onRepeat}>
+          Повторити це тренування
+        </Button>
+      )}
     </Section>
   )
 }

@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
-import { Dumbbell, Play } from 'lucide-react'
+import { Dumbbell, Play, RotateCcw } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { Button, LoadingRegion, PageHeader, Select, Skeleton } from '@/shared/ui'
 import { dayKeyOf, ALL_DAYS, DAY_LABELS } from '@/features/workoutPlan'
 import { cn } from '@/shared/lib/cn'
 import { startWorkout } from '../model/workoutSessionSlice'
 import { useStartPlanDay } from '../hooks/useStartPlanDay'
+import { useRepeatWorkout } from '../hooks/useRepeatWorkout'
+import { latestRepeatable } from '../lib/repeat'
+import { formatDate } from '@/shared/lib/formatters'
 import { FREE_WORKOUT_LABEL } from '../lib/freeWorkout'
 
 export function WorkoutLauncher() {
@@ -20,6 +23,9 @@ export function WorkoutLauncher() {
   const exerciseNames = useMemo(() => new Map(exercises.map((e) => [e.id, e.name])), [exercises])
 
   const startPlanDay = useStartPlanDay()
+  const repeat = useRepeatWorkout()
+  const history = useAppSelector((state) => state.progress.history)
+  const lastLog = useMemo(() => latestRepeatable(history), [history])
 
   const startFree = () => dispatch(startWorkout({ planId: null, dayLabel: FREE_WORKOUT_LABEL, exercises: [], mode: 'free' }))
 
@@ -86,6 +92,23 @@ export function WorkoutLauncher() {
             )
           })}
         </ul>
+      )}
+
+      {lastLog && (
+        <div className="flex items-center justify-between gap-4 rounded-lg border border-line bg-surface p-4">
+          <div className="min-w-0">
+            <p className="flex items-center gap-2 font-semibold text-fg">
+              <RotateCcw className="size-4 text-accent" aria-hidden="true" />
+              Повторити минуле
+            </p>
+            <p className="mt-0.5 truncate text-sm text-fg-subtle">
+              {lastLog.dayLabel || lastLog.planName} · {formatDate(lastLog.date)}
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => repeat(lastLog)}>
+            Повторити
+          </Button>
+        </div>
       )}
 
       <div className="flex items-center justify-between gap-4 rounded-lg border border-dashed border-line-strong p-4">
