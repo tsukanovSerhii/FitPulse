@@ -24,6 +24,11 @@
 
 ![Головна, режим тренування, відпочинок і каталог вправ на телефоні](docs/screenshots/mobile.webp)
 
+## Документація
+
+Як влаштований застосунок, як працюють тренування й таймери і план бекенду — зі схемами в [docs/](docs/README.md):
+[архітектура](docs/architecture.md), [логіка тренувань](docs/workout-logic.md), [бекенд](docs/backend.md), [якість](docs/quality.md).
+
 ## Для кого
 
 - **Новачкам** — щоб знати, яку вправу робити і як правильно.
@@ -112,7 +117,7 @@ src/
     storage/      localStorage і sessionStorage
     seo/          мета-теги
     config/       змінні середовища, фото
-docs/             скриншоти й матеріали про проєкт
+docs/             документація зі схемами, скриншоти
 ```
 
 Модулі: `ads`, `auth`, `dashboard`, `exercises`, `landing`, `profile`, `progress`, `subscription`, `theme`, `workoutPlan`, `workoutSession`.
