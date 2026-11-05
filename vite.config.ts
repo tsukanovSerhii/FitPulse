@@ -8,6 +8,9 @@ import { preloadRoutes } from './build/preloadRoutePlugin.ts'
 import { serviceWorker } from './build/serviceWorkerPlugin.ts'
 import { prerenderPublicPages } from './build/prerenderPlugin.ts'
 
+// Error reports name the build they come from
+process.env.VITE_APP_VERSION ??= process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || new Date().toISOString().slice(0, 10)
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
