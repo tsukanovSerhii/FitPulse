@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
-import type { Equipment, Exercise, ExerciseFilters, ExercisesState, MuscleGroup } from './types'
+import type { Equipment, Exercise, ExerciseFilters, ExercisesState, Joint, MuscleGroup } from './types'
 import { exercisesApi } from '../api/exercisesApi'
 import { searchText } from '../lib/variants'
 import { matchesSearch } from '@/shared/lib/search'
@@ -9,11 +9,12 @@ const initialFilters: ExerciseFilters = {
   muscleGroup: 'all',
   difficulty: 'all',
   equipment: [],
+  limits: [],
   searchQuery: '',
 }
 
 // Equipment belongs to the account, so it comes from fetchExercises rather than the tab's saved filters
-const { equipment: _ignored, ...sessionFilters } = loadFromSession<Partial<ExerciseFilters>>(SESSION_KEYS.EXERCISE_FILTERS, {})
+const { equipment: _ignored, limits: _alsoIgnored, ...sessionFilters } = loadFromSession<Partial<ExerciseFilters>>(SESSION_KEYS.EXERCISE_FILTERS, {})
 
 const initialState: ExercisesState = {
   items: [],
@@ -21,6 +22,7 @@ const initialState: ExercisesState = {
   selectedExercise: null,
   filters: { ...initialFilters, ...sessionFilters },
   favorites: [],
+  notes: {},
   status: 'idle',
   error: null,
 }
@@ -40,6 +42,10 @@ function applyFilters(items: Exercise[], filters: ExerciseFilters): Exercise[] {
       return false
     }
 
+    if (filters.limits.length > 0 && item.stress?.some((joint) => filters.limits.includes(joint))) {
+      return false
+    }
+
     if (filters.equipment.length > 0 && !filters.equipment.includes(item.equipment)) {
       return false
     }
@@ -52,12 +58,14 @@ export const fetchExercises = createAsyncThunk(
   'exercises/fetchExercises',
   async (_, { rejectWithValue }) => {
     try {
-      const [items, favorites, equipment] = await Promise.all([
+      const [items, favorites, equipment, notes, limits] = await Promise.all([
         exercisesApi.getExercises(),
         exercisesApi.getFavorites(),
         exercisesApi.getMyEquipment(),
+        exercisesApi.getNotes(),
+        exercisesApi.getMyLimits(),
       ])
-      return { items, favorites, equipment }
+      return { items, favorites, equipment, notes, limits }
     } catch (err) {
       return rejectWithValue((err as Error).message || 'Не вдалося завантажити вправи')
     }
@@ -78,6 +86,12 @@ export const addCustomExercise = createAsyncThunk(
 
 export const setMyEquipment = createAsyncThunk('exercises/setMyEquipment', (equipment: Equipment[]) =>
   exercisesApi.saveMyEquipment(equipment),
+)
+
+export const setMyLimits = createAsyncThunk('exercises/setMyLimits', (limits: Joint[]) => exercisesApi.saveMyLimits(limits))
+
+export const saveExerciseNote = createAsyncThunk('exercises/saveExerciseNote', ({ exerciseId, text }: { exerciseId: string; text: string }) =>
+  exercisesApi.saveNote(exerciseId, text),
 )
 
 export const toggleFavorite = createAsyncThunk(
@@ -131,6 +145,8 @@ export const exercisesSlice = createSlice({
         state.items = action.payload.items
         state.favorites = action.payload.favorites
         state.filters.equipment = action.payload.equipment
+        state.notes = action.payload.notes
+        state.filters.limits = action.payload.limits
         state.filteredItems = applyFilters(action.payload.items, state.filters)
       })
       .addCase(fetchExercises.rejected, (state, action) => {
@@ -145,6 +161,13 @@ export const exercisesSlice = createSlice({
       .addCase(setMyEquipment.pending, (state, action) => {
         state.filters.equipment = action.meta.arg
         state.filteredItems = applyFilters(state.items, state.filters)
+      })
+      .addCase(setMyLimits.pending, (state, action) => {
+        state.filters.limits = action.meta.arg
+        state.filteredItems = applyFilters(state.items, state.filters)
+      })
+      .addCase(saveExerciseNote.fulfilled, (state, action) => {
+        state.notes = action.payload
       })
       .addCase(toggleFavorite.fulfilled, (state, action) => {
         state.favorites = action.payload

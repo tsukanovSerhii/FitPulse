@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Heart, SlidersHorizontal } from 'lucide-react'
 import { Button, IconButton, Modal, SearchInput } from '@/shared/ui'
 import { cn } from '@/shared/lib/cn'
-import type { Difficulty, Equipment, ExerciseFilters, MuscleGroup } from '../model/types'
-import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
+import type { Difficulty, Equipment, ExerciseFilters, Joint, MuscleGroup } from '../model/types'
+import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, JOINT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 
 const MUSCLE_GROUPS: (MuscleGroup | 'all')[] = ['all', 'chest', 'back', 'legs', 'shoulders', 'biceps', 'triceps', 'abs', 'cardio']
 
@@ -16,7 +16,7 @@ export interface ExerciseFiltersBarProps {
   resultCount: number
 }
 
-const toggle = (list: Equipment[], item: Equipment) => (list.includes(item) ? list.filter((e) => e !== item) : [...list, item])
+const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter((e) => e !== item) : [...list, item])
 
 function Chip({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -43,7 +43,7 @@ export function ExerciseFiltersBar({
   resultCount,
 }: ExerciseFiltersBarProps) {
   const [sheetOpen, setSheetOpen] = useState(false)
-  const extraFilters = Number(filters.difficulty !== 'all') + Number(filters.equipment.length > 0)
+  const extraFilters = Number(filters.difficulty !== 'all') + Number(filters.equipment.length > 0) + Number(filters.limits.length > 0)
   const hasAnyFilter = extraFilters > 0 || filters.muscleGroup !== 'all' || filters.searchQuery !== '' || favoritesOnly
 
   return (
@@ -114,7 +114,7 @@ export function ExerciseFiltersBar({
         maxWidth="md"
         footer={
           <>
-            <Button variant="ghost" onClick={() => onChange({ difficulty: 'all', equipment: [] })}>
+            <Button variant="ghost" onClick={() => onChange({ difficulty: 'all', equipment: [], limits: [] })}>
               Скинути
             </Button>
             <Button onClick={() => setSheetOpen(false)}>Показати {resultCount}</Button>
@@ -145,6 +145,17 @@ export function ExerciseFiltersBar({
               {(Object.keys(EQUIPMENT_LABELS) as Equipment[]).map((eq) => (
                 <Chip key={eq} selected={filters.equipment.includes(eq)} onClick={() => onChange({ equipment: toggle(filters.equipment, eq) })}>
                   {EQUIPMENT_LABELS[eq]}
+                </Chip>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset className="space-y-3">
+            <legend className="text-xs font-semibold uppercase tracking-wider text-fg-muted">Бережу суглоби</legend>
+            <p className="text-xs text-fg-subtle">Вправи, що помітно навантажують позначене, сховаються, а заміна їх не пропонуватиме.</p>
+            <div className="flex flex-wrap gap-2">
+              {(Object.keys(JOINT_LABELS) as Joint[]).map((joint) => (
+                <Chip key={joint} selected={filters.limits.includes(joint)} onClick={() => onChange({ limits: toggle(filters.limits, joint) })}>
+                  {JOINT_LABELS[joint]}
                 </Chip>
               ))}
             </div>

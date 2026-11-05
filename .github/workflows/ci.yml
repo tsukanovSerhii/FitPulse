@@ -27,6 +27,8 @@ jobs:
       - run: npm test
       - name: Type check and production build
         run: npm run build
+      - name: Bundle size budget
+        run: npm run check:size
       - uses: actions/upload-artifact@v4
         with:
           name: fitpulse-dist

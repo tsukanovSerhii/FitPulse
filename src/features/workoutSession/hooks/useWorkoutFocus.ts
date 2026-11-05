@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { confirmAction } from '@/shared/ui'
-import type { Exercise } from '@/features/exercises/model'
+import { fetchExercises, type Exercise } from '@/features/exercises/model'
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { buildWorkoutLog, workingSets } from '../lib/summary'
 import { lastPerformance } from '../lib/strength'
 import { freeSessionExercise } from '../lib/freeWorkout'
 import { restFor, useTimerSettings } from '../lib/timerSettings'
-import { suggestNext } from '../lib/progression'
+import { deloadSuggestion, suggestNext } from '../lib/progression'
 import { nextInSuperset, supersetPosition } from '../lib/supersets'
 import type { SetExtras } from '../components/focus/ActiveSetPanel'
 import {
@@ -38,7 +38,8 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
   const doneSets = workingSets(allSets)
   const lastSet = doneSets[doneSets.length - 1]
   const previous = useMemo(() => (planExercise ? lastPerformance(history, planExercise.exerciseId) : null), [history, planExercise])
-  const suggestion = !isFree && planExercise && exercise ? suggestNext(previous, planExercise, exercise) : null
+  const suggestion =
+    !isFree && planExercise && exercise ? (session.deload ? deloadSuggestion(previous, planExercise) : suggestNext(previous, planExercise, exercise)) : null
   // Working sets start from the progression suggestion, then follow what the user just lifted
   const startWeight = lastSet?.weight ?? suggestion?.weight ?? planExercise?.weight
   const startReps = lastSet?.reps ?? suggestion?.reps ?? planExercise?.reps ?? 10
@@ -146,7 +147,9 @@ export function useWorkoutFocus(onFinish: (log: WorkoutHistoryLog) => void) {
       })
       if (!ok) return
     }
-    onFinish(buildWorkoutLog(session, (id) => exerciseMap.get(id)?.name || 'Вправа'))
+    // Finishing before the catalog has loaded would save every exercise as "Вправа"
+    const catalog = exercises.length > 0 ? exerciseMap : new Map((await dispatch(fetchExercises()).unwrap()).items.map((e) => [e.id, e]))
+    onFinish(buildWorkoutLog(session, (id) => catalog.get(id)?.name || 'Вправа'))
   }
 
   const cancel = async () => {

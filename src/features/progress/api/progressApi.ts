@@ -50,7 +50,19 @@ export function recalculatePersonalRecords(
   return prs
 }
 
+export const DEFAULT_WEEKLY_GOAL = 3
+
 export const progressApi = {
+  async getWeeklyGoal(): Promise<number> {
+    return loadUserData<number>(STORAGE_KEYS.WEEKLY_GOAL, DEFAULT_WEEKLY_GOAL)
+  },
+
+  async saveWeeklyGoal(goal: number): Promise<number> {
+    const clean = Math.max(1, Math.min(7, Math.round(goal)))
+    saveUserData(STORAGE_KEYS.WEEKLY_GOAL, clean)
+    return clean
+  },
+
   async getProgressData(): Promise<{
     history: WorkoutHistoryLog[]
     personalRecords: Record<string, PersonalRecord>

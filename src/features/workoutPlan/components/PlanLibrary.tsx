@@ -23,6 +23,12 @@ const DAY_OPTIONS: { value: DaysFilter; label: string }[] = [
   { value: '6+', label: '6 днів' },
 ]
 
+const PLACE_OPTIONS: { value: 'all' | 'gym' | 'home'; label: string }[] = [
+  { value: 'all', label: 'Зал і дім' },
+  { value: 'gym', label: 'Зал' },
+  { value: 'home', label: 'Вдома' },
+]
+
 const GOAL_OPTIONS: { value: PlanGoal | 'all'; label: string }[] = [
   { value: 'all', label: 'Усі цілі' },
   { value: 'muscle', label: 'Маса' },
@@ -36,6 +42,7 @@ export function PlanLibrary({ allExercises, addedTemplateIds, onAdd }: PlanLibra
   const [templates, setTemplates] = useState<PlanTemplate[] | null>(null)
   const [days, setDays] = useState<DaysFilter>('all')
   const [goal, setGoal] = useState<PlanGoal | 'all'>('all')
+  const [place, setPlace] = useState<'all' | 'gym' | 'home'>('all')
 
   // Kept out of the page chunk; loads right after the page renders
   useEffect(() => {
@@ -43,7 +50,7 @@ export function PlanLibrary({ allExercises, addedTemplateIds, onAdd }: PlanLibra
   }, [])
 
   const names = useMemo(() => new Map(allExercises.map((e) => [e.id, e.name])), [allExercises])
-  const visible = templates ? filterTemplates(templates, { days, goal }) : []
+  const visible = templates ? filterTemplates(templates, { days, goal, place }) : []
 
   return (
     <section id="library" aria-labelledby="library-title" className="scroll-mt-20 space-y-4 pt-4">
@@ -59,6 +66,7 @@ export function PlanLibrary({ allExercises, addedTemplateIds, onAdd }: PlanLibra
         <div className="-mx-1 overflow-x-auto px-1">
           <SegmentedControl label="Ціль" size="sm" options={GOAL_OPTIONS} value={goal} onChange={setGoal} />
         </div>
+        <SegmentedControl label="Де тренуєтесь" size="sm" options={PLACE_OPTIONS} value={place} onChange={setPlace} className="self-start" />
       </div>
 
       {!templates ? (
@@ -97,6 +105,8 @@ function TemplateCard({ template, names, added, onAdd }: { template: PlanTemplat
               {PLAN_LEVEL_LABELS[template.level]}
             </Badge>
             <Badge size="sm">{PLAN_GOAL_LABELS[template.goal]}</Badge>
+            {template.cycle && <Badge size="sm" variant="info">{template.cycle.reduce((n, p) => n + p.weeks, 0)} тижнів</Badge>}
+            {template.home && <Badge size="sm">Вдома</Badge>}
             <span className="inline-flex items-center gap-1 text-xs text-fg-subtle">
               <Clock className="size-3.5" aria-hidden="true" />~{template.minutes} хв
             </span>

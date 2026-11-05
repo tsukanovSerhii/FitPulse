@@ -1,3 +1,4 @@
+import { reportError } from '@/shared/lib/errorReporter'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 export interface ErrorBoundaryProps {
@@ -26,6 +27,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     console.error('[ErrorBoundary]', error, info.componentStack)
+    reportError(error, 'render')
   }
 
   reset = () => this.setState({ error: null })

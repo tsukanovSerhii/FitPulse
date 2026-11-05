@@ -13,6 +13,7 @@ import {
 import type { DayOfWeek, PlanExercise, PlanTemplate, WorkoutPlan } from '../model/types'
 import { planFromTemplate } from '../lib/templates'
 import { assignTrainingDays } from '../lib/trainingDays'
+import { deloadUntilFrom, manualDeload } from '../lib/cycle'
 
 type ExerciseUpdates = Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>
 
@@ -26,6 +27,14 @@ export function usePlanActions() {
     },
 
     setActive: (planId: string) => dispatch(setActivePlanAsync(planId)),
+
+    /** Switches a hand-made light week on for seven days, or off again. */
+    toggleDeload: async (plan: WorkoutPlan) => {
+      const on = !manualDeload(plan)
+      const { deloadUntil: _drop, ...rest } = plan
+      await dispatch(savePlanAsync(on ? { ...rest, deloadUntil: deloadUntilFrom() } : rest)).unwrap()
+      toast.success(on ? 'Легкий тиждень увімкнено на 7 днів' : 'Легкий тиждень вимкнено')
+    },
 
     /** Moves the plan's sessions onto the weekdays the user trains. */
     setTrainingDays: async (plan: WorkoutPlan, days: DayOfWeek[]) => {

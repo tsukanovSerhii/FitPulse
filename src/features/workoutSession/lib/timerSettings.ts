@@ -12,6 +12,8 @@ export interface TimerSettings {
   step: 15 | 30
   /** Show the general warm-up before the first exercise */
   warmupReminder: boolean
+  /** Show "Відпочинок до 14:32" on the lock screen when the phone locks mid-rest */
+  restNotifications: boolean
 }
 
 export const DEFAULT_TIMER_SETTINGS: TimerSettings = {
@@ -22,6 +24,7 @@ export const DEFAULT_TIMER_SETTINGS: TimerSettings = {
   vibration: true,
   step: 15,
   warmupReminder: true,
+  restNotifications: false,
 }
 
 export const REST_LIMITS = { min: 15, max: 600, step: 15 }

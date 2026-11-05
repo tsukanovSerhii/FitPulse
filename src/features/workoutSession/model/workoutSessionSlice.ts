@@ -87,10 +87,12 @@ export const workoutSessionSlice = createSlice({
         dayLabel: string | null
         exercises: PlanExercise[]
         mode?: SessionMode
+        deload?: boolean
       }>,
     ) => {
       state.isActive = true
       state.mode = action.payload.mode ?? 'plan'
+      state.deload = action.payload.deload ?? false
       state.planId = action.payload.planId
       state.dayLabel = action.payload.dayLabel
       state.exercises = action.payload.exercises

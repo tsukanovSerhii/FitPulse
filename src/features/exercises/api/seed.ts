@@ -8,6 +8,7 @@ import { LEGS } from './catalog/legs'
 import { SHOULDERS } from './catalog/shoulders'
 import { VARIANT_GROUPS } from './catalog/variants'
 import { SEARCH_ALIASES } from './catalog/aliases'
+import { JOINT_STRESS } from './catalog/joints'
 
 const variants = new Map(
   VARIANT_GROUPS.flatMap((group) =>
@@ -18,5 +19,6 @@ const variants = new Map(
 export const INITIAL_EXERCISES: Exercise[] = [...CHEST, ...BACK, ...LEGS, ...SHOULDERS, ...ARMS, ...CORE, ...CARDIO].map((exercise) => {
   const variant = variants.get(exercise.id)
   const aliases = SEARCH_ALIASES[exercise.id]
-  return { ...exercise, ...(variant && { variant }), ...(aliases && { aliases }) }
+  const stress = JOINT_STRESS[exercise.id]
+  return { ...exercise, ...(variant && { variant }), ...(aliases && { aliases }), ...(stress && { stress }) }
 })

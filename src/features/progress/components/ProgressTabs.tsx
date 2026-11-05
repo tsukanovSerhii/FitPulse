@@ -4,6 +4,7 @@ import { cn } from '@/shared/lib/cn'
 const TABS = [
   { to: '/progress', label: 'Огляд' },
   { to: '/progress/journal', label: 'Журнал' },
+  { to: '/progress/body', label: 'Тіло' },
 ]
 
 /** Route-backed tabs: each tab is a page, so the browser history and links work as expected. */

@@ -1,9 +1,10 @@
 import { useId, useMemo } from 'react'
-import { CalendarDays, Check, ChevronDown, Pencil, Play, Plus, Trash2 } from 'lucide-react'
+import { BatteryCharging, CalendarDays, Check, ChevronDown, Pencil, Play, Plus, Trash2 } from 'lucide-react'
 import { Badge, Button, IconButton } from '@/shared/ui'
 import type { Exercise } from '@/features/exercises'
 import { cn } from '@/shared/lib/cn'
 import { plural } from '@/shared/lib/formatters'
+import { cycleWeek, isDeload, manualDeload } from '../lib/cycle'
 import type { DayOfWeek, WorkoutPlan } from '../model/types'
 import { ALL_DAYS, DAY_LABELS, DAY_SHORT_LABELS } from '../model/types'
 
@@ -17,6 +18,8 @@ export interface PlanCardProps {
   onEdit: () => void
   /** Opens the choice of weekdays the plan's sessions go on */
   onEditDays?: () => void
+  /** Switches a light week on or off */
+  onToggleDeload?: () => void
   onEditDay: (planId: string, day: DayOfWeek) => void
   onDelete: (planId: string) => void
   onStartDayWorkout: (planId: string, day: DayOfWeek) => void
@@ -31,6 +34,7 @@ export function PlanCard({
   onSetActive,
   onEdit,
   onEditDays,
+  onToggleDeload,
   onEditDay,
   onDelete,
   onStartDayWorkout,
@@ -39,6 +43,9 @@ export function PlanCard({
   const exerciseMap = useMemo(() => new Map(allExercises.map((e) => [e.id, e])), [allExercises])
   const trainingDays = ALL_DAYS.filter((day) => (plan.schedule[day]?.length || 0) > 0)
   const totalExercises = ALL_DAYS.reduce((sum, day) => sum + (plan.schedule[day]?.length || 0), 0)
+  const week = cycleWeek(plan)
+  const deload = isDeload(plan)
+  const handDeload = manualDeload(plan)
 
   return (
     <article className={cn('rounded-lg border bg-surface transition-colors', isActive ? 'border-accent/50' : 'border-line')}>
@@ -55,6 +62,16 @@ export function PlanCard({
             {isActive && (
               <Badge variant="primary" size="sm" dot>
                 Активна
+              </Badge>
+            )}
+            {week && (
+              <Badge size="sm" variant={week.phase.deload ? 'info' : 'neutral'}>
+                Тиждень {week.week}/{week.total} · {week.phase.name}
+              </Badge>
+            )}
+            {!week?.phase.deload && deload && (
+              <Badge size="sm" variant="info">
+                Легкий тиждень
               </Badge>
             )}
           </span>
@@ -143,6 +160,11 @@ export function PlanCard({
               Видалити
             </Button>
             <div className="flex flex-wrap items-center gap-2">
+              {onToggleDeload && trainingDays.length > 0 && (
+                <Button variant="ghost" size="sm" onClick={onToggleDeload} icon={<BatteryCharging />}>
+                  {handDeload ? 'Звичайний тиждень' : 'Легкий тиждень'}
+                </Button>
+              )}
               {onEditDays && trainingDays.length > 0 && (
                 <Button variant="ghost" size="sm" onClick={onEditDays} icon={<CalendarDays />}>
                   Дні тренувань

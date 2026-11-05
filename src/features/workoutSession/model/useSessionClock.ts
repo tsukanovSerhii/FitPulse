@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { playTimerBeep } from '@/shared/lib/audio'
 import { getTimerSettings } from '../lib/timerSettings'
+import { clearRestNotification, showRestNotification } from '@/shared/lib/notifications'
 import { tickRestTimer, tickWorkoutTimer } from './workoutSessionSlice'
 
 /**
@@ -14,6 +15,12 @@ export function useSessionClock() {
   const isActive = useAppSelector((state) => state.workoutSession.isActive)
   const endedAt = useAppSelector((state) => state.workoutSession.restTimer.endedAt)
   const signalled = useRef(endedAt)
+  const restEndsAt = useAppSelector((state) => (state.workoutSession.restTimer.isRunning ? (state.workoutSession.restTimer.endsAt ?? null) : null))
+  const restEnd = useRef(restEndsAt)
+  useEffect(() => {
+    restEnd.current = restEndsAt
+    if (!restEndsAt) clearRestNotification()
+  }, [restEndsAt])
 
   useEffect(() => {
     if (!isActive) return
@@ -23,8 +30,14 @@ export function useSessionClock() {
     }
     tick()
     const id = window.setInterval(tick, 1000)
+    // Locking the phone mid-rest leaves "Відпочинок до 14:32" on the lock screen; coming back clears it
     const onVisible = () => {
-      if (document.visibilityState === 'visible') tick()
+      if (document.visibilityState === 'visible') {
+        tick()
+        clearRestNotification()
+      } else if (restEnd.current && getTimerSettings().restNotifications) {
+        showRestNotification(restEnd.current)
+      }
     }
     document.addEventListener('visibilitychange', onVisible)
     return () => {

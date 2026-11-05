@@ -8,6 +8,9 @@ import '@fontsource-variable/jetbrains-mono/wght.css'
 import './styles/index.css'
 import { App } from './App'
 import { registerServiceWorker } from './pwa/registerServiceWorker'
+import { installErrorReporting } from '@/shared/lib/errorReporter'
+
+installErrorReporting()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

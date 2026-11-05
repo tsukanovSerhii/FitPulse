@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
+import { notificationsSupported, requestNotifications } from '@/shared/lib/notifications'
 import { NumberStepper, SegmentedControl } from '@/shared/ui'
 import { cn } from '@/shared/lib/cn'
 import { formatDuration } from '@/shared/lib/formatters'
@@ -33,6 +34,30 @@ function Row({ label, hint, children }: { label: string; hint?: string; children
       </span>
       {children}
     </div>
+  )
+}
+
+function RestNotificationsSwitch({ enabled }: { enabled: boolean }) {
+  const [hint, setHint] = useState<string | null>(null)
+  const supported = notificationsSupported()
+  const toggle = async (on: boolean) => {
+    if (!on) return updateTimerSettings({ restNotifications: false })
+    const allowed = await requestNotifications()
+    updateTimerSettings({ restNotifications: allowed })
+    setHint(allowed ? null : 'Дозвольте сповіщення для FitPulse в налаштуваннях браузера або телефона.')
+  }
+  return (
+    <Switch
+      label="Сповіщення на екрані блокування"
+      hint={
+        hint ??
+        (supported
+          ? '«Відпочинок до 14:32», коли телефон блокується під час відпочинку'
+          : 'На iPhone працює, коли FitPulse додано на екран «Додому»')
+      }
+      checked={enabled && supported}
+      onChange={toggle}
+    />
   )
 }
 
@@ -76,6 +101,7 @@ export function TimerSettingsPanel() {
         onChange={(autoStart) => updateTimerSettings({ autoStart })}
       />
       <Switch label="Звук наприкінці" checked={settings.sound} onChange={(sound) => updateTimerSettings({ sound })} />
+      <RestNotificationsSwitch enabled={settings.restNotifications} />
       <Switch label="Вібрація наприкінці" checked={settings.vibration} onChange={(vibration) => updateTimerSettings({ vibration })} />
 
       <Switch

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeftRight, Check, ChevronLeft, ChevronRight, Dumbbell, Info, Link2, Plus, Trash2, TrendingUp } from 'lucide-react'
 import { Button, EmptyState, IconButton, Modal } from '@/shared/ui'
-import { TechniquePlayer, MUSCLE_GROUP_LABELS } from '@/features/exercises'
+import { ExerciseNote, TechniquePlayer, MUSCLE_GROUP_LABELS } from '@/features/exercises'
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { formatSessionTitle } from '../lib/summary'
 import { useWakeLock } from '../hooks/useWakeLock'
@@ -93,6 +93,7 @@ export function WorkoutFocusView({ onFinish }: { onFinish: (log: WorkoutHistoryL
                 </p>
               )}
               {planExercise.notes && <p className="border-l-2 border-accent pl-3 text-sm text-fg-muted">{planExercise.notes}</p>}
+              <ExerciseNote key={exercise.id} exerciseId={exercise.id} compact />
             </div>
 
             <SetList target={target} done={doneSets} onUndo={focus.undoLastSet} />

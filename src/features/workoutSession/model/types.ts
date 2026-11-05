@@ -27,6 +27,8 @@ export interface WorkoutSessionState {
   completedSets: Record<string, CompletedSet[]>
   /** The general warm-up before the first exercise was done or skipped */
   warmupDone?: boolean
+  /** A light week: progression tips give way to an easy target */
+  deload?: boolean
   startTime: number | null
   elapsedSeconds: number
   restTimer: {
