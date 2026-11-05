@@ -1,4 +1,4 @@
-import type { Equipment, Exercise } from '../model/types'
+import type { Equipment, Exercise, Joint } from '../model/types'
 
 export interface CatalogEntry {
   /** The variant the card opens: the first one in group order that passed the filters */
@@ -43,8 +43,9 @@ export function variantsOf(exercise: Exercise, all: Exercise[]): Exercise[] {
  * Exercises that can replace this one when its equipment is busy: same main muscle, other movements,
  * at most one variant per movement. With `available`, only equipment the user has (bodyweight always fits).
  */
-export function alternativesFor(exercise: Exercise, all: Exercise[], { limit = 3, available = [] as Equipment[] } = {}): Exercise[] {
-  const fits = (e: Exercise) => available.length === 0 || e.equipment === 'bodyweight' || available.includes(e.equipment)
+export function alternativesFor(exercise: Exercise, all: Exercise[], { limit = 3, available = [] as Equipment[], avoid = [] as Joint[] } = {}): Exercise[] {
+  const fits = (e: Exercise) =>
+    (available.length === 0 || e.equipment === 'bodyweight' || available.includes(e.equipment)) && !e.stress?.some((j) => avoid.includes(j))
   const score = (e: Exercise) => {
     let s = e.muscleGroups.filter((m) => exercise.muscleGroups.includes(m)).length * 0.5
     if (e.equipment !== exercise.equipment) s += 0.5

@@ -4,8 +4,8 @@ import { MuscleMap } from './MuscleMap'
 import { Disclosure, IconButton, Modal, SegmentedControl } from '@/shared/ui'
 import { getTechnique } from '../lib/technique'
 import { alternativesFor, variantsOf } from '../lib/variants'
-import type { Equipment, Exercise } from '../model/types'
-import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
+import type { Equipment, Exercise, Joint } from '../model/types'
+import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, JOINT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 import { TechniquePlayer } from './technique/TechniquePlayer'
 import { ExerciseNote } from './ExerciseNote'
 
@@ -19,6 +19,8 @@ export interface ExerciseDetailModalProps {
   allExercises?: Exercise[]
   /** Equipment the user has; alternatives keep to it */
   availableEquipment?: Equipment[]
+  /** Joints the user protects; alternatives skip exercises that load them */
+  avoidJoints?: Joint[]
   /** Opens another exercise in the same dialog: a variant or an alternative */
   onSelectExercise?: (exercise: Exercise) => void
 }
@@ -72,12 +74,13 @@ export function ExerciseDetailModal({
   onToggleFavorite,
   allExercises = [],
   availableEquipment,
+  avoidJoints,
   onSelectExercise,
 }: ExerciseDetailModalProps) {
   if (!exercise) return null
   const technique = getTechnique(exercise)
   const variants = variantsOf(exercise, allExercises)
-  const alternatives = onSelectExercise ? alternativesFor(exercise, allExercises, { available: availableEquipment }) : []
+  const alternatives = onSelectExercise ? alternativesFor(exercise, allExercises, { available: availableEquipment, avoid: avoidJoints }) : []
   const meta = [
     DIFFICULTY_LABELS[exercise.difficulty],
     EQUIPMENT_LABELS[exercise.equipment],
@@ -118,6 +121,12 @@ export function ExerciseDetailModal({
         )}
 
         <TechniquePlayer key={exercise.id} exercise={exercise} />
+
+        {exercise.stress && exercise.stress.length > 0 && (
+          <p className="rounded-md border border-warning/30 bg-warning-soft px-3 py-2 text-sm text-fg">
+            Навантажує: {exercise.stress.map((j) => JOINT_LABELS[j].toLowerCase()).join(', ')}. Якщо там є біль чи травма, оберіть заміну нижче.
+          </p>
+        )}
 
         {(technique.cues.length > 0 || technique.mistakes.length > 0) && (
           <div className="grid gap-6 sm:grid-cols-2">

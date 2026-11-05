@@ -13,8 +13,9 @@ export interface ReplaceExerciseModalProps {
 export function ReplaceExerciseModal({ isOpen, onClose, exercise, onReplace }: ReplaceExerciseModalProps) {
   const all = useAppSelector((state) => state.exercises.items)
   const available = useAppSelector((state) => state.exercises.filters.equipment)
+  const avoid = useAppSelector((state) => state.exercises.filters.limits)
   const variants = variantsOf(exercise, all).filter((v) => v.id !== exercise.id)
-  const alternatives = alternativesFor(exercise, all, { limit: 5, available })
+  const alternatives = alternativesFor(exercise, all, { limit: 5, available, avoid })
 
   const pick = (next: Exercise) => {
     onReplace(next)

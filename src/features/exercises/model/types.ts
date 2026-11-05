@@ -57,6 +57,14 @@ export const EQUIPMENT_LABELS: Record<Equipment, string> = {
   bands: 'Гумки',
 }
 
+export type Joint = 'knees' | 'back' | 'shoulders'
+
+export const JOINT_LABELS: Record<Joint, string> = {
+  knees: 'Коліна',
+  back: 'Поперек',
+  shoulders: 'Плечі',
+}
+
 export interface InstructionStep {
   step: number
   description: string
@@ -108,6 +116,8 @@ export interface Exercise {
   variant?: ExerciseVariant
   /** Other names to search by: slang, Russian, English */
   aliases?: string
+  /** Joints the exercise loads noticeably */
+  stress?: Joint[]
 }
 
 export interface ExerciseVariant {
@@ -124,6 +134,8 @@ export interface ExerciseFilters {
   difficulty: Difficulty | 'all'
   /** Equipment the user has; empty means any */
   equipment: Equipment[]
+  /** Joints the user protects: exercises that load them are hidden */
+  limits: Joint[]
   searchQuery: string
 }
 

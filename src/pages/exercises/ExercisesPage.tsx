@@ -17,6 +17,7 @@ import {
   resetFilters,
   setFilter,
   setMyEquipment,
+  setMyLimits,
   setSelectedExercise,
   toggleFavorite,
   type Exercise,
@@ -59,8 +60,9 @@ export function ExercisesPage() {
   }
 
   // Equipment is the user's gym and is saved to the account; the rest are per-tab filters
-  const changeFilters = ({ equipment, ...rest }: Partial<ExerciseFilters>) => {
+  const changeFilters = ({ equipment, limits, ...rest }: Partial<ExerciseFilters>) => {
     if (equipment) dispatch(setMyEquipment(equipment))
+    if (limits) dispatch(setMyLimits(limits))
     if (Object.keys(rest).length > 0) dispatch(setFilter(rest))
   }
 
@@ -76,6 +78,7 @@ export function ExercisesPage() {
   const resetFilterValues = () => {
     dispatch(resetFilters())
     dispatch(setMyEquipment([]))
+    dispatch(setMyLimits([]))
   }
 
   const resetAll = () => {
@@ -165,6 +168,7 @@ export function ExercisesPage() {
         onToggleFavorite={(id) => dispatch(toggleFavorite(id))}
         allExercises={items}
         availableEquipment={filters.equipment}
+        avoidJoints={filters.limits}
         onSelectExercise={select}
       />
 

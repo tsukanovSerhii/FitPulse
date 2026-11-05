@@ -1,4 +1,4 @@
-import type { Equipment, Exercise } from '../model/types'
+import type { Equipment, Exercise, Joint } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadUserData, saveUserData } from '@/shared/storage/userStorage'
 
@@ -38,6 +38,16 @@ export const exercisesApi = {
   /** Equipment the user has in their gym; empty means any */
   async getMyEquipment(): Promise<Equipment[]> {
     return loadUserData<Equipment[]>(STORAGE_KEYS.MY_EQUIPMENT, [])
+  },
+
+  /** Joints the user protects */
+  async getMyLimits(): Promise<Joint[]> {
+    return loadUserData<Joint[]>(STORAGE_KEYS.MY_LIMITS, [])
+  },
+
+  async saveMyLimits(limits: Joint[]): Promise<Joint[]> {
+    saveUserData(STORAGE_KEYS.MY_LIMITS, limits)
+    return limits
   },
 
   async saveMyEquipment(equipment: Equipment[]): Promise<Equipment[]> {
