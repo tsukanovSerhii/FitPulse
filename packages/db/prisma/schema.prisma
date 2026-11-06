@@ -11,32 +11,62 @@ datasource db {
 
 /// A FitPulse app account
 model User {
-  id              String    @id @default(uuid()) @db.Uuid
+  id              String               @id @default(uuid()) @db.Uuid
   /// citext: Ann@x.com and ann@x.com are the same account
-  email           String    @unique @db.Citext
-  passwordHash    String    @map("password_hash")
-  emailVerifiedAt DateTime? @map("email_verified_at") @db.Timestamptz(3)
-  blockedAt       DateTime? @map("blocked_at") @db.Timestamptz(3)
-  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  email           String               @unique @db.Citext
+  passwordHash    String               @map("password_hash")
+  name            String
+  plan            Plan                 @default(FREE)
+  emailVerifiedAt DateTime?            @map("email_verified_at") @db.Timestamptz(3)
+  blockedAt       DateTime?            @map("blocked_at") @db.Timestamptz(3)
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
   sessions        Session[]
+  passwordResets  PasswordResetToken[]
 
   @@map("users")
 }
 
 /// A signed-in device of an app user; the refresh token is stored only as a hash
 model Session {
-  id               String    @id @default(uuid()) @db.Uuid
-  userId           String    @map("user_id") @db.Uuid
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  refreshTokenHash String    @map("refresh_token_hash")
-  userAgent        String?   @map("user_agent")
-  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  expiresAt        DateTime  @map("expires_at") @db.Timestamptz(3)
-  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz(3)
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// SHA-256 of the current refresh token
+  refreshTokenHash  String    @unique @map("refresh_token_hash")
+  /// The token it replaced, to tell a parallel tab (grace window) from a stolen token
+  previousTokenHash String?   @map("previous_token_hash")
+  rotatedAt         DateTime? @map("rotated_at") @db.Timestamptz(3)
+  remember          Boolean   @default(false)
+  userAgent         String?   @map("user_agent")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt         DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt         DateTime? @map("revoked_at") @db.Timestamptz(3)
 
   @@index([userId])
+  @@index([previousTokenHash])
   @@map("sessions")
+}
+
+enum Plan {
+  FREE
+  PRO
+
+  @@map("plan")
+}
+
+/// One-time link to set a new password; only the SHA-256 of the token is stored
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(3)
+  usedAt    DateTime? @map("used_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 enum AdminRole {
@@ -61,15 +91,21 @@ model AdminUser {
 }
 
 model AdminSession {
-  id               String    @id @default(uuid()) @db.Uuid
-  adminId          String    @map("admin_id") @db.Uuid
-  admin            AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  refreshTokenHash String    @map("refresh_token_hash")
-  userAgent        String?   @map("user_agent")
-  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  expiresAt        DateTime  @map("expires_at") @db.Timestamptz(3)
-  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz(3)
+  id                String    @id @default(uuid()) @db.Uuid
+  adminId           String    @map("admin_id") @db.Uuid
+  admin             AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  /// SHA-256 of the current refresh token
+  refreshTokenHash  String    @unique @map("refresh_token_hash")
+  /// The token it replaced, to tell a parallel tab (grace window) from a stolen token
+  previousTokenHash String?   @map("previous_token_hash")
+  rotatedAt         DateTime? @map("rotated_at") @db.Timestamptz(3)
+  remember          Boolean   @default(false)
+  userAgent         String?   @map("user_agent")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt         DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt         DateTime? @map("revoked_at") @db.Timestamptz(3)
 
   @@index([adminId])
+  @@index([previousTokenHash])
   @@map("admin_sessions")
 }

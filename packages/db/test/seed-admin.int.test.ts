@@ -1,4 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from 'vitest'
+import { hashPassword } from '@fitpulse/server-core'
 import { seedAdmin } from '../src/index.js'
 import { createTestClient, truncateAll } from './helpers.js'
 
@@ -11,13 +12,13 @@ describe('seedAdmin', () => {
   it('seedAdmin creates the admin once', async () => {
     const input = { email: 'admin@fitpulse.app', password: 'correct horse battery staple' }
 
-    expect(await seedAdmin(prisma, input)).toEqual({ created: true })
+    expect(await seedAdmin(prisma, input, hashPassword)).toEqual({ created: true })
     const admin = await prisma.adminUser.findUniqueOrThrow({ where: { email: input.email } })
     expect(admin.role).toBe('ADMIN')
     expect(admin.passwordHash.startsWith('$argon2id$')).toBe(true)
     expect(admin.passwordHash).not.toBe(input.password)
 
-    expect(await seedAdmin(prisma, input)).toEqual({ created: false })
+    expect(await seedAdmin(prisma, input, hashPassword)).toEqual({ created: false })
     expect(await prisma.adminUser.count()).toBe(1)
   })
 })
