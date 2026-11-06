@@ -34,6 +34,8 @@ export interface UserProfile {
   fitnessGoal: FitnessGoal
   activityLevel: ActivityLevel
   joinedDate: string
+  /** When the sign-up questionnaire was finished */
+  onboardedAt?: string
 }
 
 export interface ProfileState {

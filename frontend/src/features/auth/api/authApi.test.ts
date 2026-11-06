@@ -110,6 +110,16 @@ describe('authApi', () => {
     expect(fetchMock.mock.calls.at(-1)![0]).toBe('/api/auth/logout')
   })
 
+  it('logout forgets the user on the device before the server answers', async () => {
+    fetchMock.mockResolvedValueOnce(json(200, authBody))
+    await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: true })
+    fetchMock.mockImplementationOnce(() => new Promise(() => {}))
+    void authApi.logout()
+    await Promise.resolve()
+    expect(authApi.cachedUser()).toBeNull()
+    expect(local.has(STORAGE_KEYS.SESSION)).toBe(false)
+  })
+
   it('logout works offline too', async () => {
     fetchMock.mockResolvedValueOnce(json(200, authBody))
     await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: true })

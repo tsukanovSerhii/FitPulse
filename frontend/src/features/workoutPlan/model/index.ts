@@ -1,3 +1,4 @@
 export { ALL_DAYS, DAY_LABELS, DAY_SHORT_LABELS, PLAN_GOAL_LABELS, PLAN_LEVEL_LABELS, type DayOfWeek, type CyclePhase, type PlanExercise, type PlanTemplate, type WorkoutPlan } from './types'
-export { default as workoutPlanReducer, fetchPlans } from './workoutPlanSlice'
+export { default as workoutPlanReducer, fetchPlans, savePlanAsync, setActivePlanAsync } from './workoutPlanSlice'
 export { cycleWeek, isDeload, prepareDay } from '../lib/cycle'
+export { planFromTemplate, templateDays } from '../lib/templates'

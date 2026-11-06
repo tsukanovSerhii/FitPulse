@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Stat, buttonClasses } from '@/shared/ui'
 import { AdSlot } from '@/features/ads'
-import { DashboardSkeleton, LastWorkoutCard, TodayCard, WeekStrip, WeeklyGoalCard, useDashboardData } from '@/features/dashboard'
+import { DashboardSkeleton, FirstWorkoutCard, LastWorkoutCard, TodayCard, WeekStrip, WeeklyGoalCard, useDashboardData } from '@/features/dashboard'
 import { setWeeklyGoal, weeklyGoalStats } from '@/features/progress/model'
 import { useRepeatWorkout, useStartPlanDay } from '@/features/workoutSession'
 import { formatNumber } from '@/shared/lib/formatters'
@@ -71,6 +71,8 @@ export function DashboardPage() {
             <Stat className="p-4 sm:p-5" label="Тоннаж" value={formatNumber(data.weekVolumeKg / 1000, 1)} unit="т" hint="цього тижня" />
             <Stat className="p-4 sm:p-5" label="Рекорди" value={data.recordsCount} hint="усього" accent />
           </section>
+
+          {history.length === 0 && <FirstWorkoutCard hasPlan={Boolean(activePlan)} onStart={handleStart} />}
 
           {data.lastLog && <LastWorkoutCard log={data.lastLog} onRepeat={session.isActive ? undefined : () => repeat(data.lastLog!)} />}
 

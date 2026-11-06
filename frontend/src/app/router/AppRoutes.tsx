@@ -1,7 +1,7 @@
 import { lazy, Suspense, type ComponentType } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../layout/MainLayout'
-import { GuestOnly, RequireAuth } from './guards'
+import { GuestOnly, RequireAuth, RequireOnboarding } from './guards'
 // Every page is its own chunk, so the entry holds only the shell and the user downloads what they open.
 const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, name: K) =>
   lazy(() => load().then((m) => ({ default: m[name] })))
@@ -24,6 +24,7 @@ const ProgressPage = page(() => import('@/pages/progress/ProgressPage'), 'Progre
 const JournalPage = page(() => import('@/pages/progress/JournalPage'), 'JournalPage')
 const BodyPage = page(() => import('@/pages/progress/BodyPage'), 'BodyPage')
 const ExerciseHistoryPage = page(() => import('@/pages/progress/ExerciseHistoryPage'), 'ExerciseHistoryPage')
+const OnboardingPage = page(() => import('@/pages/onboarding/OnboardingPage'), 'OnboardingPage')
 const ProfilePage = page(() => import('@/pages/profile/ProfilePage'), 'ProfilePage')
 const NotFoundPage = page(() => import('@/pages/not-found/NotFoundPage'), 'NotFoundPage')
 const UiPreviewPage = page(() => import('@/pages/ui-kit/UiPreviewPage'), 'UiPreviewPage')
@@ -66,10 +67,20 @@ export function AppRoutes() {
         />
 
         <Route
+          path="onboarding"
+          element={
+            <RequireAuth>
+              <OnboardingPage />
+            </RequireAuth>
+          }
+        />
+        <Route
           path="/"
           element={
             <RequireAuth>
-              <MainLayout />
+              <RequireOnboarding>
+                <MainLayout />
+              </RequireOnboarding>
             </RequireAuth>
           }
         >

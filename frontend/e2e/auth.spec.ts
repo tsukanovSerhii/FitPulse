@@ -63,8 +63,8 @@ test('an on-device account keeps its workouts after signing in on the server', a
   await page.getByLabel('Email').fill(email)
   await page.getByLabel('Пароль', { exact: true }).fill('oldpass12')
   await page.getByRole('button', { name: 'Увійти' }).click()
-  await expect(page).toHaveURL('/')
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Олена')
+  // It still has the placeholder profile, so the questionnaire comes first
+  await expect(page).toHaveURL('/onboarding')
 
   const stored = await page.evaluate(() => {
     const id = JSON.parse(localStorage.getItem('fitpulse_auth_session_v1') ?? 'null')
