@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "workspaces": [
+    "packages/contracts",
+    "packages/server-core",
     "frontend"
   ],
   "engines": {
