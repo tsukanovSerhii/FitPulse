@@ -80,6 +80,14 @@ describe('session service', () => {
     await expect(sessions.refresh('unknown-token')).rejects.toMatchObject({ code: 'SESSION_EXPIRED' })
   })
 
+  it('revokeToken ends the session of a refresh token and ignores unknown ones', async () => {
+    const { sessions, rows } = setup()
+    const started = await sessions.start('u1', { remember: true })
+    await sessions.revokeToken(started.refreshToken)
+    expect(rows.get(started.sessionId)!.revokedAt).not.toBeNull()
+    await expect(sessions.revokeToken('unknown')).resolves.toBeUndefined()
+  })
+
   it('revokeAll ends every session of the account', async () => {
     const { sessions, values } = setup()
     const a = await sessions.start('u1', { remember: true })

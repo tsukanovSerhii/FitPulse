@@ -92,6 +92,12 @@ export function createSessionService({ repo, redis, lifetimes, extendOnRefresh, 
 
     revoke,
 
+    /** Sign-out: ends the session that owns this refresh token, if any. */
+    async revokeToken(token: string) {
+      const session = await repo.findByTokenHash(hashToken(token))
+      if (session && !session.revokedAt) await revoke(session.id)
+    },
+
     async revokeAll(accountId: string) {
       await markRevoked(await repo.revokeAllForAccount(accountId))
     },
