@@ -68,29 +68,51 @@
 | Маршрутизація | React Router 7, сторінки застосунку завантажуються ліниво |
 | Збірка | Vite 8 |
 | Форми | Zod (`zod/mini`) |
+| Бекенд | Fastify 5, Prisma 7, Postgres 17, Redis 7, Docker, Render |
 | Якість | Oxlint, Vitest, Testing Library, Playwright, Lighthouse CI, GitHub Actions |
 | Офлайн | власний service worker і web manifest |
 | Інше | lucide-react, sonner |
 
 ## Запуск
 
-Потрібен Node.js 24.
+Потрібен Node.js 24. Для бекенду — Docker.
+
+### Усе разом у Docker
 
 ```bash
-npm install
-npm run dev
+docker compose up
 ```
+
+| Адреса | Що це |
+|---|---|
+| http://localhost:5173 | застосунок |
+| http://localhost:5174 | адмін-панель |
+| http://localhost:3000/api/health | API застосунку |
+| http://localhost:3001/api/health | API адмінки |
+
+Compose піднімає Postgres 17, Redis 7, накочує міграції й запускає обидва API та обидва фронти з перезапуском після збереження.
 
 | Команда | Що робить |
 |---|---|
-| `npm run dev` | dev-сервер на http://localhost:5173 |
-| `npm run build` | перевірка типів і production-збірка |
-| `npm run preview` | перегляд production-збірки |
-| `npm run lint` | перевірка коду |
-| `npm test` | юніт- і компонентні тести (Vitest, Testing Library) |
-| `npm run test:e2e` | наскрізні сценарії в браузері (Playwright) |
+| `docker compose run --rm -e SEED_ADMIN_EMAIL=you@example.com -e SEED_ADMIN_PASSWORD=... api npm run db:seed -w @fitpulse/db` | створює першого адміна |
+| `docker compose run --rm -e DATABASE_URL=postgresql://fitpulse:fitpulse@db:5432/fitpulse_test api sh -c "npm run migrate:deploy -w @fitpulse/db && npm run test:integration"` | інтеграційні тести на окремій базі |
 
-Змінні середовища (`.env.example`):
+### Лише застосунок, без Docker
+
+```bash
+npm install
+npm run dev -w @fitpulse/web
+```
+
+| Команда (у корені) | Що робить |
+|---|---|
+| `npm run lint` | перевірка коду всіх частин |
+| `npm run typecheck` | перевірка типів |
+| `npm test` | юніт- і компонентні тести (Vitest), без бази |
+| `npm run build` | production-збірка всіх частин |
+| `npm run test:e2e -w @fitpulse/web` | наскрізні сценарії застосунку (Playwright) |
+
+Змінні застосунку — у `frontend/.env.example`, бекендів — у `backend/.env.example` і `backend-AdminPanel/.env.example`.
 
 | Змінна | За замовчуванням | Опис |
 |---|---|---|
@@ -100,24 +122,38 @@ npm run dev
 ## Структура
 
 ```
-src/
-  app/            збирає застосунок: точка входу, провайдери, store, маршрути, каркас
-  pages/          сторінки, по папці на маршрут
-  features/       модулі за доменом
-    <модуль>/
-      api/        доступ до даних і демо-дані
-      model/      стан: slice, типи, константи
-      components/
-      hooks/
-      lib/        чисті функції
-      index.ts    публічний API модуля
-  shared/         код без прив'язки до домену
-    ui/           дизайн-система
-    lib/          форматування, зображення, звук
-    storage/      localStorage і sessionStorage
-    seo/          мета-теги
-    config/       змінні середовища, фото
-docs/             документація зі схемами, скриншоти
+frontend/              застосунок (React)
+frontend-AdminPanel/   адмін-панель (React)
+backend/               API застосунку (Fastify)
+backend-AdminPanel/    API адмінки (Fastify)
+packages/
+  contracts/           Zod-схеми й типи, спільні для фронтів і бекендів
+  server-core/         спільний каркас Fastify: конфіг, помилки, health
+  db/                  схема Prisma, міграції, сід
+docs/                  документація зі схемами, скриншоти
+docker-compose.yml     уся система локально
+render.yaml            продакшен на Render
+```
+
+Код застосунку в `frontend/src/`:
+
+```
+app/            збирає застосунок: точка входу, провайдери, store, маршрути, каркас
+pages/          сторінки, по папці на маршрут
+features/       модулі за доменом
+  <модуль>/
+    api/        доступ до даних і демо-дані
+    model/      стан: slice, типи, константи
+    components/
+    hooks/
+    lib/        чисті функції
+    index.ts    публічний API модуля
+shared/         код без прив'язки до домену
+  ui/           дизайн-система
+  lib/          форматування, зображення, звук
+  storage/      localStorage і sessionStorage
+  seo/          мета-теги
+  config/       змінні середовища, фото
 ```
 
 Модулі: `ads`, `auth`, `dashboard`, `exercises`, `landing`, `profile`, `progress`, `subscription`, `theme`, `workoutPlan`, `workoutSession`.
@@ -129,8 +165,9 @@ docs/             документація зі схемами, скриншот
 ## Тести й CI
 
 - **Юніт- і компонентні тести** лежать поруч із кодом (`*.test.ts`, `*.test.tsx`): логіка, сховища, схеми форм, компоненти дизайн-системи, режим тренування.
-- **E2E** (`e2e/`): реєстрація і вхід, проходження тренування до журналу, створення програми. Локально використовують встановлений Chrome.
-- **CI** на кожен pull request у `main`: lint, тести й збірка, потім E2E і Lighthouse (`lighthouserc.json`) паралельно. Звіти Lighthouse зберігаються як артефакт збірки.
+- **E2E** (`frontend/e2e/`): реєстрація і вхід, проходження тренування до журналу, створення програми. Локально використовують встановлений Chrome.
+- **Бекенди** мають юніт-тести без бази (`npm test`) та інтеграційні на справжніх Postgres і Redis (`npm run test:integration`).
+- **CI** на кожен pull request у `main`: lint, тести й збірка застосунку, потім E2E і Lighthouse; окремо — перевірки бекендів і пакетів, інтеграційні тести, збірка всіх Docker-образів і їх спільний запуск.
 
 ## Як вносити зміни
 
@@ -144,10 +181,10 @@ docs/             документація зі схемами, скриншот
 
 Номер наскрізний: наступна гілка отримує наступний номер, тож за назвою видно порядок змін.
 
-Коміти — за [Conventional Commits](https://www.conventionalcommits.org/): `feat(landing): two-column FAQ`, `fix(ui): ...`, `docs: ...`. Зміни потрапляють у `main` через pull request з описом. CI перевіряє lint, тести й збірку, а після злиття Vercel публікує нову версію.
+Коміти — за [Conventional Commits](https://www.conventionalcommits.org/): `feat(landing): two-column FAQ`, `fix(ui): ...`, `docs: ...`. Зміни потрапляють у `main` через pull request з описом. CI перевіряє lint, тести, збірку й Docker-образи, а після злиття Render публікує нову версію.
 
 ## Фото
 
 Фото атлетів з Wikimedia Commons за ліцензією CC BY 2.0: Giuseppe Milo, Nenad Stojkovic. Атрибуція також є у футері застосунку.
 
-Кадри техніки вправ — з [free-exercise-db](https://github.com/yuhonas/free-exercise-db) (Unlicense, суспільне надбання), зберігаються в `public/exercises/`.
+Кадри техніки вправ — з [free-exercise-db](https://github.com/yuhonas/free-exercise-db) (Unlicense, суспільне надбання), зберігаються в `frontend/public/exercises/`.

@@ -1,161 +1,154 @@
-# Бекенд: план
+# Бекенд
 
-Зараз усе живе в браузері. Сервер потрібен для чотирьох речей: справжніх акаунтів, синхронізації між пристроями, push-сповіщень точно за часом і оплати Pro. Нижче — як це зробити так, щоб у залі з поганим зв'язком застосунок працював як і зараз.
+Зараз дані застосунку живуть у браузері. Сервер потрібен для справжніх акаунтів, синхронізації між пристроями, адмін-панелі, push-сповіщень і оплати Pro. Застосунок має й далі працювати в залі без зв'язку.
+
+Рішення й обґрунтування етапу 1: [специфікація](./superpowers/specs/2026-11-06-backend-foundation-design.md).
 
 ## Принципи
 
-1. **Офлайн насамперед.** Тренування записується на телефоні миттєво й без мережі. Сервер отримує зміни, коли зв'язок з'являється.
-2. **Клієнт майже не змінюється.** Компоненти й Redux-слайси лишаються; міняються лише модулі `api/` у фічах: вони пишуть локально й ставлять зміну в чергу на відправку.
-3. **Один репозиторій, один деплой.** API — функції Vercel поруч із фронтендом на тому самому домені, тож cookies і CORS не потрібно налаштовувати окремо.
-4. **Спільні контракти.** Zod-схеми, якими клієнт уже перевіряє форми й резервні копії, перевіряють і запити на сервері.
+1. **Офлайн насамперед.** Тренування записується на телефоні миттєво й без мережі, а сервер отримує зміни, коли з'являється зв'язок.
+2. **Клієнт майже не змінюється.** Компоненти й Redux-слайси лишаються. Міняються модулі `api/` у фічах: вони пишуть локально й ставлять зміну в чергу на відправку.
+3. **Усе в Docker.** Кожна частина — Docker-образ. Локально все піднімає одна команда, а в продакшені ті самі образи запускає Render.
+4. **Один домен для браузера.** Кожен фронт віддає nginx, який пересилає `/api/*` на свій бекенд. Cookie сесії тому лишається своєю для сайту без CORS.
+5. **Спільні контракти.** Zod-схеми з `packages/contracts` перевіряють запити на сервері й відповіді на клієнті.
 
-## Варіанти стеку
+## Стек
 
-| | Vercel Functions + Postgres (Neon) | Supabase | Firebase |
-|---|---|---|---|
-| База | Postgres, гілка БД на кожен PR | Postgres | NoSQL (Firestore) |
-| Авторизація | Better Auth у нашому коді | Вбудована | Вбудована |
-| Офлайн-синхронізація | Власна, проста й прозора | Власна поверх API | Вбудована, але NoSQL |
-| Залежність від провайдера | Низька: звичайний Postgres і Node | Середня | Висока |
-| Звіти й аналітика по підходах | SQL | SQL | Складно |
-| Вартість на старті | Безкоштовні тарифи | Безкоштовний тариф | Безкоштовний тариф |
+| Частина | Вибір |
+|---|---|
+| API | Node.js 24, Fastify 5, TypeScript, валідація Zod (`fastify-type-provider-zod`) |
+| База | Postgres 17 локально, у продакшені Neon (безкоштовна база без терміну дії) |
+| ORM і міграції | Prisma 7 з адаптером `pg`, міграції в git |
+| Кеш, сесії, ліміти | Redis 7 локально, Render Key Value у продакшені |
+| Авторизація | JWT: access-токен на 15 хвилин у пам'яті, refresh-токен у cookie `httpOnly` з ротацією |
+| Хостинг | Render: чотири Docker-сервіси й Key Value з `render.yaml` |
+| Тести | Vitest: юніт без бази, інтеграційні на справжніх Postgres і Redis |
 
-**Рекомендація: Vercel Functions + Postgres (Neon) + Better Auth + Drizzle ORM.** Це звичайний Postgres і TypeScript без прив'язки до одного провайдера, а підходи й рекорди зручно рахувати SQL-запитами. Supabase — добра альтернатива, якщо важливіше швидко отримати готову авторизацію.
-
-## Архітектура
+## Частини
 
 ```mermaid
 flowchart LR
-  subgraph phone [Телефон]
-    ui[React-застосунок]
-    local[(IndexedDB<br/>локальні дані)]
-    outbox[(Черга змін)]
-    sw[Service worker]
-    ui <--> local
-    ui --> outbox
+  subgraph phone [Браузер]
+    app[Застосунок]
+    admin[Адмін-панель]
   end
-  subgraph vercel [Vercel]
-    cdn[Статика й пререндер]
-    api["API: Hono<br/>/api/*"]
-    cron[Cron: нагадування]
+  subgraph render [Render]
+    web["fitpulse-web<br/>nginx"]
+    adminweb["fitpulse-admin-web<br/>nginx"]
+    api["fitpulse-api<br/>Fastify"]
+    adminapi["fitpulse-admin-api<br/>Fastify"]
+    kv[(Key Value<br/>Redis)]
   end
   db[(Postgres<br/>Neon)]
-  mail[Email-сервіс]
-  queue[Відкладені задачі<br/>QStash]
-  pay[Платіжний провайдер]
-  ui --> cdn
-  outbox -- "POST /api/sync" --> api
-  api -- зміни з сервера --> ui
-  api <--> db
-  api --> mail
-  api -- "push у момент endsAt" --> queue --> api
-  api -- Web Push --> sw
-  cron --> api
-  pay -- webhook --> api
+  app --> web
+  admin --> adminweb
+  web -- "/api/*" --> api
+  adminweb -- "/api/*" --> adminapi
+  api --> db
+  adminapi --> db
+  api --> kv
+  adminapi --> kv
 ```
 
-## Модель даних
+| Папка | Пакет | Що це |
+|---|---|---|
+| `frontend/` | `@fitpulse/web` | застосунок |
+| `frontend-AdminPanel/` | `@fitpulse/admin-web` | адмін-панель для ролей `manager` і `admin` |
+| `backend/` | `@fitpulse/api` | API застосунку, порт 3000 |
+| `backend-AdminPanel/` | `@fitpulse/admin-api` | API адмінки, порт 3001, окремий `ADMIN_JWT_SECRET` |
+| `packages/contracts/` | `@fitpulse/contracts` | Zod-схеми й типи для всіх частин |
+| `packages/server-core/` | `@fitpulse/server-core` | спільний каркас бекендів: конфіг, помилки, health, Redis |
+| `packages/db/` | `@fitpulse/db` | схема Prisma, міграції, сід першого адміна |
 
-Програми зберігаються як один документ (`schedule` у JSONB): їх редагують цілком, і так простіше синхронізувати. Тренування й підходи — окремі рядки: їх лише додають, а аналітика рахує по них.
+Фронти не імпортують бекенди, `db` і `server-core`. Бекенди не імпортують один одного.
+
+## API етапу 1
+
+| Метод і шлях | Що робить |
+|---|---|
+| `GET /api/health` | `{ status: "ok" }`, не звертається до бази: Render не перезапускає сервіс, коли Neon спить |
+| `GET /api/health/ready` | перевіряє Postgres і Redis (по 2 секунди на перевірку): 200 або 503 з переліком |
+
+Помилки завжди мають одну форму: `{ error: { code, message, details? } }`. Помилки валідації повертають 400 з полями, невідомий маршрут — 404, а внутрішня помилка — 500 без подробиць назовні.
+
+## Модель даних етапу 1
 
 ```mermaid
 erDiagram
-  USER ||--o| PROFILE : has
-  USER ||--o{ PLAN : owns
-  USER ||--o{ WORKOUT : logs
-  WORKOUT ||--|{ WORKOUT_EXERCISE : contains
-  WORKOUT_EXERCISE ||--|{ WORKOUT_SET : contains
-  USER ||--o{ BODY_MEASUREMENT : records
-  USER ||--o{ CUSTOM_EXERCISE : creates
-  USER ||--o| USER_SETTINGS : has
-  USER ||--o{ PUSH_SUBSCRIPTION : has
-  USER ||--o| SUBSCRIPTION : pays
-
+  USER ||--o{ SESSION : has
+  ADMIN_USER ||--o{ ADMIN_SESSION : has
   USER {
     uuid id PK
-    text email UK
-    bool email_verified
-    timestamptz created_at
+    citext email UK
+    text password_hash
+    timestamptz email_verified_at
+    timestamptz blocked_at
   }
-  PROFILE {
-    uuid user_id PK
-    text name
-    int age
-    numeric height_cm
-    numeric weight_kg
-    text goal
-    timestamptz updated_at
-  }
-  PLAN {
+  SESSION {
     uuid id PK
     uuid user_id FK
-    text name
-    jsonb schedule
-    jsonb cycle
-    text template_id
-    timestamptz deload_until
-    bool is_active
-    timestamptz updated_at
-    timestamptz deleted_at
+    text refresh_token_hash
+    timestamptz expires_at
+    timestamptz revoked_at
   }
-  WORKOUT {
+  ADMIN_USER {
     uuid id PK
-    uuid user_id FK
-    uuid plan_id FK
-    text day_label
-    timestamptz started_at
-    int duration_seconds
-    numeric volume_kg
-    timestamptz updated_at
-    timestamptz deleted_at
+    citext email UK
+    text password_hash
+    admin_role role "MANAGER або ADMIN"
+    timestamptz disabled_at
   }
-  WORKOUT_EXERCISE {
+  ADMIN_SESSION {
     uuid id PK
-    uuid workout_id FK
-    text exercise_id
-    int position
-  }
-  WORKOUT_SET {
-    uuid id PK
-    uuid workout_exercise_id FK
-    int position
-    int reps
-    numeric weight_kg
-    text kind
-    numeric rpe
-  }
-  BODY_MEASUREMENT {
-    uuid id PK
-    uuid user_id FK
-    timestamptz measured_at
-    numeric weight_kg
-    numeric waist_cm
-  }
-  USER_SETTINGS {
-    uuid user_id PK
-    jsonb equipment
-    jsonb joint_limits
-    int weekly_goal
-    jsonb favorites
-    jsonb exercise_notes
-  }
-  PUSH_SUBSCRIPTION {
-    uuid id PK
-    uuid user_id FK
-    text endpoint UK
-    jsonb keys
-  }
-  SUBSCRIPTION {
-    uuid user_id PK
-    text plan
-    text status
-    timestamptz renews_at
+    uuid admin_id FK
+    text refresh_token_hash
+    timestamptz expires_at
+    timestamptz revoked_at
   }
 ```
 
-Вбудовані вправи й шаблони програм лишаються в коді (вони однакові для всіх). У базі — лише id вправи (`ex-bench-press`). Особисті рекорди не зберігаються: це SQL-представлення з найкращих підходів.
+- Користувачі й адміністратори лежать в окремих таблицях: акаунт застосунку не стане адміном через помилку в правах.
+- Email має тип `citext`, тож `Ann@x.com` і `ann@x.com` — той самий акаунт.
+- Сесія зберігає лише хеш refresh-токена й видаляється разом із користувачем.
+- Таблиці програм, тренувань і решти даних додадуть міграції етапу 3.
 
-## Синхронізація
+## Локальна розробка
+
+```mermaid
+flowchart LR
+  dev[Розробник] --> web["web :5173<br/>Vite"]
+  dev --> adminweb["admin-web :5174<br/>Vite"]
+  subgraph compose [docker compose up]
+    web -- "/api" --> api["api :3000"]
+    adminweb -- "/api" --> adminapi["admin-api :3001"]
+    migrate[migrate<br/>разово] --> db
+    api --> db[("db<br/>fitpulse + fitpulse_test")]
+    adminapi --> db
+    api --> redis[(redis)]
+    adminapi --> redis
+  end
+```
+
+- `migrate` один раз збирає спільні пакети й накочує міграції. API стартують, коли база й Redis здорові, а `migrate` завершився.
+- Код змонтовано з диска, тож API перезапускаються після збереження, а Vite оновлює сторінку.
+- Команди для сіду адміна й інтеграційних тестів — у [README](../README.md#запуск).
+
+## Продакшен на Render
+
+- `render.yaml` описує `fitpulse-api`, `fitpulse-admin-api`, `fitpulse-web`, `fitpulse-admin-web` і `fitpulse-redis` у регіоні Frankfurt. Render сам збирає й деплоїть сервіс після злиття в `main`, якщо змінилася його папка чи спільні пакети.
+- Під час створення Blueprint Render питає `DATABASE_URL`, публічні адреси API (`API_UPSTREAM`) і `VITE_SITE_URL`. JWT-секрети генерує сам.
+- Міграції накочує контейнер `fitpulse-api` перед стартом (`RUN_MIGRATIONS=true`): pre-deploy команда Render доступна лише на платному тарифі. Якщо база недоступна, контейнер пробує тричі й однаково запускає API: `/api/health` відповідає, а `/api/health/ready` показує, що бази немає. Наступний старт повторить міграції.
+- Міграціям потрібне пряме з'єднання. У Neon для застосунку можна взяти адресу з `-pooler` у `DATABASE_URL`, а пряму покласти в `DIRECT_DATABASE_URL`: її читає лише Prisma CLI.
+- Безкоштовні сервіси засинають після 15 хвилин без запитів, і перший запит після цього чекає близько хвилини. Тренування працює офлайн, тому для застосунку це прийнятно. Для стабільної роботи потрібен платний тариф.
+
+## Авторизація (етап 2)
+
+- Вхід видає access JWT на 15 хвилин (застосунок тримає його в пам'яті) і refresh-токен на 30 днів у cookie `httpOnly`, `Secure`, `SameSite=Lax`.
+- Refresh-токен міняється на новий після кожного використання. Якщо старий прийшов повторно, значить його вкрали, і вся сесія відкликається.
+- Redis кешує відкликані сесії й обмежує частоту входу, реєстрації та скидання пароля.
+- Адміни мають окремий секрет підпису, сесію на 8 годин і роль `manager` або `admin` у токені.
+
+## Синхронізація (етап 3)
 
 Кожен запис має id, створений на телефоні (UUID), `updated_at` і `deleted_at` замість фізичного видалення. Сервер видає курсор — зростаючий номер зміни, тож годинник телефона не впливає на те, що завантажиться.
 
@@ -181,93 +174,20 @@ sequenceDiagram
 | Програми, профіль, налаштування | Перемагає новіша зміна (`updated_at`) |
 | Активне тренування | Не синхронізується: живе на одному телефоні, поки не завершене |
 
-Під час першого входу після запуску сервера застосунок пропонує завантажити наявні локальні дані в акаунт. Демо-дані не завантажуються.
+## Етапи
 
-## Push-сповіщення
-
-```mermaid
-sequenceDiagram
-  participant P as Телефон
-  participant A as API
-  participant Q as Відкладені задачі
-  participant S as Service worker
-  P->>A: POST /api/push/rest { endsAt }
-  A->>Q: задача на момент endsAt
-  P->>P: телефон заблоковано
-  Q->>A: час настав
-  A->>S: Web Push «Відпочинок завершено»
-  S->>P: сповіщення на екрані блокування
-  P->>A: DELETE /api/push/rest (якщо відпочинок пропущено)
-```
-
-Щоденні нагадування в день тренування надсилає Cron. На iPhone Web Push працює для FitPulse на головному екрані, iOS 16.4+.
-
-## API
-
-| Метод і шлях | Що робить |
+| Етап | Що входить |
 |---|---|
-| `POST /api/auth/*` | Реєстрація, вхід, вихід, Google, підтвердження email, скидання пароля (Better Auth) |
-| `GET /api/me` | Акаунт, профіль, налаштування, тариф |
-| `POST /api/sync` | Відправити локальні зміни й отримати нові з курсором |
-| `GET /api/export` | Усі дані акаунта в JSON |
-| `DELETE /api/me` | Видалити акаунт і всі дані |
-| `POST /api/push/subscribe` | Зберегти push-підписку пристрою |
-| `POST /api/push/rest`, `DELETE /api/push/rest` | Запланувати чи скасувати сповіщення про кінець відпочинку |
-| `POST /api/errors` | Приймати звіти про помилки (`VITE_ERROR_ENDPOINT`) |
-| `POST /api/billing/webhook` | Події оплати Pro |
+| 1. Фундамент | Структура, Docker, обидва бекенди з health, Prisma й перша міграція, CI, Render ✅ |
+| 2. Акаунти | Реєстрація, вхід, refresh, вихід, скидання пароля, вхід адмінів |
+| 3. Синхронізація | Таблиці даних, `POST /api/sync`, черга змін на клієнті, перенесення локальних даних |
+| 4. Адмінка | Підтримка користувачів, контент (каталог вправ і програм переходить у базу), статистика й підписки |
+| 5. Сповіщення й оплата | Web Push про кінець відпочинку, тариф Pro |
 
 ## Безпека
 
-- **Паролі** хешуються на сервері. Сесія — у cookie `httpOnly`, `Secure`, `SameSite=Lax`, на тому самому домені.
-- **Власник даних.** Кожен запит до бази фільтрується за `user_id` із сесії, ніколи за id із запиту.
-- **Обмеження частоти.** Вхід, реєстрація й скидання пароля мають ліміти запитів.
-- **Перевірка вхідних даних.** Тіла запитів перевіряються Zod-схемами, тими самими, що на клієнті.
-- **Мінімум персональних даних.** Звіти про помилки не містять імені чи email.
-- **Видалення й експорт.** Обидва доступні в профілі, як і зараз.
-- **Резервні копії бази** з відновленням на момент часу.
-
-## Структура репозиторію
-
-```
-api/[[...route]].ts   вхід для функцій Vercel
-server/
-  app.ts              маршрути Hono
-  auth.ts             Better Auth
-  db/schema.ts        таблиці Drizzle й міграції
-  sync.ts             застосування змін і курсор
-  push.ts             Web Push і відкладені задачі
-src/                  клієнт, як зараз
-src/shared/contracts  Zod-схеми, спільні для клієнта й сервера
-```
-
-## Етапи
-
-```mermaid
-gantt
-  title Запуск бекенду
-  dateFormat YYYY-MM-DD
-  axisFormat %d.%m
-  section Фундамент
-  Postgres, схема, міграції, CI          :b1, 2026-11-09, 5d
-  section Акаунти
-  Реєстрація, вхід, Google, email         :b2, after b1, 7d
-  section Синхронізація
-  API /sync і черга змін                  :b3, after b2, 7d
-  IndexedDB й перенесення локальних даних :b4, after b3, 5d
-  section Сповіщення
-  Web Push і відкладені задачі            :b5, after b4, 4d
-  section Монетизація
-  Тариф Pro й оплата                      :b6, after b5, 7d
-  section Тренер
-  Клієнти й призначення програм           :b7, after b6, 10d
-```
-
-## Що потрібно вирішити перед стартом
-
-| Питання | Рекомендація |
-|---|---|
-| Провайдер бази | Neon (Postgres, безкоштовний старт, гілки на PR) |
-| Відправка листів | Resend або аналог із безкоштовним тарифом |
-| Тариф хостингу | Безкоштовний тариф Vercel підходить для некомерційного проєкту. Коли з'явиться оплата Pro, потрібен комерційний тариф |
-| Платіжний провайдер | Сервіс, що працює з українськими ФОП: LiqPay, WayForPay, monobank |
-| Акаунти, створені до сервера | Користувач входить, підтверджує email, і його локальні дані переносяться в акаунт |
+- **Паролі** хешуються argon2id на сервері.
+- **Власник даних.** Кожен запит до бази фільтрується за `user_id` із токена, ніколи за id із запиту.
+- **Секрети** лише в налаштуваннях Render, у репозиторії — тільки приклади для розробки.
+- **Контейнери** працюють не від root.
+- **Помилки** назовні не розкривають подробиць, а повний текст лишається в логах сервера.

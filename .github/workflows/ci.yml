@@ -11,9 +11,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality:
-    name: Lint, tests and build
+  frontend:
+    name: Frontend lint, tests and build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,6 +24,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+        working-directory: .
       - name: Validate deployment config
         run: node -e "JSON.parse(require('fs').readFileSync('vercel.json', 'utf8'))"
       - run: npm run lint
@@ -32,13 +36,16 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: fitpulse-dist
-          path: dist
+          path: frontend/dist
           retention-days: 7
 
   e2e:
     name: End-to-end tests
-    needs: quality
+    needs: frontend
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -46,19 +53,23 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+        working-directory: .
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report
-          path: playwright-report
+          path: frontend/playwright-report
           retention-days: 7
 
   lighthouse:
     name: Lighthouse
-    needs: quality
+    needs: frontend
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -66,15 +77,97 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+        working-directory: .
       - uses: actions/download-artifact@v4
         with:
           name: fitpulse-dist
-          path: dist
+          path: frontend/dist
       - name: Run Lighthouse CI
         run: npx --yes @lhci/cli@0.16 autorun
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: lighthouse-report
-          path: lighthouse-report
+          path: frontend/lighthouse-report
           retention-days: 14
+
+  workspaces:
+    name: Backends, packages and admin lint, types and unit tests
+    runs-on: ubuntu-latest
+    env:
+      WS: -w @fitpulse/contracts -w @fitpulse/server-core -w @fitpulse/db -w @fitpulse/api -w @fitpulse/admin-api -w @fitpulse/admin-web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Build shared packages
+        run: npm run build -w @fitpulse/contracts -w @fitpulse/server-core -w @fitpulse/db
+      - run: npm run lint --if-present $WS
+      - run: npm run typecheck --if-present $WS
+      - run: npm test --if-present $WS
+      - name: Build backends and admin panel
+        run: npm run build -w @fitpulse/api -w @fitpulse/admin-api -w @fitpulse/admin-web
+
+  integration:
+    name: Integration tests on Postgres and Redis
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: fitpulse
+          POSTGRES_PASSWORD: fitpulse
+          POSTGRES_DB: fitpulse_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U fitpulse -d fitpulse_test"
+          --health-interval 2s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://fitpulse:fitpulse@localhost:5432/fitpulse_test
+      SHADOW_DATABASE_URL: postgresql://fitpulse:fitpulse@localhost:5432/fitpulse_shadow
+      REDIS_URL: redis://localhost:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Build shared packages
+        run: npm run build -w @fitpulse/contracts -w @fitpulse/server-core -w @fitpulse/db
+      - name: Create the shadow database for migration checks
+        run: PGPASSWORD=fitpulse psql -h localhost -U fitpulse -d fitpulse_test -c 'CREATE DATABASE fitpulse_shadow'
+      - name: Validate the Prisma schema
+        run: npm exec -w @fitpulse/db -- prisma validate
+      - name: Apply migrations
+        run: npm run migrate:deploy -w @fitpulse/db
+      - name: Schema matches migrations
+        run: npm run migrate:check -w @fitpulse/db
+      - run: npm run test:integration -w @fitpulse/db -w @fitpulse/api -w @fitpulse/admin-api
+
+  docker:
+    name: Docker images and smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render Blueprint is valid YAML
+        run: npx --yes js-yaml render.yaml > /dev/null
+      - name: Compose file is valid
+        run: docker compose config -q
+      - name: Build images
+        run: |
+          docker build -f backend/Dockerfile -t fitpulse-api .
+          docker build -f backend-AdminPanel/Dockerfile -t fitpulse-admin-api .
+          docker build -f frontend/Dockerfile -t fitpulse-web .
+          docker build -f frontend-AdminPanel/Dockerfile -t fitpulse-admin-web .
+      - name: Smoke test the running images
+        run: sh .github/scripts/docker-smoke.sh

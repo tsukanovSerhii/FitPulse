@@ -1,0 +1,75 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// A FitPulse app account
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  /// citext: Ann@x.com and ann@x.com are the same account
+  email           String    @unique @db.Citext
+  passwordHash    String    @map("password_hash")
+  emailVerifiedAt DateTime? @map("email_verified_at") @db.Timestamptz(3)
+  blockedAt       DateTime? @map("blocked_at") @db.Timestamptz(3)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sessions        Session[]
+
+  @@map("users")
+}
+
+/// A signed-in device of an app user; the refresh token is stored only as a hash
+model Session {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokenHash String    @map("refresh_token_hash")
+  userAgent        String?   @map("user_agent")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt        DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz(3)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+enum AdminRole {
+  MANAGER
+  ADMIN
+
+  @@map("admin_role")
+}
+
+/// A staff account of the admin panel, kept apart from app users
+model AdminUser {
+  id           String         @id @default(uuid()) @db.Uuid
+  email        String         @unique @db.Citext
+  passwordHash String         @map("password_hash")
+  role         AdminRole
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  disabledAt   DateTime?      @map("disabled_at") @db.Timestamptz(3)
+  sessions     AdminSession[]
+
+  @@map("admin_users")
+}
+
+model AdminSession {
+  id               String    @id @default(uuid()) @db.Uuid
+  adminId          String    @map("admin_id") @db.Uuid
+  admin            AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  refreshTokenHash String    @map("refresh_token_hash")
+  userAgent        String?   @map("user_agent")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt        DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz(3)
+
+  @@index([adminId])
+  @@map("admin_sessions")
+}

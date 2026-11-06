@@ -1,0 +1,8 @@
+# syntax=docker/dockerfile:1
+# One development image for every Node service in docker-compose.yml.
+# Source is bind-mounted over /app; node_modules stay in volumes built from this image.
+FROM node:24-slim
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY . .
+RUN npm ci && npm run build -w @fitpulse/contracts -w @fitpulse/server-core -w @fitpulse/db
