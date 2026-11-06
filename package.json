@@ -5,6 +5,7 @@
   "workspaces": [
     "packages/contracts",
     "packages/server-core",
+    "packages/db",
     "frontend"
   ],
   "engines": {
