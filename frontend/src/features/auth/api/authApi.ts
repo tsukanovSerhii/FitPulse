@@ -157,13 +157,14 @@ export const authApi = {
   },
 
   async logout(): Promise<void> {
+    // The device forgets the user first, so a reload while the request is on its way stays signed out
+    setAccessToken(null)
+    forgetUser()
     try {
       await apiRequest('/api/auth/logout', { method: 'POST', body: {} })
     } catch {
       // Signing out on the device must work offline; the server session expires on its own
     }
-    setAccessToken(null)
-    forgetUser()
   },
 
   async updateProfile(changes: { name?: string; email?: string; currentPassword?: string }): Promise<AuthUser> {
