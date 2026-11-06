@@ -16,6 +16,9 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
     client_max_body_size 5m;
+    # A sleeping free API on Render takes about a minute to wake up
+    proxy_connect_timeout 90s;
+    proxy_read_timeout 120s;
   }
 
   location = /sw.js {
@@ -28,6 +31,8 @@ server {
 
   # Prerendered pages first (/exercise/bench-press), then the single-page app
   location / {
+    # HTML is revalidated on every load so a deploy never leaves pages pointing at removed assets
+    add_header Cache-Control "no-cache";
     try_files $uri $uri.html $uri/index.html /index.html;
   }
 }

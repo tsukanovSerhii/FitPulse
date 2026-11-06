@@ -1,6 +1,8 @@
 # Render Blueprint: Dashboard → New → Blueprint → this repository.
 # Values marked sync: false are asked for once, when the Blueprint is created.
 #   DATABASE_URL  Postgres connection string (Neon recommended: its free database does not expire)
+#   DIRECT_DATABASE_URL  Neon's direct (non -pooler) string, used only for migrations; leave empty
+#                 when DATABASE_URL is already a direct connection
 #   API_UPSTREAM  public URL of the matching API, e.g. https://fitpulse-api.onrender.com
 #   VITE_SITE_URL public URL of the app, used for canonical links and the sitemap
 # Free services sleep after 15 minutes without requests; the first request then waits about a minute.
@@ -27,6 +29,8 @@ services:
       - key: RUN_MIGRATIONS
         value: 'true'
       - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_DATABASE_URL
         sync: false
       - key: JWT_SECRET
         generateValue: true

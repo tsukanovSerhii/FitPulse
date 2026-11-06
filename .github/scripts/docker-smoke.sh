@@ -9,7 +9,7 @@ SECRET=ci-only-secret-that-is-at-least-32-characters
 
 cleanup() {
   docker logs api 2>&1 | tail -n 40 || true
-  docker rm -f db redis api admin-api web admin-web >/dev/null 2>&1 || true
+  docker rm -f db redis api api-nodb admin-api web admin-web >/dev/null 2>&1 || true
   docker network rm "$NET" >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
@@ -54,6 +54,7 @@ wait_for http://localhost:8081/ 30
 curl -fsS http://localhost:8080/exercise/bench-press | grep -q '<title>' || fail 'prerendered page missing'
 curl -fsS http://localhost:8080/plans | grep -q 'id="root"' || fail 'app route does not fall back to index.html'
 curl -fsSI http://localhost:8080/sw.js | grep -qi 'cache-control: no-cache' || fail 'sw.js must not be cached'
+curl -fsSI http://localhost:8080/plans | grep -qi 'cache-control: no-cache' || fail 'HTML must be revalidated after a deploy'
 
 # /api goes through nginx to the API, body included
 curl -fsS http://localhost:8080/api/health | grep -q '"status":"ok"' || fail 'web does not proxy /api/health'
@@ -61,5 +62,10 @@ curl -sS -X POST -H 'content-type: application/json' -d '{"a":1}' http://localho
   || fail 'POST through the proxy did not reach the API'
 curl -fsS http://localhost:8081/api/health | grep -q '"status":"ok"' || fail 'admin web does not proxy /api/health'
 curl -fsS http://localhost:8081/some/admin/route | grep -q 'id="root"' || fail 'admin route does not fall back to index.html'
+
+# A database that is down on start-up must not keep the API from answering its health check
+docker run -d --name api-nodb --network "$NET" -p 3002:3000 -e NODE_ENV=production -e RUN_MIGRATIONS=true   -e MIGRATION_RETRY_SECONDS=1 -e DATABASE_URL=postgresql://fitpulse:fitpulse@no-such-db:5432/fitpulse   -e REDIS_URL=redis://redis:6379 -e JWT_SECRET="$SECRET" fitpulse-api >/dev/null
+wait_for http://localhost:3002/api/health 90
+[ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3002/api/health/ready)" = 503 ]   || fail 'ready must report 503 while the database is down'
 
 echo 'Docker smoke test passed'
