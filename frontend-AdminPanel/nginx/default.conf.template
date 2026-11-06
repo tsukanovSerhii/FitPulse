@@ -1,0 +1,32 @@
+# Rendered by the nginx image at start: ${PORT} and ${API_UPSTREAM} come from the environment
+server {
+  listen ${PORT};
+  server_name _;
+  root /usr/share/nginx/html;
+
+  gzip on;
+  gzip_types text/plain text/css application/javascript application/json image/svg+xml application/manifest+json application/xml;
+
+  # The API lives on this same origin, so the staff session cookie stays first-party
+  location /api/ {
+    proxy_pass ${API_UPSTREAM};
+    proxy_http_version 1.1;
+    proxy_set_header Host $proxy_host;
+    proxy_ssl_server_name on;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    client_max_body_size 5m;
+  }
+
+  # The admin panel must not be indexed
+  add_header X-Robots-Tag "noindex, nofollow" always;
+
+  location /assets/ {
+    add_header Cache-Control "public, max-age=31536000, immutable";
+  }
+
+  # Static files, then the single-page app
+  location / {
+    try_files $uri /index.html;
+  }
+}
