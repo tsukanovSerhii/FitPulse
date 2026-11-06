@@ -40,9 +40,29 @@ jobs:
           retention-days: 7
 
   e2e:
-    name: End-to-end tests
+    name: End-to-end tests against the real API
     needs: frontend
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: fitpulse
+          POSTGRES_PASSWORD: fitpulse
+          POSTGRES_DB: fitpulse
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U fitpulse -d fitpulse"
+          --health-interval 2s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://fitpulse:fitpulse@localhost:5432/fitpulse
+      REDIS_URL: redis://localhost:6379
     defaults:
       run:
         working-directory: frontend
@@ -54,8 +74,25 @@ jobs:
           cache: npm
       - run: npm ci
         working-directory: .
+      - name: Build and start the API
+        working-directory: .
+        env:
+          NODE_ENV: test
+          JWT_SECRET: ci-only-secret-that-is-at-least-32-characters
+          MAIL_PROVIDER: log
+          RATE_LIMIT_ENABLED: 'false'
+        run: |
+          npm run build -w @fitpulse/contracts -w @fitpulse/server-core -w @fitpulse/db -w @fitpulse/api
+          npm run migrate:deploy -w @fitpulse/db
+          nohup node backend/dist/server.js > api.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://localhost:3000/api/health && exit 0; sleep 1; done
+          cat api.log; exit 1
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - name: API log
+        if: failure()
+        working-directory: .
+        run: cat api.log
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
