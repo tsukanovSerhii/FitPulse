@@ -4,6 +4,7 @@ export const SESSION_KEYS = {
   AUTH_USER_TAB: 'fitpulse_auth_user_tab_v1',
   RETURN_TO: 'fitpulse_return_to_v1',
   REGISTER_DRAFT: 'fitpulse_register_draft_v1',
+  ONBOARDING_DRAFT: 'fitpulse_onboarding_draft_v1',
   EXERCISE_FILTERS: 'fitpulse_exercise_filters_v1',
   EXERCISE_FAVORITES_ONLY: 'fitpulse_exercise_favorites_only_v1',
   PLANS_VIEW: 'fitpulse_plans_view_v1',
