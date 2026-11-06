@@ -27,11 +27,6 @@ export default defineConfig(({ mode }) => ({
     }),
     prerenderPublicPages({ siteUrl: (loadEnv(mode, process.cwd(), 'VITE_').VITE_SITE_URL || 'https://fit-pulse-beta-opal.vercel.app').replace(/\/$/, '') }),
   ],
-  server: {
-    // The API runs separately in development (docker compose or uvicorn); same-origin /api like in production
-    proxy: { '/api': process.env.VITE_API_PROXY || 'http://localhost:8000' },
-    watch: process.env.VITE_WATCH_POLLING ? { usePolling: true, interval: 300 } : undefined,
-  },
   test: {
     include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['src/shared/testing/setup.ts'],
