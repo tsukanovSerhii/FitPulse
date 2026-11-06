@@ -22,6 +22,8 @@
     "build": "npm run build --workspaces --if-present"
   },
   "devDependencies": {
+    "@neon/config": "^1.12.1",
+    "@neon/env": "^2.0.1",
     "typescript": "~6.0.3"
   }
 }

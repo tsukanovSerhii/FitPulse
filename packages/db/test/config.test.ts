@@ -27,8 +27,17 @@ describe('prisma.config', () => {
     expect(config.datasource?.url).toBe('postgresql://u:p@db:5432/fitpulse')
   })
 
+  it('uses DATABASE_URL_UNPOOLED from neon env pull for migrations', async () => {
+    const config = await loadConfig({
+      DATABASE_URL: 'postgresql://u:p@ep-x-pooler.neon.tech/db',
+      DATABASE_URL_UNPOOLED: 'postgresql://u:p@ep-x.neon.tech/db',
+      DIRECT_DATABASE_URL: undefined,
+    })
+    expect(config.datasource?.url).toBe('postgresql://u:p@ep-x.neon.tech/db')
+  })
+
   it('falls back to DATABASE_URL', async () => {
-    const config = await loadConfig({ DATABASE_URL: 'postgresql://u:p@db:5432/fitpulse', DIRECT_DATABASE_URL: undefined })
+    const config = await loadConfig({ DATABASE_URL: 'postgresql://u:p@db:5432/fitpulse', DIRECT_DATABASE_URL: undefined, DATABASE_URL_UNPOOLED: undefined })
     expect(config.datasource?.url).toBe('postgresql://u:p@db:5432/fitpulse')
   })
 })

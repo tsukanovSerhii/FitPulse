@@ -98,6 +98,15 @@ Compose піднімає Postgres 17, Redis 7, накочує міграції �
 | `docker compose run --rm -e SEED_ADMIN_EMAIL=you@example.com -e SEED_ADMIN_PASSWORD=... api npm run db:seed -w @fitpulse/db` | створює першого адміна |
 | `docker compose run --rm -e DATABASE_URL=postgresql://fitpulse:fitpulse@db:5432/fitpulse_test api sh -c "npm run migrate:deploy -w @fitpulse/db && npm run test:integration"` | інтеграційні тести на окремій базі |
 
+### База в Neon замість локальної
+
+Проєкт прив'язаний до Neon (`.neon`, `neon.ts`). `neon env pull` записує в `.env.local` `DATABASE_URL` (пул з'єднань, для застосунку) і `DATABASE_URL_UNPOOLED` (пряме з'єднання, його беруть міграції Prisma). Для експериментів створіть гілку бази: `neon checkout dev --create`, вона сама видалиться за 7 днів.
+
+```bash
+node --env-file=.env.local node_modules/prisma/build/index.js migrate deploy --config packages/db/prisma.config.ts
+node --env-file=.env.local backend/dist/server.js
+```
+
 ### Лише застосунок, без Docker
 
 ```bash

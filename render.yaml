@@ -1,8 +1,8 @@
 # Render Blueprint: Dashboard → New → Blueprint → this repository.
 # Values marked sync: false are asked for once, when the Blueprint is created.
-#   DATABASE_URL  Postgres connection string (Neon recommended: its free database does not expire)
-#   DIRECT_DATABASE_URL  Neon's direct (non -pooler) string, used only for migrations; leave empty
-#                 when DATABASE_URL is already a direct connection
+#   DATABASE_URL  Neon's pooled string (host with -pooler), DATABASE_URL in .env.local after `neon env pull`
+#   DIRECT_DATABASE_URL  Neon's direct string, DATABASE_URL_UNPOOLED in .env.local; used only for migrations
+# The Neon project is in aws-us-west-2: Render services are closest to it in the oregon region.
 #   API_UPSTREAM  public URL of the matching API, e.g. https://fitpulse-api.onrender.com
 #   VITE_SITE_URL public URL of the app, used for canonical links and the sitemap
 #   APP_URL       the same public URL of the app, used in password reset emails
