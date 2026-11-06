@@ -7,6 +7,7 @@
     "packages/server-core",
     "packages/db",
     "backend",
+    "backend-AdminPanel",
     "frontend"
   ],
   "engines": {

@@ -3,3 +3,5 @@ export { ConfigError, baseEnvSchema, parseConfig, type BaseConfig } from './conf
 export { errorHandler, notFoundHandler } from './errors.js'
 export { healthRoutes, type HealthRoutesOptions } from './health.js'
 export { createRedis, type Redis } from './redis.js'
+export { buildServiceApp, type ServiceDeps } from './service.js'
+export { startServer } from './start.js'
