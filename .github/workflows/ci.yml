@@ -159,6 +159,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Render Blueprint is valid YAML
+        run: npx --yes js-yaml render.yaml > /dev/null
       - name: Compose file is valid
         run: docker compose config -q
       - name: Build images

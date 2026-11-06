@@ -1,0 +1,110 @@
+# Render Blueprint: Dashboard → New → Blueprint → this repository.
+# Values marked sync: false are asked for once, when the Blueprint is created.
+#   DATABASE_URL  Postgres connection string (Neon recommended: its free database does not expire)
+#   API_UPSTREAM  public URL of the matching API, e.g. https://fitpulse-api.onrender.com
+#   VITE_SITE_URL public URL of the app, used for canonical links and the sitemap
+# Free services sleep after 15 minutes without requests; the first request then waits about a minute.
+
+services:
+  - type: web
+    name: fitpulse-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - backend/**
+        - packages/**
+        - package-lock.json
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # The pre-deploy command needs a paid plan, so the container applies migrations itself
+      - key: RUN_MIGRATIONS
+        value: 'true'
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: fitpulse-redis
+          property: connectionString
+
+  - type: web
+    name: fitpulse-admin-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend-AdminPanel/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - backend-AdminPanel/**
+        - packages/**
+        - package-lock.json
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_JWT_SECRET
+        generateValue: true
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: fitpulse-redis
+          property: connectionString
+
+  - type: web
+    name: fitpulse-web
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - frontend/**
+        - package-lock.json
+    envVars:
+      - key: API_UPSTREAM
+        sync: false
+      - key: VITE_SITE_URL
+        sync: false
+
+  - type: web
+    name: fitpulse-admin-web
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./frontend-AdminPanel/Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - frontend-AdminPanel/**
+        - packages/contracts/**
+        - package-lock.json
+    envVars:
+      - key: API_UPSTREAM
+        sync: false
+
+  - type: keyvalue
+    name: fitpulse-redis
+    plan: free
+    region: frankfurt
+    # Reachable only from services in this Render account over the private network
+    ipAllowList: []
+    # Sessions and rate limits must not be silently evicted
+    maxmemoryPolicy: noeviction
