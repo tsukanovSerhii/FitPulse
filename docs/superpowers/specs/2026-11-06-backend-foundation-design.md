@@ -36,6 +36,7 @@ backend/                Fastify: API застосунку, префікс /api
 backend-AdminPanel/     Fastify: API адмінки, префікс /api
 packages/db/            schema.prisma, міграції, сід, експорт Prisma Client
 packages/contracts/     Zod-схеми запитів і відповідей, спільні типи
+packages/server-core/   спільний каркас Fastify для обох бекендів: конфіг, помилки, health
 docs/                   документація
 .github/workflows/      CI
 docker-compose.yml      уся система локально
@@ -45,13 +46,13 @@ tsconfig.base.json      спільні налаштування TypeScript
 ```
 
 - Workspaces: `frontend`, `frontend-AdminPanel`, `backend`, `backend-AdminPanel`, `packages/*`. Один `package-lock.json` у корені.
-- Імена пакетів: `@fitpulse/web`, `@fitpulse/admin-web`, `@fitpulse/api`, `@fitpulse/admin-api`, `@fitpulse/db`, `@fitpulse/contracts`.
+- Імена пакетів: `@fitpulse/web`, `@fitpulse/admin-web`, `@fitpulse/api`, `@fitpulse/admin-api`, `@fitpulse/db`, `@fitpulse/contracts`, `@fitpulse/server-core`.
 - Кореневі скрипти запускають команду в усіх workspaces: `npm run lint`, `npm test`, `npm run build`, `npm run typecheck`.
-- Залежності: фронти не імпортують бекенди й `@fitpulse/db`. Бекенди не імпортують один одного. Обидва бекенди беруть схему й клієнт із `@fitpulse/db`, а всі чотири — типи з `@fitpulse/contracts`.
+- Залежності: фронти не імпортують бекенди й `@fitpulse/db`. Бекенди не імпортують один одного. Обидва бекенди беруть схему й клієнт із `@fitpulse/db`, а каркас — із `@fitpulse/server-core`. Усі чотири застосунки беруть типи з `@fitpulse/contracts`. Фронти не імпортують `@fitpulse/server-core`.
 
 ## Бекенди
 
-Обидва бекенди влаштовані однаково:
+Обидва бекенди влаштовані однаково. Спільне (перевірка конфігу, форма помилок, маршрути health із тайм-аутом перевірок 2 секунди) лежить у `@fitpulse/server-core`, а в кожному бекенді лишаються лише власні налаштування й маршрути:
 
 ```
 src/
@@ -130,7 +131,7 @@ Dockerfile
 | `fitpulse-redis` | Key Value (сумісний із Redis) | — |
 
 - База: Postgres через `DATABASE_URL`. Рекомендовано Neon, бо його безкоштовна база не має терміну дії, а безкоштовна Postgres на Render видаляється через 30 днів. Перейти на Render Postgres можна, змінивши лише цю змінну.
-- Міграції запускає `preDeployCommand` сервісу `fitpulse-api`: `prisma migrate deploy`. Адмін-API міграцій не запускає.
+- Міграції запускає сам контейнер `fitpulse-api` перед стартом сервера, коли задано `RUN_MIGRATIONS=true`: спершу `prisma migrate deploy`, потім `node dist/server.js`. `preDeployCommand` на безкоштовному тарифі Render недоступний. Адмін-API міграцій не запускає.
 - Health check кожного бекенду — `/api/health`.
 - Безкоштовні сервіси Render засинають після 15 хвилин без запитів, і перший запит після цього чекає близько хвилини. Для застосунку це прийнятно, бо тренування працює офлайн. Для стабільної роботи потрібен платний тариф.
 - Секрети (`DATABASE_URL`, `JWT_SECRET`, `ADMIN_JWT_SECRET`) задаються в панелі Render і не лежать у репозиторії.
@@ -139,7 +140,7 @@ Dockerfile
 
 На кожен PR і push у `main`:
 1. **frontend:** lint, unit-тести, збірка, бюджет розміру бандла, e2e (Playwright), Lighthouse. Усе як зараз, але в `frontend/`.
-2. **backends:** lint і typecheck усіх workspaces, `prisma validate`, перевірка «схема = міграції», тести обох бекендів на service-контейнерах Postgres 17 і Redis 7.
+2. **backends:** lint і typecheck усіх workspaces, `prisma validate`, перевірка «схема = міграції», unit-тести (`npm test`) без бази й Redis, інтеграційні тести (`npm run test:integration`) на service-контейнерах Postgres 17 і Redis 7.
 3. **docker:** збірка всіх чотирьох образів. Образ `backend` запускається, і CI чекає, поки `/api/health` відповість.
 
 Деплой робить Render сам після злиття в `main` (auto-deploy з Blueprint). CI не деплоїть.
