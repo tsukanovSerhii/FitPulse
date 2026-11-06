@@ -18,6 +18,8 @@ export function errorHandler(error: FastifyError, request: FastifyRequest, reply
 
   const status = error.statusCode ?? 500
   if (status < 500) {
+    const retryAfter = (error as { retryAfter?: number }).retryAfter
+    if (retryAfter) reply.header('Retry-After', String(retryAfter))
     const body: ErrorResponse = { error: { code: error.code ?? 'BAD_REQUEST', message: error.message } }
     return reply.status(status).send(body)
   }

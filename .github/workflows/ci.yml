@@ -152,7 +152,7 @@ jobs:
         run: npm run migrate:deploy -w @fitpulse/db
       - name: Schema matches migrations
         run: npm run migrate:check -w @fitpulse/db
-      - run: npm run test:integration -w @fitpulse/db -w @fitpulse/api -w @fitpulse/admin-api
+      - run: npm run test:integration -w @fitpulse/server-core -w @fitpulse/db -w @fitpulse/api -w @fitpulse/admin-api
 
   docker:
     name: Docker images and smoke test
