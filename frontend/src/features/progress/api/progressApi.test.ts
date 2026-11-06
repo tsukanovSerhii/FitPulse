@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { installMemoryStorage } from '@/shared/testing/memoryStorage'
+import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import type { WorkoutHistoryLog } from '../model/types'
 import { progressApi, recalculatePersonalRecords } from './progressApi'
 
@@ -103,11 +104,30 @@ describe('Personal Records (PR) & History Recalculation Tests', () => {
     expect(Object.keys(reloaded.personalRecords).length).toBe(0)
   })
 
-  it('First launch derives records from the demo journal', async () => {
+  it('a new account starts with an empty journal', async () => {
     memoryStorage.clear()
     const { history, personalRecords } = await progressApi.getProgressData()
-    expect(personalRecords).toEqual(recalculatePersonalRecords(history))
-    const benchMax = Math.max(...history.flatMap((log) => log.exercises.filter((e) => e.exerciseId === 'ex-bench-press').map((e) => e.maxWeightKg ?? 0)))
-    expect(personalRecords['ex-bench-press'].maxWeightKg).toBe(benchMax)
+    expect(history).toEqual([])
+    expect(personalRecords).toEqual({})
+  })
+
+  it('demo workouts are removed and records recalculated', async () => {
+    memoryStorage.clear()
+    const workout = (id: string, weight: number): WorkoutHistoryLog => ({
+      id,
+      planName: 'Push',
+      date: '2026-03-01T10:00:00.000Z',
+      durationSeconds: 1800,
+      totalSets: 1,
+      totalReps: 5,
+      totalVolumeKg: weight * 5,
+      caloriesBurned: 100,
+      exercises: [{ exerciseId: 'ex-bench-press', exerciseName: 'Жим', setsCompleted: 1, totalReps: 5, maxWeightKg: weight, repsAtMaxWeight: 5 }],
+    })
+    memoryStorage.local.set(memoryStorage.userKey(STORAGE_KEYS.WORKOUT_HISTORY), JSON.stringify([workout('hist-1', 140), workout('mine', 90)]))
+    memoryStorage.local.set(memoryStorage.userKey(STORAGE_KEYS.PERSONAL_RECORDS), JSON.stringify({ 'ex-bench-press': { exerciseId: 'ex-bench-press', maxWeightKg: 140 } }))
+    const { history, personalRecords } = await progressApi.getProgressData()
+    expect(history.map((log) => log.id)).toEqual(['mine'])
+    expect(personalRecords['ex-bench-press']!.maxWeightKg).toBe(90)
   })
 })

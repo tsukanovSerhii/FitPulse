@@ -1,22 +1,17 @@
 import type { WorkoutPlan } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { hasUserData, loadUserData, saveUserData } from '@/shared/storage/userStorage'
+import { DEMO_PLANS } from './demo'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const plansApi = {
   async getPlans(): Promise<{ plans: WorkoutPlan[]; activePlanId: string | null }> {
     await delay(100)
-    let plans: WorkoutPlan[]
-
-    // First run: seed demo plans
-    if (!hasUserData(STORAGE_KEYS.WORKOUT_PLANS)) {
-      plans = (await import('./seed')).INITIAL_PLANS
-      saveUserData(STORAGE_KEYS.WORKOUT_PLANS, plans)
-    } else {
-      // Key exists: keep an empty list if the user deleted every plan
-      plans = loadUserData<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
-    }
+    const stored = loadUserData<WorkoutPlan[]>(STORAGE_KEYS.WORKOUT_PLANS, [])
+    // New accounts start empty; example programs from earlier versions go unless edited
+    const plans = stored.filter((plan) => DEMO_PLANS[plan.id] !== plan.updatedAt)
+    if (plans.length !== stored.length) saveUserData(STORAGE_KEYS.WORKOUT_PLANS, plans)
 
     let activePlanId: string | null = null
     if (!hasUserData(STORAGE_KEYS.ACTIVE_PLAN_ID)) {

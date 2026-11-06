@@ -15,8 +15,24 @@ describe('editing one plan quickly', () => {
   beforeEach(async () => {
     memoryStorage.clear()
     store = makeStore()
+    planId = 'plan-test'
+    const exercise = (id: string, exerciseId: string, order: number) => ({ id, exerciseId, sets: 3, reps: 10, weight: 20, restSeconds: 90, order })
+    await plansApi.savePlan({
+      id: planId,
+      name: 'Тест',
+      createdAt: '2026-05-01T09:00:00.000Z',
+      updatedAt: '2026-05-01T09:00:00.000Z',
+      schedule: {
+        monday: [exercise('m1', 'ex-bench-press', 1), exercise('m2', 'ex-barbell-row', 2)],
+        tuesday: [],
+        wednesday: [exercise('w1', 'ex-barbell-squat', 1), exercise('w2', 'ex-deadlift', 2)],
+        thursday: [],
+        friday: [exercise('f1', 'ex-leg-press', 1), exercise('f2', 'ex-romanian-deadlift', 2), exercise('f3', 'ex-plank', 3)],
+        saturday: [],
+        sunday: [],
+      },
+    })
     await store.dispatch(fetchPlans())
-    planId = 'plan-ppl-split'
   })
 
   const plan = () => store.getState().workoutPlan.plans.find((p) => p.id === planId)!

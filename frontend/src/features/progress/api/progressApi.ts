@@ -1,6 +1,7 @@
 import type { WorkoutHistoryLog, PersonalRecord } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { hasUserData, loadUserData, saveUserData } from '@/shared/storage/userStorage'
+import { DEMO_WORKOUT_IDS } from './demo'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -68,19 +69,14 @@ export const progressApi = {
     personalRecords: Record<string, PersonalRecord>
   }> {
     await delay(100)
-    let history: WorkoutHistoryLog[]
-
-    // First run: seed demo history
-    if (!hasUserData(STORAGE_KEYS.WORKOUT_HISTORY)) {
-      history = (await import('./seed')).INITIAL_HISTORY
-      saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, history)
-    } else {
-      // Key exists: return stored data even if the user emptied it
-      history = loadUserData<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
-    }
+    const stored = loadUserData<WorkoutHistoryLog[]>(STORAGE_KEYS.WORKOUT_HISTORY, [])
+    // New journals start empty; made-up workouts from earlier versions are dropped
+    const history = stored.filter((log) => !DEMO_WORKOUT_IDS.has(log.id))
+    const removedDemo = history.length !== stored.length
+    if (removedDemo) saveUserData(STORAGE_KEYS.WORKOUT_HISTORY, history)
 
     let prs: Record<string, PersonalRecord>
-    if (!hasUserData(STORAGE_KEYS.PERSONAL_RECORDS)) {
+    if (removedDemo || !hasUserData(STORAGE_KEYS.PERSONAL_RECORDS)) {
       // Derived rather than seeded, so first-run records always match the journal
       prs = recalculatePersonalRecords(history)
       saveUserData(STORAGE_KEYS.PERSONAL_RECORDS, prs)

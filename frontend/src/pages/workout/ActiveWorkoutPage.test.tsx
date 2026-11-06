@@ -7,7 +7,7 @@ import { Toaster } from 'sonner'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { store } from '@/app/store/store'
 import { fetchExercises } from '@/features/exercises/model'
-import { fetchPlans } from '@/features/workoutPlan/model'
+import { fetchPlans, savePlanAsync, setActivePlanAsync } from '@/features/workoutPlan/model'
 import { startWorkout, updateTimerSettings } from '@/features/workoutSession'
 import { ActiveWorkoutPage } from './ActiveWorkoutPage'
 
@@ -26,6 +26,18 @@ describe('workout mode', () => {
     localStorage.setItem('fitpulse_auth_session_v1', JSON.stringify('test-user'))
     await store.dispatch(fetchExercises())
     await store.dispatch(fetchPlans())
+    // The user's own program: accounts no longer come with example plans
+    const day = (exerciseId: string, order: number) => ({ id: `mon-${order}`, exerciseId, sets: 4, reps: 8, weight: 70, restSeconds: 90, order })
+    await store.dispatch(
+      savePlanAsync({
+        id: 'plan-mine',
+        name: 'Мій спліт',
+        createdAt: '2026-05-01T09:00:00.000Z',
+        updatedAt: '2026-05-01T09:00:00.000Z',
+        schedule: { monday: [day('ex-bench-press', 1), day('ex-incline-dumbbell-press', 2)], tuesday: [], wednesday: [], thursday: [], friday: [], saturday: [], sunday: [] },
+      }),
+    )
+    await store.dispatch(setActivePlanAsync('plan-mine'))
   })
 
   it('starts a plan day, records sets and can undo the last one', async () => {
