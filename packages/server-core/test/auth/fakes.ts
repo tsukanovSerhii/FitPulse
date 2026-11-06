@@ -38,7 +38,7 @@ export function fakeRedis() {
 export const brokenRedis = new Proxy({}, { get: () => () => Promise.reject(new Error('redis down')) }) as AuthRedis
 
 export function fakeSessionRepo() {
-  const rows = new Map<string, SessionRecord & { refreshTokenHash: string; userAgent?: string }>()
+  const rows = new Map<string, SessionRecord & { userAgent?: string }>()
   let seq = 0
   const repo: SessionRepo = {
     async create(data) {
@@ -52,11 +52,11 @@ export function fakeSessionRepo() {
     async findByPreviousHash(hash) {
       return [...rows.values()].find((row) => row.previousTokenHash === hash) ?? null
     },
-    async rotate(id, data) {
+    async rotate(id, expectedHash, data) {
       await Promise.resolve()
       const row = rows.get(id)!
       // Compare-and-swap like the Prisma repos: only the holder of the current token rotates
-      if (row.refreshTokenHash !== data.previousTokenHash) return false
+      if (row.refreshTokenHash !== expectedHash) return false
       Object.assign(row, data)
       return true
     },

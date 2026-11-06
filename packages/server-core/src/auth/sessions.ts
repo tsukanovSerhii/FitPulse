@@ -5,6 +5,8 @@ import { hashToken, newRefreshToken } from './tokens.js'
 export interface SessionRecord {
   id: string
   accountId: string
+  /** SHA-256 of the current refresh token */
+  refreshTokenHash: string
   expiresAt: Date
   revokedAt: Date | null
   remember: boolean
@@ -17,8 +19,8 @@ export interface SessionRepo {
   create(data: { accountId: string; refreshTokenHash: string; expiresAt: Date; remember: boolean; userAgent?: string }): Promise<{ id: string }>
   findByTokenHash(hash: string): Promise<SessionRecord | null>
   findByPreviousHash(hash: string): Promise<SessionRecord | null>
-  /** Compare-and-swap: replaces the token only if `previousTokenHash` is still current; false otherwise */
-  rotate(id: string, data: { refreshTokenHash: string; previousTokenHash: string; rotatedAt: Date; expiresAt: Date }): Promise<boolean>
+  /** Compare-and-swap: replaces the token only if `expectedHash` is still the current one; false otherwise */
+  rotate(id: string, expectedHash: string, data: { refreshTokenHash: string; previousTokenHash: string; rotatedAt: Date; expiresAt: Date }): Promise<boolean>
   revoke(id: string): Promise<void>
   revokeAllForAccount(accountId: string): Promise<string[]>
 }
@@ -67,25 +69,41 @@ export function createSessionService({ repo, redis, lifetimes, extendOnRefresh, 
 
     async refresh(token: string) {
       const hash = hashToken(token)
-      const session = await repo.findByTokenHash(hash)
       const at = now()
+      const current = await repo.findByTokenHash(hash)
 
-      if (!session) {
+      let session: SessionRecord
+      let expectedHash: string
+      let previousTokenHash: string
+      let rotatedAt: Date
+      if (current) {
+        if (current.revokedAt || current.expiresAt <= at) throw new AuthError('SESSION_EXPIRED')
+        session = current
+        expectedHash = hash
+        previousTokenHash = hash
+        rotatedAt = at
+      } else {
         const replaced = await repo.findByPreviousHash(hash)
-        if (replaced && !replaced.revokedAt && replaced.rotatedAt && at.getTime() - replaced.rotatedAt.getTime() <= graceMs) {
-          // Another tab refreshed a moment ago; the browser already holds the new cookie
-          throw new AuthError('REFRESH_RETRY')
+        if (!replaced || replaced.revokedAt || replaced.expiresAt <= at) throw new AuthError('SESSION_EXPIRED')
+        if (!replaced.rotatedAt || at.getTime() - replaced.rotatedAt.getTime() > graceMs) {
+          // An old token came back long after it was replaced: treat it as stolen
+          await revoke(replaced.id)
+          throw new AuthError('SESSION_EXPIRED')
         }
-        if (replaced && !replaced.revokedAt) await revoke(replaced.id) // an old token came back: treat as stolen
-        throw new AuthError('SESSION_EXPIRED')
+        // Replaced moments ago: the response with the new cookie was probably lost (a reload, a
+        // dropped mobile connection) or another tab got it first. Issue a fresh token again; the
+        // window stays anchored to the first replacement so it cannot be stretched.
+        session = replaced
+        expectedHash = replaced.refreshTokenHash
+        previousTokenHash = hash
+        rotatedAt = replaced.rotatedAt
       }
-      if (session.revokedAt || session.expiresAt <= at) throw new AuthError('SESSION_EXPIRED')
 
       const refreshToken = newRefreshToken()
-      const rotated = await repo.rotate(session.id, {
+      const rotated = await repo.rotate(session.id, expectedHash, {
         refreshTokenHash: hashToken(refreshToken),
-        previousTokenHash: hash,
-        rotatedAt: at,
+        previousTokenHash,
+        rotatedAt,
         expiresAt: extendOnRefresh ? new Date(at.getTime() + lifetime(session.remember)) : session.expiresAt,
       })
       // A parallel request rotated this token first; its new cookie is on the way

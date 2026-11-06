@@ -95,13 +95,12 @@ describe('refresh and logout', () => {
     expect(res.json().error.code).toBe('SESSION_EXPIRED')
   })
 
-  it('parallel refresh within grace returns REFRESH_RETRY and keeps the session', async () => {
+  it('a refresh whose response was lost can be repeated with the previous cookie', async () => {
     const first = refreshCookie(await register(t))!.value
-    const next = refreshCookie(await refresh(t, first))!.value
-    const late = await refresh(t, first)
-    expect(late.statusCode).toBe(409)
-    expect(late.json().error.code).toBe('REFRESH_RETRY')
-    expect((await refresh(t, next)).statusCode).toBe(200)
+    await refresh(t, first)
+    const replay = await refresh(t, first)
+    expect(replay.statusCode).toBe(200)
+    expect((await refresh(t, refreshCookie(replay)!.value)).statusCode).toBe(200)
   })
 
   it('a reused token after the grace period ends the session', async () => {

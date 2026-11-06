@@ -47,14 +47,26 @@ describe('session service', () => {
     expect(rows.get(started.sessionId)!.expiresAt.getTime()).toBe(expiry)
   })
 
-  it('parallel refresh within grace returns REFRESH_RETRY and keeps the session', async () => {
+  it('a token replaced moments ago still refreshes, so a lost response does not sign out', async () => {
     const { sessions, rows, advance } = setup()
     const started = await sessions.start('u1', { remember: false })
-    const next = await sessions.refresh(started.refreshToken)
+    await sessions.refresh(started.refreshToken)
     advance(5_000)
-    await expect(sessions.refresh(started.refreshToken)).rejects.toMatchObject({ code: 'REFRESH_RETRY', statusCode: 409 })
+    // The new cookie never reached the browser; it sends the previous token again
+    const again = await sessions.refresh(started.refreshToken)
+    expect(again.sessionId).toBe(started.sessionId)
     expect(rows.get(started.sessionId)!.revokedAt).toBeNull()
-    await expect(sessions.refresh(next.refreshToken)).resolves.toMatchObject({ sessionId: started.sessionId })
+    await expect(sessions.refresh(again.refreshToken)).resolves.toMatchObject({ sessionId: started.sessionId })
+  })
+
+  it('the grace window does not move with each replay', async () => {
+    const { sessions, advance } = setup()
+    const started = await sessions.start('u1', { remember: false })
+    await sessions.refresh(started.refreshToken)
+    advance(6_000)
+    await sessions.refresh(started.refreshToken)
+    advance(6_000)
+    await expect(sessions.refresh(started.refreshToken)).rejects.toMatchObject({ code: 'SESSION_EXPIRED' })
   })
 
   it('two refreshes of the same token at once: one rotates, the other is told to retry', async () => {
@@ -63,7 +75,7 @@ describe('session service', () => {
     const results = await Promise.allSettled([sessions.refresh(started.refreshToken), sessions.refresh(started.refreshToken)])
     expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(1)
     const rejected = results.find((r) => r.status === 'rejected') as PromiseRejectedResult
-    expect(rejected.reason).toMatchObject({ code: 'REFRESH_RETRY' })
+    expect((rejected.reason as { code: string }).code).toBe('REFRESH_RETRY')
   })
 
   it('reused token after grace revokes the session', async () => {
