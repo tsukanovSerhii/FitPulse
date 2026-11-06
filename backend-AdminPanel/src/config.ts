@@ -4,6 +4,7 @@ import { z } from 'zod'
 export const adminEnvSchema = baseEnvSchema.extend({
   PORT: z.coerce.number().int().positive().default(3001),
   ADMIN_JWT_SECRET: z.string().min(32, 'must be at least 32 characters'),
+  RATE_LIMIT_ENABLED: z.stringbool().default(true),
 })
 
 export type AdminConfig = z.infer<typeof adminEnvSchema>
