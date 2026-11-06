@@ -9,6 +9,7 @@ import {
   type Mailer,
   type Redis,
 } from '@fitpulse/server-core'
+import { passwordResetRoutes } from './auth/password-reset.js'
 import { authRoutes } from './auth/routes.js'
 import { createUserSessionRepo } from './auth/users.js'
 import type { ApiConfig } from './config.js'
@@ -38,6 +39,7 @@ export async function buildApp({ config, prisma, redis, mailer, now }: AppDeps) 
   const mail = mailer ?? createMailer(config, { log: app.log })
 
   await app.register(authRoutes, { prefix: '/api/auth', config, prisma, redis, sessions, tokens, mailer: mail, now })
+  await app.register(passwordResetRoutes, { prefix: '/api/auth/password', config, prisma, redis, sessions, tokens, mailer: mail, now })
   await app.register(meRoutes, { prefix: '/api/me', prisma, redis, tokens })
   return app
 }
