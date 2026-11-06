@@ -10,6 +10,7 @@ import { App } from './App'
 import { registerServiceWorker } from './pwa/registerServiceWorker'
 import { installErrorReporting } from '@/shared/lib/errorReporter'
 import { restoreSession } from '@/features/auth/model'
+import { startSync, startSyncTimers } from './store/syncListeners'
 
 installErrorReporting()
 
@@ -28,3 +29,5 @@ createRoot(document.getElementById('root')!).render(
 )
 
 registerServiceWorker()
+startSync()
+startSyncTimers(store)

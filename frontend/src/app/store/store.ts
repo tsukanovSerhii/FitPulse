@@ -7,6 +7,7 @@ import { profileReducer } from '@/features/profile/model'
 import { bodyReducer } from '@/features/body/model'
 import { themeReducer } from '@/features/theme/model'
 import { authReducer, loggedOut, loginUser, logout, registerUser, restoreSession } from '@/features/auth/model'
+import { syncReducer } from '@/features/sync/model'
 import { listenerMiddleware } from './listeners'
 
 const appReducer = combineReducers({
@@ -18,6 +19,7 @@ const appReducer = combineReducers({
   body: bodyReducer,
   theme: themeReducer,
   auth: authReducer,
+  sync: syncReducer,
 })
 
 export type RootState = ReturnType<typeof appReducer>

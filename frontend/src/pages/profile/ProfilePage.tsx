@@ -14,6 +14,7 @@ import {
 	type UserProfile
 } from '@/features/profile'
 import { PLAN_NAMES } from '@/features/subscription'
+import { SyncStatus } from '@/features/sync'
 import { ThemeToggle } from '@/features/theme'
 import { TimerSettingsPanel } from '@/features/workoutSession'
 import { formatDate, formatNumber } from '@/shared/lib/formatters'
@@ -111,6 +112,8 @@ export function ProfilePage() {
 					</>
 				}
 			/>
+
+			<SyncStatus />
 
 			{isLoading ? (
 				<ProfileSkeleton />
