@@ -3,6 +3,7 @@
 #   admin      http://localhost:5174
 #   API        http://localhost:3000/api/health
 #   admin API  http://localhost:3001/api/health
+#   mail       http://localhost:8025 (Mailpit catches every email)
 # Secrets below are for local use only.
 
 x-node: &node
@@ -32,6 +33,12 @@ x-backend-deps: &backend-deps
     condition: service_healthy
   redis:
     condition: service_healthy
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+
   migrate:
     condition: service_completed_successfully
 
@@ -78,9 +85,16 @@ services:
       <<: *node-env
       PORT: '3000'
       JWT_SECRET: dev-only-jwt-secret-change-me-0000000000
+      APP_URL: http://localhost:5173
+      MAIL_PROVIDER: smtp
+      SMTP_URL: smtp://mailpit:1025
+      RATE_LIMIT_ENABLED: 'false'
     ports:
       - '3000:3000'
-    depends_on: *backend-deps
+    depends_on:
+      <<: *backend-deps
+      mailpit:
+        condition: service_started
 
   admin-api:
     <<: *node
@@ -89,6 +103,7 @@ services:
       <<: *node-env
       PORT: '3001'
       ADMIN_JWT_SECRET: dev-only-admin-jwt-secret-change-me-0000000000
+      RATE_LIMIT_ENABLED: 'false'
     ports:
       - '3001:3001'
     depends_on: *backend-deps
