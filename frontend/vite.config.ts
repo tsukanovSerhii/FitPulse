@@ -27,6 +27,8 @@ export default defineConfig(({ mode }) => ({
     }),
     prerenderPublicPages({ siteUrl: (loadEnv(mode, process.cwd(), 'VITE_').VITE_SITE_URL || 'https://fit-pulse-beta-opal.vercel.app').replace(/\/$/, '') }),
   ],
+  // The app API: another container in Docker, port 3000 locally
+  server: { host: true, proxy: { '/api': process.env.API_PROXY_TARGET ?? 'http://localhost:3000' } },
   test: {
     include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['src/shared/testing/setup.ts'],

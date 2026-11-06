@@ -8,7 +8,8 @@
     "packages/db",
     "backend",
     "backend-AdminPanel",
-    "frontend"
+    "frontend",
+    "frontend-AdminPanel"
   ],
   "engines": {
     "node": ">=22"
