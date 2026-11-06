@@ -22,14 +22,14 @@
     "test:integration": "vitest run -c vitest.integration.config.ts"
   },
   "devDependencies": {
+    "@fitpulse/server-core": "*",
     "@types/node": "^24.19.2",
-    "vitest": "^5.1.0",
-    "tsx": "^4.23.15"
+    "tsx": "^4.23.15",
+    "vitest": "^5.1.0"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
-    "argon2": "^0.45.2",
     "prisma": "7.10.1"
   }
 }

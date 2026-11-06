@@ -89,6 +89,7 @@ docker compose up
 | http://localhost:5174 | адмін-панель |
 | http://localhost:3000/api/health | API застосунку |
 | http://localhost:3001/api/health | API адмінки |
+| http://localhost:8025 | Mailpit: листи скидання пароля |
 
 Compose піднімає Postgres 17, Redis 7, накочує міграції й запускає обидва API та обидва фронти з перезапуском після збереження.
 
@@ -110,7 +111,7 @@ npm run dev -w @fitpulse/web
 | `npm run typecheck` | перевірка типів |
 | `npm test` | юніт- і компонентні тести (Vitest), без бази |
 | `npm run build` | production-збірка всіх частин |
-| `npm run test:e2e -w @fitpulse/web` | наскрізні сценарії застосунку (Playwright) |
+| `npm run test:e2e -w @fitpulse/web` | наскрізні сценарії застосунку (Playwright); потрібен запущений API: `docker compose up db redis migrate api` |
 
 Змінні застосунку — у `frontend/.env.example`, бекендів — у `backend/.env.example` і `backend-AdminPanel/.env.example`.
 

@@ -16,6 +16,8 @@ const STORAGE_KEYS = {
   ACTIVE_SESSION: 'fitpulse_active_session_v1',
   ACCOUNTS: 'fitpulse_accounts_v1',
   SESSION: 'fitpulse_auth_session_v1',
+  AUTH_USER: 'fitpulse_auth_user_v1',
+  AVATAR: 'fitpulse_avatar_v1',
 } as const
 
 export function hasStorageKey(key: string): boolean {

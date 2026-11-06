@@ -1,4 +1,4 @@
 export { AuthLayout } from './components/AuthLayout'
 export { PasswordField } from './components/PasswordField'
-export { validateLogin, validateRegistration, type FieldErrors } from './lib/validation'
+export { validateForgot, validateLogin, validateNewPassword, validateRegistration, type FieldErrors, type NewPasswordForm } from './lib/validation'
 export * from './model'

@@ -5,6 +5,8 @@
 #                 when DATABASE_URL is already a direct connection
 #   API_UPSTREAM  public URL of the matching API, e.g. https://fitpulse-api.onrender.com
 #   VITE_SITE_URL public URL of the app, used for canonical links and the sitemap
+#   APP_URL       the same public URL of the app, used in password reset emails
+#   RESEND_API_KEY / MAIL_FROM  Resend key and a sender on a domain verified in Resend
 # Free services sleep after 15 minutes without requests; the first request then waits about a minute.
 
 services:
@@ -34,6 +36,14 @@ services:
         sync: false
       - key: JWT_SECRET
         generateValue: true
+      - key: APP_URL
+        sync: false
+      - key: MAIL_PROVIDER
+        value: resend
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
       - key: REDIS_URL
         fromService:
           type: keyvalue
@@ -79,6 +89,7 @@ services:
     buildFilter:
       paths:
         - frontend/**
+        - packages/contracts/**
         - package-lock.json
     envVars:
       - key: API_UPSTREAM

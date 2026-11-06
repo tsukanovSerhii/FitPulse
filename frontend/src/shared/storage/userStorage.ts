@@ -16,6 +16,7 @@ export const USER_KEYS = [
   STORAGE_KEYS.PERSONAL_RECORDS,
   STORAGE_KEYS.USER_PROFILE,
   STORAGE_KEYS.ACTIVE_SESSION,
+  STORAGE_KEYS.AVATAR,
 ] as const
 
 export type UserKey = (typeof USER_KEYS)[number]
@@ -67,4 +68,16 @@ export function hasUserData(key: UserKey): boolean {
 
 export function clearUserData(): void {
   for (const key of USER_KEYS) removeUserData(key)
+}
+
+/** Moves every per-account key from one account id to another; data already under the target wins. */
+export function moveUserData(fromId: string, toId: string): void {
+  if (fromId === toId) return
+  for (const key of USER_KEYS) {
+    const from = `${key}:${fromId}`
+    if (!hasStorageKey(from)) continue
+    const to = `${key}:${toId}`
+    if (!hasStorageKey(to)) saveToStorage(to, loadFromStorage(from, null))
+    removeFromStorage(from)
+  }
 }

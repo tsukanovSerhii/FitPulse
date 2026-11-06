@@ -6,7 +6,7 @@ import { progressReducer } from '@/features/progress/model'
 import { profileReducer } from '@/features/profile/model'
 import { bodyReducer } from '@/features/body/model'
 import { themeReducer } from '@/features/theme/model'
-import { authReducer, loggedOut, loginUser, registerUser } from '@/features/auth/model'
+import { authReducer, loggedOut, loginUser, logout, registerUser, restoreSession } from '@/features/auth/model'
 import { listenerMiddleware } from './listeners'
 
 const appReducer = combineReducers({
@@ -25,7 +25,10 @@ export type RootState = ReturnType<typeof appReducer>
 /** Slices that hold one account's data; theme and auth survive a change of user. */
 const USER_SLICES = ['exercises', 'workoutPlan', 'workoutSession', 'progress', 'profile', 'body'] as const
 
-const isUserChange = isAnyOf(loggedOut, loginUser.fulfilled, registerUser.fulfilled)
+const signsInOrOut = isAnyOf(loggedOut, logout.pending, loginUser.fulfilled, registerUser.fulfilled)
+// A start-up check that ended the session also signs out; a confirmed session keeps the loaded data
+const isUserChange = (action: UnknownAction) =>
+  signsInOrOut(action) || (restoreSession.fulfilled.match(action) && action.payload === null)
 
 // Undefined slice state makes each reducer rebuild its initial state for the new account.
 function rootReducer(state: RootState | undefined, action: UnknownAction): RootState {

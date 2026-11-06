@@ -11,7 +11,9 @@ RUN mkdir /manifests \
 FROM node:24-slim AS build
 WORKDIR /app
 COPY --from=manifests /manifests ./
-RUN npm ci --include-workspace-root -w @fitpulse/web
+RUN npm ci --include-workspace-root -w @fitpulse/contracts -w @fitpulse/web
+COPY tsconfig.base.json ./
+COPY packages/contracts ./packages/contracts
 COPY frontend ./frontend
 # Public settings baked into the bundle at build time
 ARG VITE_SITE_URL

@@ -1,6 +1,7 @@
 import cors from '@fastify/cors'
 import type { FastifyServerOptions } from 'fastify'
 import { createBaseApp } from './app.js'
+import { registerCookies } from './auth/guards.js'
 import type { BaseConfig } from './config.js'
 import { healthRoutes } from './health.js'
 
@@ -23,6 +24,8 @@ export async function buildServiceApp({ config, prisma, redis }: ServiceDeps) {
 
   // Production serves each API on its frontend's domain through nginx; CORS is only for local tools
   if (config.CORS_ORIGIN) await app.register(cors, { origin: config.CORS_ORIGIN.split(','), credentials: true })
+
+  await registerCookies(app)
 
   await app.register(healthRoutes, {
     prefix: '/api',
