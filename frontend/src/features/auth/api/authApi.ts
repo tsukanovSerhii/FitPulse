@@ -3,6 +3,7 @@ import { ApiError, apiRequest, NetworkError, setAccessToken, setRefreshHandler }
 import { loadFromStorage, removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { loadUserData, saveUserData, removeUserData } from '@/shared/storage/userStorage'
+import { adoptLocalAccount, findLocalAccount, verifyLocalPassword } from '../lib/localAccounts'
 import type { AuthUser, LoginData, RegistrationData } from '../model/types'
 
 /** A failure the sign-in forms show as is. */
@@ -81,6 +82,22 @@ setRefreshHandler(async () => {
   }
 })
 
+/**
+ * The server does not know this email yet, but an account made on this device before the server
+ * does and the password matches it: create the server account with the same name and password.
+ */
+async function signUpLocalAccount(loginError: unknown, { email, password, remember }: LoginData): Promise<AuthResponse> {
+  const local = loginError instanceof ApiError && loginError.code === 'INVALID_CREDENTIALS' ? findLocalAccount(email) : undefined
+  if (!local || !(await verifyLocalPassword(local, password))) throw loginError
+  try {
+    return await apiRequest<AuthResponse>('/api/auth/register', { method: 'POST', body: { name: local.name, email, password, remember } })
+  } catch (error) {
+    // Already registered from another device with another password: the local data waits for that one
+    if (error instanceof ApiError && error.code === 'EMAIL_TAKEN') throw loginError
+    throw error
+  }
+}
+
 export const authApi = {
   cachedUser(): AuthUser | null {
     const user =
@@ -90,11 +107,18 @@ export const authApi = {
 
   async register({ name, email, password }: RegistrationData): Promise<AuthUser> {
     const res = await apiRequest<AuthResponse>('/api/auth/register', { method: 'POST', body: { name, email, password, remember: true } })
+    adoptLocalAccount(email, res.user.id)
     return signedIn(res, true)
   },
 
   async login({ email, password, remember }: LoginData): Promise<AuthUser> {
-    const res = await apiRequest<AuthResponse>('/api/auth/login', { method: 'POST', body: { email, password, remember } })
+    let res: AuthResponse
+    try {
+      res = await apiRequest<AuthResponse>('/api/auth/login', { method: 'POST', body: { email, password, remember } })
+    } catch (error) {
+      res = await signUpLocalAccount(error, { email, password, remember })
+    }
+    adoptLocalAccount(email, res.user.id)
     return signedIn(res, remember)
   },
 
