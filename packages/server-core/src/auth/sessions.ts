@@ -17,7 +17,8 @@ export interface SessionRepo {
   create(data: { accountId: string; refreshTokenHash: string; expiresAt: Date; remember: boolean; userAgent?: string }): Promise<{ id: string }>
   findByTokenHash(hash: string): Promise<SessionRecord | null>
   findByPreviousHash(hash: string): Promise<SessionRecord | null>
-  rotate(id: string, data: { refreshTokenHash: string; previousTokenHash: string; rotatedAt: Date; expiresAt: Date }): Promise<void>
+  /** Compare-and-swap: replaces the token only if `previousTokenHash` is still current; false otherwise */
+  rotate(id: string, data: { refreshTokenHash: string; previousTokenHash: string; rotatedAt: Date; expiresAt: Date }): Promise<boolean>
   revoke(id: string): Promise<void>
   revokeAllForAccount(accountId: string): Promise<string[]>
 }
@@ -81,12 +82,14 @@ export function createSessionService({ repo, redis, lifetimes, extendOnRefresh, 
       if (session.revokedAt || session.expiresAt <= at) throw new AuthError('SESSION_EXPIRED')
 
       const refreshToken = newRefreshToken()
-      await repo.rotate(session.id, {
+      const rotated = await repo.rotate(session.id, {
         refreshTokenHash: hashToken(refreshToken),
         previousTokenHash: hash,
         rotatedAt: at,
         expiresAt: extendOnRefresh ? new Date(at.getTime() + lifetime(session.remember)) : session.expiresAt,
       })
+      // A parallel request rotated this token first; its new cookie is on the way
+      if (!rotated) throw new AuthError('REFRESH_RETRY')
       return { sessionId: session.id, accountId: session.accountId, refreshToken, remember: session.remember }
     },
 

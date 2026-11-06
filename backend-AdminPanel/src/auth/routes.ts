@@ -47,6 +47,8 @@ export async function adminAuthRoutes(app: FastifyInstance, { config, prisma, re
     const { email, password } = request.body
     await limit(`admin-login:${request.ip}:${email}`, 5)
     await limit(`admin-login-ip:${request.ip}`, 20)
+    // Client IPs come from X-Forwarded-For and can be faked, so one email also has its own limit
+    await rateLimit(redis, { key: `admin-login-email:${email}`, limit: 10, windowSeconds: 15 * 60, enabled: config.RATE_LIMIT_ENABLED, log: app.log })
     const admin = await prisma.adminUser.findUnique({ where: { email } })
     const valid = await verifyPassword(admin?.passwordHash ?? (await dummyHash), password)
     if (!admin || !valid) throw new AuthError(ErrorCode.InvalidCredentials)

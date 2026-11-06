@@ -65,6 +65,12 @@ describe('login', () => {
     expect(res.json().error.code).toBe('ACCOUNT_BLOCKED')
   })
 
+  it('login attempts for one email from many IPs are limited too', async () => {
+    for (let i = 0; i < 10; i++) await login(t, { password: 'wrong-password' }, `10.1.0.${i}`)
+    const res = await login(t, {}, '10.1.0.99')
+    expect(res.statusCode).toBe(429)
+  })
+
   it('sixth login in a minute is RATE_LIMITED with Retry-After', async () => {
     for (let i = 0; i < 5; i++) await login(t, { password: 'wrong-password' })
     const res = await login(t)

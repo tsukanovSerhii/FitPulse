@@ -33,6 +33,16 @@ describe('rateLimit', () => {
     ).resolves.toBeUndefined()
   })
 
+  it('repairs a counter left without an expiry', async () => {
+    const { redis, values } = fakeRedis()
+    values.set('rate:stuck', { value: '50' })
+    await expect(rateLimit(redis, { key: 'stuck', limit: 5, windowSeconds: 60, enabled: true, log: silentLog })).rejects.toMatchObject({
+      code: 'RATE_LIMITED',
+      retryAfter: 60,
+    })
+    expect(await redis.ttl('rate:stuck')).toBeGreaterThan(0)
+  })
+
   it('does nothing when disabled', async () => {
     const { redis } = fakeRedis()
     const opts = { key: 'k', limit: 1, windowSeconds: 60, enabled: false, log: silentLog }

@@ -26,6 +26,8 @@ export async function rateLimit(
     if (count > limit) {
       const ttl = await redis.ttl(redisKey)
       if (ttl > 0) retryAfter = ttl
+      // INCR succeeded but EXPIRE never ran (dropped connection): give the counter its window back
+      else await redis.expire(redisKey, windowSeconds)
     }
   } catch (err) {
     log.warn({ err, key }, 'Rate limit skipped: Redis unavailable')

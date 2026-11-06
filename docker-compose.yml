@@ -33,12 +33,6 @@ x-backend-deps: &backend-deps
     condition: service_healthy
   redis:
     condition: service_healthy
-  mailpit:
-    image: axllent/mailpit
-    ports:
-      - '8025:8025'
-      - '1025:1025'
-
   migrate:
     condition: service_completed_successfully
 
@@ -70,6 +64,12 @@ services:
       timeout: 3s
       retries: 20
 
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+
   migrate:
     <<: *node
     # Builds the shared packages once for every service, then applies migrations
@@ -92,7 +92,12 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      <<: *backend-deps
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       mailpit:
         condition: service_started
 

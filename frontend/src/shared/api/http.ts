@@ -37,15 +37,15 @@ export function setRefreshHandler(handler: () => Promise<boolean>) {
   refreshHandler = handler
 }
 
-// Tabs share the refresh cookie, so only one of them refreshes at a time
-function withRefreshLock(run: () => Promise<boolean>): Promise<boolean> {
+/** Tabs share the refresh cookie, so only one of them refreshes it at a time. */
+export function withRefreshLock<T>(run: () => Promise<T>): Promise<T> {
   const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined
-  return locks ? locks.request('fitpulse-refresh', run) : run()
+  return locks ? (locks.request('fitpulse-refresh', run) as Promise<T>) : run()
 }
 
 /** Refreshes the access token once for all callers waiting at the same moment. */
 export function refreshAccessToken(): Promise<boolean> {
-  refreshing ??= withRefreshLock(() => refreshHandler()).finally(() => {
+  refreshing ??= refreshHandler().finally(() => {
     refreshing = null
   })
   return refreshing

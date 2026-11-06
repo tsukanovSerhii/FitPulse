@@ -89,6 +89,7 @@ services:
     buildFilter:
       paths:
         - frontend/**
+        - packages/contracts/**
         - package-lock.json
     envVars:
       - key: API_UPSTREAM

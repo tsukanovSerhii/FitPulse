@@ -68,6 +68,32 @@ describe('authApi', () => {
     expect(authApi.cachedUser()?.name).toBe('Iryna')
   })
 
+  it('restore and a parallel refresh share one request', async () => {
+    fetchMock.mockResolvedValueOnce(json(200, authBody))
+    await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: true })
+    fetchMock.mockImplementation(async () => json(200, authBody))
+    fetchMock.mockClear()
+    await Promise.all([authApi.restore(), authApi.restore()])
+    expect(fetchMock.mock.calls.filter(([url]) => url === '/api/auth/refresh')).toHaveLength(1)
+  })
+
+  it('REFRESH_RETRY is retried after a pause', async () => {
+    fetchMock.mockResolvedValueOnce(json(200, authBody))
+    await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: true })
+    fetchMock.mockResolvedValueOnce(json(409, { error: { code: 'REFRESH_RETRY', message: 'x' } }))
+    fetchMock.mockResolvedValueOnce(json(409, { error: { code: 'REFRESH_RETRY', message: 'x' } }))
+    fetchMock.mockResolvedValueOnce(json(200, authBody))
+    await expect(authApi.restore()).resolves.toMatchObject({ id: user.id })
+  })
+
+  it('a server error on start keeps the user signed in', async () => {
+    fetchMock.mockResolvedValueOnce(json(200, authBody))
+    await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: true })
+    fetchMock.mockResolvedValueOnce(json(500, { error: { code: 'INTERNAL_ERROR', message: 'x' } }))
+    await expect(authApi.restore()).resolves.toBe('offline')
+    expect(authApi.cachedUser()?.id).toBe(user.id)
+  })
+
   it('without a session restore does not call the server', async () => {
     await expect(authApi.restore()).resolves.toBeNull()
     expect(fetchMock).not.toHaveBeenCalled()

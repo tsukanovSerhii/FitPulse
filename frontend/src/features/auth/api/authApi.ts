@@ -1,5 +1,5 @@
 import type { AuthResponse, User } from '@fitpulse/contracts'
-import { ApiError, apiRequest, NetworkError, setAccessToken, setRefreshHandler } from '@/shared/api/http'
+import { ApiError, apiRequest, NetworkError, setAccessToken, setRefreshHandler, withRefreshLock } from '@/shared/api/http'
 import { loadFromStorage, removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
 import { loadUserData, saveUserData, removeUserData } from '@/shared/storage/userStorage'
@@ -61,16 +61,33 @@ function signedIn({ accessToken, user }: AuthResponse, remember: boolean): AuthU
   return withAvatar(user)
 }
 
-async function refreshSession(): Promise<AuthResponse> {
-  try {
-    return await apiRequest<AuthResponse>('/api/auth/refresh', { method: 'POST', body: {} })
-  } catch (error) {
-    // Another tab replaced the refresh cookie a moment ago; the browser now holds the new one
-    if (error instanceof ApiError && error.code === 'REFRESH_RETRY') {
-      return apiRequest<AuthResponse>('/api/auth/refresh', { method: 'POST', body: {} })
+const RETRY_PAUSE_MS = 300
+const MAX_ATTEMPTS = 3
+const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+async function requestRefresh(): Promise<AuthResponse> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await apiRequest<AuthResponse>('/api/auth/refresh', { method: 'POST', body: {} })
+    } catch (error) {
+      // Another tab replaced the refresh cookie a moment ago; its new cookie arrives shortly
+      if (error instanceof ApiError && error.code === 'REFRESH_RETRY' && attempt < MAX_ATTEMPTS) {
+        await pause(RETRY_PAUSE_MS * attempt)
+        continue
+      }
+      throw error
     }
-    throw error
   }
+}
+
+let refreshInFlight: Promise<AuthResponse> | null = null
+
+/** One refresh at a time: shared inside the tab and taken in turns across tabs. */
+function refreshSession(): Promise<AuthResponse> {
+  refreshInFlight ??= withRefreshLock(requestRefresh).finally(() => {
+    refreshInFlight = null
+  })
+  return refreshInFlight
 }
 
 setRefreshHandler(async () => {
@@ -129,11 +146,13 @@ export const authApi = {
     try {
       return signedIn(await refreshSession(), remember)
     } catch (error) {
-      if (error instanceof NetworkError) return 'offline'
-      if (error instanceof ApiError && error.status === 429) return 'offline'
-      setAccessToken(null)
-      forgetUser()
-      return null
+      // Only the server saying the session is over signs out; outages keep the cached user
+      if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+        setAccessToken(null)
+        forgetUser()
+        return null
+      }
+      return 'offline'
     }
   },
 

@@ -39,7 +39,9 @@ export function createAdminSessionRepo(prisma: PrismaClient): SessionRepo {
       return row && toRecord(row)
     },
     async rotate(id, data) {
-      await prisma.adminSession.update({ where: { id }, data })
+      // Only the request that still holds the current token may replace it
+      const { count } = await prisma.adminSession.updateMany({ where: { id, refreshTokenHash: data.previousTokenHash }, data })
+      return count === 1
     },
     async revoke(id) {
       await prisma.adminSession.update({ where: { id }, data: { revokedAt: new Date() } })

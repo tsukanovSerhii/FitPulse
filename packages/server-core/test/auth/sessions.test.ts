@@ -57,6 +57,15 @@ describe('session service', () => {
     await expect(sessions.refresh(next.refreshToken)).resolves.toMatchObject({ sessionId: started.sessionId })
   })
 
+  it('two refreshes of the same token at once: one rotates, the other is told to retry', async () => {
+    const { sessions } = setup()
+    const started = await sessions.start('u1', { remember: true })
+    const results = await Promise.allSettled([sessions.refresh(started.refreshToken), sessions.refresh(started.refreshToken)])
+    expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(1)
+    const rejected = results.find((r) => r.status === 'rejected') as PromiseRejectedResult
+    expect(rejected.reason).toMatchObject({ code: 'REFRESH_RETRY' })
+  })
+
   it('reused token after grace revokes the session', async () => {
     const { sessions, rows, values, advance } = setup()
     const started = await sessions.start('u1', { remember: false })

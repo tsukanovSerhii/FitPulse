@@ -53,7 +53,12 @@ export function fakeSessionRepo() {
       return [...rows.values()].find((row) => row.previousTokenHash === hash) ?? null
     },
     async rotate(id, data) {
-      Object.assign(rows.get(id)!, data)
+      await Promise.resolve()
+      const row = rows.get(id)!
+      // Compare-and-swap like the Prisma repos: only the holder of the current token rotates
+      if (row.refreshTokenHash !== data.previousTokenHash) return false
+      Object.assign(row, data)
+      return true
     },
     async revoke(id) {
       rows.get(id)!.revokedAt = new Date()

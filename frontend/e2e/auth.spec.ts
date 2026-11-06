@@ -46,7 +46,18 @@ test('an on-device account keeps its workouts after signing in on the server', a
     const passwordHash = Array.from(new Uint8Array(bits), (b) => b.toString(16).padStart(2, '0')).join('')
     const account = { id: 'local-e2e', name: 'Олена Локальна', email, plan: 'free', createdAt: '2026-01-01T00:00:00.000Z', salt, passwordHash }
     localStorage.setItem('fitpulse_accounts_v1', JSON.stringify([account]))
-    localStorage.setItem('fitpulse_history_v1:local-e2e', JSON.stringify([{ id: 'before-server' }]))
+    const workout = {
+      id: 'before-server',
+      planName: 'Push',
+      date: new Date().toISOString(),
+      durationSeconds: 1800,
+      totalSets: 3,
+      totalReps: 24,
+      totalVolumeKg: 1500,
+      caloriesBurned: 200,
+      exercises: [],
+    }
+    localStorage.setItem('fitpulse_history_v1:local-e2e', JSON.stringify([workout]))
   }, email)
 
   await page.getByLabel('Email').fill(email)
