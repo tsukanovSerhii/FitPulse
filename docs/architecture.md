@@ -113,8 +113,8 @@ flowchart LR
   vite --> sw["sw.js<br/>офлайн-кеш"]
   vite --> pre["Пререндер<br/>135 статичних сторінок"]
   vite --> map[sitemap.xml]
-  chunks & sw & pre & map --> vercel[(Vercel CDN)]
-  vercel --> phone[Телефон]
+  chunks & sw & pre & map --> nginx[("nginx-образ<br/>Render")]
+  nginx --> phone[Телефон]
 ```
 
 - **Ліниве завантаження.** Кожна сторінка — окремий чанк, каталог вправ і програм теж. Вхідний JS ≈ 136 КБ gzip.
