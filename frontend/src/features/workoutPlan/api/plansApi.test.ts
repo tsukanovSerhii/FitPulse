@@ -18,6 +18,13 @@ describe('Workout Plans Persistence & Empty State Tests', () => {
     expect(activePlanId).toBeNull()
   })
 
+  it('the default active plan is derived, not saved, so it never overrides another device', async () => {
+    await plansApi.savePlan({ id: 'plan-mine', name: 'Мій', createdAt: '2026-05-01T09:00:00.000Z', updatedAt: '2026-05-01T09:00:00.000Z', schedule: {} as never })
+    const { activePlanId } = await plansApi.getPlans()
+    expect(activePlanId).toBe('plan-mine')
+    expect(hasUserData(STORAGE_KEYS.ACTIVE_PLAN_ID)).toBe(false)
+  })
+
   it('unchanged demo plans are removed and edited ones kept', async () => {
     const demo = (id: string, updatedAt: string) => ({ id, name: id, createdAt: updatedAt, updatedAt, schedule: {} })
     memoryStorage.local.set(
