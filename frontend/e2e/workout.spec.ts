@@ -131,6 +131,14 @@ test('a finished workout can be edited and the exercise history follows', async 
 
 test('the last workout can be repeated from the dashboard', async ({ page }) => {
   await signUp(page)
+  // New accounts have an empty journal, so record one workout first
+  await page.goto('/workout')
+  await page.getByRole('button', { name: /Понеділок/ }).first().click()
+  await page.getByRole('button', { name: /Підхід 1 виконано/ }).click()
+  await page.getByRole('button', { name: 'Завершити', exact: true }).click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Завершити' }).click()
+  await page.getByRole('button', { name: 'Зберегти' }).click()
+  await expect(page).toHaveURL('/progress')
   await page.goto('/')
   await expect(page.getByRole('region', { name: 'Ціль тижня' })).toBeVisible()
   await page.getByRole('button', { name: 'Повторити це тренування' }).click()

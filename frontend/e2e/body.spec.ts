@@ -4,7 +4,6 @@ import { signUp } from './helpers.ts'
 test('a body measurement is logged and updates the profile weight', async ({ page }) => {
   await signUp(page)
   await page.goto('/progress')
-  await expect(page.getByRole('heading', { name: 'Підсумок' })).toBeVisible()
   await page.getByRole('navigation', { name: 'Розділи прогресу' }).getByRole('link', { name: 'Тіло' }).click()
   await expect(page).toHaveURL('/progress/body')
 

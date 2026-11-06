@@ -165,7 +165,8 @@ export function OnboardingPage() {
     setSaving(true)
     const now = new Date()
     await Promise.all([
-      dispatch(addBodyEntry({ date: now.toISOString(), weightKg: answers.weightKg })),
+      // Start of today: a measurement the user adds later today (saved at noon) counts as newer
+      dispatch(addBodyEntry({ date: new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString(), weightKg: answers.weightKg })),
       dispatch(setWeeklyGoal(answers.days)),
       dispatch(setMyEquipment(equipmentFor(answers.place))),
       dispatch(setMyLimits(answers.limits)),

@@ -3,13 +3,14 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { installFakeAuthServer } from '@/shared/testing/fakeAuthServer'
 
 installFakeAuthServer()
 const { store } = await import('@/app/store/store')
 const { registerUser } = await import('@/features/auth/model')
 const { fetchProfile } = await import('@/features/profile/model')
+const { addBodyEntry } = await import('@/features/body/model')
 const { RequireOnboarding } = await import('@/app/router/guards')
 const { OnboardingPage } = await import('./OnboardingPage')
 
@@ -49,6 +50,10 @@ beforeEach(() => {
   sessionStorage.clear()
 })
 
+afterEach(() => {
+  vi.useRealTimers()
+})
+
 describe('onboarding', () => {
   it('a user who has not finished onboarding is sent there from /', async () => {
     renderAt('/')
@@ -79,6 +84,8 @@ describe('onboarding', () => {
   })
 
   it('finishing saves profile, weight, goal, equipment, limits and the chosen plan', async () => {
+    // In the evening, later than the noon the body form uses for today
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date(2026, 10, 7, 21, 0) })
     const user = userEvent.setup()
     renderAt('/onboarding')
     await fillAboutYou(user)
@@ -110,5 +117,11 @@ describe('onboarding', () => {
     expect(state.exercises.filters.limits).toEqual(['knees'])
     expect(state.workoutPlan.plans).toHaveLength(1)
     expect(state.workoutPlan.activePlanId).toBe(state.workoutPlan.plans[0]!.id)
+
+    // A measurement for today, as the body form saves it at noon, is newer than the questionnaire's
+    const today = new Date()
+    const noon = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12).toISOString()
+    await store.dispatch(addBodyEntry({ date: noon, weightKg: 63 }))
+    await waitFor(() => expect(store.getState().profile.profile.weightKg).toBe(63))
   })
 })
