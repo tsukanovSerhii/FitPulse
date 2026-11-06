@@ -40,3 +40,17 @@ export function passwordStrength(password: string): number {
   if (/[^\w\s]/.test(password) || password.length >= 14) score++
   return score
 }
+
+const forgotSchema = z.object({ email })
+export const validateForgot = (values: { email: string }): FieldErrors<{ email: string }> => validate(forgotSchema, values).errors
+
+export interface NewPasswordForm {
+  password: string
+  confirm: string
+}
+
+export function validateNewPassword(values: NewPasswordForm): FieldErrors<NewPasswordForm> {
+  const errors: FieldErrors<NewPasswordForm> = { ...validate(z.object({ password: registrationSchema.shape.password }), values).errors }
+  if (!errors.password && values.password !== values.confirm) errors.confirm = 'Паролі не збігаються'
+  return errors
+}

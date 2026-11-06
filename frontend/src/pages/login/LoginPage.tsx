@@ -66,6 +66,11 @@ export function LoginPage() {
           onChange={(e) => update('password')(e.target.value)}
           error={errors.password}
         />
+        <p className="-mt-2 text-right text-sm">
+          <Link to="/forgot-password" className="font-semibold text-accent hover:text-accent-hover">
+            Забули пароль?
+          </Link>
+        </p>
         <Checkbox
           label="Запам'ятати мене"
           hint="Вимкніть на чужому пристрої: вихід відбудеться після закриття вкладки"

@@ -9,6 +9,8 @@ const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, n
 const LandingPage = page(() => import('@/pages/landing/LandingPage'), 'LandingPage')
 const LoginPage = page(() => import('@/pages/login/LoginPage'), 'LoginPage')
 const RegisterPage = page(() => import('@/pages/register/RegisterPage'), 'RegisterPage')
+const ForgotPasswordPage = page(() => import('@/pages/forgot-password/ForgotPasswordPage'), 'ForgotPasswordPage')
+const ResetPasswordPage = page(() => import('@/pages/reset-password/ResetPasswordPage'), 'ResetPasswordPage')
 const PrivacyPage = page(() => import('@/pages/legal/PrivacyPage'), 'PrivacyPage')
 const TermsPage = page(() => import('@/pages/legal/TermsPage'), 'TermsPage')
 const CatalogPage = page(() => import('@/pages/public/CatalogPage'), 'CatalogPage')
@@ -44,6 +46,16 @@ export function AppRoutes() {
             </GuestOnly>
           }
         />
+        <Route
+          path="forgot-password"
+          element={
+            <GuestOnly>
+              <ForgotPasswordPage />
+            </GuestOnly>
+          }
+        />
+        {/* Open from the email link also when signed in on this device */}
+        <Route path="reset-password" element={<ResetPasswordPage />} />
         <Route
           path="register"
           element={

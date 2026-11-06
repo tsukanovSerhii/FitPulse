@@ -50,10 +50,9 @@ export function ProfilePage() {
 
 	const handleUpdateProfile = async (updated: UserProfile) => {
 		await dispatch(updateProfileAsync(updated)).unwrap()
-		if (user)
-			await dispatch(
-				updateAccount({ name: updated.name, email: updated.email })
-			).unwrap()
+		// Only the name is shared with the account; the profile stays saved on the device even offline
+		if (user && updated.name.trim() !== user.name)
+			void dispatch(updateAccount({ name: updated.name }))
 	}
 
 	const handleLogout = async () => {
