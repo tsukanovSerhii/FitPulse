@@ -1,6 +1,6 @@
 # Архітектура
 
-FitPulse — односторінковий застосунок на React 19 і TypeScript. Збірка — Vite, стилі — Tailwind 4, стан — Redux Toolkit, маршрути — React Router 7. Фронтенд розміщено на Vercel. Бекенд (FastAPI, Postgres) лежить у `backend/` і запускається в Docker; як він влаштований, описано в розділі [«Бекенд»](./backend.md).
+FitPulse — односторінковий застосунок на React 19 і TypeScript. Збірка — Vite, стилі — Tailwind 4, стан — Redux Toolkit, маршрути — React Router 7. Хостинг — Vercel, сервера поки немає.
 
 ## Шари коду
 

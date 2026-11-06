@@ -35,38 +35,6 @@ jobs:
           path: dist
           retention-days: 7
 
-  backend:
-    name: Backend in Docker
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Validate compose file
-        run: docker compose config --quiet
-      - name: Start database and API
-        run: docker compose up --detach --build --wait db api
-      - name: Lint
-        run: |
-          docker compose exec -T api ruff check .
-          docker compose exec -T api ruff format --check .
-      - name: Tests
-        run: docker compose exec -T api pytest
-      - name: API answers through the published port
-        run: curl --fail --silent --show-error http://localhost:8000/api/health
-      - name: Production image builds
-        run: docker build --target prod --tag fitpulse-api backend
-      - name: Production image migrates and serves
-        run: |
-          docker run --detach --name api-prod --network fitpulse_default --publish 8001:8000             --env DATABASE_URL=postgresql://fitpulse:fitpulse@db:5432/fitpulse fitpulse-api
-          for _ in $(seq 30); do
-            curl --fail --silent http://localhost:8001/api/health && exit 0
-            sleep 1
-          done
-          docker logs api-prod
-          exit 1
-      - name: API logs
-        if: failure()
-        run: docker compose logs api db
-
   e2e:
     name: End-to-end tests
     needs: quality
