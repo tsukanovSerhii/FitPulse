@@ -23,6 +23,7 @@ model User {
   updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
   sessions        Session[]
   passwordResets  PasswordResetToken[]
+  syncRecords     SyncRecord[]
 
   @@map("users")
 }
@@ -108,4 +109,22 @@ model AdminSession {
   @@index([adminId])
   @@index([previousTokenHash])
   @@map("admin_sessions")
+}
+
+/// One synced item of an app account (a workout, a program, a setting ...) as the device stores it
+model SyncRecord {
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      String
+  recordId  String    @map("record_id")
+  /// null once the record is deleted
+  data      Json?
+  updatedAt DateTime  @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// Grows with every change; devices pull everything after the last seq they have
+  seq       BigInt    @unique @default(autoincrement())
+
+  @@id([userId, kind, recordId])
+  @@index([userId, seq])
+  @@map("sync_records")
 }
