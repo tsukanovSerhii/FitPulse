@@ -35,3 +35,10 @@ test-results/
 playwright-report/
 lighthouse-report/
 .lighthouseci/
+
+# Backend
+backend/.venv/
+backend/.env
+__pycache__/
+.pytest_cache/
+.ruff_cache/

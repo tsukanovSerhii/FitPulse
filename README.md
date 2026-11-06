@@ -52,7 +52,7 @@
 
 ## Дані та приватність
 
-Бекенду поки немає: усе зберігається в браузері.
+Застосунок поки не підключено до бекенду: усе зберігається в браузері.
 
 - **localStorage** — акаунт, програми, журнал, рекорди, тема.
 - **sessionStorage** — стан однієї вкладки: фільтри каталогу, пошук програм, чернетка реєстрації, сторінка для повернення після входу, а також сесія без «Запам'ятати мене» (вихід після закриття вкладки).
@@ -71,10 +71,19 @@
 | Якість | Oxlint, Vitest, Testing Library, Playwright, Lighthouse CI, GitHub Actions |
 | Офлайн | власний service worker і web manifest |
 | Інше | lucide-react, sonner |
+| Бекенд | Python 3.13, FastAPI, SQLAlchemy 2, Alembic, Postgres 17 (у продакшені Neon), Docker |
 
 ## Запуск
 
-Потрібен Node.js 24.
+Усе разом у Docker (база, API і застосунок):
+
+```bash
+docker compose up
+```
+
+Застосунок відкриється на http://localhost:5173, документація API — на http://localhost:8000/api/docs. Тести бекенду: `docker compose exec api pytest`.
+
+Лише фронтенд, без Docker (потрібен Node.js 24):
 
 ```bash
 npm install
@@ -96,6 +105,9 @@ npm run dev
 |---|---|---|
 | `VITE_ADS_ENABLED` | `false` | показувати рекламні місця |
 | `VITE_SITE_URL` | адреса демо | домен для canonical і соцмереж |
+| `VITE_ERROR_ENDPOINT` | порожньо | куди надсилати звіти про помилки, наприклад `/api/errors` |
+
+Бекенд читає `DATABASE_URL` (рядок підключення Neon у продакшені), `ENVIRONMENT` і `APP_VERSION`; приклад у `backend/.env.example`.
 
 ## Структура
 
@@ -117,6 +129,7 @@ src/
     storage/      localStorage і sessionStorage
     seo/          мета-теги
     config/       змінні середовища, фото
+backend/          API на FastAPI: app/, міграції Alembic, тести, Dockerfile
 docs/             документація зі схемами, скриншоти
 ```
 
@@ -130,7 +143,7 @@ docs/             документація зі схемами, скриншот
 
 - **Юніт- і компонентні тести** лежать поруч із кодом (`*.test.ts`, `*.test.tsx`): логіка, сховища, схеми форм, компоненти дизайн-системи, режим тренування.
 - **E2E** (`e2e/`): реєстрація і вхід, проходження тренування до журналу, створення програми. Локально використовують встановлений Chrome.
-- **CI** на кожен pull request у `main`: lint, тести й збірка, потім E2E і Lighthouse (`lighthouserc.json`) паралельно. Звіти Lighthouse зберігаються як артефакт збірки.
+- **CI** на кожен pull request у `main`: lint, тести й збірка, потім E2E і Lighthouse (`lighthouserc.json`) паралельно. Бекенд перевіряється окремо в Docker: Ruff, pytest на Postgres і запуск продакшен-образу з міграціями. Звіти Lighthouse зберігаються як артефакт збірки.
 
 ## Як вносити зміни
 
