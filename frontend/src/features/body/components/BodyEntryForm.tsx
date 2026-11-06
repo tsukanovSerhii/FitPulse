@@ -1,9 +1,10 @@
+import { localDateInput } from '@/shared/lib/localDate'
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/shared/ui'
 import { BODY_METRICS, type BodyEntry, type BodyMetric } from '../model/types'
 
-const today = () => new Date().toISOString().slice(0, 10)
+const today = () => localDateInput()
 
 /** New measurement: any of weight and girths, at least one; the date defaults to today. */
 export function BodyEntryForm({ onSave }: { onSave: (entry: Omit<BodyEntry, 'id'>) => Promise<void> }) {
