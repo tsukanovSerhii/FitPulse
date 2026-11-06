@@ -6,6 +6,7 @@
     "packages/contracts",
     "packages/server-core",
     "packages/db",
+    "backend",
     "frontend"
   ],
   "engines": {

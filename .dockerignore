@@ -1,0 +1,10 @@
+**/node_modules
+**/dist
+**/src/generated
+.git
+.superpowers
+**/.env
+**/playwright-report
+**/lighthouse-report
+**/test-results
+**/.lighthouseci
