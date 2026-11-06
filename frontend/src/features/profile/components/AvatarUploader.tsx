@@ -21,7 +21,7 @@ export function AvatarUploader({ user, name }: { user: AuthUser; name: string })
     }
     setBusy(true)
     try {
-      dispatch(setAvatar(user.id, await toSquareDataUrl(file)))
+      dispatch(setAvatar(user, await toSquareDataUrl(file)))
       toast.success('Фото оновлено')
     } catch {
       toast.error('Не вдалося обробити зображення')
@@ -57,7 +57,7 @@ export function AvatarUploader({ user, name }: { user: AuthUser; name: string })
           {user.avatarUrl ? 'Змінити' : 'Додати фото'}
         </Button>
         {user.avatarUrl && (
-          <IconButton size="sm" label="Видалити фото" icon={<Trash2 />} onClick={() => dispatch(setAvatar(user.id, undefined))} />
+          <IconButton size="sm" label="Видалити фото" icon={<Trash2 />} onClick={() => dispatch(setAvatar(user, undefined))} />
         )}
       </div>
     </div>

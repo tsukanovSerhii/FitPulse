@@ -16,6 +16,7 @@ export const USER_KEYS = [
   STORAGE_KEYS.PERSONAL_RECORDS,
   STORAGE_KEYS.USER_PROFILE,
   STORAGE_KEYS.ACTIVE_SESSION,
+  STORAGE_KEYS.AVATAR,
 ] as const
 
 export type UserKey = (typeof USER_KEYS)[number]

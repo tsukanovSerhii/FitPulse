@@ -1,6 +1,7 @@
 /** Tab-scoped state: survives reloads and in-app navigation, cleared when the tab closes. */
 export const SESSION_KEYS = {
   AUTH_SESSION: 'fitpulse_auth_session_tab_v1',
+  AUTH_USER_TAB: 'fitpulse_auth_user_tab_v1',
   RETURN_TO: 'fitpulse_return_to_v1',
   REGISTER_DRAFT: 'fitpulse_register_draft_v1',
   EXERCISE_FILTERS: 'fitpulse_exercise_filters_v1',

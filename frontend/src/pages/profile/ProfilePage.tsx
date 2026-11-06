@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
-import { logout, syncAccount } from '@/features/auth'
+import { logout, updateAccount } from '@/features/auth'
 import { BackupSection } from '@/features/backup'
 import {
 	ACTIVITY_LEVEL_LABELS,
@@ -51,9 +51,9 @@ export function ProfilePage() {
 	const handleUpdateProfile = async (updated: UserProfile) => {
 		await dispatch(updateProfileAsync(updated)).unwrap()
 		if (user)
-			dispatch(
-				syncAccount(user.id, { name: updated.name, email: updated.email })
-			)
+			await dispatch(
+				updateAccount({ name: updated.name, email: updated.email })
+			).unwrap()
 	}
 
 	const handleLogout = async () => {
