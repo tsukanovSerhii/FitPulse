@@ -5,6 +5,6 @@ try {
   var dark = mode === 'dark' || (mode !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
   document.documentElement.classList.add(dark ? 'dark' : 'light')
   document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#0e0e10' : '#f4f4f2')
-} catch (e) {
+} catch {
   document.documentElement.classList.add('dark')
 }
