@@ -26,6 +26,8 @@ export const adminUserRowSchema = z.object({
   plan: z.enum(['free', 'pro']),
   createdAt: z.string(),
   blockedAt: z.string().nullable(),
+  /** Country of the most recent sign-in, ISO code */
+  country: z.string().nullable().optional(),
 })
 
 export const userListSchema = z.object({
@@ -40,6 +42,11 @@ export const adminUserDetailSchema = adminUserRowSchema.extend({
   bodyEntries: z.number().int(),
   lastSyncAt: z.string().nullable(),
   activeSessions: z.number().int(),
+  minutes7d: z.number().int(),
+  minutes30d: z.number().int(),
+  /** Minutes per day for the last 30 days, oldest first */
+  activity: z.array(z.object({ day: z.string(), minutes: z.number().int() })),
+  sessions: z.array(z.lazy(() => userSessionSchema)),
 })
 
 export const updateUserRequestSchema = z.object({ plan: z.enum(['free', 'pro']) })
@@ -82,3 +89,51 @@ export type AdminUserDetail = z.infer<typeof adminUserDetailSchema>
 export type StaffMember = z.infer<typeof staffMemberSchema>
 export type AuditEntry = z.infer<typeof auditEntrySchema>
 export type AuditPage = z.infer<typeof auditPageSchema>
+
+// --- Analytics ------------------------------------------------------------------------------
+
+export const analyticsQuerySchema = z.object({ days: z.coerce.number().int().pipe(z.union([z.literal(7), z.literal(30), z.literal(90)])).default(30) })
+
+const periodTotalsSchema = z.object({
+  signups: z.number().int(),
+  activeUsers: z.number().int(),
+  workouts: z.number().int(),
+  minutesPerActive: z.number(),
+})
+
+export const analyticsOverviewSchema = z.object({
+  days: z.number().int(),
+  series: z.array(z.object({ day: z.string(), signups: z.number().int(), active: z.number().int(), workouts: z.number().int(), minutes: z.number().int() })),
+  current: periodTotalsSchema,
+  previous: periodTotalsSchema,
+  /** Share of users who signed up 8–14 days ago and were active in the last 7 days, 0–1; null without such users */
+  retention: z.number().nullable(),
+})
+
+const countsSchema = z.array(z.object({ name: z.string(), count: z.number().int() }))
+
+export const analyticsDevicesSchema = z.object({ deviceTypes: countsSchema, os: countsSchema, browsers: countsSchema, appModes: countsSchema })
+
+export const analyticsGeoSchema = z.object({
+  countries: countsSchema,
+  cities: z.array(z.object({ name: z.string(), country: z.string(), count: z.number().int() })),
+})
+
+export const userSessionSchema = z.object({
+  id: z.string().uuid(),
+  deviceType: z.string().nullable(),
+  os: z.string().nullable(),
+  browser: z.string().nullable(),
+  appMode: z.string().nullable(),
+  country: z.string().nullable(),
+  city: z.string().nullable(),
+  ipPrefix: z.string().nullable(),
+  createdAt: z.string(),
+  lastSeenAt: z.string().nullable(),
+  active: z.boolean(),
+})
+
+export type AnalyticsOverview = z.infer<typeof analyticsOverviewSchema>
+export type AnalyticsDevices = z.infer<typeof analyticsDevicesSchema>
+export type AnalyticsGeo = z.infer<typeof analyticsGeoSchema>
+export type UserSession = z.infer<typeof userSessionSchema>

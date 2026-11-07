@@ -21,15 +21,15 @@ export function AuditPage() {
       <h1 className="text-2xl font-bold">Журнал дій</h1>
       {error && <ErrorText>{error}</ErrorText>}
       <Card>
-        <ul className="divide-y divide-gray-100 text-sm">
+        <ul className="divide-y divide-line text-sm">
           {data?.items.map((entry) => (
             <li key={entry.id} className="py-2">
-              <span className="text-gray-500">{formatDate(entry.createdAt)}</span> · <b>{entry.adminEmail ?? 'видалений співробітник'}</b> ·{' '}
+              <span className="text-fg-subtle">{formatDate(entry.createdAt)}</span> · <b>{entry.adminEmail ?? 'видалений співробітник'}</b> ·{' '}
               {ACTIONS[entry.action] ?? entry.action}
-              {entry.details != null && <code className="ml-2 text-xs text-gray-500">{JSON.stringify(entry.details)}</code>}
+              {entry.details != null && <code className="ml-2 text-xs text-fg-subtle">{JSON.stringify(entry.details)}</code>}
             </li>
           ))}
-          {data && data.items.length === 0 && <li className="py-2 text-gray-500">Поки порожньо</li>}
+          {data && data.items.length === 0 && <li className="py-2 text-fg-subtle">Поки порожньо</li>}
         </ul>
         <div className="flex gap-2">
           <Button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>

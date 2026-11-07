@@ -2,6 +2,7 @@ import { createPrismaClient } from '@fitpulse/db'
 import { createRedis, type MailMessage, type Mailer } from '@fitpulse/server-core'
 import type { LightMyRequestResponse } from 'fastify'
 import { buildApp } from '../src/app.js'
+import { cleanupOldData } from '../src/analytics/cleanup.js'
 import { loadConfig, type ApiConfig } from '../src/config.js'
 
 export const PASSWORD = 'secret123'
@@ -20,7 +21,7 @@ export async function buildTestApp(overrides: Partial<Record<string, string>> = 
   const prisma = createPrismaClient(config.DATABASE_URL)
   const redis = createRedis(config.REDIS_URL)
   await prisma.$executeRawUnsafe(
-    'TRUNCATE TABLE "admin_audit_log", "sync_records", "password_reset_tokens", "sessions", "users", "admin_sessions", "admin_users" CASCADE',
+    'TRUNCATE TABLE "user_activity", "admin_audit_log", "sync_records", "password_reset_tokens", "sessions", "users", "admin_sessions", "admin_users" CASCADE',
   )
   // Without a local Redis the rate limits fail open; CI always has one
   await redis.flushdb().catch(() => undefined)
@@ -47,6 +48,7 @@ export async function buildTestApp(overrides: Partial<Record<string, string>> = 
     advance: (ms: number) => {
       clock = new Date((clock ?? new Date()).getTime() + ms)
     },
+    cleanup: () => cleanupOldData(prisma),
     close: () => app.close(),
   }
 }

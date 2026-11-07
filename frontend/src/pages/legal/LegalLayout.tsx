@@ -6,7 +6,7 @@ import { ThemeCycleButton } from '@/features/theme'
 import { Wordmark } from '@/shared/ui'
 
 export const CONTACT_URL = 'https://github.com/tsukanovSerhii/FitPulse/issues'
-export const UPDATED_AT = '3 листопада 2026'
+export const UPDATED_AT = '8 листопада 2026'
 /** Inline links are underlined: color alone does not mark a link inside running text. */
 export const TEXT_LINK = 'text-accent underline underline-offset-2 hover:text-accent-hover'
 

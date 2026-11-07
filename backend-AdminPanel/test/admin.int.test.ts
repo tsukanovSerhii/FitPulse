@@ -26,7 +26,7 @@ beforeEach(async () => {
   const config = loadConfig({ ...process.env, NODE_ENV: 'test', ADMIN_JWT_SECRET: 'admin-test-secret-at-least-32-characters', RATE_LIMIT_ENABLED: 'false' })
   prisma = createPrismaClient(config.DATABASE_URL)
   redis = createRedis(config.REDIS_URL)
-  await prisma.$executeRawUnsafe('TRUNCATE TABLE "admin_audit_log", "sync_records", "sessions", "users", "admin_sessions", "admin_users" CASCADE')
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "user_activity", "admin_audit_log", "sync_records", "sessions", "users", "admin_sessions", "admin_users" CASCADE')
   await redis.flushdb().catch(() => undefined)
   app = await buildApp({ config, prisma, redis })
   const passwordHash = await hashPassword(PASSWORD)

@@ -2,6 +2,9 @@ import { authResponseSchema, ErrorCode, loginRequestSchema, registerRequestSchem
 import { Prisma } from '@fitpulse/db'
 import {
   AuthError,
+  describeDevice,
+  truncateIp,
+  type GeoLookup,
   clearRefreshCookie,
   hashPassword,
   rateLimit,
@@ -24,6 +27,7 @@ export interface AuthRouteDeps {
   sessions: SessionService
   tokens: AccessTokens
   mailer: Mailer
+  geo: GeoLookup
   now?: () => Date
 }
 
@@ -31,7 +35,21 @@ const MINUTE = 60
 const HOUR = 60 * MINUTE
 
 export async function authRoutes(app: FastifyInstance, deps: AuthRouteDeps) {
-  const { config, prisma, redis, sessions, tokens } = deps
+  const { config, prisma, redis, sessions, tokens, geo } = deps
+
+  // What the admin statistics show about a session: never the full address
+  const clientInfo = (request: FastifyRequest) => {
+    const mode = request.headers['x-app-mode']
+    return {
+      ...describeDevice(request.headers['user-agent']),
+      appMode: mode === 'installed' ? 'installed' : 'browser',
+      ...geo(request.clientIp),
+      ipPrefix: truncateIp(request.clientIp),
+      lastSeenAt: new Date(),
+    }
+  }
+  const recordClient = (request: FastifyRequest, sessionId: string) =>
+    prisma.session.update({ where: { id: sessionId }, data: clientInfo(request) }).catch((err: unknown) => app.log.warn({ err }, 'Session info not saved'))
   const api = app.withTypeProvider<ZodTypeProvider>()
   const secure = config.NODE_ENV === 'production'
   const limit = (key: string, max: number, windowSeconds: number) =>
@@ -42,6 +60,7 @@ export async function authRoutes(app: FastifyInstance, deps: AuthRouteDeps) {
   async function signIn(request: FastifyRequest, reply: FastifyReply, user: User, remember: boolean) {
     const session = await sessions.start(user.id, { remember, userAgent: request.headers['user-agent']?.slice(0, 255) })
     setRefreshCookie(reply, REFRESH_COOKIE, session.refreshToken, { remember, secure })
+    await recordClient(request, session.sessionId)
     return { accessToken: await tokens.sign({ sub: user.id, sid: session.sessionId }), user: toUserDto(user) }
   }
 
@@ -99,6 +118,7 @@ export async function authRoutes(app: FastifyInstance, deps: AuthRouteDeps) {
         throw new AuthError(user ? ErrorCode.AccountBlocked : ErrorCode.SessionExpired)
       }
       setRefreshCookie(reply, REFRESH_COOKIE, next.refreshToken, { remember: next.remember, secure })
+      await recordClient(request, next.sessionId)
       return { accessToken: await tokens.sign({ sub: user.id, sid: next.sessionId }), user: toUserDto(user) }
     },
   )

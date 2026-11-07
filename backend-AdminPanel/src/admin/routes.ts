@@ -16,6 +16,7 @@ import {
 import { Prisma, type AdminUser, type PrismaClient, type User } from '@fitpulse/db'
 import { AuthError, authenticate, hashPassword, REVOKED_TTL_SECONDS, revokedKey, type AccessTokens, type Redis } from '@fitpulse/server-core'
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
+import { analyticsRoutes, userActivity } from './analytics.js'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
@@ -80,6 +81,8 @@ export async function adminRoutes(app: FastifyInstance, { prisma, redis, tokens 
     await Promise.allSettled(sessionIds.map((id) => redis.set(revokedKey(id), '1', 'EX', REVOKED_TTL_SECONDS)))
   }
 
+  analyticsRoutes(app, prisma)
+
   // --- Stats and users ----------------------------------------------------------------------
 
   api.get('/stats', { schema: { response: { 200: adminStatsSchema } } }, async () => {
@@ -107,10 +110,16 @@ export async function adminRoutes(app: FastifyInstance, { prisma, redis, tokens 
       ...(status === 'active' && { blockedAt: null }),
     }
     const [items, total] = await Promise.all([
-      prisma.user.findMany({ where, orderBy: { createdAt: 'desc' }, skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE }),
+      prisma.user.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * PAGE_SIZE,
+        take: PAGE_SIZE,
+        include: { sessions: { orderBy: { createdAt: 'desc' }, take: 1, select: { country: true } } },
+      }),
       prisma.user.count({ where }),
     ])
-    return { items: items.map(userRow), total, page, pageSize: PAGE_SIZE }
+    return { items: items.map((u) => ({ ...userRow(u), country: u.sessions[0]?.country ?? null })), total, page, pageSize: PAGE_SIZE }
   })
 
   api.get('/users/:id', { schema: { params: idParams, response: { 200: adminUserDetailSchema, 404: errorResponseSchema } } }, async (request, reply) => {
@@ -122,7 +131,7 @@ export async function adminRoutes(app: FastifyInstance, { prisma, redis, tokens 
       prisma.syncRecord.aggregate({ where: { userId: user.id }, _max: { updatedAt: true } }),
       prisma.session.count({ where: { userId: user.id, revokedAt: null, expiresAt: { gt: new Date() } } }),
     ])
-    return { ...userRow(user), workouts, bodyEntries, lastSyncAt: last._max.updatedAt?.toISOString() ?? null, activeSessions }
+    return { ...userRow(user), workouts, bodyEntries, lastSyncAt: last._max.updatedAt?.toISOString() ?? null, activeSessions, ...(await userActivity(prisma, user.id)) }
   })
 
   api.post('/users/:id/block', { schema: { params: idParams, response: { 200: adminUserRowSchema, 404: errorResponseSchema } } }, async (request, reply) => {
