@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useState, type MouseEvent } from 'react'
+import { toast } from 'sonner'
 import { Dumbbell, Plus } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
@@ -11,6 +12,8 @@ import {
   ExerciseFiltersBar,
   ExerciseGridSkeleton,
   addCustomExercise,
+  communityApi,
+  MySubmissions,
   clearSelectedExercise,
   collapseVariants,
   fetchExercises,
@@ -37,6 +40,7 @@ export function ExercisesPage() {
 
   const [favoritesOnly, setFavoritesOnly] = useSessionState(SESSION_KEYS.EXERCISE_FAVORITES_ONLY, false)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [submissionsKey, setSubmissionsKey] = useState(0)
 
   useEffect(() => {
     if (items.length === 0) dispatch(fetchExercises())
@@ -71,8 +75,17 @@ export function ExercisesPage() {
     dispatch(toggleFavorite(id))
   }
 
-  const handleCreateExercise = async (exerciseData: Omit<Exercise, 'id'>) => {
+  const handleCreateExercise = async (exerciseData: Omit<Exercise, 'id'>, { share }: { share: boolean }) => {
     await dispatch(addCustomExercise(exerciseData)).unwrap()
+    if (!share) return
+    // The personal copy is already saved; only the request to publish it can fail here
+    try {
+      await communityApi.submit(exerciseData)
+      toast.success('Вправу надіслано на перевірку')
+      setSubmissionsKey((key) => key + 1)
+    } catch (err) {
+      toast.error(err instanceof Error ? `Вправа збережена лише для вас. ${err.message}` : 'Вправа збережена лише для вас')
+    }
   }
 
   const resetFilterValues = () => {
@@ -107,6 +120,8 @@ export function ExercisesPage() {
           </>
         }
       />
+
+      <MySubmissions load={communityApi.mine} refreshKey={submissionsKey} />
 
       <ExerciseFiltersBar
         filters={filters}

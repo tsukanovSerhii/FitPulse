@@ -118,6 +118,8 @@ export interface Exercise {
   aliases?: string
   /** Joints the exercise loads noticeably */
   stress?: Joint[]
+  /** Set on exercises other users shared: the name shown as their author */
+  authorName?: string
 }
 
 export interface ExerciseVariant {

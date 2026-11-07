@@ -1,4 +1,6 @@
 export { AddExerciseModal } from './components/AddExerciseModal'
+export { MySubmissions } from './components/MySubmissions'
+export { communityApi } from './api/communityApi'
 export { ExerciseCard } from './components/ExerciseCard'
 export { AlternativeList, ExerciseDetailModal, PointList } from './components/ExerciseDetailModal'
 export { MuscleMap } from './components/MuscleMap'

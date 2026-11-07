@@ -41,6 +41,11 @@ export function ExerciseCard({ exercise, variants = [exercise], isFavorite, onTo
           <Badge variant={DIFFICULTY_VARIANT[exercise.difficulty]} size="sm">
             {DIFFICULTY_LABELS[exercise.difficulty]}
           </Badge>
+          {exercise.authorName && (
+            <Badge size="sm" variant="info">
+              Від спільноти
+            </Badge>
+          )}
           {isGroup ? (
             <Badge size="sm">{plural(variants.length, ['варіант', 'варіанти', 'варіантів'])}</Badge>
           ) : (
