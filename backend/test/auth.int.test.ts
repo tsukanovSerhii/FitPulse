@@ -124,7 +124,7 @@ describe('refresh and logout', () => {
 
   it('cookie is Secure in production', async () => {
     await t.close()
-    t = await buildTestApp({ NODE_ENV: 'production' })
+    t = await buildTestApp({ NODE_ENV: 'production', APP_URL: 'https://fitpulse.app', MAIL_PROVIDER: 'smtp', SMTP_URL: 'smtp://localhost:1025', PROXY_SECRET: 'a-proxy-secret-that-is-long-enough' })
     expect(refreshCookie(await register(t))!.secure).toBe(true)
   })
 })

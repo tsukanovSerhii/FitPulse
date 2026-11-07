@@ -39,3 +39,14 @@ describe('createBaseApp', () => {
     expect(res.body).not.toContain('secret')
   })
 })
+
+describe('response headers', () => {
+  it('API answers are never cached or sniffed', async () => {
+    app = createBaseApp({ logger: false })
+    app.get('/x', async () => ({ ok: true }))
+    const res = await app.inject({ url: '/x' })
+    expect(res.headers['cache-control']).toBe('no-store')
+    expect(res.headers['x-content-type-options']).toBe('nosniff')
+    expect(res.headers['x-frame-options']).toBe('DENY')
+  })
+})

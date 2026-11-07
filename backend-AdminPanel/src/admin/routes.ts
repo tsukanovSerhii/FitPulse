@@ -62,9 +62,9 @@ const notFound = (reply: FastifyReply) => reply.status(404).send({ error: { code
 
 export async function adminRoutes(app: FastifyInstance, { prisma, redis, tokens }: Deps) {
   const api = app.withTypeProvider<ZodTypeProvider>()
-  api.addHook('preHandler', authenticate(tokens, redis, app.log))
+  api.addHook('onRequest', authenticate(tokens, redis, app.log))
   // The role is read from the database on every request, so a demotion or a disabled account applies at once
-  api.addHook('preHandler', async (request: FastifyRequest) => {
+  api.addHook('onRequest', async (request: FastifyRequest) => {
     const staff = await prisma.adminUser.findUnique({ where: { id: request.auth!.accountId } })
     if (!staff || staff.disabledAt) throw new AuthError(ErrorCode.Unauthorized)
     request.staff = staff
@@ -169,7 +169,8 @@ export async function adminRoutes(app: FastifyInstance, { prisma, redis, tokens 
     if (!user) return notFound(reply)
     const active = await prisma.session.findMany({ where: { userId: id, revokedAt: null }, select: { id: true } })
     // Sessions, reset links and synced data go with the account (cascade)
-    await prisma.$transaction([prisma.user.delete({ where: { id } }), audit(request, 'user.delete', id, { email: user.email })])
+    // Only the id: the deleted person's email must not outlive their account
+    await prisma.$transaction([prisma.user.delete({ where: { id } }), audit(request, 'user.delete', id)])
     await markRevoked(active.map((s) => s.id))
     return reply.status(204).send(null)
   })
@@ -227,7 +228,7 @@ export async function adminRoutes(app: FastifyInstance, { prisma, redis, tokens 
 
   // --- Audit --------------------------------------------------------------------------------
 
-  api.get('/audit', { schema: { querystring: z.object({ page: z.coerce.number().int().min(1).default(1) }), response: { 200: auditPageSchema } } }, async (request) => {
+  api.get('/audit', { schema: { querystring: z.object({ page: z.coerce.number().int().min(1).max(10_000).default(1) }), response: { 200: auditPageSchema } } }, async (request) => {
     const { page } = request.query
     const own = request.staff!.role !== 'ADMIN'
     const rows = await prisma.adminAuditLog.findMany({

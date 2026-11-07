@@ -41,7 +41,7 @@ export async function buildApp({ config, prisma, redis, mailer, now }: AppDeps) 
 
   await app.register(authRoutes, { prefix: '/api/auth', config, prisma, redis, sessions, tokens, mailer: mail, now })
   await app.register(passwordResetRoutes, { prefix: '/api/auth/password', config, prisma, redis, sessions, tokens, mailer: mail, now })
-  await app.register(meRoutes, { prefix: '/api/me', prisma, redis, tokens })
+  await app.register(meRoutes, { prefix: '/api/me', config, prisma, redis, tokens })
   await app.register(syncRoutes, { prefix: '/api/sync', config, prisma, redis, tokens, now })
   return app
 }

@@ -28,9 +28,9 @@ export async function syncRoutes(
   { config, prisma, redis, tokens, now = () => new Date() }: { config: ApiConfig; prisma: PrismaClient; redis: Redis; tokens: AccessTokens; now?: () => Date },
 ) {
   const api = app.withTypeProvider<ZodTypeProvider>()
-  api.addHook('preHandler', authenticate(tokens, redis, app.log))
+  api.addHook('onRequest', authenticate(tokens, redis, app.log))
   // A blocked account keeps its token for up to 15 minutes; its data must stop moving at once
-  api.addHook('preHandler', async (request) => {
+  api.addHook('onRequest', async (request) => {
     const user = await prisma.user.findUnique({ where: { id: request.auth!.accountId }, select: { blockedAt: true } })
     if (!user) throw new AuthError(ErrorCode.Unauthorized)
     if (user.blockedAt) throw new AuthError(ErrorCode.AccountBlocked)

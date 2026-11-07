@@ -14,7 +14,7 @@ export const syncChangeSchema = z.object({
 
 export const syncRequestSchema = z.object({
   /** The last seq the device has received, as a decimal string; "0" before the first sync */
-  cursor: z.string().regex(/^\d+$/),
+  cursor: z.string().regex(/^\d{1,18}$/),
   changes: z.array(syncChangeSchema).max(SYNC_LIMITS.changes),
 })
 

@@ -45,8 +45,8 @@ export async function adminAuthRoutes(app: FastifyInstance, { config, prisma, re
 
   api.post('/login', { schema: { body: loginRequestSchema, response: { 200: adminAuthResponseSchema } } }, async (request, reply) => {
     const { email, password } = request.body
-    await limit(`admin-login:${request.ip}:${email}`, 5)
-    await limit(`admin-login-ip:${request.ip}`, 20)
+    await limit(`admin-login:${request.clientIp}:${email}`, 5)
+    await limit(`admin-login-ip:${request.clientIp}`, 20)
     // Client IPs come from X-Forwarded-For and can be faked, so one email also has its own limit
     await rateLimit(redis, { key: `admin-login-email:${email}`, limit: 10, windowSeconds: 15 * 60, enabled: config.RATE_LIMIT_ENABLED, log: app.log })
     const admin = await prisma.adminUser.findUnique({ where: { email } })
@@ -60,7 +60,7 @@ export async function adminAuthRoutes(app: FastifyInstance, { config, prisma, re
   })
 
   api.post('/refresh', { schema: { body: z.object({}).optional(), response: { 200: adminAuthResponseSchema } } }, async (request, reply) => {
-    await limit(`admin-refresh:${request.ip}`, 60)
+    await limit(`admin-refresh:${request.clientIp}`, 60)
     const token = readRefreshCookie(request, ADMIN_REFRESH_COOKIE)
     if (!token) throw new AuthError(ErrorCode.SessionExpired)
     let next: Awaited<ReturnType<SessionService['refresh']>>
@@ -90,7 +90,7 @@ export async function adminAuthRoutes(app: FastifyInstance, { config, prisma, re
 
 export async function adminMeRoutes(app: FastifyInstance, { prisma, redis, tokens }: Pick<Deps, 'prisma' | 'redis' | 'tokens'>) {
   const api = app.withTypeProvider<ZodTypeProvider>()
-  api.addHook('preHandler', authenticate(tokens, redis, app.log))
+  api.addHook('onRequest', authenticate(tokens, redis, app.log))
   api.get('/', { schema: { response: { 200: adminUserSchema } } }, async (request) => {
     const admin = await prisma.adminUser.findUnique({ where: { id: request.auth!.accountId } })
     if (!admin || admin.disabledAt) throw new AuthError(ErrorCode.Unauthorized)
