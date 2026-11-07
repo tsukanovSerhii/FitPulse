@@ -8,6 +8,8 @@ export const apiEnvSchema = z.intersection(
     /** Public address of the app, used in password reset links */
     APP_URL: z.string().url().optional(),
     RATE_LIMIT_ENABLED: z.stringbool().default(true),
+    /** Path to the DB-IP City Lite .mmdb file; without it countries stay empty */
+    GEOIP_DB: z.string().optional(),
   }),
   mailEnvSchema,
 )

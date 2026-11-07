@@ -24,6 +24,7 @@ model User {
   sessions        Session[]
   passwordResets  PasswordResetToken[]
   syncRecords     SyncRecord[]
+  activity        UserActivity[]
 
   @@map("users")
 }
@@ -40,11 +41,24 @@ model Session {
   rotatedAt         DateTime? @map("rotated_at") @db.Timestamptz(3)
   remember          Boolean   @default(false)
   userAgent         String?   @map("user_agent")
+  /// mobile, tablet or desktop, from the User-Agent
+  deviceType        String?   @map("device_type")
+  os                String?
+  browser           String?
+  /// browser or installed (PWA)
+  appMode           String?   @map("app_mode")
+  /// ISO country code and city from DB-IP City Lite
+  country           String?
+  city              String?
+  /// 93.75.12.x: never the full address; cleared after 90 days
+  ipPrefix          String?   @map("ip_prefix")
+  lastSeenAt        DateTime? @map("last_seen_at") @db.Timestamptz(3)
   createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   expiresAt         DateTime  @map("expires_at") @db.Timestamptz(3)
   revokedAt         DateTime? @map("revoked_at") @db.Timestamptz(3)
 
   @@index([userId])
+  @@index([createdAt])
   @@index([previousTokenHash])
   @@map("sessions")
 }
@@ -147,4 +161,16 @@ model AdminAuditLog {
   @@index([adminId, createdAt])
   @@index([createdAt])
   @@map("admin_audit_log")
+}
+
+/// Minutes a user spent in the app with the tab visible, per day
+model UserActivity {
+  userId  String   @map("user_id") @db.Uuid
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day     DateTime @db.Date
+  minutes Int      @default(0)
+
+  @@id([userId, day])
+  @@index([day])
+  @@map("user_activity")
 }
