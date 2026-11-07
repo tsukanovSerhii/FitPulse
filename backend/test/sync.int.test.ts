@@ -83,6 +83,13 @@ describe('POST /api/sync', () => {
     expect(page2.hasMore).toBe(false)
   })
 
+  it('a blocked account cannot sync', async () => {
+    await t.prisma.user.updateMany({ data: { blockedAt: new Date() } })
+    const res = await sync(tokenA, { cursor: '0', changes: [] })
+    expect(res.statusCode).toBe(403)
+    expect(res.json().error.code).toBe('ACCOUNT_BLOCKED')
+  })
+
   it('rejects a record bigger than 64 KB', async () => {
     const res = await sync(tokenA, { cursor: '0', changes: [{ kind: 'plan', id: 'big', data: { text: 'x'.repeat(70 * 1024) }, updatedAt: at(1) }] })
     expect(res.statusCode).toBe(400)

@@ -1,6 +1,7 @@
 import type { PrismaClient } from '@fitpulse/db'
 import { ADMIN_MS, buildServiceApp, createAccessTokens, createSessionService, type Redis } from '@fitpulse/server-core'
 import { createAdminSessionRepo } from './auth/admins.js'
+import { adminRoutes } from './admin/routes.js'
 import { adminAuthRoutes, adminMeRoutes } from './auth/routes.js'
 import type { AdminConfig } from './config.js'
 
@@ -25,5 +26,6 @@ export async function buildApp({ config, prisma, redis, now }: AppDeps) {
   })
   await app.register(adminAuthRoutes, { prefix: '/api/auth', config, prisma, redis, sessions, tokens })
   await app.register(adminMeRoutes, { prefix: '/api/me', prisma, redis, tokens })
+  await app.register(adminRoutes, { prefix: '/api', prisma, redis, tokens })
   return app
 }

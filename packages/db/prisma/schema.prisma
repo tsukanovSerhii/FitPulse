@@ -79,14 +79,15 @@ enum AdminRole {
 
 /// A staff account of the admin panel, kept apart from app users
 model AdminUser {
-  id           String         @id @default(uuid()) @db.Uuid
-  email        String         @unique @db.Citext
-  passwordHash String         @map("password_hash")
+  id           String          @id @default(uuid()) @db.Uuid
+  email        String          @unique @db.Citext
+  passwordHash String          @map("password_hash")
   role         AdminRole
-  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
-  disabledAt   DateTime?      @map("disabled_at") @db.Timestamptz(3)
+  createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  disabledAt   DateTime?       @map("disabled_at") @db.Timestamptz(3)
   sessions     AdminSession[]
+  auditLog     AdminAuditLog[]
 
   @@map("admin_users")
 }
@@ -127,4 +128,20 @@ model SyncRecord {
   @@id([userId, kind, recordId])
   @@index([userId, seq])
   @@map("sync_records")
+}
+
+/// Every change a staff member makes, written in the same transaction as the change
+model AdminAuditLog {
+  id        String     @id @default(uuid()) @db.Uuid
+  /// null once the staff account is deleted
+  adminId   String?    @map("admin_id") @db.Uuid
+  admin     AdminUser? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  action    String
+  targetId  String?    @map("target_id")
+  details   Json?
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([adminId, createdAt])
+  @@index([createdAt])
+  @@map("admin_audit_log")
 }
