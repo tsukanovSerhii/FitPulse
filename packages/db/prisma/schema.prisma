@@ -25,6 +25,7 @@ model User {
   passwordResets  PasswordResetToken[]
   syncRecords     SyncRecord[]
   activity        UserActivity[]
+  exercises       CommunityExercise[]
 
   @@map("users")
 }
@@ -102,6 +103,7 @@ model AdminUser {
   disabledAt   DateTime?       @map("disabled_at") @db.Timestamptz(3)
   sessions     AdminSession[]
   auditLog     AdminAuditLog[]
+  reviews      CommunityExercise[]
 
   @@map("admin_users")
 }
@@ -173,4 +175,34 @@ model UserActivity {
   @@id([userId, day])
   @@index([day])
   @@map("user_activity")
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+
+  @@map("submission_status")
+}
+
+/// An exercise a user wrote for others: everyone after moderation, or a trainer's students
+model CommunityExercise {
+  id           String           @id @default(uuid()) @db.Uuid
+  authorId     String           @map("author_id") @db.Uuid
+  author       User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  /// public: the whole catalog after review; students: only the author's students
+  audience     String           @default("public")
+  status       SubmissionStatus @default(PENDING)
+  /// The exercise in the app's shape, validated by communityExerciseSchema
+  data         Json
+  rejectReason String?          @map("reject_reason")
+  reviewedById String?          @map("reviewed_by") @db.Uuid
+  reviewedBy   AdminUser?       @relation(fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt   DateTime?        @map("reviewed_at") @db.Timestamptz(3)
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+  @@index([authorId, createdAt])
+  @@map("community_exercises")
 }

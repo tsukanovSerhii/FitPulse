@@ -21,7 +21,7 @@ export async function buildTestApp(overrides: Partial<Record<string, string>> = 
   const prisma = createPrismaClient(config.DATABASE_URL)
   const redis = createRedis(config.REDIS_URL)
   await prisma.$executeRawUnsafe(
-    'TRUNCATE TABLE "user_activity", "admin_audit_log", "sync_records", "password_reset_tokens", "sessions", "users", "admin_sessions", "admin_users" CASCADE',
+    'TRUNCATE TABLE "community_exercises", "user_activity", "admin_audit_log", "sync_records", "password_reset_tokens", "sessions", "users", "admin_sessions", "admin_users" CASCADE',
   )
   // Without a local Redis the rate limits fail open; CI always has one
   await redis.flushdb().catch(() => undefined)

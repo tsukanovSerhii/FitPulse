@@ -17,6 +17,7 @@ import { createUserSessionRepo } from './auth/users.js'
 import type { ApiConfig } from './config.js'
 import { activityRoutes } from './analytics/routes.js'
 import { scheduleCleanup } from './analytics/cleanup.js'
+import { exerciseRoutes } from './exercises/routes.js'
 import { meRoutes } from './me/routes.js'
 import { syncRoutes } from './sync/routes.js'
 
@@ -50,6 +51,7 @@ export async function buildApp({ config, prisma, redis, mailer, now, geo }: AppD
   await app.register(passwordResetRoutes, { prefix: '/api/auth/password', config, prisma, redis, sessions, tokens, mailer: mail, geo: lookup, now })
   await app.register(meRoutes, { prefix: '/api/me', config, prisma, redis, tokens })
   await app.register(syncRoutes, { prefix: '/api/sync', config, prisma, redis, tokens, now })
+  await app.register(exerciseRoutes, { prefix: '/api/exercises', prisma, redis, tokens })
   await app.register(activityRoutes, { prefix: '/api/activity', prisma, redis, tokens })
   if (config.NODE_ENV !== 'test') {
     const stop = scheduleCleanup(prisma, app.log)

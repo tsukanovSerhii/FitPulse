@@ -18,7 +18,7 @@ beforeEach(async () => {
   const config = loadConfig({ ...process.env, NODE_ENV: 'test', ADMIN_JWT_SECRET: 'admin-test-secret-at-least-32-characters', RATE_LIMIT_ENABLED: 'false' })
   prisma = createPrismaClient(config.DATABASE_URL)
   const redis = createRedis(config.REDIS_URL)
-  await prisma.$executeRawUnsafe('TRUNCATE TABLE "user_activity", "admin_audit_log", "sync_records", "sessions", "users", "admin_sessions", "admin_users" CASCADE')
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "community_exercises", "user_activity", "admin_audit_log", "sync_records", "sessions", "users", "admin_sessions", "admin_users" CASCADE')
   app = await buildApp({ config, prisma, redis })
   await prisma.adminUser.create({ data: { email: 'help@fitpulse.app', passwordHash: await hashPassword('staff-password-123'), role: 'MANAGER' } })
   token = (await app.inject({ method: 'POST', url: '/api/auth/login', payload: { email: 'help@fitpulse.app', password: 'staff-password-123', remember: false } })).json().accessToken
