@@ -16,7 +16,7 @@ async function setup() {
   prisma = createPrismaClient(config.DATABASE_URL)
   const redis = createRedis(config.REDIS_URL)
   await prisma.$executeRawUnsafe('TRUNCATE TABLE "admin_sessions", "admin_users" CASCADE')
-  await redis.flushdb()
+  await redis.flushdb().catch(() => undefined)
   clock = null
   app = await buildApp({ config, prisma, redis, now: () => clock ?? new Date() })
   const passwordHash = await hashPassword(PASSWORD)

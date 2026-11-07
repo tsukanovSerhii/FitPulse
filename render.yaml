@@ -36,6 +36,9 @@ services:
         sync: false
       - key: JWT_SECRET
         generateValue: true
+      # Shared with fitpulse-web's nginx, which passes the visitor's address only together with it
+      - key: PROXY_SECRET
+        generateValue: true
       - key: APP_URL
         sync: false
       - key: MAIL_PROVIDER
@@ -71,6 +74,8 @@ services:
         sync: false
       - key: ADMIN_JWT_SECRET
         generateValue: true
+      - key: PROXY_SECRET
+        generateValue: true
       - key: REDIS_URL
         fromService:
           type: keyvalue
@@ -94,6 +99,11 @@ services:
     envVars:
       - key: API_UPSTREAM
         sync: false
+      - key: PROXY_SECRET
+        fromService:
+          type: web
+          name: fitpulse-api
+          envVarKey: PROXY_SECRET
       - key: VITE_SITE_URL
         sync: false
 
@@ -114,6 +124,11 @@ services:
     envVars:
       - key: API_UPSTREAM
         sync: false
+      - key: PROXY_SECRET
+        fromService:
+          type: web
+          name: fitpulse-admin-api
+          envVarKey: PROXY_SECRET
 
   - type: keyvalue
     name: fitpulse-redis

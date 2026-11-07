@@ -17,17 +17,7 @@
     <link rel="alternate" hreflang="uk" href="https://fit-pulse-beta-opal.vercel.app/welcome" />
     <link rel="alternate" hreflang="x-default" href="https://fit-pulse-beta-opal.vercel.app/welcome" />
     <meta name="theme-color" content="#0e0e10" />
-    <script>
-      // Apply the theme before first paint to avoid a flash
-      try {
-        var mode = JSON.parse(localStorage.getItem('fitpulse_theme_v1') || '"system"');
-        var dark = mode === 'dark' || (mode !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.add(dark ? 'dark' : 'light');
-        document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#0e0e10' : '#f4f4f2');
-      } catch (e) {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
+    <script src="/theme.js"></script>
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://fit-pulse-beta-opal.vercel.app/welcome" />

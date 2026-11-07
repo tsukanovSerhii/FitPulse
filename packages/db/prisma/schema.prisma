@@ -127,6 +127,9 @@ model SyncRecord {
 
   @@id([userId, kind, recordId])
   @@index([userId, seq])
+  // Admin statistics: workouts by kind and activity in the last days
+  @@index([kind, updatedAt])
+  @@index([updatedAt])
   @@map("sync_records")
 }
 

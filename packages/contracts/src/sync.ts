@@ -14,7 +14,7 @@ export const syncChangeSchema = z.object({
 
 export const syncRequestSchema = z.object({
   /** The last seq the device has received, as a decimal string; "0" before the first sync */
-  cursor: z.string().regex(/^\d+$/),
+  cursor: z.string().regex(/^\d{1,18}$/),
   changes: z.array(syncChangeSchema).max(SYNC_LIMITS.changes),
 })
 
@@ -23,6 +23,8 @@ export const syncResponseSchema = z.object({
   cursor: z.string(),
   hasMore: z.boolean(),
   changes: z.array(syncChangeSchema),
+  /** Changes the server could not store (too large, or data Postgres cannot hold) */
+  rejected: z.array(z.object({ kind: syncKindSchema, id: z.string(), reason: z.enum(['too_large', 'invalid']) })).default([]),
 })
 
 export type SyncKind = z.infer<typeof syncKindSchema>

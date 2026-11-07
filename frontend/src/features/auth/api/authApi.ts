@@ -2,7 +2,7 @@ import type { AuthResponse, User } from '@fitpulse/contracts'
 import { ApiError, apiRequest, NetworkError, setAccessToken, setRefreshHandler, withRefreshLock } from '@/shared/api/http'
 import { loadFromStorage, removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadFromSession, removeFromSession, saveToSession, SESSION_KEYS } from '@/shared/storage/sessionStorage'
-import { loadUserData, saveUserData, removeUserData } from '@/shared/storage/userStorage'
+import { clearUserData, currentUserId, loadUserData, saveUserData, removeUserData } from '@/shared/storage/userStorage'
 import { adoptLocalAccount, findLocalAccount, verifyLocalPassword } from '../lib/localAccounts'
 import type { AuthUser, LoginData, RegistrationData } from '../model/types'
 
@@ -157,6 +157,12 @@ export const authApi = {
   },
 
   async logout(): Promise<void> {
+    // Without "remember me" this is likely someone else's device: take the account's data with us
+    const userId = currentUserId()
+    if (userId && !rememberedOnDevice()) {
+      clearUserData()
+      removeFromStorage(`fitpulse_sync_v1:${userId}`)
+    }
     // The device forgets the user first, so a reload while the request is on its way stays signed out
     setAccessToken(null)
     forgetUser()

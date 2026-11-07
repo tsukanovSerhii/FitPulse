@@ -13,6 +13,8 @@ export const baseEnvSchema = z.object({
   DATABASE_URL: z.string().url(),
   REDIS_URL: redisUrl,
   CORS_ORIGIN: z.string().optional(),
+  /** Shared with our nginx, which then passes the visitor's address in X-Client-IP */
+  PROXY_SECRET: z.string().min(24).optional(),
 })
 
 export type BaseConfig = z.infer<typeof baseEnvSchema>

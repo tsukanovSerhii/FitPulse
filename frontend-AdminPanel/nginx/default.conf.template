@@ -1,4 +1,4 @@
-# Rendered by the nginx image at start: ${PORT} and ${API_UPSTREAM} come from the environment
+# Rendered by the nginx image at start: ${PORT}, ${API_UPSTREAM} and ${PROXY_SECRET} come from the environment
 # TLS ends at Render's edge: keep its scheme, or ours when nginx is reached directly
 map $http_x_forwarded_proto $forwarded_proto {
   default $http_x_forwarded_proto;
@@ -9,6 +9,13 @@ server {
   listen ${PORT};
   server_name _;
   root /usr/share/nginx/html;
+  server_tokens off;
+
+  # The visitor's address is the last X-Forwarded-For entry, the one Render's edge appended
+  set_real_ip_from 0.0.0.0/0;
+  set_real_ip_from ::/0;
+  real_ip_header X-Forwarded-For;
+  real_ip_recursive off;
 
   gzip on;
   gzip_types text/plain text/css application/javascript application/json image/svg+xml application/manifest+json application/xml;
@@ -19,24 +26,26 @@ server {
     proxy_http_version 1.1;
     proxy_set_header Host $proxy_host;
     proxy_ssl_server_name on;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Client-IP $remote_addr;
+    proxy_set_header X-Proxy-Secret "${PROXY_SECRET}";
     proxy_set_header X-Forwarded-Proto $forwarded_proto;
-    client_max_body_size 5m;
+    client_max_body_size 1m;
     # A sleeping free API on Render takes about a minute to wake up
     proxy_connect_timeout 90s;
     proxy_read_timeout 120s;
   }
 
-  # The admin panel must not be indexed
-  add_header X-Robots-Tag "noindex, nofollow" always;
-
   location /assets/ {
+    include /etc/nginx/security-headers.conf;
+    add_header X-Robots-Tag "noindex, nofollow" always;
     add_header Cache-Control "public, max-age=31536000, immutable";
   }
 
-  # Static files, then the single-page app
+  # Static files, then the single-page app; never indexed, never framed
   location / {
-    # HTML is revalidated on every load so a deploy never leaves pages pointing at removed assets
+    include /etc/nginx/security-headers.conf;
+    add_header X-Robots-Tag "noindex, nofollow" always;
     add_header Cache-Control "no-cache";
     try_files $uri /index.html;
   }

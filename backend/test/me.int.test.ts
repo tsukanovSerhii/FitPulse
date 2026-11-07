@@ -50,3 +50,10 @@ describe('/api/me', () => {
     expect(res.json().error.code).toBe('EMAIL_TAKEN')
   })
 })
+
+describe('PATCH /api/me limits', () => {
+  it('the eleventh change in a minute is RATE_LIMITED', async () => {
+    for (let i = 0; i < 10; i++) await patch({ name: `Ira ${i}` })
+    expect((await patch({ name: 'Ira 11' })).statusCode).toBe(429)
+  })
+})

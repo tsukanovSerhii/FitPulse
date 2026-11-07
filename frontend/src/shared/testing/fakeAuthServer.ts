@@ -76,8 +76,13 @@ export function installFakeAuthServer({ syncPage = 500 } = {}) {
         syncCalls.push(body)
         const own = new Set<number>()
         const stale: { kind: string; id: string; data: unknown; updatedAt: string; seq: number }[] = []
+        const rejected: { kind: string; id: string; reason: string }[] = []
         let applied = 0
         for (const change of body.changes) {
+          if (JSON.stringify(change.data ?? null).length > 64 * 1024) {
+            rejected.push({ kind: change.kind, id: change.id, reason: 'too_large' })
+            continue
+          }
           const key = `${change.kind}:${change.id}`
           const current = syncRows.get(key)
           if (current && current.updatedAt >= change.updatedAt) {
@@ -93,7 +98,7 @@ export function installFakeAuthServer({ syncPage = 500 } = {}) {
         const cursor = page.length ? String(page.at(-1)!.seq) : body.cursor
         const rows = new Map([...stale, ...page.filter((r) => !own.has(r.seq))].map((r) => [`${r.kind}:${r.id}`, r]))
         const changes = [...rows.values()].map(({ seq: _seq, ...rest }) => rest)
-        return json(200, { applied, cursor, hasMore: after.length > PAGE, changes })
+        return json(200, { applied, cursor, hasMore: after.length > PAGE, changes, rejected })
       }
       case '/api/auth/password/forgot':
       case '/api/auth/password/reset':

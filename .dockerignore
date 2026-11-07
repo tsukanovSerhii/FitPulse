@@ -4,6 +4,10 @@
 .git
 .superpowers
 **/.env
+**/.env.*
+!**/.env.example
+.neon
+.claude
 **/playwright-report
 **/lighthouse-report
 **/test-results

@@ -49,7 +49,9 @@ export async function authRoutes(app: FastifyInstance, deps: AuthRouteDeps) {
     '/register',
     { schema: { body: registerRequestSchema, response: { 201: authResponseSchema } } },
     async (request, reply) => {
-      await limit(`register:${request.ip}`, 5, HOUR)
+      await limit(`register:${request.clientIp}`, 5, HOUR)
+      // Across all addresses too: a forged or rotating IP still cannot mass-create accounts
+      await limit('register-all', 30, MINUTE)
       const { name, email, password, remember } = request.body
       let user: User
       try {
@@ -65,8 +67,8 @@ export async function authRoutes(app: FastifyInstance, deps: AuthRouteDeps) {
 
   api.post('/login', { schema: { body: loginRequestSchema, response: { 200: authResponseSchema } } }, async (request, reply) => {
     const { email, password, remember } = request.body
-    await limit(`login:${request.ip}:${email}`, 5, MINUTE)
-    await limit(`login-ip:${request.ip}`, 20, MINUTE)
+    await limit(`login:${request.clientIp}:${email}`, 5, MINUTE)
+    await limit(`login-ip:${request.clientIp}`, 20, MINUTE)
     // Client IPs come from X-Forwarded-For and can be faked, so one email also has its own limit
     await limit(`login-email:${email}`, 10, 15 * MINUTE)
     const user = await prisma.user.findUnique({ where: { email } })
@@ -80,7 +82,7 @@ export async function authRoutes(app: FastifyInstance, deps: AuthRouteDeps) {
     '/refresh',
     { schema: { body: z.object({}).optional(), response: { 200: authResponseSchema } } },
     async (request, reply) => {
-      await limit(`refresh:${request.ip}`, 60, MINUTE)
+      await limit(`refresh:${request.clientIp}`, 60, MINUTE)
       const token = readRefreshCookie(request, REFRESH_COOKIE)
       if (!token) throw new AuthError(ErrorCode.SessionExpired)
       let next: Awaited<ReturnType<SessionService['refresh']>>

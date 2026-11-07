@@ -2,6 +2,7 @@ import cors from '@fastify/cors'
 import type { FastifyServerOptions } from 'fastify'
 import { createBaseApp } from './app.js'
 import { registerCookies } from './auth/guards.js'
+import { registerClientIp } from './client-ip.js'
 import type { BaseConfig } from './config.js'
 import { healthRoutes } from './health.js'
 
@@ -21,6 +22,7 @@ function loggerFor(config: BaseConfig): FastifyServerOptions['logger'] {
 /** A backend with logging, optional CORS, /api/health checks for Postgres and Redis, and clean shutdown. */
 export async function buildServiceApp({ config, prisma, redis }: ServiceDeps) {
   const app = createBaseApp({ logger: loggerFor(config) })
+  registerClientIp(app, config.PROXY_SECRET)
 
   // Production serves each API on its frontend's domain through nginx; CORS is only for local tools
   if (config.CORS_ORIGIN) await app.register(cors, { origin: config.CORS_ORIGIN.split(','), credentials: true })

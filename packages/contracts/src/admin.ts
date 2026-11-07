@@ -16,7 +16,7 @@ export const adminStatsSchema = z.object({
 export const userListQuerySchema = z.object({
   query: z.string().trim().max(100).default(''),
   status: z.enum(['all', 'active', 'blocked']).default('all'),
-  page: z.coerce.number().int().min(1).default(1),
+  page: z.coerce.number().int().min(1).max(10_000).default(1),
 })
 
 export const adminUserRowSchema = z.object({

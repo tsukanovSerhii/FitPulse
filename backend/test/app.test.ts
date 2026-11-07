@@ -48,3 +48,17 @@ describe('api', () => {
     expect(() => loadConfig({ ...env, JWT_SECRET: 'short' })).toThrow(/JWT_SECRET/)
   })
 })
+
+describe('production config', () => {
+  const prod = { ...env, NODE_ENV: 'production', APP_URL: 'https://fitpulse.app', MAIL_PROVIDER: 'resend', RESEND_API_KEY: 're_x', PROXY_SECRET: 'a-proxy-secret-that-is-long-enough' }
+
+  it('accepts a complete production setup', () => {
+    expect(() => loadConfig(prod)).not.toThrow()
+  })
+
+  it('refuses the log mailer, a missing app URL or proxy secret in production', () => {
+    expect(() => loadConfig({ ...prod, MAIL_PROVIDER: 'log' })).toThrow(/MAIL_PROVIDER/)
+    expect(() => loadConfig({ ...prod, APP_URL: undefined })).toThrow(/APP_URL/)
+    expect(() => loadConfig({ ...prod, PROXY_SECRET: undefined })).toThrow(/PROXY_SECRET/)
+  })
+})

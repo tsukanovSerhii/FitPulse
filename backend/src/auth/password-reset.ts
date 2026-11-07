@@ -16,8 +16,10 @@ export async function passwordResetRoutes(app: FastifyInstance, { config, prisma
   // Always 204: the answer never tells whether the email has an account
   api.post('/forgot', { schema: { body: forgotPasswordRequestSchema } }, async (request, reply) => {
     const { email } = request.body
-    await limit(`forgot-ip:${request.ip}`, 10)
+    await limit(`forgot-ip:${request.clientIp}`, 10)
     await limit(`forgot:${email}`, 3)
+    // Keeps the mail quota for real requests even when addresses rotate
+    await rateLimit(redis, { key: 'forgot-all', limit: 30, windowSeconds: 60, enabled: config.RATE_LIMIT_ENABLED, log: app.log })
 
     const user = await prisma.user.findUnique({ where: { email } })
     if (user && !user.blockedAt) {

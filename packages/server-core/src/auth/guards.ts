@@ -1,5 +1,5 @@
 import fastifyCookie from '@fastify/cookie'
-import type { FastifyInstance, FastifyReply, FastifyRequest, preHandlerAsyncHookHandler } from 'fastify'
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import { AuthError } from './errors.js'
 import { revokedKey, type AuthRedis, type WarnLog } from './redis.js'
 import { REMEMBER_MS } from './sessions.js'
@@ -30,14 +30,16 @@ export async function rateLimit(
       else await redis.expire(redisKey, windowSeconds)
     }
   } catch (err) {
-    log.warn({ err, key }, 'Rate limit skipped: Redis unavailable')
+    // The key holds emails and addresses; only its kind goes to the log
+    log.warn({ err, limit: key.split(':')[0] }, 'Rate limit skipped: Redis unavailable')
     return
   }
   if (count > limit) throw new AuthError('RATE_LIMITED', { retryAfter })
 }
 
 /** preHandler that requires `Authorization: Bearer <access token>` of a session that is not revoked. */
-export function authenticate(tokens: AccessTokens, redis: AuthRedis, log: WarnLog): preHandlerAsyncHookHandler {
+/** Use as an onRequest hook, so an anonymous request is refused before its body is parsed. */
+export function authenticate(tokens: AccessTokens, redis: AuthRedis, log: WarnLog): (request: FastifyRequest) => Promise<void> {
   return async (request: FastifyRequest) => {
     const header = request.headers.authorization
     if (!header?.startsWith('Bearer ')) throw new AuthError('UNAUTHORIZED')
