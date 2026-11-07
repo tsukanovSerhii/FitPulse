@@ -1,6 +1,6 @@
 import { useId, useState } from 'react'
 import { useZodForm } from '@/shared/lib/form'
-import { Button, Input, Modal, Select, Textarea } from '@/shared/ui'
+import { Button, Checkbox, Input, Modal, Select, Textarea } from '@/shared/ui'
 import { customExerciseSchema, type CustomExerciseForm } from '../lib/schema'
 import type { Exercise } from '../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
@@ -8,7 +8,8 @@ import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../mod
 export interface AddExerciseModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (exercise: Omit<Exercise, 'id'>) => Promise<void>
+  /** share: also ask the moderators to publish it for everyone */
+  onSubmit: (exercise: Omit<Exercise, 'id'>, options: { share: boolean }) => Promise<void>
 }
 
 const toOptions = (labels: Record<string, string>) => Object.entries(labels).map(([value, label]) => ({ value, label }))
@@ -36,6 +37,7 @@ function toExercise(data: CustomExerciseForm): Omit<Exercise, 'id'> {
 export function AddExerciseModal({ isOpen, onClose, onSubmit }: AddExerciseModalProps) {
   const formId = useId()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [share, setShare] = useState(false)
   const { values, errors, set, setErrors, handleSubmit } = useZodForm(customExerciseSchema, {
     name: '',
     primaryMuscle: 'chest',
@@ -53,7 +55,7 @@ export function AddExerciseModal({ isOpen, onClose, onSubmit }: AddExerciseModal
   const save = async (data: CustomExerciseForm) => {
     setIsSubmitting(true)
     try {
-      await onSubmit(toExercise(data))
+      await onSubmit(toExercise(data), { share })
       onClose()
     } catch {
       setErrors({ name: 'Не вдалося зберегти вправу' })
@@ -139,6 +141,12 @@ export function AddExerciseModal({ isOpen, onClose, onSubmit }: AddExerciseModal
             error={errors.mistakes}
           />
         </div>
+        <Checkbox
+          label="Запропонувати для всіх"
+          hint="Вправа одразу з'явиться у вас, а після перевірки модератором її побачать усі"
+          checked={share}
+          onChange={(e) => setShare(e.target.checked)}
+        />
       </form>
     </Modal>
   )

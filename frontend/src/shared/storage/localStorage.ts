@@ -2,6 +2,8 @@
 const STORAGE_KEYS = {
   EXERCISES: 'fitpulse_exercises_v1',
   EXERCISES_FAVORITES: 'fitpulse_favorites_v1',
+  /** Last list of approved community exercises, for offline use; not synced */
+  COMMUNITY_EXERCISES: 'fitpulse_community_v1',
   MY_EQUIPMENT: 'fitpulse_my_equipment_v1',
   MY_LIMITS: 'fitpulse_my_limits_v1',
   EXERCISE_NOTES: 'fitpulse_exercise_notes_v1',

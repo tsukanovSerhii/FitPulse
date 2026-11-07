@@ -1,12 +1,27 @@
 import type { Equipment, Exercise, Joint } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
 import { loadUserData, saveUserData } from '@/shared/storage/userStorage'
+import { communityApi } from './communityApi'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // Built-in exercises always come from code so content updates reach every user;
 // storage keeps only the ones the user created.
 const isCustom = (exercise: Exercise) => exercise.id.startsWith('custom-')
+
+// A sleeping server must not hold the whole catalog back
+const COMMUNITY_WAIT_MS = 3000
+
+/** Approved exercises of other users; offline or slow, the last list the server sent. */
+async function loadCommunity(): Promise<Exercise[]> {
+  const fresh = communityApi.list().then((items) => {
+    saveUserData(STORAGE_KEYS.COMMUNITY_EXERCISES, items)
+    return items
+  })
+  const late = new Promise<null>((resolve) => setTimeout(() => resolve(null), COMMUNITY_WAIT_MS))
+  const items = await Promise.race([fresh, late]).catch(() => null)
+  return items ?? loadUserData<Exercise[]>(STORAGE_KEYS.COMMUNITY_EXERCISES, [])
+}
 
 function loadCustom(): Exercise[] {
   const stored = loadUserData<Exercise[]>(STORAGE_KEYS.EXERCISES, [])
@@ -17,10 +32,9 @@ function loadCustom(): Exercise[] {
 
 export const exercisesApi = {
   async getExercises(): Promise<Exercise[]> {
-    await delay(250)
     // The catalog is the largest piece of data, so it stays out of the entry bundle
-    const { INITIAL_EXERCISES } = await import('./seed')
-    return [...loadCustom(), ...INITIAL_EXERCISES]
+    const [{ INITIAL_EXERCISES }, community] = await Promise.all([import('./seed'), loadCommunity()])
+    return [...loadCustom(), ...community, ...INITIAL_EXERCISES]
   },
 
   async getFavorites(): Promise<string[]> {

@@ -86,7 +86,10 @@ export function ExerciseDetailModal({
     EQUIPMENT_LABELS[exercise.equipment],
     `${exercise.defaultSets} × ${exercise.defaultReps}`,
     `відпочинок ${exercise.defaultRestSeconds} с`,
-  ].join(' · ')
+    exercise.authorName && `автор: ${exercise.authorName}`,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
     <Modal

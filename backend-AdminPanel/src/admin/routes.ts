@@ -17,6 +17,7 @@ import { Prisma, type AdminUser, type PrismaClient, type User } from '@fitpulse/
 import { AuthError, authenticate, hashPassword, REVOKED_TTL_SECONDS, revokedKey, type AccessTokens, type Redis } from '@fitpulse/server-core'
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import { analyticsRoutes, userActivity } from './analytics.js'
+import { moderationRoutes } from './moderation.js'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
@@ -82,6 +83,7 @@ export async function adminRoutes(app: FastifyInstance, { prisma, redis, tokens 
   }
 
   analyticsRoutes(app, prisma)
+  moderationRoutes(app, prisma, audit)
 
   // --- Stats and users ----------------------------------------------------------------------
 

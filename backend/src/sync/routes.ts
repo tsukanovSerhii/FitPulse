@@ -1,5 +1,6 @@
-import { ErrorCode, SYNC_LIMITS, syncRequestSchema, syncResponseSchema, type SyncChange } from '@fitpulse/contracts'
-import { AuthError, authenticate, rateLimit } from '@fitpulse/server-core'
+import { SYNC_LIMITS, syncRequestSchema, syncResponseSchema, type SyncChange } from '@fitpulse/contracts'
+import { authenticate, rateLimit } from '@fitpulse/server-core'
+import { requireActiveUser } from '../auth/active-user.js'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import type { AccessTokens, ApiConfig, PrismaClient, Redis } from '../deps.js'
@@ -29,12 +30,7 @@ export async function syncRoutes(
 ) {
   const api = app.withTypeProvider<ZodTypeProvider>()
   api.addHook('onRequest', authenticate(tokens, redis, app.log))
-  // A blocked account keeps its token for up to 15 minutes; its data must stop moving at once
-  api.addHook('onRequest', async (request) => {
-    const user = await prisma.user.findUnique({ where: { id: request.auth!.accountId }, select: { blockedAt: true } })
-    if (!user) throw new AuthError(ErrorCode.Unauthorized)
-    if (user.blockedAt) throw new AuthError(ErrorCode.AccountBlocked)
-  })
+  api.addHook('onRequest', requireActiveUser(prisma))
 
   api.post(
     '/',

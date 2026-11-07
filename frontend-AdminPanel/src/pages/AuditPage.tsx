@@ -11,6 +11,8 @@ const ACTIONS: Record<string, string> = {
   'user.delete': 'Видалив користувача',
   'staff.create': 'Додав співробітника',
   'staff.update': 'Змінив співробітника',
+  'exercise.approve': 'Схвалив вправу',
+  'exercise.reject': 'Відхилив вправу',
 }
 
 export function AuditPage() {
