@@ -14,7 +14,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-8 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
         <span className="flex flex-wrap items-center gap-x-4 gap-y-1">
           <span>
-            <span className="font-display text-sm uppercase tracking-wide text-fg">FitPulse</span> © {currentYear}
+            <span className="font-display text-sm uppercase tracking-wide text-fg">FitPulse</span> © {currentYear} Сергій Цуканов. Усі права захищено
           </span>
           <Link to="/catalog" className="underline-offset-2 hover:text-fg hover:underline">
             Каталог вправ

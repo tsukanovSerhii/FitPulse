@@ -9,4 +9,4 @@ Allow: /exercise/
 Allow: /program/
 Disallow: /
 
-Sitemap: https://fit-pulse-beta-opal.vercel.app/sitemap.xml
+Sitemap: https://fitpulse-web-7fbg.onrender.com/sitemap.xml

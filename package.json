@@ -1,6 +1,8 @@
 {
   "name": "fitpulse",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Serhii Tsukanov",
   "type": "module",
   "workspaces": [
     "packages/contracts",
@@ -25,5 +27,6 @@
     "@neon/config": "^1.12.1",
     "@neon/env": "^2.0.1",
     "typescript": "~6.0.3"
-  }
+  },
+  "homepage": "https://fitpulse-web-7fbg.onrender.com"
 }

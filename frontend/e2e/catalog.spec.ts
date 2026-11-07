@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 test('search engines get a static page for every exercise', async ({ request }) => {
   const html = await (await request.get('/exercise/bench-press')).text()
   expect(html).toContain('<title>Жим штанги лежачи: техніка виконання | FitPulse</title>')
-  expect(html).toContain('<link rel="canonical" href="https://fit-pulse-beta-opal.vercel.app/exercise/bench-press"')
+  expect(html).toContain('<link rel="canonical" href="https://fitpulse-web-7fbg.onrender.com/exercise/bench-press"')
   expect(html).toContain('<h1>Жим штанги лежачи</h1>')
   expect(html).toContain('"@type":"HowTo"')
 
