@@ -13,6 +13,7 @@ export const ErrorCode = {
   SessionExpired: 'SESSION_EXPIRED',
   RefreshRetry: 'REFRESH_RETRY',
   ResetTokenInvalid: 'RESET_TOKEN_INVALID',
+  Forbidden: 'FORBIDDEN',
   RateLimited: 'RATE_LIMITED',
 } as const
 

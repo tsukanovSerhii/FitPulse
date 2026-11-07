@@ -10,6 +10,7 @@ const DETAILS = {
   [ErrorCode.RefreshRetry]: [409, 'Сесію щойно оновлено. Повторіть запит'],
   [ErrorCode.ResetTokenInvalid]: [400, 'Посилання недійсне або застаріло'],
   [ErrorCode.RateLimited]: [429, 'Забагато спроб. Спробуйте пізніше'],
+  [ErrorCode.Forbidden]: [403, 'Недостатньо прав для цієї дії'],
 } as const
 
 export type AuthErrorCode = keyof typeof DETAILS

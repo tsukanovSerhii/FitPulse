@@ -71,6 +71,32 @@ export function createAdminClient(fetchFn: typeof fetch = fetch) {
       accessToken = null
       await post('/api/auth/logout', {}).catch(() => undefined)
     },
+    /** JSON call to the admin API with the access token; on 401 the session is refreshed once. */
+    request: async <T>(path: string, { method = 'GET', body }: { method?: 'GET' | 'POST' | 'PATCH' | 'DELETE'; body?: unknown } = {}): Promise<T> => {
+      const send = async () => {
+        const headers: Record<string, string> = {}
+        if (body !== undefined) headers['Content-Type'] = 'application/json'
+        if (accessToken) headers.Authorization = `Bearer ${accessToken}`
+        try {
+          return await fetchFn(path, { method, credentials: 'same-origin', headers, body: body === undefined ? undefined : JSON.stringify(body) })
+        } catch {
+          throw new ApiError('NETWORK', NO_CONNECTION)
+        }
+      }
+      let res = await send()
+      if (res.status === 401) {
+        try {
+          await refreshWithRetry()
+          res = await send()
+        } catch {
+          // falls through to the 401 below
+        }
+      }
+      if (res.status === 204) return undefined as T
+      const data = await res.json().catch(() => null)
+      if (!res.ok) throw new ApiError(data?.error?.code ?? 'UNKNOWN', res.status >= 502 ? NO_CONNECTION : (data?.error?.message ?? 'Щось пішло не так'))
+      return data as T
+    },
     get accessToken() {
       return accessToken
     },

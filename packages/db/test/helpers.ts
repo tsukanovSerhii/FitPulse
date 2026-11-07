@@ -11,5 +11,5 @@ export function createTestClient(): PrismaClient {
 }
 
 export async function truncateAll(prisma: PrismaClient) {
-  await prisma.$executeRawUnsafe('TRUNCATE TABLE "sync_records", "password_reset_tokens", "sessions", "users", "admin_sessions", "admin_users" CASCADE')
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "admin_audit_log", "sync_records", "password_reset_tokens", "sessions", "users", "admin_sessions", "admin_users" CASCADE')
 }
