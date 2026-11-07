@@ -6,6 +6,9 @@ set -eu
 NET=fitpulse-smoke
 DB_URL=postgresql://fitpulse:fitpulse@db:5432/fitpulse
 SECRET=ci-only-secret-that-is-at-least-32-characters
+PROXY=ci-only-proxy-secret-long-enough
+# Production refuses the log mailer and needs these; the smoke test sends no mail
+PROD_ENV="-e APP_URL=http://localhost:8080 -e MAIL_PROVIDER=smtp -e SMTP_URL=smtp://localhost:2525 -e PROXY_SECRET=$PROXY"
 
 cleanup() {
   docker logs api 2>&1 | tail -n 40 || true
@@ -35,9 +38,9 @@ docker run -d --name redis --network "$NET" redis:7-alpine >/dev/null
 until docker exec db pg_isready -U fitpulse -d fitpulse >/dev/null 2>&1; do sleep 1; done
 
 docker run -d --name api --network "$NET" -p 3000:3000 -e NODE_ENV=production -e RUN_MIGRATIONS=true \
-  -e DATABASE_URL="$DB_URL" -e REDIS_URL=redis://redis:6379 -e JWT_SECRET="$SECRET" fitpulse-api >/dev/null
+  -e DATABASE_URL="$DB_URL" -e REDIS_URL=redis://redis:6379 -e JWT_SECRET="$SECRET" $PROD_ENV fitpulse-api >/dev/null
 docker run -d --name admin-api --network "$NET" -p 3001:3001 -e NODE_ENV=production \
-  -e DATABASE_URL="$DB_URL" -e REDIS_URL=redis://redis:6379 -e ADMIN_JWT_SECRET="$SECRET" fitpulse-admin-api >/dev/null
+  -e DATABASE_URL="$DB_URL" -e REDIS_URL=redis://redis:6379 -e ADMIN_JWT_SECRET="$SECRET" -e PROXY_SECRET=$PROXY fitpulse-admin-api >/dev/null
 
 wait_for http://localhost:3000/api/health 60
 wait_for http://localhost:3001/api/health 60
@@ -45,8 +48,8 @@ curl -fsS http://localhost:3000/api/health/ready | grep -q '"status":"ok"' || fa
 curl -fsS http://localhost:3001/api/health/ready | grep -q '"status":"ok"' || fail 'admin api is not ready'
 docker exec db psql -U fitpulse -d fitpulse -tAc "SELECT count(*) FROM _prisma_migrations" | grep -q '^[1-9]' || fail 'migrations were not applied'
 
-docker run -d --name web --network "$NET" -p 8080:8080 -e API_UPSTREAM=http://api:3000 fitpulse-web >/dev/null
-docker run -d --name admin-web --network "$NET" -p 8081:8080 -e API_UPSTREAM=http://admin-api:3001 fitpulse-admin-web >/dev/null
+docker run -d --name web --network "$NET" -p 8080:8080 -e API_UPSTREAM=http://api:3000 -e PROXY_SECRET=$PROXY fitpulse-web >/dev/null
+docker run -d --name admin-web --network "$NET" -p 8081:8080 -e API_UPSTREAM=http://admin-api:3001 -e PROXY_SECRET=$PROXY fitpulse-admin-web >/dev/null
 wait_for http://localhost:8080/ 30
 wait_for http://localhost:8081/ 30
 
@@ -56,6 +59,17 @@ curl -fsS http://localhost:8080/plans | grep -q 'id="root"' || fail 'app route d
 curl -fsSI http://localhost:8080/sw.js | grep -qi 'cache-control: no-cache' || fail 'sw.js must not be cached'
 curl -fsSI http://localhost:8080/plans | grep -qi 'cache-control: no-cache' || fail 'HTML must be revalidated after a deploy'
 
+# Security headers on pages, assets and the admin panel
+for url in http://localhost:8080/plans http://localhost:8081/ ; do
+  headers=$(curl -fsSI "$url")
+  echo "$headers" | grep -qi "content-security-policy: default-src 'self'" || fail "$url has no CSP"
+  echo "$headers" | grep -qi 'x-frame-options: DENY' || fail "$url can be framed"
+  echo "$headers" | grep -qi 'strict-transport-security' || fail "$url has no HSTS"
+done
+curl -fsSI http://localhost:8081/ | grep -qi 'x-robots-tag: noindex' || fail 'admin panel can be indexed'
+curl -fsS http://localhost:8080/theme.js | grep -q 'fitpulse_theme_v1' || fail 'theme script missing'
+curl -fsSI http://localhost:8080/api/health | grep -qi 'cache-control: no-store' || fail 'API answers may be cached'
+
 # /api goes through nginx to the API, body included
 curl -fsS http://localhost:8080/api/health | grep -q '"status":"ok"' || fail 'web does not proxy /api/health'
 curl -sS -X POST -H 'content-type: application/json' -d '{"a":1}' http://localhost:8080/api/nope | grep -q '"NOT_FOUND"' \
@@ -64,7 +78,7 @@ curl -fsS http://localhost:8081/api/health | grep -q '"status":"ok"' || fail 'ad
 curl -fsS http://localhost:8081/some/admin/route | grep -q 'id="root"' || fail 'admin route does not fall back to index.html'
 
 # A database that is down on start-up must not keep the API from answering its health check
-docker run -d --name api-nodb --network "$NET" -p 3002:3000 -e NODE_ENV=production -e RUN_MIGRATIONS=true   -e MIGRATION_RETRY_SECONDS=1 -e DATABASE_URL=postgresql://fitpulse:fitpulse@no-such-db:5432/fitpulse   -e REDIS_URL=redis://redis:6379 -e JWT_SECRET="$SECRET" fitpulse-api >/dev/null
+docker run -d --name api-nodb --network "$NET" -p 3002:3000 -e NODE_ENV=production -e RUN_MIGRATIONS=true   -e MIGRATION_RETRY_SECONDS=1 -e DATABASE_URL=postgresql://fitpulse:fitpulse@no-such-db:5432/fitpulse   -e REDIS_URL=redis://redis:6379 -e JWT_SECRET="$SECRET" $PROD_ENV fitpulse-api >/dev/null
 wait_for http://localhost:3002/api/health 90
 [ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3002/api/health/ready)" = 503 ]   || fail 'ready must report 503 while the database is down'
 

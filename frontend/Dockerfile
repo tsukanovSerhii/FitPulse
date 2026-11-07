@@ -23,7 +23,8 @@ ENV VITE_SITE_URL=$VITE_SITE_URL VITE_ADS_ENABLED=$VITE_ADS_ENABLED VITE_ERROR_E
 RUN npm run build -w @fitpulse/web
 
 FROM nginxinc/nginx-unprivileged:alpine AS runtime
-ENV PORT=8080 API_UPSTREAM=http://api:3000 NGINX_ENVSUBST_FILTER="^(PORT|API_UPSTREAM)$"
+ENV PORT=8080 API_UPSTREAM=http://api:3000 NGINX_ENVSUBST_FILTER="^(PORT|API_UPSTREAM|PROXY_SECRET)$" PROXY_SECRET=""
 COPY frontend/nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY docker/nginx/security-headers.conf /etc/nginx/security-headers.conf
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
 EXPOSE 8080

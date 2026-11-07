@@ -120,6 +120,26 @@ describe('authApi', () => {
     expect(local.has(STORAGE_KEYS.SESSION)).toBe(false)
   })
 
+  it('signing out of a not-remembered session wipes the account data from this device', async () => {
+    fetchMock.mockResolvedValueOnce(json(200, authBody))
+    await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: false })
+    local.set(`${STORAGE_KEYS.WORKOUT_HISTORY}:${user.id}`, '[{"id":"w1"}]')
+    local.set(`fitpulse_sync_v1:${user.id}`, '{"cursor":"5","hashes":{}}')
+    fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }))
+    await authApi.logout()
+    expect(local.has(`${STORAGE_KEYS.WORKOUT_HISTORY}:${user.id}`)).toBe(false)
+    expect(local.has(`fitpulse_sync_v1:${user.id}`)).toBe(false)
+  })
+
+  it('a remembered device keeps its data after sign-out', async () => {
+    fetchMock.mockResolvedValueOnce(json(200, authBody))
+    await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: true })
+    local.set(`${STORAGE_KEYS.WORKOUT_HISTORY}:${user.id}`, '[{"id":"w1"}]')
+    fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }))
+    await authApi.logout()
+    expect(local.has(`${STORAGE_KEYS.WORKOUT_HISTORY}:${user.id}`)).toBe(true)
+  })
+
   it('logout works offline too', async () => {
     fetchMock.mockResolvedValueOnce(json(200, authBody))
     await authApi.login({ email: 'ira@mail.com', password: 'secret123', remember: true })

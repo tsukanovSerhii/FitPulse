@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useEffect, useState, type FormEvent } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch } from '@/app/store/hooks'
 import { AuthLayout, PasswordField, resetPassword, validateNewPassword, type FieldErrors, type NewPasswordForm } from '@/features/auth'
 import { SEO } from '@/shared/seo/SEO'
@@ -10,7 +10,14 @@ const linkClass = 'font-semibold text-accent hover:text-accent-hover'
 
 export function ResetPasswordPage() {
   const dispatch = useAppDispatch()
-  const token = useSearchParams()[0].get('token')
+  const [params] = useSearchParams()
+  const navigate = useNavigate()
+  // Kept in state, then removed from the address bar and history so the one-time token is not
+  // left behind on a shared device or sent to anything that reads the URL
+  const [token] = useState(() => params.get('token'))
+  useEffect(() => {
+    if (params.has('token')) navigate('/reset-password', { replace: true })
+  }, [params, navigate])
   const [form, setForm] = useState<NewPasswordForm>({ password: '', confirm: '' })
   const [errors, setErrors] = useState<FieldErrors<NewPasswordForm>>({})
   const [status, setStatus] = useState<'idle' | 'saving' | 'done'>('idle')

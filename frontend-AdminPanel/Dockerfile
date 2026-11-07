@@ -18,7 +18,8 @@ COPY frontend-AdminPanel ./frontend-AdminPanel
 RUN npm run build -w @fitpulse/contracts -w @fitpulse/admin-web
 
 FROM nginxinc/nginx-unprivileged:alpine AS runtime
-ENV PORT=8080 API_UPSTREAM=http://admin-api:3001 NGINX_ENVSUBST_FILTER="^(PORT|API_UPSTREAM)$"
+ENV PORT=8080 API_UPSTREAM=http://admin-api:3001 NGINX_ENVSUBST_FILTER="^(PORT|API_UPSTREAM|PROXY_SECRET)$" PROXY_SECRET=""
 COPY frontend-AdminPanel/nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY docker/nginx/security-headers.conf /etc/nginx/security-headers.conf
 COPY --from=build /app/frontend-AdminPanel/dist /usr/share/nginx/html
 EXPOSE 8080

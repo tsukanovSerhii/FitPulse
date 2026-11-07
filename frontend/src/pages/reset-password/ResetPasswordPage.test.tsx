@@ -2,7 +2,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { installFakeAuthServer } from '@/shared/testing/fakeAuthServer'
 
@@ -10,12 +10,17 @@ const server = installFakeAuthServer()
 const { store } = await import('@/app/store/store')
 const { ResetPasswordPage } = await import('./ResetPasswordPage')
 
+function Url() {
+  const { pathname, search } = useLocation()
+  return <output aria-label="url">{pathname + search}</output>
+}
+
 const renderAt = (url: string) =>
   render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[url]}>
         <Routes>
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/reset-password" element={<><ResetPasswordPage /><Url /></>} />
           <Route path="/login" element={<p>Сторінка входу</p>} />
         </Routes>
       </MemoryRouter>
@@ -34,6 +39,9 @@ describe('ResetPasswordPage', () => {
 
   it('sends the token and the new password, then shows the sign-in link', async () => {
     renderAt('/reset-password?token=abc')
+    // The one-time token leaves the address bar and the history at once
+    expect(await screen.findByLabelText('url')).toHaveTextContent('/reset-password', { normalizeWhitespace: true })
+    expect(screen.getByLabelText('url').textContent).toBe('/reset-password')
     await userEvent.type(screen.getByLabelText('Новий пароль'), 'brandnew123')
     await userEvent.type(screen.getByLabelText('Повторіть пароль'), 'brandnew123')
     await userEvent.click(screen.getByRole('button', { name: 'Зберегти пароль' }))
