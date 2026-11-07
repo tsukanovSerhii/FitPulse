@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
-import { Activity, LayoutDashboard, LogOut, ScrollText, Shield, Users } from 'lucide-react'
+import { Activity, ClipboardCheck, LayoutDashboard, LogOut, ScrollText, Shield, Users } from 'lucide-react'
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import { createAdminClient, type AdminUser } from './api/client.ts'
 import { fetchApiHealth, type ApiStatus } from './api/health.ts'
@@ -11,6 +11,7 @@ const StatsPage = lazy(() => import('./pages/StatsPage.tsx').then((m) => ({ defa
 const UsersPage = lazy(() => import('./pages/UsersPage.tsx').then((m) => ({ default: m.UsersPage })))
 const UserPage = lazy(() => import('./pages/UserPage.tsx').then((m) => ({ default: m.UserPage })))
 const StaffPage = lazy(() => import('./pages/StaffPage.tsx').then((m) => ({ default: m.StaffPage })))
+const ModerationPage = lazy(() => import('./pages/ModerationPage.tsx').then((m) => ({ default: m.ModerationPage })))
 const AuditPage = lazy(() => import('./pages/AuditPage.tsx').then((m) => ({ default: m.AuditPage })))
 
 const STATUS_TEXT: Record<ApiStatus | 'loading', string> = {
@@ -78,6 +79,9 @@ export function App({ fetchFn = fetch }: { fetchFn?: typeof fetch }) {
                 <NavLink to="/users" className={navClass}>
                   <Users className="size-4" aria-hidden /> Користувачі
                 </NavLink>
+                <NavLink to="/moderation" className={navClass}>
+                  <ClipboardCheck className="size-4" aria-hidden /> Модерація
+                </NavLink>
                 {user.role === 'admin' && (
                   <NavLink to="/staff" className={navClass}>
                     <Shield className="size-4" aria-hidden /> Співробітники
@@ -112,6 +116,7 @@ export function App({ fetchFn = fetch }: { fetchFn?: typeof fetch }) {
               <Route path="/users" element={<UsersPage />} />
               <Route path="/users/:id" element={<UserPage />} />
               {user.role === 'admin' && <Route path="/staff" element={<StaffPage />} />}
+              <Route path="/moderation" element={<ModerationPage />} />
               <Route path="/audit" element={<AuditPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
