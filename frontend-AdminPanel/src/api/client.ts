@@ -22,6 +22,16 @@ function withRefreshLock<T>(run: () => Promise<T>): Promise<T> {
 export function createAdminClient(fetchFn: typeof fetch = fetch) {
   let accessToken: string | null = null
   let restoring: Promise<AdminUser | null> | null = null
+  let refreshing: Promise<AdminUser> | null = null
+
+  // Every caller waiting on a 401 shares one rotation; parallel rotations could leave the browser
+  // with a cookie the server no longer accepts and sign the staff member out
+  const sharedRefresh = () => {
+    refreshing ??= withRefreshLock(refreshWithRetry).finally(() => {
+      refreshing = null
+    })
+    return refreshing
+  }
 
   // Another tab may have just replaced the refresh cookie; its new value arrives in a moment
   async function refreshWithRetry(): Promise<AdminUser> {
@@ -60,7 +70,7 @@ export function createAdminClient(fetchFn: typeof fetch = fetch) {
     login: async (email: string, password: string) => session(await post('/api/auth/login', { email, password, remember: false })),
     /** The current staff member, or null when there is no session. */
     restore: (): Promise<AdminUser | null> => {
-      restoring ??= withRefreshLock(refreshWithRetry)
+      restoring ??= sharedRefresh()
         .catch(() => null)
         .finally(() => {
           restoring = null
@@ -86,7 +96,7 @@ export function createAdminClient(fetchFn: typeof fetch = fetch) {
       let res = await send()
       if (res.status === 401) {
         try {
-          await refreshWithRetry()
+          await sharedRefresh()
           res = await send()
         } catch {
           // falls through to the 401 below

@@ -49,3 +49,21 @@ describe('admin client requests', () => {
     await expect(client.request('/api/staff')).rejects.toMatchObject({ code: 'FORBIDDEN', message: 'Недостатньо прав' })
   })
 })
+
+describe('admin client under parallel 401s', () => {
+  it('three requests that hit an expired token share one refresh', async () => {
+    let refreshes = 0
+    const fetchFn = vi.fn(async (url: string, init: RequestInit = {}) => {
+      if (url === '/api/auth/refresh') {
+        refreshes++
+        await new Promise((resolve) => setTimeout(resolve, 10))
+        return json(200, { accessToken: 'fresh', user: admin })
+      }
+      const auth = (init.headers as Record<string, string>)?.Authorization
+      return auth === 'Bearer fresh' ? json(200, { ok: true }) : json(401, { error: { code: 'UNAUTHORIZED', message: 'x' } })
+    })
+    const client = createAdminClient(fetchFn as unknown as typeof fetch)
+    await Promise.all([client.request('/api/a'), client.request('/api/b'), client.request('/api/c')])
+    expect(refreshes).toBe(1)
+  })
+})

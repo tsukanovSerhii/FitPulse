@@ -90,9 +90,20 @@ describe('POST /api/sync', () => {
     expect(res.json().error.code).toBe('ACCOUNT_BLOCKED')
   })
 
-  it('rejects a record bigger than 64 KB', async () => {
-    const res = await sync(tokenA, { cursor: '0', changes: [{ kind: 'plan', id: 'big', data: { text: 'x'.repeat(70 * 1024) }, updatedAt: at(1) }] })
-    expect(res.statusCode).toBe(400)
-    expect(res.json().error.code).toBe('VALIDATION_ERROR')
+  it('a record over 64 KB is skipped and reported, the rest still syncs', async () => {
+    const res = await sync(tokenA, {
+      cursor: '0',
+      changes: [
+        { kind: 'plan', id: 'big', data: { text: 'x'.repeat(70 * 1024) }, updatedAt: at(1) },
+        { kind: 'plan', id: 'nul', data: { text: 'bad\u0000byte' }, updatedAt: at(1) },
+        { kind: 'plan', id: 'ok', data: { name: 'fine' }, updatedAt: at(1) },
+      ],
+    })
+    expect(res.statusCode).toBe(200)
+    expect(res.json().applied).toBe(1)
+    expect(res.json().rejected).toEqual([
+      { kind: 'plan', id: 'big', reason: 'too_large' },
+      { kind: 'plan', id: 'nul', reason: 'invalid' },
+    ])
   })
 })

@@ -34,6 +34,23 @@ export type Hashes = Record<string, string>
 
 export const recordKey = (kind: string, id: string) => `${kind}:${id}`
 
+/** A storage key holds something that is not valid data; syncing it would delete its records everywhere. */
+export class UnreadableStorageError extends Error {
+  constructor(key: string) {
+    super(`Unreadable local data in ${key}`)
+    this.name = 'UnreadableStorageError'
+  }
+}
+
+const UNREADABLE = Symbol('unreadable')
+
+function readStrict<T>(key: UserKey): T | undefined {
+  if (!hasUserData(key)) return undefined
+  const value = loadUserData<T | typeof UNREADABLE>(key, UNREADABLE)
+  if (value === UNREADABLE) throw new UnreadableStorageError(key)
+  return value
+}
+
 /** FNV-1a, 32 bit: cheap change detection without keeping a second copy of the data. */
 export function hashOf(value: unknown): string {
   const text = JSON.stringify(value) ?? 'undefined'
@@ -49,30 +66,47 @@ export function hashOf(value: unknown): string {
 export function collectRecords(): Map<string, LocalRecord> {
   const records = new Map<string, LocalRecord>()
   for (const [kind, storageKey] of Object.entries(RECORD_KEYS) as [RecordKind, UserKey][]) {
-    for (const item of loadUserData<{ id?: unknown }[]>(storageKey, [])) {
+    const list = readStrict<{ id?: unknown }[]>(storageKey) ?? []
+    if (!Array.isArray(list)) throw new UnreadableStorageError(storageKey)
+    for (const item of list) {
       if (typeof item?.id === 'string') records.set(recordKey(kind, item.id), { kind, id: item.id, data: item })
     }
   }
   for (const storageKey of SETTING_KEYS) {
     // A setting never saved on this device has nothing to share yet
-    if (hasUserData(storageKey)) records.set(recordKey('setting', storageKey), { kind: 'setting', id: storageKey, data: loadUserData(storageKey, null) })
+    const value = readStrict<unknown>(storageKey)
+    if (value !== undefined) records.set(recordKey('setting', storageKey), { kind: 'setting', id: storageKey, data: value })
   }
   return records
 }
 
-/** New and changed records since the last sync, plus deletions of records that disappeared. */
-export function diffChanges(records: Map<string, LocalRecord>, hashes: Hashes, now: Date): SyncChange[] {
-  const updatedAt = now.toISOString()
+/** Changes noticed but not yet confirmed by the server, with the time they were first noticed. */
+export type Pending = Record<string, { hash: string; at: string }>
+
+const DELETED = 'deleted'
+
+/**
+ * New and changed records since the last sync, plus deletions of records that disappeared. A change
+ * already noticed earlier (say, while offline) keeps that time, so last-write-wins compares when
+ * edits were made, not when they reached the server.
+ */
+export function diffChanges(records: Map<string, LocalRecord>, hashes: Hashes, now: Date, pending: Pending = {}): SyncChange[] {
+  const stamp = (key: string, hash: string) => (pending[key]?.hash === hash ? pending[key].at : now.toISOString())
   const changes: SyncChange[] = []
   for (const [key, record] of records) {
-    if (hashes[key] !== hashOf(record.data)) changes.push({ kind: record.kind, id: record.id, data: record.data, updatedAt })
+    const hash = hashOf(record.data)
+    if (hashes[key] !== hash) changes.push({ kind: record.kind, id: record.id, data: record.data, updatedAt: stamp(key, hash) })
   }
   for (const key of Object.keys(hashes)) {
     if (records.has(key)) continue
     const separator = key.indexOf(':')
-    changes.push({ kind: key.slice(0, separator) as SyncKind, id: key.slice(separator + 1), data: null, updatedAt })
+    changes.push({ kind: key.slice(0, separator) as SyncKind, id: key.slice(separator + 1), data: null, updatedAt: stamp(key, DELETED) })
   }
   return changes
+}
+
+export function pendingFor(changes: SyncChange[]): Pending {
+  return Object.fromEntries(changes.map((c) => [recordKey(c.kind, c.id), { hash: c.data === null ? DELETED : hashOf(c.data), at: c.updatedAt }]))
 }
 
 /** Hashes after these changes are known to the server: sent ones and received ones alike. */

@@ -23,6 +23,8 @@ export const syncResponseSchema = z.object({
   cursor: z.string(),
   hasMore: z.boolean(),
   changes: z.array(syncChangeSchema),
+  /** Changes the server could not store (too large, or data Postgres cannot hold) */
+  rejected: z.array(z.object({ kind: syncKindSchema, id: z.string(), reason: z.enum(['too_large', 'invalid']) })).default([]),
 })
 
 export type SyncKind = z.infer<typeof syncKindSchema>
