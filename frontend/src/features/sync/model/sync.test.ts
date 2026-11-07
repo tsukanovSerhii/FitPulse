@@ -4,7 +4,7 @@ import { installFakeAuthServer } from '@/shared/testing/fakeAuthServer'
 
 const storage = installMemoryStorage()
 const server = installFakeAuthServer({ syncPage: 2 })
-const { authApi } = await import('@/features/auth/api/authApi')
+const { registerUser } = await import('@/features/auth/model')
 const { syncNow } = await import('./syncNow')
 const { syncStatusText } = await import('../lib/statusText')
 const { STORAGE_KEYS } = await import('@/shared/storage/localStorage')
@@ -14,7 +14,9 @@ const put = (key: string, value: unknown) => storage.local.set(`${key}:${userId}
 const read = (key: string) => JSON.parse(storage.local.get(`${key}:${userId}`) ?? 'null')
 
 beforeAll(async () => {
-  userId = (await authApi.register({ name: 'Ira', email: 'ira@sync.ua', password: 'secret123' })).id
+  // The thunk alone, without a store: features may not import the app
+  const action = await registerUser({ name: 'Ira', email: 'ira@sync.ua', password: 'secret123' })(() => {}, () => ({}), undefined)
+  userId = (action.payload as { id: string }).id
 })
 
 beforeEach(() => {
