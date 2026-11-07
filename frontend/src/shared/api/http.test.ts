@@ -28,6 +28,13 @@ describe('apiRequest', () => {
     expect(init.body).toBe('{"name":"Ira"}')
   })
 
+  it('tells the server whether the app runs installed', async () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({ matches: query === '(display-mode: standalone)' }))
+    fetchMock.mockResolvedValueOnce(json(200, {}))
+    await apiRequest('/api/me')
+    expect(fetchMock.mock.calls[0]![1].headers).toMatchObject({ 'X-App-Mode': 'installed' })
+  })
+
   it('refresh is single-flight across calls', async () => {
     setAccessToken('old')
     let refreshes = 0

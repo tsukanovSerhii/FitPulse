@@ -6,6 +6,8 @@ import { fetchProfile } from '@/features/profile/model'
 import { fetchProgress } from '@/features/progress/model'
 import { runSync } from '@/features/sync/model'
 import { fetchPlans } from '@/features/workoutPlan/model'
+import { apiRequest } from '@/shared/api/http'
+import { startActivityPulse } from './activity'
 import { listenerMiddleware as listeners } from './listeners'
 import type { store as appStore } from './store'
 
@@ -66,4 +68,8 @@ export function startSyncTimers(store: typeof appStore) {
   window.setInterval(() => {
     if (document.visibilityState === 'visible') syncIfSignedIn()
   }, 60_000)
+  startActivityPulse({
+    isSignedIn: () => Boolean(store.getState().auth.user) && navigator.onLine,
+    send: () => apiRequest('/api/activity', { method: 'POST', body: {}, auth: true }),
+  })
 }

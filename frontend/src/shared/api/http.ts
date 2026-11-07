@@ -64,6 +64,9 @@ interface RequestOptions {
 async function send(path: string, { method = 'GET', body, auth = false }: RequestOptions): Promise<Response> {
   const headers: Record<string, string> = {}
   if (body !== undefined) headers['Content-Type'] = 'application/json'
+  // For the admin statistics: opened from the home screen (PWA) or in a browser tab
+  const installed = typeof matchMedia === 'function' && matchMedia('(display-mode: standalone)').matches
+  headers['X-App-Mode'] = installed ? 'installed' : 'browser'
   if (auth && accessToken) headers.Authorization = `Bearer ${accessToken}`
   try {
     return await fetch(path, {
