@@ -7,8 +7,9 @@ const DIST = 'dist'
 const KB = 1024
 const BUDGET = {
   // Everything the first page needs before React starts: the entry script and the chunks it
-  // preloads. About 136 KB today, most of it React, Redux and the router
-  entryJs: 140 * KB,
+  // preloads. About 140.5 KB today, most of it React, Redux and the router; the sync reducer and
+  // listeners (~2 KB) must be there from the start so no sign-in or edit is missed
+  entryJs: 142 * KB,
   css: 25 * KB,
   // Any page or data chunk loaded later
   lazyChunk: 60 * KB,

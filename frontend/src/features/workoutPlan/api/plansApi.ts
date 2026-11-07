@@ -1,6 +1,6 @@
 import type { WorkoutPlan } from '../model/types'
 import { STORAGE_KEYS } from '@/shared/storage/localStorage'
-import { hasUserData, loadUserData, saveUserData } from '@/shared/storage/userStorage'
+import { loadUserData, saveUserData } from '@/shared/storage/userStorage'
 import { DEMO_PLANS } from './demo'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -13,17 +13,10 @@ export const plansApi = {
     const plans = stored.filter((plan) => DEMO_PLANS[plan.id] !== plan.updatedAt)
     if (plans.length !== stored.length) saveUserData(STORAGE_KEYS.WORKOUT_PLANS, plans)
 
-    let activePlanId: string | null = null
-    if (!hasUserData(STORAGE_KEYS.ACTIVE_PLAN_ID)) {
-      activePlanId = plans.length > 0 ? plans[0].id : null
-      saveUserData(STORAGE_KEYS.ACTIVE_PLAN_ID, activePlanId)
-    } else {
-      activePlanId = loadUserData<string | null>(STORAGE_KEYS.ACTIVE_PLAN_ID, null)
-      if (activePlanId && !plans.some((p) => p.id === activePlanId)) {
-        activePlanId = plans.length > 0 ? plans[0].id : null
-        saveUserData(STORAGE_KEYS.ACTIVE_PLAN_ID, activePlanId)
-      }
-    }
+    // Only an explicit choice is stored: a derived default saved here would sync as a newer
+    // change and override the plan chosen on another device
+    const chosen = loadUserData<string | null>(STORAGE_KEYS.ACTIVE_PLAN_ID, null)
+    const activePlanId = chosen && plans.some((p) => p.id === chosen) ? chosen : (plans[0]?.id ?? null)
 
     return { plans, activePlanId }
   },

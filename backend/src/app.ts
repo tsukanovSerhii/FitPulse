@@ -14,6 +14,7 @@ import { authRoutes } from './auth/routes.js'
 import { createUserSessionRepo } from './auth/users.js'
 import type { ApiConfig } from './config.js'
 import { meRoutes } from './me/routes.js'
+import { syncRoutes } from './sync/routes.js'
 
 export interface AppDeps {
   config: ApiConfig
@@ -41,5 +42,6 @@ export async function buildApp({ config, prisma, redis, mailer, now }: AppDeps) 
   await app.register(authRoutes, { prefix: '/api/auth', config, prisma, redis, sessions, tokens, mailer: mail, now })
   await app.register(passwordResetRoutes, { prefix: '/api/auth/password', config, prisma, redis, sessions, tokens, mailer: mail, now })
   await app.register(meRoutes, { prefix: '/api/me', prisma, redis, tokens })
+  await app.register(syncRoutes, { prefix: '/api/sync', config, prisma, redis, tokens, now })
   return app
 }

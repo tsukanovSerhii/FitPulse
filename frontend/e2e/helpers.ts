@@ -2,7 +2,8 @@ import { expect, type Page } from '@playwright/test'
 
 /** Answers the sign-up questionnaire; ends on the step with the recommended programs. */
 export async function answerOnboarding(page: Page) {
-  await expect(page).toHaveURL('/onboarding')
+  // The first request after a quiet period may wake the API and the database
+  await expect(page).toHaveURL('/onboarding', { timeout: 15_000 })
   await page.getByRole('radio', { name: 'Жіноча' }).click()
   await page.getByLabel('Вік').fill('29')
   await page.getByLabel('Зріст, см').fill('168')

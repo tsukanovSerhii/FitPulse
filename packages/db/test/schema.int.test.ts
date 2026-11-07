@@ -15,7 +15,7 @@ describe('schema', () => {
     const tables = await prisma.$queryRaw<{ tablename: string }[]>`
       SELECT tablename FROM pg_tables WHERE schemaname = 'public'`
     expect(tables.map((row) => row.tablename)).toEqual(
-      expect.arrayContaining(['users', 'sessions', 'admin_users', 'admin_sessions', 'password_reset_tokens']),
+      expect.arrayContaining(['users', 'sessions', 'admin_users', 'admin_sessions', 'password_reset_tokens', 'sync_records']),
     )
   })
 
@@ -60,5 +60,12 @@ describe('schema', () => {
     await expect(duplicate).rejects.toSatisfy(
       (error) => error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002',
     )
+  })
+
+  it('sync records are deleted with the user', async () => {
+    const user = await prisma.user.create({ data: { email: 'sync@x.com', passwordHash: 'hash', name: 'Sync' } })
+    await prisma.syncRecord.create({ data: { userId: user.id, kind: 'workout', recordId: 'w1', data: { a: 1 }, updatedAt: new Date() } })
+    await prisma.user.delete({ where: { id: user.id } })
+    expect(await prisma.syncRecord.count()).toBe(0)
   })
 })

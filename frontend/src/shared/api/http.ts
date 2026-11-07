@@ -37,11 +37,14 @@ export function setRefreshHandler(handler: () => Promise<boolean>) {
   refreshHandler = handler
 }
 
-/** Tabs share the refresh cookie, so only one of them refreshes it at a time. */
-export function withRefreshLock<T>(run: () => Promise<T>): Promise<T> {
+/** Runs one holder of `name` at a time across the tabs of this browser (Web Locks), or directly without them. */
+export function withLock<T>(name: string, run: () => Promise<T>): Promise<T> {
   const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined
-  return locks ? (locks.request('fitpulse-refresh', run) as Promise<T>) : run()
+  return locks ? (locks.request(name, run) as Promise<T>) : run()
 }
+
+/** Tabs share the refresh cookie, so only one of them refreshes it at a time. */
+export const withRefreshLock = <T>(run: () => Promise<T>): Promise<T> => withLock('fitpulse-refresh', run)
 
 /** Refreshes the access token once for all callers waiting at the same moment. */
 export function refreshAccessToken(): Promise<boolean> {

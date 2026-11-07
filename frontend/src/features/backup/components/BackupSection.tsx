@@ -1,3 +1,4 @@
+import { localDateInput } from '@/shared/lib/localDate'
 import { useRef } from 'react'
 import { Download, FileSpreadsheet, Upload } from 'lucide-react'
 import { toast } from 'sonner'
@@ -6,7 +7,7 @@ import { Button, confirmAction } from '@/shared/ui'
 import { downloadFile } from '@/shared/lib/download'
 import { BackupError, createBackup, historyToCsv, parseBackup, restoreBackup } from '../lib/backup'
 
-const today = () => new Date().toISOString().slice(0, 10)
+const today = () => localDateInput()
 
 export function BackupSection() {
   const history = useAppSelector((state) => state.progress.history)
