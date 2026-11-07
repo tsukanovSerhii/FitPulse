@@ -23,3 +23,29 @@ describe('admin client', () => {
     await expect(client.restore()).resolves.toMatchObject({ role: 'admin' })
   })
 })
+
+describe('admin client requests', () => {
+  it('sends the token and refreshes once on 401', async () => {
+    const calls: string[] = []
+    let refreshed = false
+    const fetchFn = vi.fn(async (url: string, init: RequestInit = {}) => {
+      calls.push(`${init.method ?? 'GET'} ${url} ${(init.headers as Record<string, string>)?.Authorization ?? ''}`)
+      if (url === '/api/auth/refresh') {
+        refreshed = true
+        return json(200, { accessToken: 't2', user: admin })
+      }
+      if (url === '/api/auth/login') return json(200, { accessToken: 't1', user: admin })
+      return refreshed ? json(200, { ok: true }) : json(401, { error: { code: 'UNAUTHORIZED', message: 'x' } })
+    })
+    const client = createAdminClient(fetchFn as unknown as typeof fetch)
+    await client.login('a@x.com', 'pw')
+    await expect(client.request('/api/stats')).resolves.toEqual({ ok: true })
+    expect(calls).toEqual(['POST /api/auth/login ', 'GET /api/stats Bearer t1', 'POST /api/auth/refresh ', 'GET /api/stats Bearer t2'])
+  })
+
+  it('turns error bodies into ApiError with the message', async () => {
+    const fetchFn = vi.fn(async () => json(403, { error: { code: 'FORBIDDEN', message: 'Недостатньо прав' } }))
+    const client = createAdminClient(fetchFn as unknown as typeof fetch)
+    await expect(client.request('/api/staff')).rejects.toMatchObject({ code: 'FORBIDDEN', message: 'Недостатньо прав' })
+  })
+})
