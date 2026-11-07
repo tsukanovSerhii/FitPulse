@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => ({
       '/privacy': 'src/pages/legal/PrivacyPage.tsx',
       '/terms': 'src/pages/legal/TermsPage.tsx',
     }),
-    prerenderPublicPages({ siteUrl: (loadEnv(mode, process.cwd(), 'VITE_').VITE_SITE_URL || 'https://fit-pulse-beta-opal.vercel.app').replace(/\/$/, '') }),
+    prerenderPublicPages({ siteUrl: (loadEnv(mode, process.cwd(), 'VITE_').VITE_SITE_URL || 'https://fitpulse-web-7fbg.onrender.com').replace(/\/$/, '') }),
   ],
   // The app API: another container in Docker, port 3000 locally
   server: { host: true, proxy: { '/api': process.env.API_PROXY_TARGET ?? 'http://localhost:3000' } },
