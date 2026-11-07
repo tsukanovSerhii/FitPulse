@@ -112,7 +112,7 @@ export async function userActivity(prisma: PrismaClient, userId: string) {
   const from = isoDay(new Date(today.getTime() - 29 * DAY))
   const [activity, sessions] = await Promise.all([
     prisma.$queryRaw<{ day: string; minutes: number }[]>`
-      SELECT d.day::text AS day, coalesce(a.minutes, 0)::int AS minutes
+      SELECT d.day::date::text AS day, coalesce(a.minutes, 0)::int AS minutes
       FROM generate_series(${from}::date, ${isoDay(today)}::date, interval '1 day') AS d(day)
       LEFT JOIN user_activity a ON a.user_id = ${userId}::uuid AND a.day = d.day::date
       ORDER BY d.day`,

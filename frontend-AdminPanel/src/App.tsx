@@ -1,14 +1,17 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { Activity, LayoutDashboard, LogOut, ScrollText, Shield, Users } from 'lucide-react'
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import { createAdminClient, type AdminUser } from './api/client.ts'
 import { fetchApiHealth, type ApiStatus } from './api/health.ts'
 import { LoginForm } from './auth/LoginForm.tsx'
-import { AuditPage } from './pages/AuditPage.tsx'
-import { StaffPage } from './pages/StaffPage.tsx'
-import { StatsPage } from './pages/StatsPage.tsx'
-import { UserPage } from './pages/UserPage.tsx'
-import { UsersPage } from './pages/UsersPage.tsx'
 import { SessionContext } from './session.tsx'
+
+// Pages, and the chart library with them, load after sign-in
+const StatsPage = lazy(() => import('./pages/StatsPage.tsx').then((m) => ({ default: m.StatsPage })))
+const UsersPage = lazy(() => import('./pages/UsersPage.tsx').then((m) => ({ default: m.UsersPage })))
+const UserPage = lazy(() => import('./pages/UserPage.tsx').then((m) => ({ default: m.UserPage })))
+const StaffPage = lazy(() => import('./pages/StaffPage.tsx').then((m) => ({ default: m.StaffPage })))
+const AuditPage = lazy(() => import('./pages/AuditPage.tsx').then((m) => ({ default: m.AuditPage })))
 
 const STATUS_TEXT: Record<ApiStatus | 'loading', string> = {
   loading: 'API: перевіряємо…',
@@ -18,7 +21,8 @@ const STATUS_TEXT: Record<ApiStatus | 'loading', string> = {
 
 const ROLE_LABEL: Record<AdminUser['role'], string> = { admin: 'адміністратор', manager: 'менеджер' }
 
-const navClass = ({ isActive }: { isActive: boolean }) => `rounded px-2 py-1 ${isActive ? 'bg-gray-900 text-white' : 'hover:bg-gray-100'}`
+const navClass = ({ isActive }: { isActive: boolean }) =>
+  `flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${isActive ? 'bg-accent-soft text-accent' : 'text-fg-muted hover:bg-surface-2 hover:text-fg'}`
 
 export function App({ fetchFn = fetch }: { fetchFn?: typeof fetch }) {
   const client = useMemo(() => createAdminClient(fetchFn), [fetchFn])
@@ -35,15 +39,20 @@ export function App({ fetchFn = fetch }: { fetchFn?: typeof fetch }) {
   }, [client, fetchFn])
 
   const statusLine = (
-    <p role="status" className={status === 'down' ? 'text-red-600' : 'text-gray-600'}>
+    <p role="status" className={`text-xs ${status === 'down' ? 'text-danger' : 'text-fg-subtle'}`}>
       {STATUS_TEXT[status]}
     </p>
   )
 
   if (!user) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-6 p-6 font-sans">
-        <h1 className="text-3xl font-bold">FitPulse Admin</h1>
+      <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 p-6">
+        <div className="flex items-center gap-2">
+          <span className="flex size-10 items-center justify-center rounded-xl bg-accent text-white">
+            <Activity className="size-5" aria-hidden />
+          </span>
+          <h1 className="text-2xl font-bold">FitPulse Admin</h1>
+        </div>
         {user === null && <LoginForm onSubmit={async (email, password) => setUser(await client.login(email, password))} />}
         {statusLine}
       </main>
@@ -53,44 +62,51 @@ export function App({ fetchFn = fetch }: { fetchFn?: typeof fetch }) {
   return (
     <SessionContext.Provider value={{ client, user }}>
       <BrowserRouter>
-        <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
-          <header className="border-b border-gray-200 bg-white">
-            <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-4 py-3">
-              <h1 className="text-lg font-bold">FitPulse Admin</h1>
-              <nav aria-label="Розділи" className="flex flex-wrap gap-1 text-sm">
+        <div className="min-h-screen lg:grid lg:grid-cols-[240px_1fr]">
+          <aside className="border-b border-line bg-surface lg:sticky lg:top-0 lg:h-screen lg:border-r lg:border-b-0">
+            <div className="flex h-full flex-col gap-4 p-4">
+              <div className="flex items-center gap-2 px-1">
+                <span className="flex size-8 items-center justify-center rounded-lg bg-accent text-white">
+                  <Activity className="size-4" aria-hidden />
+                </span>
+                <span className="text-lg font-bold">FitPulse Admin</span>
+              </div>
+              <nav aria-label="Розділи" className="flex gap-1 overflow-x-auto lg:flex-col">
                 <NavLink to="/" end className={navClass}>
-                  Огляд
+                  <LayoutDashboard className="size-4" aria-hidden /> Огляд
                 </NavLink>
                 <NavLink to="/users" className={navClass}>
-                  Користувачі
+                  <Users className="size-4" aria-hidden /> Користувачі
                 </NavLink>
                 {user.role === 'admin' && (
                   <NavLink to="/staff" className={navClass}>
-                    Співробітники
+                    <Shield className="size-4" aria-hidden /> Співробітники
                   </NavLink>
                 )}
                 <NavLink to="/audit" className={navClass}>
-                  Журнал
+                  <ScrollText className="size-4" aria-hidden /> Журнал
                 </NavLink>
               </nav>
-              <div className="ml-auto flex items-center gap-3 text-sm">
-                <span>
+              <div className="space-y-3 border-t border-line pt-4 text-sm lg:mt-auto">
+                <p className="text-fg-muted">
                   Ви увійшли як {user.email} ({ROLE_LABEL[user.role]})
-                </span>
+                </p>
                 <button
                   type="button"
-                  className="rounded-md border border-gray-300 px-3 py-1"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-fg-muted hover:bg-surface-2 hover:text-fg"
                   onClick={async () => {
                     await client.logout()
                     setUser(null)
                   }}
                 >
-                  Вийти
+                  <LogOut className="size-4" aria-hidden /> Вийти
                 </button>
+                {statusLine}
               </div>
             </div>
-          </header>
-          <main className="mx-auto max-w-5xl space-y-4 px-4 py-6">
+          </aside>
+          <main className="mx-auto w-full max-w-6xl space-y-4 px-4 py-6 lg:px-8">
+            <Suspense fallback={<p className="text-fg-subtle">Завантаження…</p>}>
             <Routes>
               <Route path="/" element={<StatsPage />} />
               <Route path="/users" element={<UsersPage />} />
@@ -99,7 +115,7 @@ export function App({ fetchFn = fetch }: { fetchFn?: typeof fetch }) {
               <Route path="/audit" element={<AuditPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-            {statusLine}
+            </Suspense>
           </main>
         </div>
       </BrowserRouter>

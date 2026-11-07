@@ -30,19 +30,19 @@ export function StaffPage() {
     })
   }
 
-  const field = 'rounded-md border border-gray-300 px-3 py-2'
+  const field = 'rounded-lg border border-line px-3 py-2'
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">Співробітники</h1>
       {(error || actionError) && <ErrorText>{error ?? actionError}</ErrorText>}
       <Card>
-        <ul className="divide-y divide-gray-100">
+        <ul className="divide-y divide-line">
           {data?.map((member) => (
             <li key={member.id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
               <span>
                 <span className="font-medium">{member.email}</span> · {ROLE[member.role]}
-                {member.disabledAt && <span className="ml-2 rounded bg-gray-100 px-1.5 py-0.5 text-gray-600">вимкнено</span>}
-                <span className="ml-2 text-gray-400">з {formatDate(member.createdAt)}</span>
+                {member.disabledAt && <span className="ml-2 rounded bg-surface-2 px-1.5 py-0.5 text-fg-muted">вимкнено</span>}
+                <span className="ml-2 text-fg-subtle">з {formatDate(member.createdAt)}</span>
               </span>
               {member.id !== me.id && (
                 <span className="flex gap-2">

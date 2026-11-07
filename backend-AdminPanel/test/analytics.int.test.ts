@@ -80,6 +80,7 @@ describe('analytics', () => {
     const body = (await get(`/api/users/${iraId}`)).json()
     expect(body).toMatchObject({ minutes7d: 40, minutes30d: 40, country: 'UA' })
     expect(body.activity).toHaveLength(30)
+    expect(body.activity[0].day).toMatch(/^\d{4}-\d{2}-\d{2}$/)
     expect(body.sessions[0]).toMatchObject({ deviceType: 'mobile', city: 'Kyiv', ipPrefix: '93.75.12.x', active: true })
     expect(body.sessions).toHaveLength(2)
   })
