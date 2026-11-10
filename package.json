@@ -28,5 +28,5 @@
     "@neon/env": "^2.0.1",
     "typescript": "~6.0.3"
   },
-  "homepage": "https://fitpulse-web-7fbg.onrender.com"
+  "homepage": "https://frontend-fitpulse.vercel.app"
 }
