@@ -1,6 +1,8 @@
 /** All build-time environment variables, read in one place. */
 export const env = {
   siteUrl: (import.meta.env.VITE_SITE_URL || 'https://fitpulse-web-7fbg.onrender.com').replace(/\/$/, ''),
+  /** Frontend-only build: the API runs inside the browser and data stays on the device */
+  demo: import.meta.env.VITE_DEMO === 'true',
   adsEnabled: import.meta.env.VITE_ADS_ENABLED === 'true',
   /** Where error reports are sent; empty keeps them on the device only */
   errorEndpoint: import.meta.env.VITE_ERROR_ENDPOINT || '',

@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import { Wordmark } from '@/shared/ui'
 import { ThemeCycleButton } from '@/features/theme'
 import { PHOTOS } from '@/shared/config/photos'
+import { env } from '@/shared/config/env'
 
 export function AuthLayout({ title, subtitle, children }: { title: string; subtitle: ReactNode; children: ReactNode }) {
   return (
@@ -21,6 +22,11 @@ export function AuthLayout({ title, subtitle, children }: { title: string; subti
           </Link>
           <h1 className="text-4xl text-fg sm:text-5xl">{title}</h1>
           <p className="mt-3 text-sm text-fg-muted">{subtitle}</p>
+          {env.demo && (
+            <p className="mt-6 rounded-md border border-line bg-surface-2 px-4 py-3 text-xs leading-relaxed text-fg-muted">
+              <span className="font-semibold text-fg">Демо-версія.</span> Акаунти й тренування зберігаються лише в цьому браузері, сервер не потрібен.
+            </p>
+          )}
           <div className="mt-8">{children}</div>
         </main>
       </div>
