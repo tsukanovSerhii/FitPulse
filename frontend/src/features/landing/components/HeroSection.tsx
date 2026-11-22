@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Check, Trophy } from 'lucide-react'
 import { ProgressRing, buttonClasses } from '@/shared/ui'
+import { env } from '@/shared/config/env'
 import { PhoneMockup } from './PhoneMockup'
 
-const PERKS = ['Без картки', 'Працює в браузері телефона', 'Світла й темна тема']
+const PERKS = ['Без картки й встановлення', 'Працює без інтернету', 'Світла й темна тема']
 
 function FloatingCards() {
   return (
@@ -53,19 +54,25 @@ export function HeroSection() {
             <br />
             <span className="text-accent">Прогрес у цифрах.</span>
           </h1>
-          <p className="mt-8 max-w-xl animate-rise text-lg [animation-delay:80ms] leading-relaxed text-fg-muted sm:text-xl">
+          <p className="mt-8 max-w-xl animate-rise text-lg [animation-delay:100ms] leading-relaxed text-fg-muted sm:text-xl">
             FitPulse веде вас через кожне тренування в залі: яку вправу робити, з якою вагою і скільки відпочивати. Програма на
             тиждень, техніка вправ і рекорди — в одному застосунку на телефоні.
           </p>
-          <div className="mt-10 flex animate-rise flex-wrap gap-3 [animation-delay:160ms]">
+          <div className="mt-10 flex animate-rise flex-wrap gap-3 [animation-delay:200ms]">
             <Link to="/register" className={buttonClasses('primary', 'lg', 'h-14 px-8 text-base')}>
               Почати безкоштовно <ArrowRight className="size-5" aria-hidden="true" />
             </Link>
-            <a href="#features" className={buttonClasses('outline', 'lg', 'h-14 px-8 text-base')}>
-              Можливості
-            </a>
+            {env.demo ? (
+              <Link to="/login" className={buttonClasses('outline', 'lg', 'h-14 px-8 text-base')}>
+                Увійти в демо
+              </Link>
+            ) : (
+              <a href="#features" className={buttonClasses('outline', 'lg', 'h-14 px-8 text-base')}>
+                Можливості
+              </a>
+            )}
           </div>
-          <ul className="mt-10 flex animate-rise flex-wrap gap-x-6 [animation-delay:240ms] gap-y-2 text-sm text-fg-muted">
+          <ul className="mt-10 flex animate-rise flex-wrap gap-x-6 [animation-delay:300ms] gap-y-2 text-sm text-fg-muted">
             {PERKS.map((perk) => (
               <li key={perk} className="flex items-center gap-2">
                 <Check className="size-4 text-accent" aria-hidden="true" />
