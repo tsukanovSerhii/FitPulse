@@ -3,6 +3,7 @@ import { Modal, Button, Checkbox, Input, Select, Stat, confirmAction } from '@/s
 import type { WorkoutHistoryLog } from '@/features/progress'
 import { ALL_DAYS, DAY_LABELS, type DayOfWeek } from '@/features/workoutPlan/model'
 import { formatDuration, formatNumber } from '@/shared/lib/formatters'
+import { useRetained } from '@/shared/lib/useRetained'
 
 export interface SaveAsPlan {
   name: string
@@ -21,10 +22,12 @@ export interface SessionSummaryModalProps {
 
 const DAY_OPTIONS = ALL_DAYS.map((day) => ({ value: day, label: DAY_LABELS[day] }))
 
-export function SessionSummaryModal({ isOpen, workoutLog, planDefaults, onSave, onDiscard, onResume }: SessionSummaryModalProps) {
+export function SessionSummaryModal({ isOpen, workoutLog: currentLog, planDefaults, onSave, onDiscard, onResume }: SessionSummaryModalProps) {
   const [asPlan, setAsPlan] = useState(false)
   const [name, setName] = useState(planDefaults?.name ?? '')
   const [day, setDay] = useState<DayOfWeek>(planDefaults?.day ?? 'monday')
+  // Kept while the dialog fades out after the summary is cleared
+  const workoutLog = useRetained(currentLog)
 
   if (!workoutLog) return null
 

@@ -7,6 +7,7 @@ import { cn } from '@/shared/lib/cn'
 import type { DayOfWeek, PlanExercise, WorkoutPlan } from '../model/types'
 import { DAY_LABELS } from '../model/types'
 import { dayExerciseSchema, type DayExerciseForm } from '../lib/schemas'
+import { useRetained } from '@/shared/lib/useRetained'
 
 type ExerciseUpdates = Partial<Pick<PlanExercise, 'sets' | 'reps' | 'weight' | 'restSeconds' | 'notes'>>
 
@@ -26,8 +27,8 @@ export interface AddExerciseToDayModalProps {
 export function AddExerciseToDayModal({
   isOpen,
   onClose,
-  plan,
-  day,
+  plan: currentPlan,
+  day: currentDay,
   allExercises,
   onAddExercise,
   onRemoveExercise,
@@ -45,6 +46,10 @@ export function AddExerciseToDayModal({
 
   const exerciseMap = useMemo(() => new Map(allExercises.map((e) => [e.id, e])), [allExercises])
   const options = useMemo(() => allExercises.map((e) => ({ value: e.id, label: e.name })), [allExercises])
+
+  // Kept while the dialog fades out after the day is closed
+  const plan = useRetained(currentPlan)
+  const day = useRetained(currentDay)
 
   if (!plan || !day) return null
   const dayExercises = plan.schedule[day] ?? []
