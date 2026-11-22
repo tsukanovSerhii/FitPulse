@@ -30,11 +30,14 @@ export function MainLayout() {
       <div className="flex min-w-0 flex-1 flex-col">
         <MobileHeader />
 
-        <main id="main" className="mx-auto w-full max-w-6xl flex-1 animate-fade-in px-5 py-6 sm:px-8 lg:px-12 lg:py-12">
+        <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-5 py-6 sm:px-8 lg:px-12 lg:py-12">
           {/* A crash inside a page keeps the navigation usable; moving to another route clears it */}
           <ErrorBoundary resetKey={pathname} fallback={({ error, reset }) => <ErrorScreen error={error} onRetry={reset} />}>
             <Suspense fallback={<PageSkeleton />}>
-              <Outlet />
+              {/* Each page fades in. Opacity only: a lasting transform would break position: fixed inside */}
+              <div key={pathname} className="animate-fade-in">
+                <Outlet />
+              </div>
             </Suspense>
           </ErrorBoundary>
         </main>

@@ -8,7 +8,7 @@ export function FinalCta() {
     <section aria-labelledby="cta-title" className="relative isolate overflow-hidden">
       <img src={PHOTOS.runnerShoreline.src} alt="" loading="lazy" className="absolute inset-0 -z-10 size-full object-cover" />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-scrim/90 via-scrim/70 to-scrim/30" />
-      <div className="mx-auto flex min-h-[70vh] max-w-7xl flex-col justify-center gap-10 px-5 py-24 text-on-photo sm:px-8">
+      <div className="reveal mx-auto flex min-h-[70vh] max-w-7xl flex-col justify-center gap-10 px-5 py-24 text-on-photo sm:px-8">
         <h2 id="cta-title" className="max-w-4xl text-6xl leading-[1.02] sm:text-7xl lg:text-8xl">
           Наступне тренування
           <br />

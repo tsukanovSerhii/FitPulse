@@ -15,7 +15,7 @@ export function HowItWorksSection() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <ol className="space-y-10">
             {STEPS.map((step, i) => (
-              <li key={step.title} className="flex gap-8 border-b border-line pb-10 last:border-0 last:pb-0">
+              <li key={step.title} className="reveal flex gap-8 border-b border-line pb-10 last:border-0 last:pb-0">
                 <span className="font-display text-7xl leading-none text-accent sm:text-8xl">{i + 1}</span>
                 <div className="space-y-2 pt-2">
                   <h3 className="text-3xl text-fg sm:text-4xl">{step.title}</h3>
@@ -24,7 +24,7 @@ export function HowItWorksSection() {
               </li>
             ))}
           </ol>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-lg lg:aspect-[4/5]">
+          <div className="reveal relative aspect-[4/3] overflow-hidden rounded-lg lg:aspect-[4/5]">
             <img src={PHOTOS.deadlift.src} alt={PHOTOS.deadlift.alt} loading="lazy" className="absolute inset-0 size-full object-cover" />
           </div>
         </div>

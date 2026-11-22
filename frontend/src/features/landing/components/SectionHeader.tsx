@@ -21,7 +21,7 @@ export function SectionEyebrow({ index, label }: { index: number; label: string 
 
 export function SectionHeader({ index, label, title, lead, id, className }: SectionHeaderProps) {
   return (
-    <div className={cn('grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-end lg:gap-16', className)}>
+    <div className={cn('reveal grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-end lg:gap-16', className)}>
       <div className="space-y-6">
         <SectionEyebrow index={index} label={label} />
         <h2 id={id} className="text-5xl leading-[1.05] text-fg sm:text-6xl lg:text-7xl">

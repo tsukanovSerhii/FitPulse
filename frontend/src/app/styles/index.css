@@ -146,6 +146,7 @@
   --animate-fade-in: fade-in 0.25s var(--ease-out) both;
   --animate-rise: rise 0.4s var(--ease-out) both;
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
 }
 
 @keyframes fade-in {
@@ -159,6 +160,16 @@
 @keyframes rise {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+/* `translate`, not `transform`: the floating hero cards keep their own rotate */
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -6px; }
+}
+/* `transform`, so a revealed card can still lift on hover with `translate` */
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
 }
 
 /* ============================================================
@@ -206,6 +217,20 @@
 }
 
 @utility tabular { font-variant-numeric: tabular-nums; }
+
+/*
+ * Fades a block in as it scrolls into view. Pure CSS (scroll-driven animation): no JavaScript, and
+ * browsers without animation-timeline, crawlers and reduced-motion users simply see the content.
+ */
+@utility reveal {
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
