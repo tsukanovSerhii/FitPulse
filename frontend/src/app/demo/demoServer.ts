@@ -2,7 +2,7 @@
 // kept in this browser. The app code is unchanged; only the transport under apiRequest differs.
 import type { CommunityExercise, ExerciseSubmission, SyncRequest, SyncResponse, User } from '@fitpulse/contracts'
 import { DEMO_ACCOUNT } from '@/shared/config/demo'
-import { loadFromStorage, removeFromStorage, saveToStorage } from '@/shared/storage/localStorage'
+import { hasStorageKey, loadFromStorage, removeFromStorage, saveToStorage, STORAGE_KEYS } from '@/shared/storage/localStorage'
 
 interface DemoAccount extends User {
   salt: string
@@ -105,10 +105,18 @@ async function createAccount(name: string, email: string, password: string): Pro
   return account
 }
 
+async function prepareDemoAccount() {
+  const account = byEmail(DEMO_ACCOUNT.email) ?? (await createAccount(DEMO_ACCOUNT.name, DEMO_ACCOUNT.email, DEMO_ACCOUNT.password))
+  // Filled again only when the journal is gone, so the visitor's own changes stay
+  if (hasStorageKey(`${STORAGE_KEYS.WORKOUT_HISTORY}:${account.id}`)) return
+  const { demoUserData } = await import('./demoSeed')
+  for (const [key, value] of Object.entries(demoUserData(account.id))) saveToStorage(key, value)
+}
+
 async function login(body: Body) {
   const email = normalize(body.email)
-  // The offered demo account exists from its first sign-in
-  if (email === DEMO_ACCOUNT.email && !byEmail(email)) await createAccount(DEMO_ACCOUNT.name, DEMO_ACCOUNT.email, DEMO_ACCOUNT.password)
+  // The offered demo account exists from its first sign-in, with ten weeks of training to look at
+  if (email === DEMO_ACCOUNT.email) await prepareDemoAccount()
   const account = byEmail(email)
   if (!account || (await hash(String(body.password ?? ''), account.salt)) !== account.passwordHash) return ERRORS.invalidCredentials()
   return signIn(account, body.remember === true)
