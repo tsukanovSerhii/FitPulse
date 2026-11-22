@@ -22,7 +22,7 @@ export function PricingSection() {
             <li
               key={plan.id}
               className={cn(
-                'flex flex-col rounded-lg border bg-surface p-6 sm:p-10',
+                'reveal flex flex-col rounded-lg border bg-surface p-6 transition-[border-color,translate] duration-300 ease-out hover:-translate-y-1 sm:p-10',
                 plan.id === 'pro' ? 'border-accent' : 'border-line',
               )}
             >

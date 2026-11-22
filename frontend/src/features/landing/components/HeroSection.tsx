@@ -10,7 +10,7 @@ function FloatingCards() {
     <>
       <div
         aria-hidden="true"
-        className="absolute -left-6 bottom-28 hidden w-44 -rotate-6 rounded-lg border border-line bg-surface p-4 shadow-pop sm:block lg:-left-28"
+        className="absolute -left-6 bottom-28 hidden w-44 -rotate-6 animate-float rounded-lg border border-line bg-surface p-4 shadow-pop sm:block lg:-left-28"
       >
         <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-accent">Відпочинок</p>
         <div className="mt-3 flex justify-center">
@@ -21,7 +21,7 @@ function FloatingCards() {
       </div>
       <div
         aria-hidden="true"
-        className="absolute -right-4 -top-6 hidden w-52 rotate-3 rounded-lg border border-line bg-surface p-4 shadow-pop sm:block lg:-right-20"
+        className="absolute -right-4 -top-6 hidden w-52 rotate-3 animate-float rounded-lg [animation-delay:-3s] border border-line bg-surface p-4 shadow-pop sm:block lg:-right-20"
       >
         <div className="flex items-center gap-3">
           <span className="flex size-10 items-center justify-center rounded-md bg-accent-soft text-accent">
@@ -53,11 +53,11 @@ export function HeroSection() {
             <br />
             <span className="text-accent">Прогрес у цифрах.</span>
           </h1>
-          <p className="mt-8 max-w-xl text-lg leading-relaxed text-fg-muted sm:text-xl">
+          <p className="mt-8 max-w-xl animate-rise text-lg [animation-delay:80ms] leading-relaxed text-fg-muted sm:text-xl">
             FitPulse веде вас через кожне тренування в залі: яку вправу робити, з якою вагою і скільки відпочивати. Програма на
             тиждень, техніка вправ і рекорди — в одному застосунку на телефоні.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="mt-10 flex animate-rise flex-wrap gap-3 [animation-delay:160ms]">
             <Link to="/register" className={buttonClasses('primary', 'lg', 'h-14 px-8 text-base')}>
               Почати безкоштовно <ArrowRight className="size-5" aria-hidden="true" />
             </Link>
@@ -65,7 +65,7 @@ export function HeroSection() {
               Можливості
             </a>
           </div>
-          <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-fg-muted">
+          <ul className="mt-10 flex animate-rise flex-wrap gap-x-6 [animation-delay:240ms] gap-y-2 text-sm text-fg-muted">
             {PERKS.map((perk) => (
               <li key={perk} className="flex items-center gap-2">
                 <Check className="size-4 text-accent" aria-hidden="true" />

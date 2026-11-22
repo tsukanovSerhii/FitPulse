@@ -29,6 +29,15 @@ let accessToken: string | null = null
 let refreshHandler: () => Promise<boolean> = async () => false
 let refreshing: Promise<boolean> | null = null
 
+/** Sends one request; the network by default, an in-browser API in the demo build. */
+export type Transport = (path: string, init: RequestInit) => Promise<Response>
+
+let transport: Transport = (path, init) => fetch(path, init)
+
+export function setTransport(next: Transport) {
+  transport = next
+}
+
 export function setAccessToken(token: string | null) {
   accessToken = token
 }
@@ -69,7 +78,7 @@ async function send(path: string, { method = 'GET', body, auth = false }: Reques
   headers['X-App-Mode'] = installed ? 'installed' : 'browser'
   if (auth && accessToken) headers.Authorization = `Bearer ${accessToken}`
   try {
-    return await fetch(path, {
+    return await transport(path, {
       method,
       headers,
       credentials: 'same-origin',

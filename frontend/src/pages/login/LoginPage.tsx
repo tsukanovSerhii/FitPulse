@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
 import { SEO } from '@/shared/seo/SEO'
 import { Button, Checkbox, Input } from '@/shared/ui'
 import { AuthLayout, PasswordField, validateLogin, type FieldErrors, authErrorCleared, loginUser, type Credentials } from '@/features/auth'
+import { DEMO_ACCOUNT } from '@/shared/config/demo'
+import { env } from '@/shared/config/env'
 import { PAGE_META } from '../meta'
 
 export function LoginPage() {
@@ -48,9 +50,20 @@ export function LoginPage() {
             {error}
           </p>
         )}
+        {env.demo && (
+          <div className="flex items-center justify-between gap-3 rounded-md border border-accent/30 bg-accent-soft px-4 py-3 text-sm">
+            <span className="text-fg-muted">
+              Демо-акаунт: <span className="font-mono text-fg">{DEMO_ACCOUNT.email}</span>
+            </span>
+            <Button type="button" size="sm" variant="secondary" onClick={() => setForm({ email: DEMO_ACCOUNT.email, password: DEMO_ACCOUNT.password })}>
+              Заповнити
+            </Button>
+          </div>
+        )}
         <Input
           label="Email"
           placeholder="you@example.com"
+          name="email"
           type="email"
           autoComplete="email"
           inputMode="email"
@@ -61,6 +74,7 @@ export function LoginPage() {
         <PasswordField
           label="Пароль"
           placeholder="Ваш пароль"
+          name="password"
           autoComplete="current-password"
           value={form.password}
           onChange={(e) => update('password')(e.target.value)}

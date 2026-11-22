@@ -9,10 +9,14 @@ import './styles/index.css'
 import { App } from './App'
 import { registerServiceWorker } from './pwa/registerServiceWorker'
 import { installErrorReporting } from '@/shared/lib/errorReporter'
+import { setTransport } from '@/shared/api/http'
 import { restoreSession } from '@/features/auth/model'
 import { startSync, startSyncTimers } from './store/syncListeners'
 
 installErrorReporting()
+
+// The frontend-only demo answers /api/* in the browser. Read inline so other builds drop the chunk
+if (import.meta.env.VITE_DEMO === 'true') setTransport(async (path, init) => (await import('./demo/demoServer')).handleDemoRequest(path, init))
 
 // The cached user shows at once; the server confirms the session in the background
 store.dispatch(restoreSession()).then((action) => {

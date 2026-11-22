@@ -9,6 +9,8 @@
     "dev": "vite",
     "prebuild": "npm run build -w @fitpulse/contracts --prefix ..",
     "build": "tsc -b && vite build",
+    "prebuild:demo": "npm run build -w @fitpulse/contracts --prefix ..",
+    "build:demo": "tsc -b && vite build --mode demo",
     "lint": "oxlint",
     "test": "vitest run",
     "preview": "vite preview",

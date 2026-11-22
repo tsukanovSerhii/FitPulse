@@ -20,7 +20,10 @@ const STATIC_PAGES = [
   { path: '/terms', priority: '0.2' },
 ]
 
-const attr = (text: string) => text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
+/** The address written in index.html and public/robots.txt */
+const SOURCE_SITE_URL = 'https://fitpulse-web-7fbg.onrender.com'
+
+const attr =(text: string) => text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 
 /** Copies the built index.html with the page's own title, description, canonical URL and content. */
 function renderPage(template: string, page: PrerenderedPage, siteUrl: string): string {
@@ -61,7 +64,14 @@ export function prerenderPublicPages({ siteUrl }: { siteUrl: string }): Plugin {
       root = config.root
       outDir = resolve(config.root, config.build.outDir)
     },
+    // index.html and robots.txt name the main site; a build for another host links to itself
+    transformIndexHtml(html) {
+      return html.replaceAll(SOURCE_SITE_URL, siteUrl)
+    },
     async closeBundle() {
+      const robots = join(outDir, 'robots.txt')
+      writeFileSync(robots, readFileSync(robots, 'utf8').replaceAll(SOURCE_SITE_URL, siteUrl))
+
       const { createServer } = await import('vite')
       const server = await createServer({
         configFile: false,

@@ -82,6 +82,7 @@ export function ResetPasswordPage() {
           )}
           <PasswordField
             label="Новий пароль"
+            name="password"
             autoComplete="new-password"
             value={form.password}
             onChange={(e) => update('password')(e.target.value)}
@@ -89,6 +90,7 @@ export function ResetPasswordPage() {
           />
           <PasswordField
             label="Повторіть пароль"
+            name="password-confirm"
             autoComplete="new-password"
             value={form.confirm}
             onChange={(e) => update('confirm')(e.target.value)}

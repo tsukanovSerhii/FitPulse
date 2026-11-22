@@ -55,7 +55,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
   return (
     <li
       className={cn(
-        'group flex flex-col gap-8 rounded-lg border border-line bg-surface p-6 transition-colors hover:border-line-strong sm:p-8',
+        'group reveal flex flex-col gap-8 rounded-lg border border-line bg-surface p-6 transition-[border-color,translate] duration-300 ease-out hover:-translate-y-1 hover:border-line-strong sm:p-8',
         feature.wide && 'md:col-span-2 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-12',
       )}
     >
