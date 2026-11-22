@@ -1,9 +1,4 @@
-const STATS = [
-  { value: '18+', label: 'вправ з покроковою технікою' },
-  { value: '4', label: 'кроки техніки з демонстрацією' },
-  { value: '1', label: 'кнопка, щоб записати підхід' },
-  { value: '0 ₴', label: 'щоб почати тренуватися' },
-]
+import { STATS } from '../model/stats'
 
 export function StatsBand() {
   return (

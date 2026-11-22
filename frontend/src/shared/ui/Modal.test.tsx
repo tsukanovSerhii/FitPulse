@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { useState } from 'react'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { Modal } from './Modal'
@@ -59,5 +59,31 @@ describe('Modal', () => {
     expect(onClose).toHaveBeenCalledOnce()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(opener).toHaveFocus()
+  })
+
+  it('fades out showing its last content, then leaves the page', async () => {
+    // jsdom has no Web Animations: stand in one closing animation that ends on demand
+    let finish = () => {}
+    const finished = new Promise<void>((resolve) => (finish = resolve))
+    const getAnimations = vi.fn(() => [{ finished }] as unknown as Animation[])
+    Object.defineProperty(HTMLElement.prototype, 'getAnimations', { value: getAnimations, configurable: true })
+
+    const { rerender } = render(
+      <Modal isOpen title="Жим лежачи" onClose={() => {}}>
+        Техніка жиму
+      </Modal>,
+    )
+    // The parent clears the exercise as it closes the dialog
+    rerender(
+      <Modal isOpen={false} title={undefined} onClose={() => {}}>
+        {null}
+      </Modal>,
+    )
+    expect(screen.getByRole('dialog')).toHaveTextContent('Техніка жиму')
+    expect(screen.getByRole('heading', { name: 'Жим лежачи' })).toBeInTheDocument()
+
+    await act(async () => finish())
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    delete (HTMLElement.prototype as { getAnimations?: unknown }).getAnimations
   })
 })

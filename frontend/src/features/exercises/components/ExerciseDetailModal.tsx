@@ -8,6 +8,7 @@ import type { Equipment, Exercise, Joint } from '../model/types'
 import { DIFFICULTY_LABELS, EQUIPMENT_LABELS, JOINT_LABELS, MUSCLE_GROUP_LABELS } from '../model/types'
 import { TechniquePlayer } from './technique/TechniquePlayer'
 import { ExerciseNote } from './ExerciseNote'
+import { useRetained } from '@/shared/lib/useRetained'
 
 export interface ExerciseDetailModalProps {
   exercise: Exercise | null
@@ -67,7 +68,7 @@ export function PointList({ title, items, tone }: { title: string; items: string
 }
 
 export function ExerciseDetailModal({
-  exercise,
+  exercise: current,
   isOpen,
   onClose,
   isFavorite,
@@ -77,6 +78,8 @@ export function ExerciseDetailModal({
   avoidJoints,
   onSelectExercise,
 }: ExerciseDetailModalProps) {
+  // Kept while the dialog fades out after the selection is cleared
+  const exercise = useRetained(current)
   if (!exercise) return null
   const technique = getTechnique(exercise)
   const variants = variantsOf(exercise, allExercises)

@@ -141,25 +141,38 @@
   --radius-md: 6px;
   --radius-lg: 8px;
 
+  /* Entrances decelerate softly into place; exits speed up gently and are a little quicker */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
 
-  --animate-fade-in: fade-in 0.25s var(--ease-out) both;
-  --animate-rise: rise 0.4s var(--ease-out) both;
+  --animate-fade-in: fade-in 0.4s var(--ease-out) both;
+  --animate-fade-out: fade-out 0.22s var(--ease-in) both;
+  --animate-rise: rise 0.55s var(--ease-out) both;
+  --animate-sink: sink 0.22s var(--ease-in) both;
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
-  --animate-float: float 6s ease-in-out infinite;
+  --animate-float: float 7s ease-in-out infinite;
 }
 
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+@keyframes fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
 @keyframes shimmer {
   from { transform: translateX(-100%); }
   to   { transform: translateX(100%); }
 }
+/* Ends on `none`: a lasting transform would trap position: fixed children */
 @keyframes rise {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes sink {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(8px) scale(0.99); }
 }
 /* `translate`, not `transform`: the floating hero cards keep their own rotate */
 @keyframes float {
@@ -168,8 +181,15 @@
 }
 /* `transform`, so a revealed card can still lift on hover with `translate` */
 @keyframes reveal {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(32px); }
   to   { opacity: 1; transform: none; }
+}
+
+/* Theme switch: the old and new page cross-fade instead of every color jumping at once */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: var(--ease-out);
 }
 
 /* ============================================================
@@ -225,9 +245,10 @@
 @utility reveal {
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      animation: reveal linear both;
+      /* Eased and spread over a longer stretch of scrolling, so blocks drift in rather than pop */
+      animation: reveal var(--ease-out) both;
       animation-timeline: view();
-      animation-range: entry 0% entry 35%;
+      animation-range: entry 5% cover 35%;
     }
   }
 }

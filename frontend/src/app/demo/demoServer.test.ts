@@ -54,6 +54,15 @@ describe('demo API: accounts', () => {
     expect(res.status).toBe(200)
     expect(res.body.user.email).toBe(DEMO_ACCOUNT.email)
     expect((await call('/api/auth/login', { email: DEMO_ACCOUNT.email, password: DEMO_ACCOUNT.password, remember: true })).body.user.id).toBe(res.body.user.id)
+    expect(JSON.parse(local.get(`fitpulse_history_v1:${res.body.user.id}`)!).length).toBeGreaterThan(20)
+  })
+
+  it('keeps the demo visitor’s own journal on the next sign-in', async () => {
+    const { DEMO_ACCOUNT } = await import('@/shared/config/demo')
+    const id = (await call('/api/auth/login', { email: DEMO_ACCOUNT.email, password: DEMO_ACCOUNT.password, remember: true })).body.user.id
+    local.set(`fitpulse_history_v1:${id}`, '[]')
+    await call('/api/auth/login', { email: DEMO_ACCOUNT.email, password: DEMO_ACCOUNT.password, remember: true })
+    expect(local.get(`fitpulse_history_v1:${id}`)).toBe('[]')
   })
 
   it('ends the session on logout', async () => {
