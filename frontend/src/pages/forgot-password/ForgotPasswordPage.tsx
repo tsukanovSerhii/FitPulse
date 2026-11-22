@@ -55,6 +55,7 @@ export function ForgotPasswordPage() {
           <Input
             label="Email"
             placeholder="you@example.com"
+            name="email"
             type="email"
             autoComplete="email"
             inputMode="email"

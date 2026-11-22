@@ -62,6 +62,7 @@ export function RegisterPage() {
         <Input
           label="Ім'я"
           placeholder="Як до вас звертатися"
+          name="name"
           autoComplete="name"
           value={form.name}
           onChange={(e) => update('name')(e.target.value)}
@@ -70,6 +71,7 @@ export function RegisterPage() {
         <Input
           label="Email"
           placeholder="you@example.com"
+          name="email"
           type="email"
           autoComplete="email"
           inputMode="email"
@@ -80,6 +82,7 @@ export function RegisterPage() {
         <PasswordField
           label="Пароль"
           placeholder="Щонайменше 8 символів, літери й цифри"
+          name="password"
           autoComplete="new-password"
           showStrength
           value={form.password}
